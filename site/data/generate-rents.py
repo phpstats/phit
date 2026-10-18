@@ -15,6 +15,6 @@ for _ in range(400):
     rent = 450 + 17.5 * area + 110 * bedrooms + rng.gauss(0, 160)
     rows.append((area, bedrooms, round(rent, 2)))
 with open(Path(__file__).with_name('rents.csv'), 'w', newline='') as f:
-    writer = csv.writer(f)
+    writer = csv.writer(f, lineterminator='\n')
     writer.writerow(['area_m2', 'bedrooms', 'monthly_rent'])
     writer.writerows(rows)
