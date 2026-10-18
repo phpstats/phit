@@ -1,7 +1,7 @@
 {
  "title": "Probit regression: agreement with R",
  "description": "Largest absolute difference from R for every reported quantity, alongside statsmodels. Every case also passes the release gate (scripts/check).",
- "reference": "R R version 4.6.1 (2026-06-24), statsmodels 0.15.0, numpy 2.5.4, Python 3.14.7, PHP 8.5.10",
+ "reference": "R version 4.6.1 (2026-06-24), statsmodels 0.15.0, numpy 2.5.4, Python 3.14.7, PHP 8.5.10",
  "tolerance": "release gate: 1e-9 + 1e-7*|reference| (fixed models), 1e-7 + 1e-6*|reference| (mixed models)",
  "source": "docs/verifications/probit-results.json",
  "cases": [

@@ -113,7 +113,7 @@
   {
    "slug": "rent-model",
    "title": "Predicting rent with a linear model",
-   "summary": "Fit monthly rent on floor area and bedrooms, then predict with 95% prediction intervals.",
+   "summary": "Fit monthly rent on floor area and bedrooms for 400 simulated flats, then predict with 95% prediction intervals.",
    "uses": [
     "phit"
    ],

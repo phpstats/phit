@@ -1,7 +1,7 @@
 {
  "title": "Mixed models on published data sets: agreement with R",
  "description": "Largest absolute difference from R for every reported quantity, alongside nlme and statsmodels. Every case also passes the release gate (scripts/check).",
- "reference": "R R version 4.6.1 (2026-06-24), lme4 2.0.6, statsmodels 0.15.0, PHP 8.5.10, Python 3.14.7, nlme 3.1.169",
+ "reference": "R version 4.6.1 (2026-06-24), lme4 2.0.6, statsmodels 0.15.0, PHP 8.5.10, Python 3.14.7, nlme 3.1.169",
  "tolerance": "release gate: 1e-9 + 1e-7*|reference| (fixed models), 1e-7 + 1e-6*|reference| (mixed models)",
  "source": "docs/verifications/lmm-public-results.json",
  "cases": [

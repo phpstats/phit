@@ -10,11 +10,11 @@ return [
     ],
     'run' => function (array $input, string $data): array {
         $bedrooms = (int) $input['bedrooms'];
-        $csv = read_csv($data . '/housing.csv');
+        $csv = read_csv($data . '/rents.csv');
         $housing = array_combine($csv['names'], array_column($csv['columns'], 'values'));
 
         $fit = fit_lm('monthly_rent ~ area_m2 + bedrooms', $housing);
-        $areas = range(30, 120, 5);
+        $areas = range(30, 125, 5);
         $p = predict($fit, ['area_m2' => $areas, 'bedrooms' => array_fill(0, count($areas), $bedrooms)], interval: 'prediction');
 
         $curve = [];

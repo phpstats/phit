@@ -1,7 +1,7 @@
 {
  "title": "Weights, offsets and mixed models: agreement with R and lme4",
  "description": "Weighted and offset GLMs against base R, and mixed models against all four lme4 optimizers.",
- "reference": "R R version 4.6.1 (2026-06-24), lme4 2.0.6, PHP 8.5.10, python 3.14.7, numpy 2.5.4, scipy 1.18.1, statsmodels 0.15.0",
+ "reference": "R version 4.6.1 (2026-06-24), lme4 2.0.6, PHP 8.5.10, python 3.14.7, numpy 2.5.4, scipy 1.18.1, statsmodels 0.15.0",
  "tolerance": "fixed: 1e-07 + 1e-06*|reference|; mixed_bobyqa: 1e-05 + 1e-05*|reference|; mixed_other_optimizers: 0.001 + 0.0003*|reference|; mixed_likelihood: 5e-06 + 1e-09*|reference|",
  "source": "docs/verifications/r-compatibility-results.json",
  "cases": [

@@ -27,6 +27,13 @@ IMPLEMENTATIONS = {'PHP': 'phit', 'R': 'R', 'statsmodels': 'statsmodels', 'SciPy
                    'PHP_scalar': 'phit (scalar)', 'PHP_batch': 'phit (batch)', 'Rust': 'Rust core', 'SciPy': 'SciPy'}
 
 
+R_TIMER_RESOLUTION = 0.001
+
+
+def versions_text(versions):
+    return ', '.join(v if str(v).startswith(k) else f'{k} {v}' for k, v in versions.items())
+
+
 def load(path):
     return json.loads((ROOT / path).read_text())
 
@@ -54,13 +61,18 @@ def model_benchmark(slug, title):
             reps = result.get('fit_seconds') or []
             if not reps:
                 continue
-            rows.append({
+            row = {
                 'case': label,
                 'implementation': IMPLEMENTATIONS.get(name, name),
                 'value': round(statistics.median(reps) * 1000, 3),
                 'reps': [round(r * 1000, 3) for r in reps],
                 'load_ms': round(result['load_seconds'] * 1000, 3) if result.get('load_seconds') is not None else None,
-            })
+            }
+            # R's proc.time() reports whole milliseconds; a fit at or below one tick is not measurable.
+            if name == 'R' and statistics.median(reps) <= R_TIMER_RESOLUTION:
+                row['value'] = None
+                row['note'] = 'below the 1 ms resolution of R\'s timer'
+            rows.append(row)
     return {
         'title': f'{title}: fit time',
         'description': f'Median wall time to fit {title.lower()} models on the same simulated data in R, Python and phit. '
@@ -111,7 +123,7 @@ def fixed_verification(slug, title, peers):
         'title': f'{title}: agreement with R',
         'description': f'Largest absolute difference from R for every reported quantity, alongside {peers}. '
                        'Every case also passes the release gate (scripts/check).',
-        'reference': ', '.join(f'{k} {v}' for k, v in versions.items()),
+        'reference': versions_text(versions),
         'tolerance': 'release gate: 1e-9 + 1e-7*|reference| (fixed models), 1e-7 + 1e-6*|reference| (mixed models)',
         'source': f'docs/verifications/{slug}-results.json',
         'cases': cases,
@@ -126,7 +138,7 @@ def logistic_mixed_verification():
              for r in data['results']]
     return {'title': 'Binomial random intercept: agreement with lme4',
             'description': 'Largest coefficient difference from lme4::glmer for Laplace and adaptive quadrature fits.',
-            'reference': ', '.join(f'{k} {v}' for k, v in data['versions'].items()),
+            'reference': versions_text(data['versions']),
             'tolerance': f"{tol['absolute']} + {tol['relative']}*|reference|",
             'source': 'docs/verifications/logistic-mixed-results.json', 'cases': cases}
 
@@ -161,7 +173,7 @@ def r_compatibility_verification():
                                   'max_abs_error': abs(value), 'passed': True})
     return {'title': 'Weights, offsets and mixed models: agreement with R and lme4',
             'description': 'Weighted and offset GLMs against base R, and mixed models against all four lme4 optimizers.',
-            'reference': ', '.join(f'{k} {v}' for k, v in data['versions'].items()),
+            'reference': versions_text(data['versions']),
             'tolerance': '; '.join(f"{k}: {v['absolute']} + {v['relative']}*|reference|" for k, v in data['tolerances'].items()),
             'source': 'docs/verifications/r-compatibility-results.json', 'cases': cases}
 
@@ -214,7 +226,7 @@ def manifest(benchmarks, verifications):
         'verifications': verifications,
         'vignettes': [
             {'slug': 'rent-model', 'title': 'Predicting rent with a linear model',
-             'summary': 'Fit monthly rent on floor area and bedrooms, then predict with 95% prediction intervals.',
+             'summary': 'Fit monthly rent on floor area and bedrooms for 400 simulated flats, then predict with 95% prediction intervals.',
              'uses': ['phit'], 'script': 'site/vignettes/rent-model.php'},
             {'slug': 'school-effects', 'title': 'School effects with a mixed model',
              'summary': 'Estimate school random intercepts with fit_lmer and show them with their conditional uncertainty.',
