@@ -135,6 +135,10 @@ php -n -d "extension=$STATS_EXTENSION" examples/ols.php
 php -n -d "extension=$STATS_EXTENSION" examples/poisson-offset.php
 ```
 
+The `-d` flag loads the extension for one run. To load it on every run, add
+`extension=$PWD/target/release/libphit.dylib`, with the path written out in
+full, to the php.ini that `php --ini` reports.
+
 For a real application, install the compiled library and enable it in the
 application runtime's PHP configuration as described in
 [installation and deployment](https://phpstats.github.io/phit/development.html#running-in-an-application).
