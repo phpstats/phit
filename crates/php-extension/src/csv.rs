@@ -1,4 +1,4 @@
-//! read_csv(): the native reader behind phibble's Frame::fromCsv().
+//! read_csv(): the native reader behind phibble's DataFrame::fromCsv().
 use ext_php_rs::{
     boxed::ZBox,
     convert::{FromZval, StubLiteral},

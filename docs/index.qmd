@@ -54,7 +54,7 @@ existing features. Add new documents only when a topic needs its own explanation
 - [Seeded sampling](rng.qmd): local ChaCha20 streams, family APIs and reproducibility.
 - [v0.2 readiness](v0.2.qmd): completed scope and release limits.
 - [Posterior-draw kernels](draw-numerics.qmd): weighted moments, covariance maps and affine transformations.
-- [Reading CSV files](io.qmd): `read_csv()`, the native reader behind phibble's `Frame::fromCsv()`.
+- [Reading CSV files](io.qmd): `read_csv()`, the native reader behind phibble's `DataFrame::fromCsv()`.
 
 ## Binary logistic regression
 

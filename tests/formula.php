@@ -184,13 +184,13 @@ fcheck(array_column($nested['random'], 'label') === ['1 | g', '1 | f:g', 'x | g:
 fcheck($nested['random'][1]['groups'][0] === '1:a' && $nested['random'][2]['groups'][0] === 'a:1' && $nested['random'][0]['groups'][0] === 'a', 'interaction group labels');
 fcheck(Phit\model_matrix('y ~ x + (1 | x)', $base)['random'][0]['groups'][0] === 1, 'integer group labels stay integers');
 
-// Optional integration with a real phibble Frame when PHIBBLE_AUTOLOAD names its autoloader.
+// Optional integration with a real phibble DataFrame when PHIBBLE_AUTOLOAD names its autoloader.
 $autoload = getenv('PHIBBLE_AUTOLOAD');
 if (is_string($autoload) && is_file($autoload)) {
     require $autoload;
-    $frame = \Phibble\Frame::fromColumns(['y' => $base['y'], 'x' => $base['x'], 'g' => $base['g']], ['g' => 'factor']);
-    fcompare(Phit\fit_lm('y ~ x + g', $frame)['coefficients'], Phit\fit_lm('y ~ x + g', $base)['coefficients'], 'phibble Frame', 1e-14, 1e-14);
-    fcheck(Phit\fit_lm('y ~ x + g', $frame)['columns'] === ['(Intercept)', 'x', 'gb', 'gc'], 'phibble factor names');
-    echo "phibble Frame integration passed\n";
+    $df = \Phibble\DataFrame::fromColumns(['y' => $base['y'], 'x' => $base['x'], 'g' => $base['g']], ['g' => 'factor']);
+    fcompare(Phit\fit_lm('y ~ x + g', $df)['coefficients'], Phit\fit_lm('y ~ x + g', $base)['coefficients'], 'phibble DataFrame', 1e-14, 1e-14);
+    fcheck(Phit\fit_lm('y ~ x + g', $df)['columns'] === ['(Intercept)', 'x', 'gb', 'gc'], 'phibble factor names');
+    echo "phibble DataFrame integration passed\n";
 }
 echo "PHP formula tests passed ({$counts['model_matrix']} model.matrix, {$counts['lm']} lm, {$counts['glm']} glm fits; $comparisons R comparisons)\n";

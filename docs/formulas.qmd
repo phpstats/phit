@@ -47,7 +47,7 @@ $mixed = Phit\fit_lmer('score ~ hours + (1 + hours | school)', $schools);
 is also accepted. The extension calls its public `toModelData()` method, or
 `toColumns()` when the first method is absent, and uses the returned array.
 Exceptions thrown by those methods propagate unchanged. phibble's
-`Frame::toModelData()` returns this shape.
+`DataFrame::toModelData()` returns this shape.
 
 Each column is one of the following.
 

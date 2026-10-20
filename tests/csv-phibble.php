@@ -12,7 +12,7 @@ if ($autoload === false || $autoload === '') {
 require $autoload;
 
 use Phibble\Column\TemporalColumn;
-use Phibble\Frame;
+use Phibble\DataFrame;
 use Phibble\Io\NativeCsv;
 
 function check(bool $ok, string $message): void {
@@ -33,7 +33,7 @@ function readWith(bool $native, string $path, array $options): array {
         return true;
     });
     try {
-        $frame = Frame::fromCsv($path, ...$options);
+        $df = DataFrame::fromCsv($path, ...$options);
     } catch (Throwable $e) {
         return [null, $warnings, get_class($e).': '.$e->getMessage()];
     } finally {
@@ -41,11 +41,11 @@ function readWith(bool $native, string $path, array $options): array {
         NativeCsv::enable(true);
     }
     $out = [];
-    foreach ($frame->columns() as $name) {
-        $storage = $frame->storage($name);
+    foreach ($df->columns() as $name) {
+        $storage = $df->storage($name);
         $values = $storage instanceof TemporalColumn ? $storage->ticks() : $storage->values();
-        $out[] = [$name, $frame->type($name)->value, array_map(canonical(...), $values),
-            $frame->type($name)->value === 'factor' ? $frame->levels($name) : null];
+        $out[] = [$name, $df->type($name)->value, array_map(canonical(...), $values),
+            $df->type($name)->value === 'factor' ? $df->levels($name) : null];
     }
     return [$out, $warnings, null];
 }
@@ -140,11 +140,11 @@ for ($case = 0; $case < $cases; $case++) {
     compareReaders($text, $options, "random case $case", $dir);
     $compared++;
     // The same text with explicit types.
-    [$frame] = readWith(false, $dir.'/case'.(($compared - 1) % 50).'.csv', $options + ['colNames' => $options['colNames'] ?? true]);
-    if ($frame !== null && count($frame) > 0 && mt_rand(0, 1) === 0) {
+    [$columns] = readWith(false, $dir.'/case'.(($compared - 1) % 50).'.csv', $options + ['colNames' => $options['colNames'] ?? true]);
+    if ($columns !== null && count($columns) > 0 && mt_rand(0, 1) === 0) {
         $letters = 'lidcDT_?fn';
         $types = '';
-        for ($i = 0; $i < count($frame); $i++) $types .= $letters[mt_rand(0, strlen($letters) - 1)];
+        for ($i = 0; $i < count($columns); $i++) $types .= $letters[mt_rand(0, strlen($letters) - 1)];
         compareReaders($text, $options + ['types' => $types], "typed case $case", $dir);
         $compared++;
     }

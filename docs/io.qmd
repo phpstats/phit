@@ -3,7 +3,7 @@ title: "Reading CSV files"
 ---
 
 `read_csv()` reads a delimited text file into typed columns. It is the
-native reader behind phibble's `Frame::fromCsv()`. Its records, names, guessed
+native reader behind phibble's `DataFrame::fromCsv()`. Its records, names, guessed
 types, values, and problem messages match phibble's PHP reader, which follows
 readr 2 (`readr::read_delim()`). phibble keeps name repair, `col_select`, factor
 and `parse_number()` columns, and the problems warning in PHP.
@@ -154,7 +154,7 @@ These follow phibble's reader:
 On an Apple Silicon Mac with PHP 8.5, a 1,000,000-row file with int, float,
 string, date, and datetime columns (59 MB) reads in about 0.11 seconds,
 including building the PHP arrays. phibble's `csv_guess` benchmark (1,000,000
-rows) takes 0.12 seconds through `Frame::fromCsv()` with the extension and
+rows) takes 0.12 seconds through `DataFrame::fromCsv()` with the extension and
 1.0 seconds with phibble's PHP reader.
 
 ## Verification
@@ -162,6 +162,6 @@ rows) takes 0.12 seconds through `Frame::fromCsv()` with the extension and
 `tests/csv.php` checks quoting, escapes, NA handling, trimming, every option,
 every type code, the guessing rules, datetimes, ragged rows, and the error
 cases. `tests/csv-phibble.php` runs when `PHIBBLE_AUTOLOAD` points at phibble's
-`vendor/autoload.php`. It compares both readers through `Frame::fromCsv()` on
+`vendor/autoload.php`. It compares both readers through `DataFrame::fromCsv()` on
 the fixtures and on thousands of random files and option combinations. It
 requires identical names, types, values, and warnings.

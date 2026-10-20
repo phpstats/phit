@@ -91,7 +91,7 @@ and moment-matching control belong to the consuming CmdStan interface.
 
 `read_csv($path, $options)` reads delimited text into typed columns with
 readr's options, type guessing, and problem reports. It is the native reader
-behind phibble's `Frame::fromCsv()` and matches phibble's PHP reader exactly.
+behind phibble's `DataFrame::fromCsv()` and matches phibble's PHP reader exactly.
 A 1,000,000-row file reads in about 0.1 seconds. See the
 [CSV contract](docs/io.qmd).
 
