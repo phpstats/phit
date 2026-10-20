@@ -584,7 +584,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><code>read_csv()</code> reads a delimited text file into typed columns. It is the native reader behind phibble’s <code>Frame::fromCsv()</code>. Its records, names, guessed types, values, and problem messages match phibble’s PHP reader, which follows readr 2 (<code>readr::read_delim()</code>). phibble keeps name repair, <code>col_select</code>, factor and <code>parse_number()</code> columns, and the problems warning in PHP.</p>
+<p><code>read_csv()</code> reads a delimited text file into typed columns. It is the native reader behind phibble’s <code>DataFrame::fromCsv()</code>. Its records, names, guessed types, values, and problem messages match phibble’s PHP reader, which follows readr 2 (<code>readr::read_delim()</code>). phibble keeps name repair, <code>col_select</code>, factor and <code>parse_number()</code> columns, and the problems warning in PHP.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\read_csv(<span class="dt">string</span> <span class="va">$path</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$options</span> <span class="op">=</span> [])<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="options" class="level2">
 <h2 class="anchored" data-anchor-id="options">Options</h2>
@@ -751,11 +751,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="performance" class="level2">
 <h2 class="anchored" data-anchor-id="performance">Performance</h2>
-<p>On an Apple Silicon Mac with PHP 8.5, a 1,000,000-row file with int, float, string, date, and datetime columns (59 MB) reads in about 0.11 seconds, including building the PHP arrays. phibble’s <code>csv_guess</code> benchmark (1,000,000 rows) takes 0.12 seconds through <code>Frame::fromCsv()</code> with the extension and 1.0 seconds with phibble’s PHP reader.</p>
+<p>On an Apple Silicon Mac with PHP 8.5, a 1,000,000-row file with int, float, string, date, and datetime columns (59 MB) reads in about 0.11 seconds, including building the PHP arrays. phibble’s <code>csv_guess</code> benchmark (1,000,000 rows) takes 0.12 seconds through <code>DataFrame::fromCsv()</code> with the extension and 1.0 seconds with phibble’s PHP reader.</p>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
-<p><code>tests/csv.php</code> checks quoting, escapes, NA handling, trimming, every option, every type code, the guessing rules, datetimes, ragged rows, and the error cases. <code>tests/csv-phibble.php</code> runs when <code>PHIBBLE_AUTOLOAD</code> points at phibble’s <code>vendor/autoload.php</code>. It compares both readers through <code>Frame::fromCsv()</code> on the fixtures and on thousands of random files and option combinations. It requires identical names, types, values, and warnings.</p>
+<p><code>tests/csv.php</code> checks quoting, escapes, NA handling, trimming, every option, every type code, the guessing rules, datetimes, ragged rows, and the error cases. <code>tests/csv-phibble.php</code> runs when <code>PHIBBLE_AUTOLOAD</code> points at phibble’s <code>vendor/autoload.php</code>. It compares both readers through <code>DataFrame::fromCsv()</code> on the fixtures and on thousands of random files and option combinations. It requires identical names, types, values, and warnings.</p>
 
 
 </section>
