@@ -39,7 +39,7 @@ foreach ($fixture['cases'] as $case) {
     $name = $case['name'];
     $result = @($case['function'] === 'lmer'
         ? Phit\fit_lmer($case['formula'], $data, reml: $case['reml'])
-        : Phit\fit_glmer($case['formula'], $data, quadrature_points: $case['quadrature_points']));
+        : Phit\fit_glmer($case['formula'], $data, quadraturePoints: $case['quadrature_points']));
     $expected = $case['expected'];
     mcheck($result['columns'] === $expected['columns'], "$name: columns");
     mcheck($result['n_observations'] === $expected['n_observations'], "$name: observations");

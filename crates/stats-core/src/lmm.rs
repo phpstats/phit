@@ -471,7 +471,7 @@ pub fn fit_lmm(
     if !options.objective_tolerance.is_finite() || options.objective_tolerance <= 0.0 {
         return Err(err(
             ErrorKind::InvalidInput,
-            "objective_tolerance must be positive finite",
+            "objectiveTolerance must be positive finite",
         ));
     }
     let evaluations = match options.optimizer {

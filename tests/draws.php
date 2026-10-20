@@ -43,7 +43,7 @@ foreach ($fixture['cases'] as $case) {
             closeValues($result, $case['expected'], $name);
             break;
         case 'covariance_map':
-            $result = Phit\draws_covariance_map(source_covariance: $case['source_covariance'], target_covariance: $case['target_covariance']);
+            $result = Phit\draws_covariance_map(sourceCovariance: $case['source_covariance'], targetCovariance: $case['target_covariance']);
             closeValues($result, $case['expected'], $name);
             $a = $result['matrix'];
             $cov = multiply(multiply($a, $case['source_covariance']), transpose($a));

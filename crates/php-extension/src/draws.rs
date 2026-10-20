@@ -77,12 +77,11 @@ pub fn draws_moments(
 #[php_function]
 #[php(name = "Phit\\draws_covariance_map")]
 pub fn draws_covariance_map(
-    source_covariance: &ZendHashTable,
-    target_covariance: &ZendHashTable,
+    sourceCovariance: &ZendHashTable,
+    targetCovariance: &ZendHashTable,
 ) -> PhpResult<ZBox<ZendHashTable>> {
-    let result =
-        draws::draw_covariance_map(&matrix(source_covariance)?, &matrix(target_covariance)?)
-            .map_err(stats_exception)?;
+    let result = draws::draw_covariance_map(&matrix(sourceCovariance)?, &matrix(targetCovariance)?)
+        .map_err(stats_exception)?;
     let mut output = ZendHashTable::new();
     output.insert("matrix", result.matrix)?;
     output.insert("log_abs_det", result.log_abs_det)?;

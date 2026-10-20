@@ -9,7 +9,7 @@ while(($row=fgetcsv($handle,escape:''))!==false){$r=array_combine($header,$row);
  $trials[]=(int)$r['size'];$y[]=(int)$r['incidence']/(int)$r['size'];$groups[]=$r['herd'];}
 fclose($handle);
 foreach([1,9,25,61] as $points){
- $r=Phit\fit_logistic_mixed($x,$y,$groups,weights:$trials,quadrature_points:$points);
+ $r=Phit\fit_logistic_mixed($x,$y,$groups,weights:$trials,quadraturePoints:$points);
  printf("\nBinomial random intercept: %s, %d nodes\n",$r['integration'],$points);
  foreach(['period 1','period 2 difference','period 3 difference','period 4 difference'] as $j=>$label)
   printf("%-22s beta %9.5f  SE %8.5f  p %9.4g\n",$label,$r['coefficients'][$j],$r['std_errors'][$j],$r['p_values'][$j]);

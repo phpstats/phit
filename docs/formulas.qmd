@@ -13,11 +13,11 @@ Phit\fit_lm(string $formula, array|object $data, string $missing = 'drop', array
 Phit\fit_glm(string $formula, array|object $data, string $family = 'gaussian', string $link = '',
     string $missing = 'drop', array|string|null $weights = null): array;
 Phit\fit_lmer(string $formula, array|object $data, bool $reml = true, string $missing = 'drop',
-    array|string|null $weights = null, ?array $start = null, int $max_evaluations = 20000,
-    float $tolerance = 1e-7, string $optimizer = 'bobyqa', float $objective_tolerance = 1e-12): array;
+    array|string|null $weights = null, ?array $start = null, int $maxEvaluations = 20000,
+    float $tolerance = 1e-7, string $optimizer = 'bobyqa', float $objectiveTolerance = 1e-12): array;
 Phit\fit_glmer(string $formula, array|object $data, string $family = 'binomial', string $link = '',
-    string $missing = 'drop', array|string|null $weights = null, int $quadrature_points = 1,
-    int $max_evaluations = 20000, float $tolerance = 1e-7): array;
+    string $missing = 'drop', array|string|null $weights = null, int $quadraturePoints = 1,
+    int $maxEvaluations = 20000, float $tolerance = 1e-7): array;
 ```
 
 PHP reflection reports `$data` and `$weights` as `mixed`. The generated stubs
@@ -206,7 +206,7 @@ conditional covariance per group, in `group_labels` order. These are the blocks 
 the diagonal of each block.
 
 `fit_glmer` supports exactly one random intercept `(1 | g)` with the binomial
-family and logit link, over the `fit_logistic_mixed` core. `quadrature_points`
+family and logit link, over the `fit_logistic_mixed` core. `quadraturePoints`
 corresponds to lme4's `nAGQ`. Responses follow `fit_glm`. `random_effects_cond_var`
 gives the conditional variance of each group's mode, as lme4's `postVar`.
 
@@ -218,7 +218,7 @@ does for `lm`, `glm` and `merMod` objects. It rebuilds the fit's formula over
 
 ```php
 $fit = Phit\fit_glm('am ~ wt + poly(hp, 2)', $cars, family: 'binomial');
-$p = Phit\predict($fit, ['wt' => [2.2, 3.4], 'hp' => [95, 180]], type: 'response', se_fit: true);
+$p = Phit\predict($fit, ['wt' => [2.2, 3.4], 'hp' => [95, 180]], type: 'response', seFit: true);
 // $p['fit'] probabilities, $p['se_fit'] delta-method standard errors
 ```
 
@@ -231,14 +231,14 @@ $p = Phit\predict($fit, ['wt' => [2.2, 3.4], 'hp' => [95, 180]], type: 'response
 - A row with a missing predictor predicts `null` and is listed in `missing_rows`.
   Every list has one entry per `$newdata` row.
 - `type: 'link'` (the default) returns the linear predictor. `type: 'response'`
-  applies the inverse link, and `se_fit` then uses the delta method, as R does.
+  applies the inverse link, and `seFit` then uses the delta method, as R does.
 - `interval: 'confidence'` or `'prediction'` adds `lower` and `upper` for
   `fit_lm` fits, using t with `df_residual` at `level`. A prediction interval
   adds the residual variance; as in R, it assumes constant variance for a weighted fit.
 - For `fit_lmer` and `fit_glmer` fits, predictions add each known group's
   random effects (lme4's default `re.form = NULL`). `random: false` gives
   population predictions (`re.form = NA`), and the grouping columns can then be
-  absent. An unseen group raises 1001 unless `allow_new_levels: true`, which
+  absent. An unseen group raises 1001 unless `allowNewLevels: true`, which
   predicts it at the population level. Mixed predictions have no standard errors,
   as in lme4.
 

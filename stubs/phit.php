@@ -1517,12 +1517,12 @@ function draws_affine(array $draws, array $matrix, array $shift): array {}
  * Cholesky/triangular-solve map A: A * source * A^T = target. Finite symmetric positive-definite covariances of equal size; tolerances in docs/draw-numerics.qmd. Failure is explicit; no regularization.
  * Rows are draws; columns are parameters. Preserves iteration order; no row deletion or intercept insertion.
  * null/NAN/INF and nonnumeric elements are rejected.
- * @param array<array<int|float>> $source_covariance
- * @param array<array<int|float>> $target_covariance
+ * @param array<array<int|float>> $sourceCovariance
+ * @param array<array<int|float>> $targetCovariance
  * @return array{matrix: list<list<float>>, log_abs_det: float}
  * @throws \Exception Input/numerical error (codes 1001–1005).
  */
-function draws_covariance_map(array $source_covariance, array $target_covariance): array {}
+function draws_covariance_map(array $sourceCovariance, array $targetCovariance): array {}
 
 /**
  * Weighted draw mean and covariance; weights normalized internally. Normalization 'population' or 'unbiased' (reliability weights, never frequency counts). Singular covariance is valid.
@@ -1591,7 +1591,7 @@ function fit_glm(string $formula, mixed $data, string $family = 'gaussian', stri
 
 /**
  * Binomial random-intercept model from a formula, like lme4::glmer(family = binomial): exactly one (1 | g) term over the
- * fit_logistic_mixed core (Laplace by default, adaptive quadrature with quadrature_points > 1). Responses as in fit_glm.
+ * fit_logistic_mixed core (Laplace by default, adaptive quadrature with quadraturePoints > 1). Responses as in fit_glm.
  * random_effects_cond_var holds each conditional mode's variance, as ranef(condVar = TRUE).
  * Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are
  * dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
@@ -1653,7 +1653,7 @@ function fit_glm(string $formula, mixed $data, string $family = 'gaussian', stri
  * }
  * @throws \Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
  */
-function fit_glmer(string $formula, mixed $data, string $family = 'binomial', string $link = '', string $missing = 'drop', mixed $weights = NULL, int $quadrature_points = 1, int $max_evaluations = 20000, float $tolerance = 1.0E-7): array {}
+function fit_glmer(string $formula, mixed $data, string $family = 'binomial', string $link = '', string $missing = 'drop', mixed $weights = NULL, int $quadraturePoints = 1, int $maxEvaluations = 20000, float $tolerance = 1.0E-7): array {}
 
 /**
  * Linear model from a formula, like R's lm(): builds the model matrix and calls the fit_ols core (weights, offset() terms).
@@ -1751,7 +1751,7 @@ function fit_lm(string $formula, mixed $data, string $missing = 'drop', mixed $w
  * }
  * @throws \Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
  */
-function fit_lmer(string $formula, mixed $data, bool $reml = true, string $missing = 'drop', mixed $weights = NULL, ?array $start = NULL, int $max_evaluations = 20000, float $tolerance = 1.0E-7, string $optimizer = 'bobyqa', float $objective_tolerance = 1.0E-12): array {}
+function fit_lmer(string $formula, mixed $data, bool $reml = true, string $missing = 'drop', mixed $weights = NULL, ?array $start = NULL, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, string $optimizer = 'bobyqa', float $objectiveTolerance = 1.0E-12): array {}
 
 /**
  * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
@@ -1837,7 +1837,7 @@ function fit_logistic(array $x, array $y, string $missing = 'drop', ?array $weig
  * }
  * @throws \Exception Statistical or input error (codes 1001–1008).
  */
-function fit_logistic_mixed(array $x, array $y, array $groups, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, int $quadrature_points = 1, int $max_evaluations = 20000, float $tolerance = 1.0E-7, bool $intercept = true): array {}
+function fit_logistic_mixed(array $x, array $y, array $groups, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, int $quadraturePoints = 1, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, bool $intercept = true): array {}
 
 /**
  * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
@@ -1881,7 +1881,7 @@ function fit_logistic_mixed(array $x, array $y, array $groups, string $missing =
  * }
  * @throws \Exception Statistical or input error (codes 1001–1008).
  */
-function fit_mixed(array $x, array $y, array $random, string $missing = 'drop', bool $reml = false, ?array $weights = NULL, ?array $offset = NULL, ?array $start = NULL, int $max_evaluations = 20000, float $tolerance = 1.0E-7, string $optimizer = 'bobyqa', float $objective_tolerance = 1.0E-12, bool $intercept = true): array {}
+function fit_mixed(array $x, array $y, array $random, string $missing = 'drop', bool $reml = false, ?array $weights = NULL, ?array $offset = NULL, ?array $start = NULL, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, string $optimizer = 'bobyqa', float $objectiveTolerance = 1.0E-12, bool $intercept = true): array {}
 
 /**
  * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
@@ -2063,9 +2063,9 @@ function model_matrix(string $formula, mixed $data, string $missing = 'drop'): a
  * Predictions for new data from a fit_lm, fit_glm, fit_lmer or fit_glmer result, like R's predict():
  * the fit's formula is rebuilt over newdata with the fitted factor levels and poly() basis (its predvars key).
  * A level the fit never saw is an error. Rows with missing predictors predict null and are listed in missing_rows.
- * type 'response' applies the inverse link; se_fit uses the delta method on that scale. Intervals ('confidence' or
+ * type 'response' applies the inverse link; seFit uses the delta method on that scale. Intervals ('confidence' or
  * 'prediction', t with df_residual) are for fit_lm fits. Mixed fits add random effects of known groups (random: false
- * gives population predictions; allow_new_levels predicts unseen groups at zero). GLM standard errors use the
+ * gives population predictions; allowNewLevels predicts unseen groups at zero). GLM standard errors use the
  * covariance at the final coefficients (docs/r-compatibility.qmd).
  * @param array<string,mixed> $fit A formula fit result (needs formula, coefficients, covariance, columns and predvars)
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $newdata Named columns, as for the fit; the response may be absent
@@ -2086,7 +2086,7 @@ function model_matrix(string $formula, mixed $data, string $missing = 'drop'): a
  * }
  * @throws \Exception Input error (1001), malformed fit, new levels, or unsupported options (1007).
  */
-function predict(array $fit, mixed $newdata, string $type = 'link', bool $se_fit = false, string $interval = 'none', float $level = 0.95, bool $random = true, bool $allow_new_levels = false): array {}
+function predict(array $fit, mixed $newdata, string $type = 'link', bool $seFit = false, string $interval = 'none', float $level = 0.95, bool $random = true, bool $allowNewLevels = false): array {}
 
 /**
  * Read a delimited text file the way phibble's PHP reader (after readr::read_delim()) does: same records,

@@ -116,7 +116,7 @@ implemented behavior, verified accuracy and publication/platform limits.
 
 ```php
 Phit\draws_moments(array $draws, ?array $weights = null, string $normalization = 'population'): array;
-Phit\draws_covariance_map(array $source_covariance, array $target_covariance): array;
+Phit\draws_covariance_map(array $sourceCovariance, array $targetCovariance): array;
 Phit\draws_affine(array $draws, array $matrix, array $shift): array;
 ```
 
@@ -604,8 +604,8 @@ Phit\fit_mixed(
     array $x, array $y, array $random,
     string $missing = 'drop', bool $reml = false,
     ?array $weights = null, ?array $offset = null, ?array $start = null,
-    int $max_evaluations = 20000, float $tolerance = 1e-7,
-    string $optimizer = 'bobyqa', float $objective_tolerance = 1e-12,
+    int $maxEvaluations = 20000, float $tolerance = 1e-7,
+    string $optimizer = 'bobyqa', float $objectiveTolerance = 1e-12,
     bool $intercept = true,
 ): array;
 ```
@@ -639,12 +639,12 @@ random covariance is permitted and flagged with `singular` rather than an error.
 The engine rejects nonfinite results, exhausted budgets and invalid starts/controls.
 
 BOBYQA is the pinned Rust PRIMA port; tolerance is its final parameter trust radius
-in `(0, 0.1]`. Nelder–Mead is the pinned argmin implementation; objective_tolerance
+in `(0, 0.1]`. Nelder–Mead is the pinned argmin implementation; objectiveTolerance
 is the positive finite standard-deviation threshold of simplex objective values.
 The other control is unused by that optimizer. Both use a 0.1 initial step/radius,
 nonnegative Cholesky diagonals, off-diagonal bounds ±10,000 and diagonal upper
 bound 10,000. Starting values are in the supplied random-column units; omission
-uses diagonal factors one and off-diagonal factors zero. `max_evaluations` limits
+uses diagonal factors one and off-diagonal factors zero. `maxEvaluations` limits
 optimizer cost calls, including rejected Nelder–Mead bound trials. `evaluations`
 also counts two pre/post likelihood evaluations. These are local optimizers;
 convergence does not establish global optimality or model identifiability.
@@ -695,7 +695,7 @@ the exact boundary of the R/lme4 parity claim.
 Phit\fit_logistic_mixed(
     array $x, array $y, array $groups, string $missing = 'drop',
     ?array $weights = null, ?array $offset = null,
-    int $quadrature_points = 1, int $max_evaluations = 20000,
+    int $quadraturePoints = 1, int $maxEvaluations = 20000,
     float $tolerance = 1e-7, bool $intercept = true,
 ): array;
 ```
@@ -719,7 +719,7 @@ fails explicitly. Group labels use the existing integer/string contract and
 first-retained-appearance ordering. All original x/y/groups/weights/offset values
 and lengths are checked before one shared listwise deletion mask.
 
-`quadrature_points: 1` uses Laplace, matching lme4's default integration method.
+`quadraturePoints: 1` uses Laplace, matching lme4's default integration method.
 Values 2..61 use adaptive Gauss-Hermite quadrature for each group. Begin with 25
 or 61 nodes for accuracy checks on small groups or rare events, and inspect
 sensitivity; no node count guarantees accuracy for every dataset. This function
@@ -731,7 +731,7 @@ The optimizer is the pinned native Rust BOBYQA port. It starts from the ordinary
 binomial GLM coefficients and group SD one, and compares the solution with an
 exact zero-variance GLM candidate. Fixed columns are RMS-scaled for optimization.
 Scaled fixed coefficients are bounded ±100; group SD is bounded [0,20]. Reaching
-a bound fails. Tolerance is the final trust radius in (0,0.1]; max_evaluations
+a bound fails. Tolerance is the final trust radius in (0,0.1]; maxEvaluations
 limits optimizer calls. The group mode solver uses bracketed Newton steps and
 positive posterior curvature. Nonconvergence, nonfinite results, nonstationary
 solutions or nonpositive observed information fail with an exception. A near-zero

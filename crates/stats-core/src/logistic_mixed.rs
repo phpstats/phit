@@ -298,7 +298,7 @@ pub fn fit_logistic_random_intercept(
     if !(1..=61).contains(&options.quadrature_points) {
         return Err(err(
             ErrorKind::InvalidInput,
-            "quadrature_points must be 1 (Laplace) or 2..61 (adaptive quadrature)",
+            "quadraturePoints must be 1 (Laplace) or 2..61 (adaptive quadrature)",
         ));
     }
     if !options.tolerance.is_finite() || options.tolerance <= 0.0 || options.tolerance > 0.1 {

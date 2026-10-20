@@ -1,3 +1,10 @@
+// PHP parameter names are the public API and the conventions make them camelCase
+// (maxEvaluations, seFit). ext-php-rs derives each PHP name from the Rust parameter
+// identifier and rejects #[php(...)] on a parameter, so the identifiers must be
+// camelCase too. #[php_function] repeats them in a generated wrapper beside each
+// function, which no per-function attribute reaches, so the allow is crate-level.
+#![allow(non_snake_case)]
+
 use ext_php_rs::{boxed::ZBox, prelude::*, types::ZendHashTable};
 mod csv;
 mod descriptive;
@@ -780,10 +787,10 @@ fn logistic_mixed_output(
     defaults(
         missing = "\"drop\"",
         reml = false,
-        max_evaluations = 20000,
+        maxEvaluations = 20000,
         tolerance = 1e-7,
         optimizer = "\"bobyqa\"",
-        objective_tolerance = 1e-12,
+        objectiveTolerance = 1e-12,
         intercept = true
     )
 )]
@@ -798,10 +805,10 @@ pub fn fit_mixed(
     weights: Option<&ZendHashTable>,
     offset: Option<&ZendHashTable>,
     start: Option<&ZendHashTable>,
-    max_evaluations: i64,
+    maxEvaluations: i64,
     tolerance: f64,
     optimizer: &str,
-    objective_tolerance: f64,
+    objectiveTolerance: f64,
     intercept: bool,
 ) -> PhpResult<ZBox<ZendHashTable>> {
     if missing != "drop" && missing != "raise" {
@@ -970,14 +977,14 @@ pub fn fit_mixed(
     let options = stats_core::LmmOptions {
         reml,
         optimizer,
-        objective_tolerance,
+        objective_tolerance: objectiveTolerance,
         weights: select(&weights)?,
         offset: select(&offset)?,
         start,
-        max_evaluations: usize::try_from(max_evaluations).map_err(|_| {
+        max_evaluations: usize::try_from(maxEvaluations).map_err(|_| {
             input_exception(
                 stats_core::ErrorKind::InvalidInput,
-                "max_evaluations must be positive",
+                "maxEvaluations must be positive",
             )
         })?,
         tolerance,
@@ -1004,8 +1011,8 @@ pub fn fit_mixed(
     name = "Phit\\fit_logistic_mixed",
     defaults(
         missing = "\"drop\"",
-        quadrature_points = 1,
-        max_evaluations = 20000,
+        quadraturePoints = 1,
+        maxEvaluations = 20000,
         tolerance = 1e-7,
         intercept = true
     )
@@ -1019,8 +1026,8 @@ pub fn fit_logistic_mixed(
     missing: &str,
     weights: Option<&ZendHashTable>,
     offset: Option<&ZendHashTable>,
-    quadrature_points: i64,
-    max_evaluations: i64,
+    quadraturePoints: i64,
+    maxEvaluations: i64,
     tolerance: f64,
     intercept: bool,
 ) -> PhpResult<ZBox<ZendHashTable>> {
@@ -1059,16 +1066,16 @@ pub fn fit_logistic_mixed(
     let options = stats_core::LogisticMixedOptions {
         weights: input.weights,
         offset: input.offset,
-        quadrature_points: usize::try_from(quadrature_points).map_err(|_| {
+        quadrature_points: usize::try_from(quadraturePoints).map_err(|_| {
             input_exception(
                 stats_core::ErrorKind::Unsupported,
-                "quadrature_points must be 1..61",
+                "quadraturePoints must be 1..61",
             )
         })?,
-        max_evaluations: usize::try_from(max_evaluations).map_err(|_| {
+        max_evaluations: usize::try_from(maxEvaluations).map_err(|_| {
             input_exception(
                 stats_core::ErrorKind::InvalidInput,
-                "max_evaluations must be positive",
+                "maxEvaluations must be positive",
             )
         })?,
         tolerance,

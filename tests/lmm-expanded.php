@@ -41,7 +41,7 @@ compat_compare($r['fitted'],$complete['fitted'],'all retained rows aligned');
 foreach([
  ['random'=>[]],['random'=>[['z'=>[[1]],'groups'=>[1]]]],['random'=>[['z'=>array_fill(0,count($c['y']),[1]),'groups'=>array_fill(0,count($c['y']),true)]]],
  ['random'=>[['z'=>array_fill(0,count($c['y']),[1]),'groups'=>array_fill(0,count($c['y']),1),'correlated'=>'yes']]],
- ['optimizer'=>'nloptwrap'],['objective_tolerance'=>NAN],['missing'=>'raise'],['tolerance'=>NAN],['start'=>[-1]],['max_evaluations'=>-1],['max_evaluations'=>4],
+ ['optimizer'=>'nloptwrap'],['objectiveTolerance'=>NAN],['missing'=>'raise'],['tolerance'=>NAN],['start'=>[-1]],['maxEvaluations'=>-1],['maxEvaluations'=>4],
 ] as $options){$thrown=false;try{Phit\fit_mixed(...array_replace(['x'=>$c['x'],'y'=>$c['y'],'random'=>$c['terms'],'weights'=>$c['weights'],'offset'=>$c['offset']],$options), intercept: false);}catch(Throwable $e){$thrown=true;}compat_check($thrown,'invalid general mixed inputs');}
 $typed=Phit\fit_mixed(array_fill(0,8,[1]),[-3,-2,-1,1,2,3,4,5],
  [['z'=>array_fill(0,8,[1]),'groups'=>[1,1,'1','1','A','A','B','B']]], intercept: false);

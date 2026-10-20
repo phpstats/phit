@@ -24,8 +24,9 @@ foreach ([
 ] as $function => $fixture) {
     $case = json_decode(file_get_contents(__DIR__."/fixtures/$fixture.json"), true, flags: JSON_THROW_ON_ERROR)['cases'][0];
     $args = ['x' => $case['x'], 'y' => $case['y']];
-    foreach (['groups', 'weights', 'offset', 'reml', 'quadrature_points'] as $key) {
-        if (array_key_exists($key, $case)) $args[$key] = $case[$key];
+    foreach (['groups' => 'groups', 'weights' => 'weights', 'offset' => 'offset',
+        'reml' => 'reml', 'quadrature_points' => 'quadraturePoints'] as $key => $argument) {
+        if (array_key_exists($key, $case)) $args[$argument] = $case[$key];
     }
     if (isset($case['terms'])) $args['random'] = $case['terms'];
     $literal = $function(...$args, intercept: false);

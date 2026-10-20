@@ -462,11 +462,11 @@ fn nullable(values: &[Option<f64>]) -> PhpResult<ZBox<ZendHashTable>> {
     name = "Phit\\predict",
     defaults(
         r#type = "\"link\"",
-        se_fit = false,
+        seFit = false,
         interval = "\"none\"",
         level = 0.95,
         random = true,
-        allow_new_levels = false
+        allowNewLevels = false
     )
 )]
 #[allow(clippy::too_many_arguments)] // Named PHP arguments mirror R's predict().
@@ -474,11 +474,11 @@ pub fn predict(
     fit: &ZendHashTable,
     newdata: &Zval,
     r#type: &str,
-    se_fit: bool,
+    seFit: bool,
     interval: &str,
     level: f64,
     random: bool,
-    allow_new_levels: bool,
+    allowNewLevels: bool,
 ) -> PhpResult<ZBox<ZendHashTable>> {
     let formula = fit
         .get("formula")
@@ -503,7 +503,7 @@ pub fn predict(
         "confidence" | "prediction" => {
             return Err(input_exception(
                 ErrorKind::Unsupported,
-                "intervals are available for Phit\\fit_lm fits; use se_fit for GLMs",
+                "intervals are available for Phit\\fit_lm fits; use seFit for GLMs",
             ));
         }
         _ => {
@@ -515,7 +515,7 @@ pub fn predict(
     if !(level > 0.0 && level < 1.0) {
         return Err(invalid("level must be strictly between 0 and 1"));
     }
-    if mixed && (se_fit || interval_kind.is_some()) {
+    if mixed && (seFit || interval_kind.is_some()) {
         return Err(input_exception(
             ErrorKind::Unsupported,
             "standard errors and intervals are not available for mixed-model predictions",
@@ -572,7 +572,7 @@ pub fn predict(
                     Some(b) => {
                         value += term.z[k].iter().zip(b).map(|(z, b)| z * b).sum::<f64>();
                     }
-                    None if allow_new_levels => {}
+                    None if allowNewLevels => {}
                     None => {
                         let label = format!("{}={key}", term.group);
                         if !new_levels.contains(&label) {
@@ -583,13 +583,13 @@ pub fn predict(
             }
         }
         eta[*row] = Some(value);
-        if se_fit || interval_kind.is_some() {
+        if seFit || interval_kind.is_some() {
             se[*row] = Some(quad_form(x, &covariance).max(0.0).sqrt());
         }
     }
     if !new_levels.is_empty() {
         return Err(invalid(&format!(
-            "new levels detected in newdata: {}; pass allow_new_levels: true to predict them at the population level",
+            "new levels detected in newdata: {}; pass allowNewLevels: true to predict them at the population level",
             new_levels.join(", ")
         )));
     }
@@ -633,14 +633,14 @@ pub fn predict(
     }
     let mut out = ZendHashTable::new();
     out.insert("fit", nullable(&fitted)?)?;
-    if se_fit {
+    if seFit {
         out.insert("se_fit", nullable(&se)?)?;
     }
     let df = fit.get("df_residual").and_then(|v| v.long());
-    if is_lm && (se_fit || interval_kind.is_some()) {
+    if is_lm && (seFit || interval_kind.is_some()) {
         out.insert("df", df)?;
     }
-    if !mixed && (se_fit || interval_kind.is_some()) {
+    if !mixed && (seFit || interval_kind.is_some()) {
         // R's residual.scale: sigma for Gaussian fits, 1 for binomial and Poisson.
         let sigma = match link.as_str() {
             "identity" => fit.get("sigma").and_then(|v| v.double()),
@@ -996,10 +996,10 @@ fn positive_count(value: i64, what: &str, kind: ErrorKind) -> PhpResult<usize> {
     defaults(
         reml = true,
         missing = "\"drop\"",
-        max_evaluations = 20000,
+        maxEvaluations = 20000,
         tolerance = 1e-7,
         optimizer = "\"bobyqa\"",
-        objective_tolerance = 1e-12
+        objectiveTolerance = 1e-12
     )
 )]
 #[allow(clippy::too_many_arguments)] // Named PHP arguments mirror fit_mixed.
@@ -1010,10 +1010,10 @@ pub fn fit_lmer(
     missing: &str,
     weights: Option<&Zval>,
     start: Option<&ZendHashTable>,
-    max_evaluations: i64,
+    maxEvaluations: i64,
     tolerance: f64,
     optimizer: &str,
-    objective_tolerance: f64,
+    objectiveTolerance: f64,
 ) -> PhpResult<ZBox<ZendHashTable>> {
     let optimizer = match optimizer {
         "bobyqa" => stats_core::LmmOptimizer::Bobyqa,
@@ -1054,15 +1054,11 @@ pub fn fit_lmer(
     let options = stats_core::LmmOptions {
         reml,
         optimizer,
-        objective_tolerance,
+        objective_tolerance: objectiveTolerance,
         offset: design.offset.clone().unwrap_or_else(|| vec![0.0; y.len()]),
         weights,
         start,
-        max_evaluations: positive_count(
-            max_evaluations,
-            "max_evaluations",
-            ErrorKind::InvalidInput,
-        )?,
+        max_evaluations: positive_count(maxEvaluations, "maxEvaluations", ErrorKind::InvalidInput)?,
         tolerance,
     };
     let result =
@@ -1091,8 +1087,8 @@ pub fn fit_lmer(
         family = "\"binomial\"",
         link = "\"\"",
         missing = "\"drop\"",
-        quadrature_points = 1,
-        max_evaluations = 20000,
+        quadraturePoints = 1,
+        maxEvaluations = 20000,
         tolerance = 1e-7
     )
 )]
@@ -1104,8 +1100,8 @@ pub fn fit_glmer(
     link: &str,
     missing: &str,
     weights: Option<&Zval>,
-    quadrature_points: i64,
-    max_evaluations: i64,
+    quadraturePoints: i64,
+    maxEvaluations: i64,
     tolerance: f64,
 ) -> PhpResult<ZBox<ZendHashTable>> {
     if family != "binomial" || !matches!(link, "" | "logit") {
@@ -1133,15 +1129,11 @@ pub fn fit_glmer(
         offset: design.offset.clone().unwrap_or_else(|| vec![0.0; y.len()]),
         weights,
         quadrature_points: positive_count(
-            quadrature_points,
-            "quadrature_points",
+            quadraturePoints,
+            "quadraturePoints",
             ErrorKind::Unsupported,
         )?,
-        max_evaluations: positive_count(
-            max_evaluations,
-            "max_evaluations",
-            ErrorKind::InvalidInput,
-        )?,
+        max_evaluations: positive_count(maxEvaluations, "maxEvaluations", ErrorKind::InvalidInput)?,
         tolerance,
     };
     let r = stats_core::fit_logistic_random_intercept(design.x.clone(), y, indices, options)

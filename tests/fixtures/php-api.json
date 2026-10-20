@@ -3811,12 +3811,12 @@
     "Phit\\draws_covariance_map": {
         "parameters": [
             {
-                "name": "source_covariance",
+                "name": "sourceCovariance",
                 "type": "array",
                 "optional": false
             },
             {
-                "name": "target_covariance",
+                "name": "targetCovariance",
                 "type": "array",
                 "optional": false
             }
@@ -3968,13 +3968,13 @@
                 "default": null
             },
             {
-                "name": "quadrature_points",
+                "name": "quadraturePoints",
                 "type": "int",
                 "optional": true,
                 "default": 1
             },
             {
-                "name": "max_evaluations",
+                "name": "maxEvaluations",
                 "type": "int",
                 "optional": true,
                 "default": 20000
@@ -4134,7 +4134,7 @@
                 "default": null
             },
             {
-                "name": "max_evaluations",
+                "name": "maxEvaluations",
                 "type": "int",
                 "optional": true,
                 "default": 20000
@@ -4152,7 +4152,7 @@
                 "default": "bobyqa"
             },
             {
-                "name": "objective_tolerance",
+                "name": "objectiveTolerance",
                 "type": "float",
                 "optional": true,
                 "default": 1.0e-12
@@ -4299,13 +4299,13 @@
                 "default": null
             },
             {
-                "name": "quadrature_points",
+                "name": "quadraturePoints",
                 "type": "int",
                 "optional": true,
                 "default": 1
             },
             {
-                "name": "max_evaluations",
+                "name": "maxEvaluations",
                 "type": "int",
                 "optional": true,
                 "default": 20000
@@ -4415,7 +4415,7 @@
                 "default": null
             },
             {
-                "name": "max_evaluations",
+                "name": "maxEvaluations",
                 "type": "int",
                 "optional": true,
                 "default": 20000
@@ -4433,7 +4433,7 @@
                 "default": "bobyqa"
             },
             {
-                "name": "objective_tolerance",
+                "name": "objectiveTolerance",
                 "type": "float",
                 "optional": true,
                 "default": 1.0e-12
@@ -4794,7 +4794,7 @@
                 "default": "link"
             },
             {
-                "name": "se_fit",
+                "name": "seFit",
                 "type": "bool",
                 "optional": true,
                 "default": false
@@ -4818,7 +4818,7 @@
                 "default": true
             },
             {
-                "name": "allow_new_levels",
+                "name": "allowNewLevels",
                 "type": "bool",
                 "optional": true,
                 "default": false

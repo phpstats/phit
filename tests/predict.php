@@ -37,7 +37,12 @@ $cases = 0;
 foreach ($fixture['cases'] as $case) {
     $name = $case['name'];
     $fit = fit_case($case, $fixture['datasets'][$case['dataset']]);
-    $result = Phit\predict($fit, $fixture['newdata'][$case['dataset']], ...$case['options']);
+    // The R fixture names its options after R's predict(); the PHP parameters are camelCase.
+    $options = [];
+    foreach ($case['options'] as $option => $value) {
+        $options[['se_fit' => 'seFit', 'allow_new_levels' => 'allowNewLevels'][$option] ?? $option] = $value;
+    }
+    $result = Phit\predict($fit, $fixture['newdata'][$case['dataset']], ...$options);
     foreach ($case['expected'] as $key => $expected) {
         [$abs, $rel] = match (true) {
             $case['function'] === 'lmer' => [1e-5, 1e-5],
@@ -84,7 +89,7 @@ pthrows(fn() => Phit\predict($fit, ['gear_label' => ['four']]), "unknown column 
 pthrows(fn() => Phit\predict($fit, ['wt' => [3.0], 'gear_label' => ['four']], type: 'probability'), 'type must be', 'type');
 $fit = Phit\fit_lmer('score ~ study_hours + (1 | school)', $schools);
 pthrows(fn() => Phit\predict($fit, ['study_hours' => [3.0], 'school' => ['nowhere']]), 'new levels detected in newdata: school=nowhere', 'new group');
-pthrows(fn() => Phit\predict($fit, ['study_hours' => [3.0], 'school' => ['nowhere']], se_fit: true), 'not available for mixed', 'mixed se');
+pthrows(fn() => Phit\predict($fit, ['study_hours' => [3.0], 'school' => ['nowhere']], seFit: true), 'not available for mixed', 'mixed se');
 $glm = Phit\fit_glm('am ~ wt', $cars, family: 'binomial');
 pthrows(fn() => Phit\predict($glm, $cars, interval: 'confidence'), 'intervals are available for Phit\fit_lm', 'glm interval');
 pthrows(fn() => Phit\predict(['formula' => 'y ~ x'], $cars), 'fit must be a result', 'malformed fit');
