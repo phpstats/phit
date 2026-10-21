@@ -1,0 +1,2868 @@
+{
+    "about": "CSV cases phibble's PHP reader and Phit\\read_csv() must agree on, with phibble's answers. Generated; do not edit by hand.",
+    "generator": "phibble bin/generate-csv-conformance",
+    "contract": "Phit\\read_csv()",
+    "encoding": {
+        "input": "The file's bytes. Not valid UTF-8: \"input_base64\" instead.",
+        "options": "Phit\\read_csv() option names and values.",
+        "strings": "A name, value or problem that is not valid UTF-8 is {\"b64\": \"<base64>\"}.",
+        "float": "Shortest round-tripping decimal text, or \"Inf\", \"-Inf\", \"NaN\".",
+        "date": "YYYY-MM-DD.",
+        "datetime": "YYYY-MM-DDTHH:MM:SS.uuuuuuZ.",
+        "null": "A missing value.",
+        "phit_extra_problems": "The exact extra problems phit is expected to add to \"problems\", which is phibble's list. A closed list: phit's problems must equal the union."
+    },
+    "not_coverable": "phibble options and readr letters Phit\\read_csv() cannot express (select, nameRepair, colNames as a list, the letters f and n) are absent on purpose and are covered by phibble's tests/fixtures/io suite. See bin/generate-csv-conformance.",
+    "excluded": "A single-field record holding only a quoted empty string is excluded: the readers diverge and the reference is the side that looks wrong. See bin/generate-csv-conformance.",
+    "cases": [
+        {
+            "name": "option/delimiter/default",
+            "input": "a,b\n1,x\n2,y\n",
+            "options": {
+                "delimiter": ","
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x",
+                            "y"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/delimiter/semicolon",
+            "input": "a;b\n1;x\n2;y\n",
+            "options": {
+                "delimiter": ";"
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x",
+                            "y"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/quote/default",
+            "input": "a,b\n\"x,1\",2\n",
+            "options": {
+                "quote": "\""
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x,1"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            2
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/quote/apostrophe",
+            "input": "a,b\n'x,1',2\n",
+            "options": {
+                "quote": "'"
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x,1"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            2
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/escape_double/default",
+            "input": "a\n\"x\"\"y\"\n",
+            "options": {
+                "escape_double": true
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x\"y"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/escape_double/off",
+            "input": "a\n\"x\"\"y\"\n",
+            "options": {
+                "escape_double": false
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x\"y\""
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/escape_backslash/default",
+            "input": "a\n\"x\\\"y\"\n",
+            "options": {
+                "escape_backslash": false
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x\\y\""
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/escape_backslash/on",
+            "input": "a\n\"x\\\"y\"\n",
+            "options": {
+                "escape_backslash": true
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x\"y"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/trim_ws/default",
+            "input": "a,b\n  1  ,  x  \n",
+            "options": {
+                "trim_ws": true
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/trim_ws/off",
+            "input": "a,b\n  1  ,  x  \n",
+            "options": {
+                "trim_ws": false
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "  1  "
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "  x  "
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/skip_empty_rows/default",
+            "input": "a,b\n1,x\n\n2,y\n",
+            "options": {
+                "skip_empty_rows": true
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x",
+                            "y"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/skip_empty_rows/off",
+            "input": "a,b\n1,x\n\n2,y\n",
+            "options": {
+                "skip_empty_rows": false
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            null,
+                            2
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x",
+                            null,
+                            "y"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": [
+                    "row 3: expected 2 columns, got 0"
+                ]
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/col_names/default",
+            "input": "a,b\n1,x\n",
+            "options": {
+                "col_names": true
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/col_names/off",
+            "input": "a,b\n1,x\n",
+            "options": {
+                "col_names": false
+            },
+            "expected": {
+                "names": [
+                    "X1",
+                    "X2"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "a",
+                            "1"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "b",
+                            "x"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/skip/default",
+            "input": "a,b\n1,x\n",
+            "options": {
+                "skip": 0
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/skip/two",
+            "input": "junk\nmore junk\na,b\n1,x\n",
+            "options": {
+                "skip": 2
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/guess_max/default",
+            "input": "a\n1\n2\n3.5\n",
+            "options": {
+                "guess_max": 1000
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "float",
+                        "values": [
+                            "1",
+                            "2",
+                            "3.5"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/guess_max/two",
+            "input": "a\n1\n2\n3.5\n",
+            "options": {
+                "guess_max": 2
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "float",
+                        "values": [
+                            "1",
+                            "2",
+                            "3.5"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/n_max/default",
+            "input": "a\n1\n2\n3\n",
+            "options": {
+                "n_max": null
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2,
+                            3
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/n_max/two",
+            "input": "a\n1\n2\n3\n",
+            "options": {
+                "n_max": 2
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/comment/default",
+            "input": "a,b\n#1,x\n2,y\n",
+            "options": {
+                "comment": ""
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "#1",
+                            "2"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x",
+                            "y"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/comment/hash",
+            "input": "a,b\n#1,x\n2,y\n",
+            "options": {
+                "comment": "#"
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            2
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "y"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/decimal_mark/default",
+            "input": "a\n1.5\n2.25\n",
+            "options": {
+                "decimal_mark": "."
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "float",
+                        "values": [
+                            "1.5",
+                            "2.25"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/decimal_mark/comma",
+            "input": "a;b\n1,5;2\n2,25;3\n",
+            "options": {
+                "delimiter": ";",
+                "decimal_mark": ","
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "float",
+                        "values": [
+                            "1.5",
+                            "2.25"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            2,
+                            3
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/grouping_mark/default",
+            "input": "a\n\"1,234\"\n\"2,345\"\n",
+            "options": {
+                "grouping_mark": null
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1234,
+                            2345
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/grouping_mark/none",
+            "input": "a\n\"1,234\"\n\"2,345\"\n",
+            "options": {
+                "grouping_mark": ""
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "1,234",
+                            "2,345"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/na/default",
+            "input": "a,b\n1,NA\n2,\n",
+            "options": {
+                "na": [
+                    "",
+                    "NA"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "bool",
+                        "values": [
+                            null,
+                            null
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/na/dash",
+            "input": "a,b\n1,-\n2,NA\n",
+            "options": {
+                "na": [
+                    "-"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            null,
+                            "NA"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/types/default",
+            "input": "a,b\n1,2\n",
+            "options": {
+                "types": []
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            2
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "option/types/string-and-int",
+            "input": "a,b\n1,2\n",
+            "options": {
+                "types": [
+                    "c",
+                    "i"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "1"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            2
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "type/guess",
+            "input": "i,l,d,c,D,T\n1,TRUE,1.5,007,2024-01-02,2024-01-02 10:00:00\n2,FALSE,2,abc,2024-01-03,2024-01-03T11:30:45.5\n,,,,,\n",
+            "options": {
+                "types": [
+                    "?",
+                    "?",
+                    "?",
+                    "?",
+                    "?",
+                    "?"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "i",
+                    "l",
+                    "d",
+                    "c",
+                    "D",
+                    "T"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2,
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "bool",
+                        "values": [
+                            true,
+                            false,
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "float",
+                        "values": [
+                            "1.5",
+                            "2",
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "007",
+                            "abc",
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "date",
+                        "values": [
+                            "2024-01-02",
+                            "2024-01-03",
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "datetime",
+                        "values": [
+                            "2024-01-02T10:00:00.000000Z",
+                            "2024-01-03T11:30:45.500000Z",
+                            null
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "type/logical",
+            "input": "i,l,d,c,D,T\n1,TRUE,1.5,007,2024-01-02,2024-01-02 10:00:00\n2,FALSE,2,abc,2024-01-03,2024-01-03T11:30:45.5\n,,,,,\n",
+            "options": {
+                "types": [
+                    "_",
+                    "l",
+                    "_",
+                    "_",
+                    "_",
+                    "_"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "i",
+                    "l",
+                    "d",
+                    "c",
+                    "D",
+                    "T"
+                ],
+                "columns": [
+                    null,
+                    {
+                        "type": "bool",
+                        "values": [
+                            true,
+                            false,
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "type/integer",
+            "input": "i,l,d,c,D,T\n1,TRUE,1.5,007,2024-01-02,2024-01-02 10:00:00\n2,FALSE,2,abc,2024-01-03,2024-01-03T11:30:45.5\n,,,,,\n",
+            "options": {
+                "types": [
+                    "i",
+                    "_",
+                    "_",
+                    "_",
+                    "_",
+                    "_"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "i",
+                    "l",
+                    "d",
+                    "c",
+                    "D",
+                    "T"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2,
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "type/double",
+            "input": "i,l,d,c,D,T\n1,TRUE,1.5,007,2024-01-02,2024-01-02 10:00:00\n2,FALSE,2,abc,2024-01-03,2024-01-03T11:30:45.5\n,,,,,\n",
+            "options": {
+                "types": [
+                    "_",
+                    "_",
+                    "d",
+                    "_",
+                    "_",
+                    "_"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "i",
+                    "l",
+                    "d",
+                    "c",
+                    "D",
+                    "T"
+                ],
+                "columns": [
+                    null,
+                    null,
+                    {
+                        "type": "float",
+                        "values": [
+                            "1.5",
+                            "2",
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    null,
+                    null,
+                    null
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "type/character",
+            "input": "i,l,d,c,D,T\n1,TRUE,1.5,007,2024-01-02,2024-01-02 10:00:00\n2,FALSE,2,abc,2024-01-03,2024-01-03T11:30:45.5\n,,,,,\n",
+            "options": {
+                "types": [
+                    "_",
+                    "_",
+                    "_",
+                    "c",
+                    "_",
+                    "_"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "i",
+                    "l",
+                    "d",
+                    "c",
+                    "D",
+                    "T"
+                ],
+                "columns": [
+                    null,
+                    null,
+                    null,
+                    {
+                        "type": "string",
+                        "values": [
+                            "007",
+                            "abc",
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    null,
+                    null
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "type/date",
+            "input": "i,l,d,c,D,T\n1,TRUE,1.5,007,2024-01-02,2024-01-02 10:00:00\n2,FALSE,2,abc,2024-01-03,2024-01-03T11:30:45.5\n,,,,,\n",
+            "options": {
+                "types": [
+                    "_",
+                    "_",
+                    "_",
+                    "_",
+                    "D",
+                    "_"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "i",
+                    "l",
+                    "d",
+                    "c",
+                    "D",
+                    "T"
+                ],
+                "columns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    {
+                        "type": "date",
+                        "values": [
+                            "2024-01-02",
+                            "2024-01-03",
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    null
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "type/datetime",
+            "input": "i,l,d,c,D,T\n1,TRUE,1.5,007,2024-01-02,2024-01-02 10:00:00\n2,FALSE,2,abc,2024-01-03,2024-01-03T11:30:45.5\n,,,,,\n",
+            "options": {
+                "types": [
+                    "_",
+                    "_",
+                    "_",
+                    "_",
+                    "_",
+                    "T"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "i",
+                    "l",
+                    "d",
+                    "c",
+                    "D",
+                    "T"
+                ],
+                "columns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    {
+                        "type": "datetime",
+                        "values": [
+                            "2024-01-02T10:00:00.000000Z",
+                            "2024-01-03T11:30:45.500000Z",
+                            null
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "type/skip",
+            "input": "i,l,d,c,D,T\n1,TRUE,1.5,007,2024-01-02,2024-01-02 10:00:00\n2,FALSE,2,abc,2024-01-03,2024-01-03T11:30:45.5\n,,,,,\n",
+            "options": {
+                "types": [
+                    "_",
+                    "?",
+                    "?",
+                    "?",
+                    "?",
+                    "?"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "i",
+                    "l",
+                    "d",
+                    "c",
+                    "D",
+                    "T"
+                ],
+                "columns": [
+                    null,
+                    {
+                        "type": "bool",
+                        "values": [
+                            true,
+                            false,
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "float",
+                        "values": [
+                            "1.5",
+                            "2",
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "007",
+                            "abc",
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "date",
+                        "values": [
+                            "2024-01-02",
+                            "2024-01-03",
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "datetime",
+                        "values": [
+                            "2024-01-02T10:00:00.000000Z",
+                            "2024-01-03T11:30:45.500000Z",
+                            null
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "type/by-position",
+            "input": "i,l,d,c,D,T\n1,TRUE,1.5,007,2024-01-02,2024-01-02 10:00:00\n2,FALSE,2,abc,2024-01-03,2024-01-03T11:30:45.5\n,,,,,\n",
+            "options": {
+                "types": {
+                    "3": "c",
+                    "1": "c"
+                }
+            },
+            "expected": {
+                "names": [
+                    "i",
+                    "l",
+                    "d",
+                    "c",
+                    "D",
+                    "T"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2,
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "TRUE",
+                            "FALSE",
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "float",
+                        "values": [
+                            "1.5",
+                            "2",
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "007",
+                            "abc",
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "date",
+                        "values": [
+                            "2024-01-02",
+                            "2024-01-03",
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "datetime",
+                        "values": [
+                            "2024-01-02T10:00:00.000000Z",
+                            "2024-01-03T11:30:45.500000Z",
+                            null
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "type/past-the-end",
+            "input": "a,b\n1,2\n",
+            "options": {
+                "types": [
+                    "c",
+                    "c",
+                    "c",
+                    "c"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "1"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "2"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "type/parse-failures",
+            "input": "i,D\nx,2024-13-40\n1,2024-01-02\n",
+            "options": {
+                "types": [
+                    "i",
+                    "D"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "i",
+                    "D"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            null,
+                            1
+                        ],
+                        "failed": 1
+                    },
+                    {
+                        "type": "date",
+                        "values": [
+                            null,
+                            "2024-01-02"
+                        ],
+                        "failed": 1
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/ragged-short",
+            "input": "a,b,c\n1,2,3\n4,5\n6,7,8\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            4,
+                            6
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            2,
+                            5,
+                            7
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            3,
+                            null,
+                            8
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": [
+                    "row 3: expected 3 columns, got 2"
+                ]
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/ragged-long",
+            "input": "a,b,c\n1,2,3\n4,5,6,7\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            4
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            2,
+                            5
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            3,
+                            67
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": [
+                    "row 3: expected 3 columns, got 4"
+                ]
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/ragged-both-and-empty",
+            "input": "a,b,c\n1,2,3\n4,5\n6,7,8,9\n\n",
+            "options": {
+                "skip_empty_rows": false
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            4,
+                            6,
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            2,
+                            5,
+                            7,
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            3,
+                            null,
+                            89,
+                            null
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": [
+                    "row 3: expected 3 columns, got 2",
+                    "row 4: expected 3 columns, got 4",
+                    "row 5: expected 3 columns, got 0"
+                ]
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/bom",
+            "input": "﻿a,b\n1,x\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/crlf",
+            "input": "a,b\r\n1,x\r\n2,y\r\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x",
+                            "y"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/cr",
+            "input": "a,b\r1,x\r2,y\r",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x",
+                            "y"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/no-trailing-newline",
+            "input": "a,b\n1,x",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/empty-file",
+            "input": "",
+            "options": [],
+            "expected": {
+                "names": [],
+                "columns": [],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/only-empty-lines",
+            "input": "\n\n\n",
+            "options": [],
+            "expected": {
+                "names": [],
+                "columns": [],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/embedded-newline",
+            "input": "a,b\n\"line1\nline2\",x\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "line1\nline2"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/no-quote-character",
+            "input": "a,b\n\"x,1\n",
+            "options": {
+                "quote": ""
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "\"x"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/duplicate-names",
+            "input": "a,a,b\n1,2,3\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            2
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            3
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/empty-name",
+            "input": "a,,b\n1,2,3\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            2
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            3
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/single-cell",
+            "input": "a\n1\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/tab-delimited",
+            "input": "a\tb\n1\tx\n",
+            "options": {
+                "delimiter": "\t"
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/skip-past-the-end",
+            "input": "a\n1\n",
+            "options": {
+                "skip": 5
+            },
+            "expected": {
+                "names": [],
+                "columns": [],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/whitespace-only-fields",
+            "input": "a,b\n , \n  ,\t\n",
+            "options": {
+                "trim_ws": false
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            " ",
+                            "  "
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            " ",
+                            "\t"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/comment-line",
+            "input": "a,b\n# a note\n1,x\n",
+            "options": {
+                "comment": "#"
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/value-then-comment",
+            "input": "a,b\n2 # x,y\n3,z\n",
+            "options": {
+                "comment": "#"
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            2,
+                            3
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            null,
+                            "z"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": [
+                    "row 2: expected 2 columns, got 1"
+                ]
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/comment-in-header",
+            "input": "# a note\na,b\n1,x\n",
+            "options": {
+                "comment": "#"
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/invalid-utf8",
+            "input_base64": "/yxiCv7/LHgK",
+            "options": [],
+            "expected": {
+                "names": [
+                    {
+                        "b64": "/w=="
+                    },
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            {
+                                "b64": "/v8="
+                            }
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "structure/unterminated-quote",
+            "input": "a,b\n\"x,1\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x,1\n"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "bool",
+                        "values": [
+                            null
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": [
+                    "row 2: expected 2 columns, got 1"
+                ]
+            },
+            "phit_extra_problems": [
+                "row 2: unterminated quoted field at end of file"
+            ]
+        },
+        {
+            "name": "structure/unterminated-quote-only-field",
+            "input": "a\n\"x\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x\n"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": [
+                "row 2: unterminated quoted field at end of file"
+            ]
+        },
+        {
+            "name": "zero-rows/header-only",
+            "input": "a,b\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "zero-rows/n-max-zero",
+            "input": "a,b\n1,2\n",
+            "options": {
+                "n_max": 0
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "zero-rows/every-row-skipped",
+            "input": "junk\nmore junk\na,b\n",
+            "options": {
+                "skip": 2
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "zero-rows/every-row-empty",
+            "input": "a,b\n\n\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "zero-rows/header-only-typed",
+            "input": "a,b\n",
+            "options": {
+                "types": [
+                    "l"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "bool",
+                        "values": [],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "zero-rows/all-na-with-a-data-row",
+            "input": "a\nNA\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "bool",
+                        "values": [
+                            null
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "zero-rows/empty-rows-kept",
+            "input": "a,b\n\n\n",
+            "options": {
+                "skip_empty_rows": false
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "bool",
+                        "values": [
+                            null,
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "bool",
+                        "values": [
+                            null,
+                            null
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": [
+                    "row 2: expected 2 columns, got 0",
+                    "row 3: expected 2 columns, got 0"
+                ]
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/bool-spellings",
+            "input": "a,b,c,d\nT,TRUE,true,1\nF,FALSE,false,0\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "b",
+                    "c",
+                    "d"
+                ],
+                "columns": [
+                    {
+                        "type": "bool",
+                        "values": [
+                            true,
+                            false
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "bool",
+                        "values": [
+                            true,
+                            false
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "bool",
+                        "values": [
+                            true,
+                            false
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            0
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/int-and-float",
+            "input": "i,d\n1,1.5\n-2,-0.5\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "i",
+                    "d"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            -2
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "float",
+                        "values": [
+                            "1.5",
+                            "-0.5"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/negative-zero-and-exponents",
+            "input": "a\n-0.0\n1e5\n1E-5\n-.5e-3\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "float",
+                        "values": [
+                            "-0",
+                            "100000",
+                            "1.0e-5",
+                            "-0.0005"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/inf-and-nan",
+            "input": "a\nInf\n-Inf\nNaN\n1.5\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "float",
+                        "values": [
+                            "Inf",
+                            "-Inf",
+                            "NaN",
+                            "1.5"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/int64-edges",
+            "input": "a\n9223372036854775807\n-9223372036854775808\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            9223372036854775807,
+                            -9223372036854775808
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/int-overflow",
+            "input": "a\n12345678901234567890\n1\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "float",
+                        "values": [
+                            "1.2345678901234567e+19",
+                            "1"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/leading-zeroes-are-strings",
+            "input": "a\n007\n1\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "007",
+                            "1"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/mixed-forces-string",
+            "input": "a\n1\nx\n2\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "1",
+                            "x",
+                            "2"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/all-na-column",
+            "input": "a,b\nNA,1\n,2\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "bool",
+                        "values": [
+                            null,
+                            null
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/dates",
+            "input": "a\n2024-01-02\n2024-12-31\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "date",
+                        "values": [
+                            "2024-01-02",
+                            "2024-12-31"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/datetimes",
+            "input": "a\n2024-01-02 10:00:00\n2024-01-03T11:30:45.123456Z\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "datetime",
+                        "values": [
+                            "2024-01-02T10:00:00.000000Z",
+                            "2024-01-03T11:30:45.123456Z"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/datetime-offsets",
+            "input": "a\n2024-01-02T10:00:00+05:30\n2024-01-02T10:00:00-0800\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "datetime",
+                        "values": [
+                            "2024-01-02T04:30:00.000000Z",
+                            "2024-01-02T18:00:00.000000Z"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/pre-epoch-temporals",
+            "input": "d,t\n1969-12-31,1969-12-31T23:59:59.5\n1900-01-01,1900-01-01T00:00:00\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "d",
+                    "t"
+                ],
+                "columns": [
+                    {
+                        "type": "date",
+                        "values": [
+                            "1969-12-31",
+                            "1900-01-01"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "datetime",
+                        "values": [
+                            "1969-12-31T23:59:59.500000Z",
+                            "1900-01-01T00:00:00.000000Z"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/quoted-numbers-stay-numbers",
+            "input": "a\n\"1\"\n\"2\"\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/quote-inside-unquoted-field",
+            "input": "a\nx\"y\n1\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x\"y",
+                            "1"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/guess-max-sampling",
+            "input": "a,b\n1,2\n3,4\n5,6\n7,8.5\n",
+            "options": {
+                "guess_max": 3
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            3,
+                            5,
+                            7
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "float",
+                        "values": [
+                            "2",
+                            "4",
+                            "6",
+                            "8.5"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/na-overrides-the-guess",
+            "input": "a\n1\nmissing\n2\n",
+            "options": {
+                "na": [
+                    "missing"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            null,
+                            2
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/empty-na-list",
+            "input": "a,b\n,1\nNA,2\n",
+            "options": {
+                "na": []
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "",
+                            "NA"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            1,
+                            2
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "values/grouped-numbers",
+            "input": "a;b\n1.234,5;2\n",
+            "options": {
+                "delimiter": ";",
+                "decimal_mark": ",",
+                "grouping_mark": "."
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "float",
+                        "values": [
+                            "1234.5"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            2
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        }
+    ]
+}

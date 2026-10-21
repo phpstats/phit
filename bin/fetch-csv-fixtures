@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Copy the CSV conformance corpus from the pinned phibble commit into tests/fixtures.
+# Usage: bin/fetch-csv-fixtures [path-to-phibble-checkout]
+# Without a path, PHIBBLE_REPO is used; without that, the repository named in
+# tests/fixtures/PHIBBLE_REFERENCE is cloned to a temp dir. Pass a local checkout
+# when the pinned commit has not been pushed yet.
+# The copies are committed as-is; never edit them by hand.
+set -euo pipefail
+root="$(cd "$(dirname "$0")/.." && pwd)"
+pin="$root/tests/fixtures/PHIBBLE_REFERENCE"
+if [ ! -f "$pin" ]; then
+    echo "fetch-csv-fixtures: $pin is missing" >&2
+    exit 1
+fi
+commit="$(sed -n 's/^commit=//p' "$pin")"
+if [ -z "$commit" ]; then
+    echo "fetch-csv-fixtures: $pin has no 'commit=' line naming the phibble commit to copy from" >&2
+    exit 1
+fi
+repository="$(sed -n 's/^repository=//p' "$pin")"
+source="${1:-${PHIBBLE_REPO:-}}"
+if [ -z "$source" ]; then
+    if [ -z "$repository" ]; then
+        echo "fetch-csv-fixtures: $pin has no 'repository=' line, and no checkout was given" >&2
+        exit 1
+    fi
+    source="$(mktemp -d)"
+    trap 'rm -rf "$source"' EXIT
+    git clone --quiet --filter=blob:none --no-checkout "$repository" "$source"
+fi
+files=(
+    csv-conformance.json
+)
+for file in "${files[@]}"; do
+    git -C "$source" show "$commit:tests/fixtures/$file" > "$root/tests/fixtures/$file"
+    echo "fetched $file"
+done

@@ -1,0 +1,6 @@
+# Reference reader the CSV conformance corpus is copied from.
+# bin/fetch-csv-fixtures reads this file. phibble's PHP reader is the reference
+# implementation; tests/fixtures/csv-conformance.json is generated there by
+# bin/generate-csv-conformance and must be byte-identical to this commit's copy.
+repository=https://github.com/phpstats/phibble.git
+commit=2ee64676d54bb7de77701351f155a79ab3f26f15
