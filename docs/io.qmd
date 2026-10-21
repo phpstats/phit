@@ -88,7 +88,7 @@ counts as one record. A file that ends inside a quoted field adds
   on the delimiter: a line of spaces is blank even when the delimiter is a
   space. Under `skip_empty_rows` a blank line is dropped; otherwise it is
   tokenized like any other line, so an empty line is one empty field and a
-  wider frame records it as one column short. A last line the file left
+  wider data frame records it as one column short. A last line the file left
   unterminated is never dropped, so `a\n ` is two rows and `a\n \n` is one.
 - An unterminated quote at the end of the file closes the field there.
 - Bytes are passed through unchanged. There is no encoding validation.

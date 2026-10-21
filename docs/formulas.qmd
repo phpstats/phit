@@ -272,7 +272,7 @@ on well-conditioned fits and can differ by about 1e-4 near separation.
 `tests/generate-formula-fixtures.R` saves 62 R references under
 `LC_COLLATE=C`: 33 `model.frame()`/`model.matrix()` designs, 14 `lm()` fits, and
 15 `glm()` fits. They use the repository's housing, schools, learning, clinic,
-and cbpp data and a seeded synthetic frame with factors, unused and reordered
+and cbpp data and a seeded synthetic data frame with factors, unused and reordered
 levels, ordered factors, logicals, character columns, missing values, weights,
 offsets, transforms, and no-intercept models. `glm()` references are restarted
 from R's own solution until the coefficients stop changing, because the default
