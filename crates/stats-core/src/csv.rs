@@ -213,7 +213,7 @@ impl Table {
 
 enum Record {
     Eof,
-    /// An empty line.
+    /// A blank line that skip_empty_rows drops.
     Blank,
     Fields,
 }
@@ -229,6 +229,8 @@ struct Tokenizer<'o> {
     fast: bool,
     /// Set when the last record ended inside an open quote.
     unterminated: bool,
+    /// Whether a record has been produced yet, for the leading comment rule.
+    emitted: bool,
 }
 
 /// C isspace() in the "C" locale.
@@ -328,6 +330,7 @@ impl<'o> Tokenizer<'o> {
             o,
             fast,
             unterminated: false,
+            emitted: false,
         }
     }
 
@@ -343,6 +346,27 @@ impl<'o> Tokenizer<'o> {
 
     fn line_end(&self, start: usize) -> usize {
         memchr::memchr(b'\n', &self.text[start..]).map_or(self.text.len(), |i| start + i + 1)
+    }
+
+    /// The end of the line at `start` when skip_empty_rows drops it as blank.
+    ///
+    /// readr decides blankness from the raw line rather than from the parsed
+    /// fields, so a quoted empty string is a field holding data while a line of
+    /// spaces or tabs is blank whatever trim_ws says. It also never drops a last
+    /// line the file left unterminated. A blank line holds no quote, so it is
+    /// always one line long.
+    fn blank_line(&self, start: usize) -> Option<usize> {
+        if !self.o.skip_empty_rows {
+            return None;
+        }
+        let end = self.line_end(start);
+        let line = &self.text[start..end];
+        let terminated = line.last() == Some(&b'\n');
+        (terminated
+            && line
+                .iter()
+                .all(|b| matches!(b, b' ' | b'\t' | b'\r' | b'\n')))
+        .then_some(end)
     }
 
     /// The end of a line without one trailing "\r\n", "\n" or "\r".
@@ -367,13 +391,17 @@ impl<'o> Tokenizer<'o> {
         if self.pos >= len {
             return Record::Eof;
         }
+        if let Some(end) = self.blank_line(self.pos) {
+            self.pos = end;
+            self.line += 1;
+            return Record::Blank;
+        }
         let delim = self.o.delimiter;
         let quote = self.o.quote.unwrap_or(0);
         let mut buf_start = self.pos;
         let mut buf_end = self.line_end(buf_start);
         let mut limit = self.strip_eol(buf_start, buf_end);
         let mut b = buf_start;
-        let mut first = true;
         self.line += 1;
         loop {
             let t = &self.text;
@@ -387,11 +415,6 @@ impl<'o> Tokenizer<'o> {
                     b = s;
                 }
             }
-            if first && b == limit {
-                self.pos = buf_end;
-                return Record::Blank;
-            }
-            first = false;
             let more;
             if inc && t[b] == quote {
                 b += 1;
@@ -485,10 +508,23 @@ impl<'o> Tokenizer<'o> {
                 return Record::Eof;
             }
             self.line += 1;
-            if self.starts_with_at(self.pos, &o.comment) {
-                self.pos = self.line_end(self.pos);
+            // A line that starts with the comment string is dropped entirely.
+            // Before the first record readr looks past leading whitespace for
+            // it; after one, such a line is a record holding that whitespace.
+            let mut at = self.pos;
+            if !self.emitted {
+                while at < len && matches!(self.text[at], b' ' | b'\t') {
+                    at += 1;
+                }
+            }
+            if self.starts_with_at(at, &o.comment) {
+                self.pos = self.line_end(at);
                 self.line -= 1;
                 continue;
+            }
+            if let Some(end) = self.blank_line(self.pos) {
+                self.pos = end;
+                return Record::Blank;
             }
             break;
         }
@@ -497,7 +533,6 @@ impl<'o> Tokenizer<'o> {
         let base = self.text.len();
         let mut field_start = self.arena.len();
         let mut in_quotes = false;
-        let mut saw = false;
         let mut pos = self.pos;
         while pos < len {
             let c = self.text[pos];
@@ -535,14 +570,12 @@ impl<'o> Tokenizer<'o> {
                     len: (self.arena.len() - field_start) as u32,
                 });
                 field_start = self.arena.len();
-                saw = true;
                 pos += 1;
                 continue;
             }
             if Some(c) == quote && php_trim(&self.arena[field_start..]).is_empty() {
                 in_quotes = true;
                 self.arena.truncate(field_start);
-                saw = true;
                 pos += 1;
                 continue;
             }
@@ -552,18 +585,15 @@ impl<'o> Tokenizer<'o> {
                 continue;
             }
             self.arena.push(c);
-            saw = true;
             pos += 1;
         }
         self.pos = pos;
         self.unterminated = in_quotes;
-        if !saw && self.arena.len() == field_start && fields.is_empty() {
-            return Record::Blank;
-        }
         fields.push(Span {
             start: base + field_start,
             len: (self.arena.len() - field_start) as u32,
         });
+        self.emitted = true;
         Record::Fields
     }
 
@@ -694,7 +724,7 @@ pub fn read(data: Vec<u8>, o: &Options) -> Result<Table, String> {
     };
     let full = |count: usize| o.n_max.is_some_and(|m| count >= m);
     if !o.col_names && !full(rows.count) {
-        rows.take(&mut tok, Some(&fields), header_line, &mut problems);
+        rows.take(&mut tok, &fields, header_line, &mut problems);
     }
     while !full(rows.count) {
         match tok.next(&mut fields) {
@@ -702,16 +732,11 @@ pub fn read(data: Vec<u8>, o: &Options) -> Result<Table, String> {
                 note_unterminated(&tok, &mut problems);
                 break;
             }
-            Record::Blank => {
-                if !o.skip_empty_rows {
-                    let line = tok.line;
-                    rows.take(&mut tok, None, line, &mut problems);
-                }
-            }
+            Record::Blank => {}
             Record::Fields => {
                 note_unterminated(&tok, &mut problems);
                 let line = tok.line;
-                rows.take(&mut tok, Some(&fields), line, &mut problems);
+                rows.take(&mut tok, &fields, line, &mut problems);
             }
         }
     }
@@ -773,20 +798,13 @@ impl Rows {
     fn take(
         &mut self,
         tok: &mut Tokenizer,
-        fields: Option<&[Span]>,
+        fields: &[Span],
         line: usize,
         problems: &mut Vec<String>,
     ) {
         let width = self.cells.len();
         let o = tok.o;
         self.count += 1;
-        let Some(fields) = fields else {
-            problems.push(format!("row {line}: expected {width} columns, got 0"));
-            for column in &mut self.cells {
-                column.push(Span::NA);
-            }
-            return;
-        };
         let n = fields.len();
         if n != width {
             problems.push(format!("row {line}: expected {width} columns, got {n}"));

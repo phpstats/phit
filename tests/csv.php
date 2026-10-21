@@ -115,10 +115,12 @@ $r = fixture('comment.csv', ['comment' => '#']);
 same($r['names'], ['x', 'y'], 'comment names');
 column($r, 0, 'int', [1, 3], label: 'comment');
 column($r, 1, 'int', [2, 4], label: 'trailing comment');
+// A kept empty row is one empty field, as readr reads it, not a row of no
+// fields, so it is one column short rather than three.
 $r = fixture('ragged.csv', ['skip_empty_rows' => false]);
 column($r, 0, 'int', [1, 4, 6, null, 10], label: 'kept empty row');
 same($r['problems'], ['row 3: expected 3 columns, got 2', 'row 4: expected 3 columns, got 4',
-    'row 5: expected 3 columns, got 0'], 'empty row problem');
+    'row 5: expected 3 columns, got 1'], 'empty row problem');
 
 // --- No data rows ------------------------------------------------------------
 // As phibble does: with no data rows a column is string, before the guesser's

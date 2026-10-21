@@ -33,7 +33,7 @@ Every option is optional. The defaults are readr's.
 | `skip` | `0` | Raw lines skipped before the header. |
 | `n_max` | `null` | Maximum number of data rows. |
 | `comment` | `''` | Text from this prefix to the end of the line is ignored. A line that starts with it is dropped. |
-| `skip_empty_rows` | `true` | Empty lines after the header are skipped. When false, each becomes an all-NA row and a problem. |
+| `skip_empty_rows` | `true` | Blank lines are skipped. When false, each is read as an ordinary record. |
 | `col_names` | `true` | When false, the first record is data and the names are `X1`..`Xn`. |
 | `types` | `[]` | Type codes keyed by 0-based column position. Missing positions are guessed. |
 | `guess_max` | `1000` | Rows sampled for guessing. |
@@ -82,6 +82,14 @@ counts as one record. A file that ends inside a quoted field adds
 - LF and CRLF line endings are accepted. Text with no LF reads CR as the line
   ending. Otherwise a lone CR is data. Quoted fields can hold delimiters and
   line breaks, which are kept as written.
+- A line is blank when its raw text holds nothing but spaces, tabs and
+  carriage returns. That is the raw line and not the parsed fields, so a quoted
+  empty string is a field holding data, and it does not depend on `trim_ws` or
+  on the delimiter: a line of spaces is blank even when the delimiter is a
+  space. Under `skip_empty_rows` a blank line is dropped; otherwise it is
+  tokenized like any other line, so an empty line is one empty field and a
+  wider frame records it as one column short. A last line the file left
+  unterminated is never dropped, so `a\n ` is two rows and `a\n \n` is one.
 - An unterminated quote at the end of the file closes the field there.
 - Bytes are passed through unchanged. There is no encoding validation.
 - An empty file, or one with only empty lines, returns no names and no columns.
@@ -102,7 +110,9 @@ differ in small ways:
 - The character-level reader folds CRLF to LF everywhere, including inside
   quotes. A quote opens a quoted section only when the field so far is
   whitespace. Text after the comment prefix ends the record, so a line holding
-  only spaces and a comment is a one-field record.
+  only spaces and a comment is a one-field record holding those spaces, unless
+  no record has been read yet: before the first one, a comment prefix with only
+  whitespace in front of it drops the line, as readr drops it.
 
 ## Guessing
 
@@ -159,6 +169,9 @@ These follow phibble's reader:
 - With a comment prefix, a value followed by a comment is trimmed (`2 # x`
   reads as `2`).
 - Date and datetime guessing checks the shape only.
+- In a file whose only line ending is CR, readr skips a blank line only before
+  the first record and keeps the interior and trailing ones; both readers read
+  CR as the line ending and then apply the blank-line rule throughout.
 
 ## Performance
 
@@ -177,10 +190,11 @@ cases.
 `tests/csv-conformance.php` checks `read_csv()` against phibble's reader
 without a phibble checkout. phibble generates `tests/fixtures/csv-conformance.json`
 from its own PHP reader with `bin/generate-csv-conformance`, and this repository
-commits a byte-identical copy. The file holds 90 cases: every option at its
+commits a byte-identical copy. The file holds 108 cases: every option at its
 default and at one other value, all eight type codes, ragged rows, a BOM, CRLF
 and CR line endings, an unterminated quote, comments, an empty file, bytes that
-are not valid UTF-8, and the four ways to read no data rows. Each case records
+are not valid UTF-8, the four ways to read no data rows, and the blank-line
+rule in its eighteen shapes. Each case records
 the input, the options, and the names, types, values, failure counts, and
 problems phibble produces. The suite requires `read_csv()` to reproduce all of
 it, so a change in either reader fails in its own repository.

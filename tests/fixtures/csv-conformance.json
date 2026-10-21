@@ -13,7 +13,7 @@
         "phit_extra_problems": "The exact extra problems phit is expected to add to \"problems\", which is phibble's list. A closed list: phit's problems must equal the union."
     },
     "not_coverable": "phibble options and readr letters Phit\\read_csv() cannot express (select, nameRepair, colNames as a list, the letters f and n) are absent on purpose and are covered by phibble's tests/fixtures/io suite. See bin/generate-csv-conformance.",
-    "excluded": "A single-field record holding only a quoted empty string is excluded: the readers diverge and the reference is the side that looks wrong. See bin/generate-csv-conformance.",
+    "blank_lines": "The \"blank/\" cases were excluded while the readers disagreed about a single-field record holding only a quoted empty string. readr settled it: blankness is judged from the raw line, so a quoted empty string is data, a line of spaces or tabs is blank whatever trimWs says, and an unterminated last line is never dropped. readr's own answers are in phibble's tests/fixtures/io/blank_* fixtures.",
     "cases": [
         {
             "name": "option/delimiter/default",
@@ -362,7 +362,7 @@
                     }
                 ],
                 "problems": [
-                    "row 3: expected 2 columns, got 0"
+                    "row 3: expected 2 columns, got 1"
                 ]
             },
             "phit_extra_problems": []
@@ -1590,7 +1590,7 @@
                 "problems": [
                     "row 3: expected 3 columns, got 2",
                     "row 4: expected 3 columns, got 4",
-                    "row 5: expected 3 columns, got 0"
+                    "row 5: expected 3 columns, got 1"
                 ]
             },
             "phit_extra_problems": []
@@ -2339,9 +2339,424 @@
                     }
                 ],
                 "problems": [
-                    "row 2: expected 2 columns, got 0",
-                    "row 3: expected 2 columns, got 0"
+                    "row 2: expected 2 columns, got 1",
+                    "row 3: expected 2 columns, got 1"
                 ]
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/quoted-empty-only-field",
+            "input": "\"\"\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    ""
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/quoted-empty-then-value",
+            "input": "\"\"\n1\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    ""
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/quoted-empty-mid-file",
+            "input": "a\n\"\"\nb\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            null,
+                            "b"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/quoted-empty-rows-kept",
+            "input": "a\n\"\"\nb\n",
+            "options": {
+                "skip_empty_rows": false
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            null,
+                            "b"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/quoted-space-is-data",
+            "input": "a\n\" \"\nb\n",
+            "options": {
+                "trim_ws": false
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            " ",
+                            "b"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/whitespace-only-line",
+            "input": "a\n \nb\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "b"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/whitespace-only-line-untrimmed",
+            "input": "a\n \nb\n",
+            "options": {
+                "trim_ws": false
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "b"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/whitespace-only-line-kept",
+            "input": "a\n \nb\n",
+            "options": {
+                "trim_ws": false,
+                "skip_empty_rows": false
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            " ",
+                            "b"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/tab-only-line-untrimmed",
+            "input": "a\n\t\nb\n",
+            "options": {
+                "trim_ws": false
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "b"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/whitespace-only-file",
+            "input": " \n",
+            "options": [],
+            "expected": {
+                "names": [],
+                "columns": [],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/whitespace-only-file-unterminated",
+            "input": " ",
+            "options": {
+                "trim_ws": false,
+                "col_names": false
+            },
+            "expected": {
+                "names": [
+                    "X1"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            " "
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/unterminated-whitespace-last-line",
+            "input": "a\n ",
+            "options": {
+                "trim_ws": false
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            " "
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/whitespace-is-the-delimiter",
+            "input": "a b\n \n1 2\n",
+            "options": {
+                "delimiter": " "
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            2
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/whitespace-is-the-delimiter-kept",
+            "input": "a b\n \n1 2\n",
+            "options": {
+                "delimiter": " ",
+                "skip_empty_rows": false
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            null,
+                            1
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "int",
+                        "values": [
+                            null,
+                            2
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/crlf-whitespace-line",
+            "input": "a\r\n \r\n1\r\n",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/cr-whitespace-line",
+            "input": "a\r \r1\r",
+            "options": [],
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/comment-after-whitespace-leading",
+            "input": "  # a note\na\n1\n",
+            "options": {
+                "comment": "#"
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "int",
+                        "values": [
+                            1
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "blank/comment-after-whitespace-mid-file",
+            "input": "a\n  # a note\n1\n",
+            "options": {
+                "comment": "#",
+                "trim_ws": false
+            },
+            "expected": {
+                "names": [
+                    "a"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "  ",
+                            "1"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
             },
             "phit_extra_problems": []
         },
