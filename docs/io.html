@@ -585,6 +585,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p><code>read_csv()</code> reads a delimited text file into typed columns. It is the native reader behind phibble’s <code>DataFrame::fromCsv()</code>. Its records, names, guessed types, values, and problem messages match phibble’s PHP reader, which follows readr 2 (<code>readr::read_delim()</code>). phibble keeps name repair, <code>col_select</code>, factor and <code>parse_number()</code> columns, and the problems warning in PHP.</p>
+<p><code>Phit\read_csv()</code> is the narrower of the two readers. It has no <code>select</code> or <code>name_repair</code> option, its <code>col_names</code> takes a boolean rather than a list of names, and the readr letters <code>f</code> (factor) and <code>n</code> (number) have no type code here. <code>DataFrame::fromCsv()</code> supplies all of these in PHP around the native call.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\read_csv(<span class="dt">string</span> <span class="va">$path</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$options</span> <span class="op">=</span> [])<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="options" class="level2">
 <h2 class="anchored" data-anchor-id="options">Options</h2>
@@ -704,7 +705,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>LF and CRLF line endings are accepted. Text with no LF reads CR as the line ending. Otherwise a lone CR is data. Quoted fields can hold delimiters and line breaks, which are kept as written.</li>
 <li>An unterminated quote at the end of the file closes the field there.</li>
 <li>Bytes are passed through unchanged. There is no encoding validation.</li>
-<li>An empty file, or one with only empty lines, returns no names and no columns. A header-only file returns names and empty columns, guessed as bool.</li>
+<li>An empty file, or one with only empty lines, returns no names and no columns. When the header is read and no data rows are, the names come back with empty columns typed string, following readr, which reads a header-only file as text. Four cases reach that state: <code>n_max: 0</code>, a header-only file, a <code>skip</code> that leaves no row after the header, and every row empty under <code>skip_empty_rows</code>. An explicit code in <code>types</code> still applies.</li>
 </ul>
 <p>phibble tokenizes with PHP’s <code>fgetcsv()</code> when it can (no comment, <code>""</code> escapes, no backslash escapes, and a quote character) and with its own character-level reader otherwise. The native reader reproduces both. The two differ in small ways:</p>
 <ul>
@@ -723,7 +724,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>datetime</strong>: <code>YYYY-MM-DD[(T| )HH[:MM[:SS[.fraction]]]][Z|±HH[[:]MM]]</code>.</li>
 <li>Otherwise <strong>string</strong>.</li>
 </ol>
-<p>An all-NA column is bool. phibble differs from readr in one rule: whole numbers guess as int, where readr guesses double. The date and datetime rules check only the shape. A column whose values look like dates guesses date even when a value is not a calendar date, and that value then fails to parse.</p>
+<p>An all-NA column with at least one data row is bool. phibble differs from readr in one rule: whole numbers guess as int, where readr guesses double. The date and datetime rules check only the shape. A column whose values look like dates guesses date even when a value is not a calendar date, and that value then fails to parse.</p>
 </section>
 <section id="parsing" class="level2">
 <h2 class="anchored" data-anchor-id="parsing">Parsing</h2>
