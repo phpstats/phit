@@ -652,7 +652,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td><code>skip_empty_rows</code></td>
 <td><code>true</code></td>
-<td>Empty lines after the header are skipped. When false, each becomes an all-NA row and a problem.</td>
+<td>Blank lines are skipped. When false, each is read as an ordinary record.</td>
 </tr>
 <tr class="odd">
 <td><code>col_names</code></td>
@@ -703,6 +703,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Short rows are padded with NA. Long rows put the extra fields, joined by the delimiter, into the last column.</li>
 <li>A UTF-8 byte order mark at the start of the file is removed before tokenizing (when <code>skip</code> is 0), so a quoted first header loses its quotes. One at the start of the first record after skipped lines is also removed.</li>
 <li>LF and CRLF line endings are accepted. Text with no LF reads CR as the line ending. Otherwise a lone CR is data. Quoted fields can hold delimiters and line breaks, which are kept as written.</li>
+<li>A line is blank when its raw text holds nothing but spaces, tabs and carriage returns. That is the raw line and not the parsed fields, so a quoted empty string is a field holding data, and it does not depend on <code>trim_ws</code> or on the delimiter: a line of spaces is blank even when the delimiter is a space. Under <code>skip_empty_rows</code> a blank line is dropped; otherwise it is tokenized like any other line, so an empty line is one empty field and a wider frame records it as one column short. A last line the file left unterminated is never dropped, so <code>a\n</code> is two rows and <code>a\n \n</code> is one.</li>
 <li>An unterminated quote at the end of the file closes the field there.</li>
 <li>Bytes are passed through unchanged. There is no encoding validation.</li>
 <li>An empty file, or one with only empty lines, returns no names and no columns. When the header is read and no data rows are, the names come back with empty columns typed string, following readr, which reads a header-only file as text. Four cases reach that state: <code>n_max: 0</code>, a header-only file, a <code>skip</code> that leaves no row after the header, and every row empty under <code>skip_empty_rows</code>. An explicit code in <code>types</code> still applies.</li>
@@ -710,7 +711,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>phibble tokenizes with PHP’s <code>fgetcsv()</code> when it can (no comment, <code>""</code> escapes, no backslash escapes, and a quote character) and with its own character-level reader otherwise. The native reader reproduces both. The two differ in small ways:</p>
 <ul>
 <li>With <code>fgetcsv()</code>, whitespace before an opening quote is dropped, text after a closing quote is appended to the field, and one trailing CR is removed from an unquoted field.</li>
-<li>The character-level reader folds CRLF to LF everywhere, including inside quotes. A quote opens a quoted section only when the field so far is whitespace. Text after the comment prefix ends the record, so a line holding only spaces and a comment is a one-field record.</li>
+<li>The character-level reader folds CRLF to LF everywhere, including inside quotes. A quote opens a quoted section only when the field so far is whitespace. Text after the comment prefix ends the record, so a line holding only spaces and a comment is a one-field record holding those spaces, unless no record has been read yet: before the first one, a comment prefix with only whitespace in front of it drops the line, as readr drops it.</li>
 </ul>
 </section>
 <section id="guessing" class="level2">
@@ -748,6 +749,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Whole numbers guess as int.</li>
 <li>With a comment prefix, a value followed by a comment is trimmed (<code>2 # x</code> reads as <code>2</code>).</li>
 <li>Date and datetime guessing checks the shape only.</li>
+<li>In a file whose only line ending is CR, readr skips a blank line only before the first record and keeps the interior and trailing ones; both readers read CR as the line ending and then apply the blank-line rule throughout.</li>
 </ul>
 </section>
 <section id="performance" class="level2">
@@ -757,7 +759,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <p><code>tests/csv.php</code> checks quoting, escapes, NA handling, trimming, every option, every type code, the guessing rules, datetimes, ragged rows, and the error cases.</p>
-<p><code>tests/csv-conformance.php</code> checks <code>read_csv()</code> against phibble’s reader without a phibble checkout. phibble generates <code>tests/fixtures/csv-conformance.json</code> from its own PHP reader with <code>bin/generate-csv-conformance</code>, and this repository commits a byte-identical copy. The file holds 90 cases: every option at its default and at one other value, all eight type codes, ragged rows, a BOM, CRLF and CR line endings, an unterminated quote, comments, an empty file, bytes that are not valid UTF-8, and the four ways to read no data rows. Each case records the input, the options, and the names, types, values, failure counts, and problems phibble produces. The suite requires <code>read_csv()</code> to reproduce all of it, so a change in either reader fails in its own repository.</p>
+<p><code>tests/csv-conformance.php</code> checks <code>read_csv()</code> against phibble’s reader without a phibble checkout. phibble generates <code>tests/fixtures/csv-conformance.json</code> from its own PHP reader with <code>bin/generate-csv-conformance</code>, and this repository commits a byte-identical copy. The file holds 108 cases: every option at its default and at one other value, all eight type codes, ragged rows, a BOM, CRLF and CR line endings, an unterminated quote, comments, an empty file, bytes that are not valid UTF-8, the four ways to read no data rows, and the blank-line rule in its eighteen shapes. Each case records the input, the options, and the names, types, values, failure counts, and problems phibble produces. The suite requires <code>read_csv()</code> to reproduce all of it, so a change in either reader fails in its own repository.</p>
 <p>The copy is pinned. <code>tests/fixtures/PHIBBLE_REFERENCE</code> names the phibble commit it came from, and <code>bin/fetch-csv-fixtures</code> copies the file from that commit, either from a local checkout given as its first argument or in <code>PHIBBLE_REPO</code>, or from a clone of the repository named in the pin. Refreshing the corpus means regenerating it in phibble, moving the pin, and running that script.</p>
 <p>phibble’s reader does not report an unterminated quoted field and <code>read_csv()</code> does. Each case therefore carries a closed list of the extra problems <code>read_csv()</code> is expected to add, and the suite compares its problems with the union rather than filtering by pattern, so an unexpected problem fails.</p>
 <p><code>tests/csv-phibble.php</code> is the deep tier and runs when <code>PHIBBLE_AUTOLOAD</code> points at phibble’s <code>vendor/autoload.php</code>. It compares both readers through <code>DataFrame::fromCsv()</code> on the fixtures and on thousands of random files and option combinations, with the case count and the seed taken from <code>CSV_FUZZ_CASES</code> and <code>CSV_FUZZ_SEED</code>. It requires identical names, types, values, and warnings.</p>
