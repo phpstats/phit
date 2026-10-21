@@ -3,4 +3,4 @@
 # implementation; tests/fixtures/csv-conformance.json is generated there by
 # bin/generate-csv-conformance and must be byte-identical to this commit's copy.
 repository=https://github.com/phpstats/phibble.git
-commit=2ee64676d54bb7de77701351f155a79ab3f26f15
+commit=2734c1e1b078f66688f570c3b3660dbdacbf0595
