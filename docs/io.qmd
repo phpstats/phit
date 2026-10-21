@@ -8,6 +8,12 @@ types, values, and problem messages match phibble's PHP reader, which follows
 readr 2 (`readr::read_delim()`). phibble keeps name repair, `col_select`, factor
 and `parse_number()` columns, and the problems warning in PHP.
 
+`Phit\read_csv()` is the narrower of the two readers. It has no `select` or
+`name_repair` option, its `col_names` takes a boolean rather than a list of
+names, and the readr letters `f` (factor) and `n` (number) have no type code
+here. `DataFrame::fromCsv()` supplies all of these in PHP around the native
+call.
+
 ```php
 Phit\read_csv(string $path, array $options = []): array;
 ```
@@ -79,7 +85,11 @@ counts as one record. A file that ends inside a quoted field adds
 - An unterminated quote at the end of the file closes the field there.
 - Bytes are passed through unchanged. There is no encoding validation.
 - An empty file, or one with only empty lines, returns no names and no columns.
-  A header-only file returns names and empty columns, guessed as bool.
+  When the header is read and no data rows are, the names come back with empty
+  columns typed string, following readr, which reads a header-only file as
+  text. Four cases reach that state: `n_max: 0`, a header-only file, a `skip`
+  that leaves no row after the header, and every row empty under
+  `skip_empty_rows`. An explicit code in `types` still applies.
 
 phibble tokenizes with PHP's `fgetcsv()` when it can (no comment, `""`
 escapes, no backslash escapes, and a quote character) and with its own
@@ -112,10 +122,11 @@ last row, as vroom does. The first rule that fits every sampled value wins.
 5. **datetime**: `YYYY-MM-DD[(T| )HH[:MM[:SS[.fraction]]]][Z|±HH[[:]MM]]`.
 6. Otherwise **string**.
 
-An all-NA column is bool. phibble differs from readr in one rule: whole
-numbers guess as int, where readr guesses double. The date and datetime rules
-check only the shape. A column whose values look like dates guesses date even
-when a value is not a calendar date, and that value then fails to parse.
+An all-NA column with at least one data row is bool. phibble differs from readr
+in one rule: whole numbers guess as int, where readr guesses double. The date
+and datetime rules check only the shape. A column whose values look like dates
+guesses date even when a value is not a calendar date, and that value then
+fails to parse.
 
 ## Parsing
 

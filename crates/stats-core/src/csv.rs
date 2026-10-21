@@ -727,7 +727,15 @@ pub fn read(data: Vec<u8>, o: &Options) -> Result<Table, String> {
         let code = o.types.get(i).copied().unwrap_or(TypeCode::Guess);
         let view = |s: Span| -> Option<&[u8]> { if s.is_na() { None } else { Some(tok.bytes(s)) } };
         let (code, grouping) = if code == TypeCode::Guess {
-            (parser.guess(sample.iter().map(|&r| view(column[r]))), true)
+            // As phibble does: readr reads the columns of a header-only file as
+            // text, so zero data rows gives string before the guesser's
+            // empty-column rule applies.
+            let guessed = if count == 0 {
+                TypeCode::String
+            } else {
+                parser.guess(sample.iter().map(|&r| view(column[r])))
+            };
+            (guessed, true)
         } else {
             (code, false)
         };
@@ -1433,6 +1441,18 @@ mod tests {
     fn empty_and_header_only() {
         assert!(run("", &Options::default()).names.is_empty());
         let t = run("a,b\n", &Options::default());
+        assert_eq!(t.columns[0].as_ref().unwrap().values.type_name(), "string");
+        let o = Options {
+            n_max: Some(0),
+            ..Options::default()
+        };
+        let t = run("a,b\n1,2\n", &o);
+        assert_eq!(t.columns[0].as_ref().unwrap().values.type_name(), "string");
+        let o = Options {
+            types: vec![TypeCode::Bool],
+            ..Options::default()
+        };
+        let t = run("a,b\n", &o);
         assert_eq!(t.columns[0].as_ref().unwrap().values.type_name(), "bool");
     }
 

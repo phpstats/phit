@@ -108,9 +108,7 @@ column($r, 1, 'string', ['x ']);
 $r = csv("junk\njunk,2\na,b\n1,2\n3,4\n5,6\n", ['skip' => 2, 'n_max' => 2]);
 same($r['names'], ['a', 'b'], 'skip names');
 column($r, 0, 'int', [1, 3], label: 'skip/n_max');
-$r = csv("a,b\n1,2\n", ['n_max' => 0]);
-same($r['names'], ['a', 'b'], 'header probe');
-column($r, 0, 'bool', [], label: 'header probe');
+same(csv("a,b\n1,2\n", ['n_max' => 0])['names'], ['a', 'b'], 'header probe');
 $r = csv("a\n1\n", ['skip' => 5]);
 same([$r['names'], $r['columns']], [[], []], 'skip past the end');
 $r = fixture('comment.csv', ['comment' => '#']);
@@ -121,6 +119,22 @@ $r = fixture('ragged.csv', ['skip_empty_rows' => false]);
 column($r, 0, 'int', [1, 4, 6, null, 10], label: 'kept empty row');
 same($r['problems'], ['row 3: expected 3 columns, got 2', 'row 4: expected 3 columns, got 4',
     'row 5: expected 3 columns, got 0'], 'empty row problem');
+
+// --- No data rows ------------------------------------------------------------
+// As phibble does: with no data rows a column is string, before the guesser's
+// empty-column rule can make it bool. Four ways to read no data rows.
+$r = csv("a,b\n");
+same($r['names'], ['a', 'b'], 'header-only names');
+column($r, 0, 'string', [], label: 'header-only');
+column($r, 1, 'string', [], label: 'header-only');
+column(csv("a,b\n1,2\n", ['n_max' => 0]), 0, 'string', [], label: 'n_max 0');
+column(csv("junk\njunk\na,b\n", ['skip' => 2]), 0, 'string', [], label: 'every row skipped');
+column(csv("a,b\n\n\n"), 0, 'string', [], label: 'every row empty');
+// An explicit type code still wins, and one data row is enough for the guesser's
+// empty-column rule to apply again.
+column(csv("a,b\n", ['types' => ['l']]), 0, 'bool', [], label: 'header-only, typed');
+column(csv("a\nNA\n"), 0, 'bool', [null], label: 'all NA with a data row');
+column(csv("a,b\n\n\n", ['skip_empty_rows' => false]), 0, 'bool', [null, null], label: 'empty rows kept');
 
 // --- col_names ---------------------------------------------------------------
 $r = csv("1,x\n2,y\n", ['col_names' => false]);
