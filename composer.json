@@ -12,5 +12,8 @@
         "support-nts": true,
         "support-zts": false,
         "os-families": ["linux", "darwin"]
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.13"
     }
 }

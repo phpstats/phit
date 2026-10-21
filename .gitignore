@@ -9,3 +9,7 @@ __pycache__/
 !/pie/config.m4
 !/pie/Makefile.frag
 /dist/
+
+# Composer is used only for the dev-time naming linter; nothing is published from it.
+/vendor/
+/composer.lock
