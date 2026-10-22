@@ -178,7 +178,7 @@ remains an explicit random-effect design.
 
 ```sh
 cargo test --workspace --locked
-PHP=/path/to/php PHP_CONFIG=/matching/php-config ./scripts/check
+PHP_CONFIG=/path/to/php-config ./scripts/check  # PHP defaults to its binary
 ```
 
 The release gate checks Rust, native PHP signatures, integration suites, and

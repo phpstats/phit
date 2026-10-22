@@ -3,8 +3,11 @@
 set -euo pipefail
 workspace_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
 cd "$workspace_root"
-export PHP="${PHP:-$(command -v php)}"
+# The runtime defaults to the one php-config was built for, so a different
+# php earlier on PATH (such as Herd's) cannot load an extension built for
+# other headers.
 export PHP_CONFIG="${PHP_CONFIG:-$(command -v php-config)}"
+export PHP="${PHP:-$("$PHP_CONFIG" --php-binary)}"
 php_runtime_version="$($PHP -n -r 'echo PHP_MAJOR_VERSION,".",PHP_MINOR_VERSION;')"
 php_headers_version="$($PHP_CONFIG --version)"
 if [[ "$php_headers_version" != "$php_runtime_version".* ]]; then

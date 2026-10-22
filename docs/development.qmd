@@ -37,8 +37,10 @@ export PHP_CONFIG="$(command -v php-config)"
 
 Check `php -v`, `php-config --version`, and `rustc --version`. PHP and php-config
 must belong to the same installation (including architecture, ZTS/NTS and debug
-mode). On this development machine the default Herd PHP 8.4 does not match
-Homebrew's headers: use `/opt/homebrew/bin/php` and `/opt/homebrew/bin/php-config`.
+mode). `scripts/check` and `scripts/check-fpm` take PHP from `php-config
+--php-binary` unless `PHP` is set, so a different `php` earlier on PATH, such as
+Herd's, does not matter to them. Commands you run by hand still need the
+matching `php`.
 The macOS linker configuration permits symbols resolved by PHP when it loads the
 extension; Linux needs no macOS linker flags.
 

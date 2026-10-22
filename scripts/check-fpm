@@ -2,8 +2,17 @@
 # Real FastCGI requests to isolated FPM workers; no public listener/config edits.
 set -euo pipefail
 workspace_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
-php_runtime="${PHP:-$(command -v php)}"
-fpm_runtime="${PHP_FPM:-$(command -v php-fpm)}"
+# Prefer the installation php-config names, as scripts/check does; fall back to
+# PATH where it has no php-fpm at its prefix (Debian names it php-fpmX.Y).
+php_config="${PHP_CONFIG:-$(command -v php-config || true)}"
+php_prefix="${php_config:+$("$php_config" --prefix)}"
+php_runtime="${PHP:-${php_config:+$("$php_config" --php-binary)}}"
+php_runtime="${php_runtime:-$(command -v php)}"
+if [[ -z "${PHP_FPM:-}" && -n "$php_prefix" && -x "$php_prefix/sbin/php-fpm" ]]; then
+    fpm_runtime="$php_prefix/sbin/php-fpm"
+else
+    fpm_runtime="${PHP_FPM:-$(command -v php-fpm)}"
+fi
 fcgi_client="${CGI_FCGI:-$(command -v cgi-fcgi)}"
 check_directory="$(mktemp -d "${TMPDIR:-/tmp}/phit-fpm.XXXXXX")"
 fpm_pid=''
