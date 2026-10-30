@@ -2,7 +2,7 @@ dnl PIE uses phpize/configure/make; the numerical extension is compiled by Cargo
 PHP_ARG_ENABLE([phit], [whether to enable phit],
   [AS_HELP_STRING([--enable-phit], [Build the Rust phit extension])], [yes])
 
-if test "$PHP_PHP_STATS" != "no"; then
+if test "$PHP_PHIT" != "no"; then
   AC_PATH_PROG([CARGO], [cargo], [])
   if test -z "$CARGO"; then
     AC_MSG_ERROR([cargo is required; install a stable Rust toolchain first])

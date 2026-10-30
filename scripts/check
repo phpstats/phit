@@ -14,13 +14,17 @@ if [[ "$php_headers_version" != "$php_runtime_version".* ]]; then
     echo "PHP and php-config versions differ: $php_runtime_version / $php_headers_version" >&2
     exit 1
 fi
+# PHP_ARG_ENABLE([phit]) defines $PHP_PHIT; a stale name would be read as empty.
+grep -q 'test "$PHP_PHIT" != "no"' pie/config.m4 || { echo 'pie/config.m4 must test $PHP_PHIT' >&2; exit 1; }
 cargo fmt --all -- --check
 cargo clippy --workspace --all-targets --locked -- -D warnings
 cargo test --workspace --locked
 cargo build -p phit --release --locked
+# A separate CARGO_TARGET_DIR keeps builds for several PHP versions side by side.
+target_dir="${CARGO_TARGET_DIR:-$workspace_root/target}"
 case "$(uname -s)" in
- Darwin) extension="$workspace_root/target/release/libphit.dylib" ;;
- Linux) extension="$workspace_root/target/release/libphit.so" ;;
+ Darwin) extension="$target_dir/release/libphit.dylib" ;;
+ Linux) extension="$target_dir/release/libphit.so" ;;
  *) echo 'This release gate supports macOS/Linux' >&2; exit 1 ;;
 esac
 "$PHP" -n -d "extension=$extension" -r 'if (Phit\hello() === "") exit(1);'
