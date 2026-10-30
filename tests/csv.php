@@ -71,6 +71,16 @@ same($r['problems'], [], 'quoting problems');
 $r = csv("a,b\n\"x\"y,\" sp \"\n");
 column($r, 0, 'string', ['xy']);
 column($r, 1, 'string', ['sp'], label: 'trimmed after unquoting');
+// vroom's rule: in a quoted field every lone quote toggles quoting and is dropped.
+$r = csv("a,b\n\"x \"y\",z\",2\n\"x \"y\" z\",3\n");
+column($r, 0, 'string', ['x y,z', 'x y z'], label: 'quote toggles');
+// A space before the quote leaves the field unquoted; trim_ws then unquotes the value.
+$r = csv("a,b\n  \"a,b\",2\n");
+column($r, 0, 'string', ['a'], label: 'leading space leaves a field unquoted');
+column($r, 1, 'string', ['b",2'], label: 'quote after the delimiter is literal');
+same($r['problems'], ['row 2: expected 2 columns, got 3'], 'unquoted quote problem');
+$r = csv("a,b\n  \"a,b\",2\n", ['trim_ws' => false]);
+column($r, 0, 'string', ['  "a'], label: 'unquoted without trim_ws');
 $r = csv("a\n'x,y'\n", ['quote' => "'"]);
 column($r, 0, 'string', ['x,y'], label: 'single quote');
 $r = csv("a,b\n\"x\",1\n", ['quote' => '']);
@@ -80,7 +90,8 @@ column($r, 0, 'string', ['"x"'], label: 'no quote');
 $r = csv("a,b\n\"say \\\"hi\\\"\",2\n", ['escape_backslash' => true, 'escape_double' => false]);
 column($r, 0, 'string', ['say "hi"'], label: 'backslash');
 $r = csv("a\n\"x\"\"y\"\n", ['escape_double' => false]);
-column($r, 0, 'string', ['x"y"'], label: 'no double escape');
+// As readr: inner quotes stay literal; only the opening and closing go.
+column($r, 0, 'string', ['x""y'], label: 'no double escape');
 $r = csv("a\nx\\,y\n", ['escape_backslash' => true]);
 column($r, 0, 'string', ['x,y'], label: 'unquoted backslash');
 
@@ -163,7 +174,7 @@ $r = fixture('crlf.csv');
 column($r, 0, 'int', [1, 2], label: 'CRLF');
 column($r, 1, 'string', ['x', 'y'], label: 'CRLF');
 $r = csv("a,b\r\n\"x\r\ny\",1\r\n");
-column($r, 0, 'string', ["x\r\ny"], label: 'CRLF inside quotes');
+column($r, 0, 'string', ["x\ny"], label: 'CRLF inside quotes');
 // Text without LF reads CR as the line ending; with LF, a lone CR is data.
 $r = csv("a,b\r1,2\r3,4\r");
 same($r['names'], ['a', 'b'], 'CR-only names');

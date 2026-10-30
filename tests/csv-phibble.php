@@ -63,12 +63,7 @@ function compareReaders(string $text, array $options, string $label, string $dir
     }
     check($rustError === null, "native failed ($rustError): $context");
     check($php === $rust, "results differ: $context\nphp: ".var_export($php, true)."\nnative: ".var_export($rust, true));
-    // The native reader also reports unterminated quotes; the PHP reader does not.
-    $raw = Phit\read_csv($path, nativeOptions($options));
-    $unterminated = array_filter($raw['problems'], fn ($p) => str_contains($p, 'unterminated'));
-    if ($unterminated === []) {
-        check($phpWarnings === $rustWarnings, "warnings differ: $context\n".var_export([$phpWarnings, $rustWarnings], true));
-    }
+    check($phpWarnings === $rustWarnings, "warnings differ: $context\n".var_export([$phpWarnings, $rustWarnings], true));
 }
 
 function nativeOptions(array $o): array {
@@ -100,7 +95,7 @@ $tokens = ['a', 'b c', '1', '0', '-0', '+5', '007', '-07', '1,234', '1,,2', '1,'
     '2020-01-02 03:04:05', '2020-01-02T03:04', '2020-01-02T03', '2020-01-02T03:04:05.123456789Z', '2020-01-02T03:04:05+05:30',
     '2020-01-02T03:04:05-0800', '2020-01-02 03:04:05+24:59', '2020-01-02 03:04:05+25:00', '2020-01-02Z', '2020-01-02 24:00:00',
     '1969-12-31T23:59:59.5', '2020-01-02 03:04:60',
-    '"', '""', '"q"', '"a,b"', '"a""b"', '"x', 'x"y', '"a" b', ' "a"', "\"multi\nline\"", "\"cr\r\nlf\"", '\\', '\\"', '\\,',
+    '"', '""', '"q"', '"a,b"', '"a""b"', '"x', 'x"y', '"a" b', ' "a"', '"x "y" z"', '"x "y",z"', '"a"x""', '  "a,b"', '"x \"y\" z"', '"""', "\"multi\nline\"", "\"cr\r\nlf\"", '\\', '\\"', '\\,',
     '#', '# note', "'", "'s'", ';', "\xEF\xBB\xBF", "\xC3\xA9", "\0", "\v", "\r"];
 $separators = [',', ',', ',', ';', "\t", ' '];
 $ends = ["\n", "\n", "\n", "\r\n", "\r", ''];

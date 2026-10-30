@@ -180,7 +180,7 @@
                     {
                         "type": "string",
                         "values": [
-                            "x\"y\""
+                            "x\"\"y"
                         ],
                         "failed": 0
                     }
@@ -203,12 +203,14 @@
                     {
                         "type": "string",
                         "values": [
-                            "x\\y\""
+                            "x\\y\n"
                         ],
                         "failed": 0
                     }
                 ],
-                "problems": []
+                "problems": [
+                    "row 2: unterminated quoted field at end of file"
+                ]
             },
             "phit_extra_problems": []
         },
@@ -2125,12 +2127,11 @@
                     }
                 ],
                 "problems": [
-                    "row 2: expected 2 columns, got 1"
+                    "row 2: expected 2 columns, got 1",
+                    "row 2: unterminated quoted field at end of file"
                 ]
             },
-            "phit_extra_problems": [
-                "row 2: unterminated quoted field at end of file"
-            ]
+            "phit_extra_problems": []
         },
         {
             "name": "structure/unterminated-quote-only-field",
@@ -2149,11 +2150,441 @@
                         "failed": 0
                     }
                 ],
+                "problems": [
+                    "row 2: unterminated quoted field at end of file"
+                ]
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "quotes/backslash-quoted-word",
+            "input": "a,b\n\"x \\\"y\\\" z\",2\n",
+            "options": {
+                "types": [
+                    "c",
+                    "c"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x \\y\\ z"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "2"
+                        ],
+                        "failed": 0
+                    }
+                ],
                 "problems": []
             },
-            "phit_extra_problems": [
-                "row 2: unterminated quoted field at end of file"
-            ]
+            "phit_extra_problems": []
+        },
+        {
+            "name": "quotes/stray-pair",
+            "input": "a,b\n\"x \"y\" z\",2\n",
+            "options": {
+                "types": [
+                    "c",
+                    "c"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x y z"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "2"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "quotes/stray-pair-hides-delimiter",
+            "input": "a,b\n\"x \"y\",z\",2\n",
+            "options": {
+                "types": [
+                    "c",
+                    "c"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x y,z"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "2"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "quotes/backslash-before-delimiter",
+            "input": "a,b\n\"x \\\", z\",2\n",
+            "options": {
+                "types": [
+                    "c",
+                    "c"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x \\"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "z\",2"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": [
+                    "row 2: expected 2 columns, got 3"
+                ]
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "quotes/doubled",
+            "input": "a,b\n\"x \"\"y\"\" z\",2\n",
+            "options": {
+                "types": [
+                    "c",
+                    "c"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x \"y\" z"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "2"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "quotes/in-unquoted-field",
+            "input": "a,b\nx\"y,2\nab\"c\"d,3\n",
+            "options": {
+                "types": [
+                    "c",
+                    "c"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x\"y",
+                            "ab\"c\"d"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "2",
+                            "3"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "quotes/text-after-closing-quote",
+            "input": "a,b\n\"x\"y,2\n\"x\" y,3\n",
+            "options": {
+                "types": [
+                    "c",
+                    "c"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "xy",
+                            "x y"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "2",
+                            "3"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "quotes/doubled-then-stray",
+            "input": "a,b\n\"a\"x\"\",2\n\"\"\"a\",3\n",
+            "options": {
+                "types": [
+                    "c",
+                    "c"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "ax\"",
+                            "\"a"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "2",
+                            "3"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "quotes/stray-newline-ends-record",
+            "input": "a,b\n1,\"x \"y\nz\"\n5,6\n",
+            "options": {
+                "types": [
+                    "c",
+                    "c"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "1",
+                            "z\"",
+                            "5"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "x y",
+                            null,
+                            "6"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": [
+                    "row 3: expected 2 columns, got 1"
+                ]
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "quotes/space-before-quote",
+            "input": "a,b\n  \"a,b\",2\n",
+            "options": {
+                "types": [
+                    "c",
+                    "c"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "a"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "b\",2"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": [
+                    "row 2: expected 2 columns, got 3"
+                ]
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "quotes/doubled-reopens",
+            "input": "a,b\n\"x\"\",2\n3,4\n",
+            "options": {
+                "types": [
+                    "c",
+                    "c"
+                ]
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x\",2\n3,4\n"
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            null
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": [
+                    "row 2: expected 2 columns, got 1",
+                    "row 2: unterminated quoted field at end of file"
+                ]
+            },
+            "phit_extra_problems": []
+        },
+        {
+            "name": "quotes/escape-double-off",
+            "input": "a,b\n\"x \"y\",z\",2\n\"x\"\"\",3\n",
+            "options": {
+                "types": [
+                    "c",
+                    "c"
+                ],
+                "escape_double": false
+            },
+            "expected": {
+                "names": [
+                    "a",
+                    "b"
+                ],
+                "columns": [
+                    {
+                        "type": "string",
+                        "values": [
+                            "x \"y\",z",
+                            "x\"\""
+                        ],
+                        "failed": 0
+                    },
+                    {
+                        "type": "string",
+                        "values": [
+                            "2",
+                            "3"
+                        ],
+                        "failed": 0
+                    }
+                ],
+                "problems": []
+            },
+            "phit_extra_problems": []
         },
         {
             "name": "zero-rows/header-only",

@@ -2,10 +2,11 @@
 //! follows readr) byte for byte: the same records, names, guessed types,
 //! parsed values and problem messages.
 //!
-//! phibble tokenizes with PHP's `fgetcsv()` when it can (no comment, `""`
-//! escapes, no backslash escapes, a quote character) and with a
-//! character-level reader otherwise. Both are reproduced here, including
-//! their corner cases; the values and types follow phibble's `TextParser`.
+//! phibble tokenizes by vroom's (readr 2's) quote rules with a fast reader
+//! when it can (no comment, `""` escapes, no backslash escapes, a quote
+//! character) and with a character-level reader otherwise. Both are
+//! reproduced here, including their corner cases; the values and types follow
+//! phibble's `TextParser`.
 
 use std::borrow::Cow;
 
@@ -222,20 +223,13 @@ struct Tokenizer<'o> {
     text: Vec<u8>,
     arena: Vec<u8>,
     pos: usize,
-    /// The key phibble gives the record (1-based, counting skipped lines).
-    line: usize,
     o: &'o Options,
-    /// fgetcsv() emulation, or phibble's character-level reader.
+    /// vroom's quote tokenizer, or phibble's character-level reader.
     fast: bool,
     /// Set when the last record ended inside an open quote.
     unterminated: bool,
     /// Whether a record has been produced yet, for the leading comment rule.
     emitted: bool,
-}
-
-/// C isspace() in the "C" locale.
-fn c_space(b: u8) -> bool {
-    matches!(b, b' ' | b'\t' | b'\n' | 0x0b | 0x0c | b'\r')
 }
 
 /// Builds a field from pieces of the text, copying into the arena only
@@ -290,7 +284,6 @@ impl<'o> Tokenizer<'o> {
             o.comment.is_empty() && o.escape_double && !o.escape_backslash && o.quote.is_some();
         // Lines skipped with fgets() before anything else.
         let mut pos = 0;
-        let mut line = 0;
         let mut exhausted = false;
         for _ in 0..o.skip {
             if pos >= data.len() {
@@ -298,13 +291,12 @@ impl<'o> Tokenizer<'o> {
                 break;
             }
             pos = memchr::memchr(b'\n', &data[pos..]).map_or(data.len(), |i| pos + i + 1);
-            line += 1;
         }
         let mut text = if exhausted { Vec::new() } else { data };
         pos = pos.min(text.len());
         // As phibble does before tokenizing: drop a byte order mark at the
         // start of the file and read CR as the line ending when there is no LF.
-        if line == 0 && text[pos..].starts_with(b"\xEF\xBB\xBF") {
+        if o.skip == 0 && text[pos..].starts_with(b"\xEF\xBB\xBF") {
             pos += 3;
         }
         let rest = &text[pos..];
@@ -317,8 +309,8 @@ impl<'o> Tokenizer<'o> {
                 .collect();
             pos = 0;
         }
-        if !fast {
-            // The character-level reader works on text with CRLF folded to LF.
+        // Both readers work on text with CRLF folded to LF.
+        if memchr::memchr(b'\r', &text[pos..]).is_some() {
             text = replace_crlf(&text[pos..]);
             pos = 0;
         }
@@ -326,7 +318,6 @@ impl<'o> Tokenizer<'o> {
             text,
             arena: Vec::new(),
             pos,
-            line,
             o,
             fast,
             unterminated: false,
@@ -338,7 +329,7 @@ impl<'o> Tokenizer<'o> {
         fields.clear();
         self.unterminated = false;
         if self.fast {
-            self.next_fgetcsv(fields)
+            self.next_quoted(fields)
         } else {
             self.next_chars(fields)
         }
@@ -369,130 +360,132 @@ impl<'o> Tokenizer<'o> {
         .then_some(end)
     }
 
-    /// The end of a line without one trailing "\r\n", "\n" or "\r".
-    fn strip_eol(&self, start: usize, end: usize) -> usize {
-        let t = &self.text;
-        if end > start && t[end - 1] == b'\n' {
-            if end - start >= 2 && t[end - 2] == b'\r' {
-                end - 2
-            } else {
-                end - 1
-            }
-        } else if end > start && t[end - 1] == b'\r' {
-            end - 1
-        } else {
-            end
-        }
-    }
-
-    /// PHP's fgetcsv($stream, null, $delimiter, $quote, '') on the C locale.
-    fn next_fgetcsv(&mut self, fields: &mut Vec<Span>) -> Record {
+    /// A record by vroom's (readr 2's) quote rules, as phibble's
+    /// quotedRecords(). A field is quoted when its first byte is the quote.
+    /// Within it, every lone quote toggles quoting and is dropped, and a
+    /// doubled quote is a literal quote, so `"x "y" z"` reads as `x y z` and
+    /// `"x "y",z"` as `x y,z`. Quotes in an unquoted field are literal.
+    fn next_quoted(&mut self, fields: &mut Vec<Span>) -> Record {
         let len = self.text.len();
         if self.pos >= len {
             return Record::Eof;
         }
         if let Some(end) = self.blank_line(self.pos) {
             self.pos = end;
-            self.line += 1;
             return Record::Blank;
         }
         let delim = self.o.delimiter;
         let quote = self.o.quote.unwrap_or(0);
-        let mut buf_start = self.pos;
-        let mut buf_end = self.line_end(buf_start);
-        let mut limit = self.strip_eol(buf_start, buf_end);
-        let mut b = buf_start;
-        self.line += 1;
+        let mut pos = self.pos;
         loop {
-            let t = &self.text;
-            let inc = b < limit;
-            if inc {
-                let mut s = b;
-                while s < buf_end && t[s] != delim && c_space(t[s]) {
-                    s += 1;
-                }
-                if s < buf_end && t[s] == quote {
-                    b = s;
-                }
-            }
-            let more;
-            if inc && t[b] == quote {
-                b += 1;
-                let mut hunk = b;
-                let mut closing = false; // the previous byte was a quote
+            if self.text[pos] == quote {
+                pos += 1;
                 let mut acc = Acc::new();
+                let mut in_quotes = true;
                 loop {
-                    if b < limit {
-                        let c = self.text[b];
-                        if closing {
-                            if c != quote {
-                                acc.push(&self.text, &mut self.arena, hunk, b - 1);
-                                hunk = b;
-                                break;
-                            }
-                            acc.push(&self.text, &mut self.arena, hunk, b);
-                            b += 1;
-                            hunk = b;
-                            closing = false;
-                        } else {
-                            if c == quote {
-                                closing = true;
-                            }
-                            b += 1;
-                        }
-                    } else if closing {
-                        acc.push(&self.text, &mut self.arena, hunk, b - 1);
-                        hunk = b;
-                        break;
-                    } else {
-                        // The field runs on past this line, line ending included.
-                        acc.push(&self.text, &mut self.arena, hunk, b);
-                        acc.push(&self.text, &mut self.arena, limit, buf_end);
-                        if buf_end >= len {
-                            // End of file inside quotes: the field closes here.
+                    if in_quotes {
+                        let Some(i) = memchr::memchr(quote, &self.text[pos..]) else {
+                            // End of file inside quotes: the field takes the rest.
+                            acc.push(&self.text, &mut self.arena, pos, len);
+                            fields.push(acc.finish(len, &self.arena));
+                            self.pos = len;
                             self.unterminated = true;
-                            hunk = limit;
-                            b = limit;
-                            break;
+                            return Record::Fields;
+                        };
+                        acc.push(&self.text, &mut self.arena, pos, pos + i);
+                        pos += i + 1;
+                        if pos < len && self.text[pos] == quote {
+                            acc.push(&self.text, &mut self.arena, pos, pos + 1);
+                            pos += 1;
+                        } else {
+                            in_quotes = false;
                         }
-                        buf_start = buf_end;
-                        buf_end = self.line_end(buf_start);
-                        limit = self.strip_eol(buf_start, buf_end);
-                        b = buf_start;
-                        hunk = b;
+                        continue;
                     }
-                }
-                // Anything between the closing quote and the delimiter is kept.
-                let t = &self.text;
-                b = memchr::memchr(delim, &t[b..limit]).map_or(limit, |i| b + i);
-                acc.push(&self.text, &mut self.arena, hunk, b);
-                more = b < limit;
-                if more {
-                    b += 1;
+                    let run = memchr::memchr3(delim, quote, b'\n', &self.text[pos..])
+                        .map_or(len, |i| pos + i);
+                    acc.push(&self.text, &mut self.arena, pos, run);
+                    pos = run;
+                    if pos < len && self.text[pos] == quote {
+                        if pos + 1 < len && self.text[pos + 1] == quote {
+                            acc.push(&self.text, &mut self.arena, pos, pos + 1);
+                            pos += 2;
+                        } else {
+                            in_quotes = true;
+                            pos += 1;
+                        }
+                        continue;
+                    }
+                    break;
                 }
                 fields.push(acc.finish(len, &self.arena));
             } else {
-                let hunk = b;
-                b = memchr::memchr(delim, &t[b..limit]).map_or(limit, |i| b + i);
-                let mut end = b;
-                if end > hunk && t[end - 1] == b'\r' {
-                    end -= 1;
-                }
-                fields.push(Span {
-                    start: hunk,
-                    len: (end - hunk) as u32,
+                let run = memchr::memchr2(delim, b'\n', &self.text[pos..]).map_or(len, |i| pos + i);
+                let field = self.unquote_trimmed(Span {
+                    start: pos,
+                    len: (run - pos) as u32,
                 });
-                more = b < limit;
-                if more {
-                    b += 1;
-                }
+                fields.push(field);
+                pos = run;
             }
-            if !more {
+            if pos >= len {
+                break;
+            }
+            let end = self.text[pos];
+            pos += 1;
+            if end == b'\n' {
+                break;
+            }
+            if pos >= len {
+                // A delimiter at the very end leaves one empty field.
+                fields.push(Span { start: 0, len: 0 });
                 break;
             }
         }
-        self.pos = buf_end;
+        self.pos = pos;
         Record::Fields
+    }
+
+    /// With trim_ws, an unquoted field that starts with a quote once trimmed
+    /// is unquoted as vroom does: the first quote dropped, then doubled quotes
+    /// made single and other quotes dropped (escape_double), or one closing
+    /// quote dropped (without escape_double).
+    fn unquote_trimmed(&mut self, field: Span) -> Span {
+        let o = self.o;
+        let Some(quote) = o.quote else { return field };
+        if !o.trim_ws {
+            return field;
+        }
+        let bytes = self.bytes(field);
+        let trimmed = trim_tabs(bytes);
+        if trimmed.first() != Some(&quote) {
+            return field;
+        }
+        let inner = &trimmed[1..];
+        let out = if o.escape_double {
+            let mut out = Vec::with_capacity(inner.len());
+            let mut i = 0;
+            while i < inner.len() {
+                if inner[i] == quote {
+                    if inner.get(i + 1) == Some(&quote) {
+                        out.push(quote);
+                        i += 1;
+                    }
+                } else {
+                    out.push(inner[i]);
+                }
+                i += 1;
+            }
+            out
+        } else {
+            drop_closing_quote(inner, quote).to_vec()
+        };
+        let start = self.text.len() + self.arena.len();
+        self.arena.extend_from_slice(&out);
+        Span {
+            start,
+            len: out.len() as u32,
+        }
     }
 
     fn starts_with_at(&self, pos: usize, s: &[u8]) -> bool {
@@ -507,7 +500,6 @@ impl<'o> Tokenizer<'o> {
             if self.pos >= len {
                 return Record::Eof;
             }
-            self.line += 1;
             // A line that starts with the comment string is dropped entirely.
             // Before the first record readr looks past leading whitespace for
             // it; after one, such a line is a record holding that whitespace.
@@ -519,7 +511,6 @@ impl<'o> Tokenizer<'o> {
             }
             if self.starts_with_at(at, &o.comment) {
                 self.pos = self.line_end(at);
-                self.line -= 1;
                 continue;
             }
             if let Some(end) = self.blank_line(self.pos) {
@@ -530,8 +521,8 @@ impl<'o> Tokenizer<'o> {
         }
         let delim = o.delimiter;
         let quote = o.quote;
-        let base = self.text.len();
         let mut field_start = self.arena.len();
+        let mut quoted = false;
         let mut in_quotes = false;
         let mut pos = self.pos;
         while pos < len {
@@ -549,6 +540,9 @@ impl<'o> Tokenizer<'o> {
                         continue;
                     }
                     in_quotes = false;
+                    if !o.escape_double {
+                        self.arena.push(c);
+                    }
                     pos += 1;
                     continue;
                 }
@@ -560,22 +554,29 @@ impl<'o> Tokenizer<'o> {
                 pos += 1;
                 break;
             }
+            if Some(c) == quote && (quoted || self.arena.len() == field_start) {
+                // Opens a quoted field, or toggles quoting inside one.
+                if quoted && o.escape_double && pos + 1 < len && Some(self.text[pos + 1]) == quote {
+                    self.arena.push(c);
+                    pos += 2;
+                    continue;
+                }
+                if quoted && !o.escape_double {
+                    self.arena.push(c);
+                }
+                quoted = true;
+                in_quotes = true;
+                pos += 1;
+                continue;
+            }
             if self.starts_with_at(pos, &o.comment) {
                 pos = self.line_end(pos);
                 break;
             }
             if c == delim {
-                fields.push(Span {
-                    start: base + field_start,
-                    len: (self.arena.len() - field_start) as u32,
-                });
+                fields.push(self.finish_field(field_start, quoted));
                 field_start = self.arena.len();
-                pos += 1;
-                continue;
-            }
-            if Some(c) == quote && php_trim(&self.arena[field_start..]).is_empty() {
-                in_quotes = true;
-                self.arena.truncate(field_start);
+                quoted = false;
                 pos += 1;
                 continue;
             }
@@ -589,12 +590,41 @@ impl<'o> Tokenizer<'o> {
         }
         self.pos = pos;
         self.unterminated = in_quotes;
-        fields.push(Span {
-            start: base + field_start,
-            len: (self.arena.len() - field_start) as u32,
-        });
+        fields.push(self.finish_field(field_start, quoted));
         self.emitted = true;
         Record::Fields
+    }
+
+    /// The arena field from `start`, as phibble's finishField(). Without
+    /// escape_double, vroom keeps the quotes inside a quoted field and drops
+    /// only the opening and closing ones; next_chars() keeps every inner quote,
+    /// so the closing one is dropped here.
+    fn finish_field(&mut self, start: usize, quoted: bool) -> Span {
+        let base = self.text.len();
+        let span = Span {
+            start: base + start,
+            len: (self.arena.len() - start) as u32,
+        };
+        if !quoted {
+            return self.unquote_trimmed(span);
+        }
+        if self.o.escape_double {
+            return span;
+        }
+        let quote = self.o.quote.unwrap_or(0);
+        let field = &self.arena[start..];
+        let field = if self.o.trim_ws {
+            trim_tabs(field)
+        } else {
+            field
+        };
+        let out = drop_closing_quote(field, quote).to_vec();
+        self.arena.truncate(start);
+        self.arena.extend_from_slice(&out);
+        Span {
+            start: base + start,
+            len: out.len() as u32,
+        }
     }
 
     fn bytes(&self, span: Span) -> &[u8] {
@@ -641,6 +671,21 @@ fn php_trim(s: &[u8]) -> &[u8] {
     &s[start..end]
 }
 
+/// trim($v, " \t").
+fn trim_tabs(s: &[u8]) -> &[u8] {
+    let t = |b: &u8| matches!(*b, b' ' | b'\t');
+    let start = s.iter().position(|b| !t(b)).unwrap_or(s.len());
+    let end = s.iter().rposition(|b| !t(b)).map_or(start, |i| i + 1);
+    &s[start..end]
+}
+
+fn drop_closing_quote(field: &[u8], quote: u8) -> &[u8] {
+    match field.split_last() {
+        Some((&last, rest)) if last == quote => rest,
+        _ => field,
+    }
+}
+
 /// trim($v, " \t") on a span.
 fn trim_span(text: &[u8], span: Span) -> Span {
     let mut a = 0usize;
@@ -667,20 +712,11 @@ pub fn read(data: Vec<u8>, o: &Options) -> Result<Table, String> {
     let mut tok = Tokenizer::new(data, o);
     let mut fields = Vec::new();
     let mut problems = Vec::new();
-    let note_unterminated = |tok: &Tokenizer, problems: &mut Vec<String>| {
-        if tok.unterminated {
-            problems.push(format!(
-                "row {}: unterminated quoted field at end of file",
-                tok.line
-            ));
-        }
-    };
 
     // The first non-empty record is the header (or sets the width).
     loop {
         match tok.next(&mut fields) {
             Record::Eof => {
-                note_unterminated(&tok, &mut problems);
                 return Ok(Table {
                     names: Vec::new(),
                     columns: Vec::new(),
@@ -693,14 +729,15 @@ pub fn read(data: Vec<u8>, o: &Options) -> Result<Table, String> {
             Record::Fields => break,
         }
     }
-    note_unterminated(&tok, &mut problems);
+    // As phibble: an open quote at the end of the file is a problem once the
+    // reader has gone past it, which it always has for the header.
+    let mut unterminated = tok.unterminated;
     // A UTF-8 byte order mark on the first field.
     if tok.bytes(fields[0]).starts_with(b"\xEF\xBB\xBF") {
         fields[0].start += 3;
         fields[0].len -= 3;
     }
     let width = fields.len();
-    let header_line = tok.line;
     let names: Vec<Vec<u8>> = if o.col_names {
         fields
             .iter()
@@ -724,21 +761,24 @@ pub fn read(data: Vec<u8>, o: &Options) -> Result<Table, String> {
     };
     let full = |count: usize| o.n_max.is_some_and(|m| count >= m);
     if !o.col_names && !full(rows.count) {
-        rows.take(&mut tok, &fields, header_line, &mut problems);
+        rows.take(&mut tok, &fields, &mut problems);
     }
     while !full(rows.count) {
         match tok.next(&mut fields) {
-            Record::Eof => {
-                note_unterminated(&tok, &mut problems);
-                break;
-            }
+            Record::Eof => break,
             Record::Blank => {}
             Record::Fields => {
-                note_unterminated(&tok, &mut problems);
-                let line = tok.line;
-                rows.take(&mut tok, &fields, line, &mut problems);
+                rows.take(&mut tok, &fields, &mut problems);
+                // Reaching n_max on this record stops before the reader moves on.
+                unterminated |= tok.unterminated && !full(rows.count);
             }
         }
+    }
+    if unterminated {
+        problems.push(format!(
+            "row {}: unterminated quoted field at end of file",
+            rows.count + 1
+        ));
     }
     let Rows { cells, count, .. } = rows;
 
@@ -795,19 +835,15 @@ struct Rows {
 }
 
 impl Rows {
-    fn take(
-        &mut self,
-        tok: &mut Tokenizer,
-        fields: &[Span],
-        line: usize,
-        problems: &mut Vec<String>,
-    ) {
+    fn take(&mut self, tok: &mut Tokenizer, fields: &[Span], problems: &mut Vec<String>) {
         let width = self.cells.len();
         let o = tok.o;
         self.count += 1;
         let n = fields.len();
         if n != width {
-            problems.push(format!("row {line}: expected {width} columns, got {n}"));
+            // Rows are named as readr::problems() names them: data row index + 1.
+            let row = self.count + 1;
+            problems.push(format!("row {row}: expected {width} columns, got {n}"));
         }
         let kept = n.min(width);
         for (i, &field) in fields.iter().enumerate().take(kept) {
