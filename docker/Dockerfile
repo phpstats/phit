@@ -39,6 +39,6 @@ COPY --from=artifacts /out/ /
 FROM ${PHP_IMAGE} AS runtime
 COPY --from=checks /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 COPY --from=checks /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
-RUN php -r 'if (!extension_loaded("phit") || Phit\hello() === "") exit(1);'
+RUN php -r 'if (!extension_loaded("phit") || Phit\dist_normal_cdf(0.0) !== 0.5) exit(1);'
 # Supply application files in a child image or mount /var/www/html. The upstream
 # PHP image retains its entrypoint and php-fpm foreground command.

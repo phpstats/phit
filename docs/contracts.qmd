@@ -25,7 +25,6 @@ See [deployment](deployment.qmd) for supported packaging targets and installatio
 ## PHP entry points
 
 ```php
-Phit\hello(): string; // "Hello from Rust!"
 Phit\fit_ols(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
 Phit\fit_logistic(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
 Phit\fit_probit(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;

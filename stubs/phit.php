@@ -2027,8 +2027,6 @@ function fit_poisson(array $x, array $y, string $missing = 'drop', ?array $weigh
  */
 function fit_probit(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): array {}
 
-function hello(): string {}
-
 /**
  * R-compatible model.matrix() for a formula over named columns: treatment contrasts (first level is the reference),
  * contr.poly for ordered factors, R column names/term order, inline transforms, offset() and random-effect bars.

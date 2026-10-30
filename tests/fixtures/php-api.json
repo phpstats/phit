@@ -4732,10 +4732,6 @@
             "z_statistics"
         ]
     },
-    "Phit\\hello": {
-        "parameters": [],
-        "return_type": "string"
-    },
     "Phit\\model_matrix": {
         "parameters": [
             {

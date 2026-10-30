@@ -5,7 +5,7 @@ try {
     if (!extension_loaded('phit')) throw new RuntimeException('phit is not enabled');
     preg_match('/^version\s*=\s*"([^"]+)"/m', file_get_contents(__DIR__.'/../crates/php-extension/Cargo.toml'), $version);
     if (phpversion('phit') !== ($version[1] ?? null)) throw new RuntimeException('unexpected extension version');
-    if (Phit\hello() !== 'Hello from Rust!') throw new RuntimeException('native hello failed');
+    if (Phit\dist_normal_cdf(0.0) !== 0.5) throw new RuntimeException('native call failed');
     $ols = Phit\fit_ols([[1], [2], [3], [4], [5]], [2.1, 4.2, 5.8, 8.1, 10.2]);
     if (abs($ols['coefficients'][0] - 0.05) > 1e-10 || abs($ols['coefficients'][1] - 2.01) > 1e-10) {
         throw new RuntimeException('automatic-intercept OLS failed');

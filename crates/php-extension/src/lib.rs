@@ -1092,17 +1092,10 @@ pub fn fit_logistic_mixed(
     )
 }
 
-#[php_function]
-#[php(name = "Phit\\hello")]
-pub fn hello() -> String {
-    "Hello from Rust!".into()
-}
-
 #[php_module]
 pub fn get_module(module: ModuleBuilder) -> ModuleBuilder {
     let module = module
         .name("phit") // Canonical PHP/PIE extension identifier: extension=phit, ext-phit.
-        .function(wrap_function!(hello))
         .function(wrap_function!(fit_ols))
         .function(wrap_function!(fit_logistic))
         .function(wrap_function!(fit_probit))

@@ -11,7 +11,6 @@ function compare(mixed $actual, mixed $expected, string $label): void {
         check(abs($actual - $expected) <= 1e-9 + 1e-7 * abs($expected), "$label: $actual != $expected");
     }
 }
-check(Phit\hello() === 'Hello from Rust!', 'hello');
 $fixture = json_decode(file_get_contents(__DIR__ . '/fixtures/ols-r.json'), true, flags: JSON_THROW_ON_ERROR);
 foreach ($fixture['cases'] as $case) {
     $result = Phit\fit_ols(x: $case['x'], y: $case['y'], intercept: false);

@@ -17,7 +17,7 @@ cargo build -p phit --locked
 # macOS; use libphit.so on Linux
 export STATS_EXTENSION="$PWD/target/debug/libphit.dylib"
 php -n -d "extension=$STATS_EXTENSION" -m
-php -n -d "extension=$STATS_EXTENSION" -r 'echo Phit\hello(), PHP_EOL;'
+php -n -d "extension=$STATS_EXTENSION" -r 'echo phpversion("phit"), PHP_EOL;'
 php -n -d "extension=$STATS_EXTENSION" tests/ols.php
 php -n -d "extension=$STATS_EXTENSION" tests/logistic.php
 php -n -d "extension=$STATS_EXTENSION" examples/ols.php
@@ -128,7 +128,7 @@ may handle by dropping aliased coefficients.
 | Large residual df confidence intervals | Rust compares 95% t critical values with R qt() through 999,997 df |
 | Large samples and wider models | Separate release benchmark checks up to one million rows and up to 11 coefficients against R/statsmodels |
 | Historical Apple Accelerate trial | Archived correctness and benchmark results; experimental implementation removed |
-| PHP numeric types and loading | PHP rejects strings, booleans and malformed rows; checks missing policies and warnings; checks hello |
+| PHP numeric types and loading | PHP rejects strings, booleans and malformed rows; checks missing policies and warnings; checks the extension loads |
 
 For ordinary fixtures, comparisons include coefficients, covariance, fitted
 values, residuals, standard errors, t-statistics, p-values, confidence intervals,

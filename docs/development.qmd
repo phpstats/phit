@@ -69,7 +69,7 @@ export STATS_EXTENSION="$PWD/target/debug/libphit.dylib"
 # Linux instead:
 # export STATS_EXTENSION="$PWD/target/debug/libphit.so"
 php -n -d "extension=$STATS_EXTENSION" -m
-php -n -d "extension=$STATS_EXTENSION" -r 'echo Phit\hello(), PHP_EOL;'
+php -n -d "extension=$STATS_EXTENSION" -r 'echo phpversion("phit"), PHP_EOL;'
 php -n -d "extension=$STATS_EXTENSION" tests/ols.php
 php -n -d "extension=$STATS_EXTENSION" tests/logistic.php
 php -n -d "extension=$STATS_EXTENSION" tests/probit.php
