@@ -163,6 +163,35 @@ symmetry/rank tolerances, formulas, implementation boundaries and verification.
 Stan evaluation, PSIS, moment-matching iteration and diagnostics belong to the
 consuming CmdStan package.
 
+## One-dimensional optimization and root finding
+
+```php
+Phit\optimize(callable $f, float $lower, float $upper, ?float $tol = null, bool $maximum = false): array;
+Phit\uniroot(callable $f, float $lower, float $upper, ?float $tol = null, int $maxiter = 1000): array;
+```
+
+`optimize` ports R's `optimize()`. It returns `['minimum' => x, 'objective' => f(x)]`,
+or `['maximum' => x, 'objective' => f(x)]` with `maximum: true`. `uniroot` ports
+R's `uniroot()` and returns `['root', 'f_root', 'iter', 'estim_prec']`. Both run
+R's C code (Brent_fmin and R_zeroin2) step by step, so they evaluate f at the same
+points and return the same doubles. The default `tol` is R's
+`.Machine$double.eps^0.25`.
+
+`f` is any PHP callable that takes one float and returns an int or float. Any
+other return value raises 1001, and an exception thrown by `f` propagates
+unchanged. As in R, nonfinite values during the search are replaced by the
+largest finite value, with the sign kept for `-INF` in `uniroot`. One `E_WARNING`
+reports the replacement. `uniroot` requires f(lower) and f(upper) without NAN and
+without the same sign. When it runs out of iterations, it raises an `E_WARNING`,
+sets `iter` to `maxiter`, and returns its last estimate. R's `extendInt` and
+`check.conv` options are not available.
+
+`tests/optimize.php` compares 91 results with R 4.6.1 bit for bit, including the
+number of function evaluations. The cases cover smooth, flat, kinked, multimodal,
+and boundary minima, infinite values, roots at the endpoints, a step function, and
+a search that does not converge. Regenerate the fixture with
+`Rscript tests/generate-optimize-fixtures.R`.
+
 ## CSV input
 
 ```php

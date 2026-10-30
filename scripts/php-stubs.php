@@ -38,6 +38,10 @@ $smoothing=[
   'return'=>'list<float>'],
  'Phit\stat_ecdf'=>['summary'=>"Empirical CDF of x at each q: the proportion of x at or below q, as R's ecdf(x)(q).",'return'=>'list<float>'],
 ];
+$optimizers=[
+ 'Phit\optimize'=>"Minimize f on [lower, upper] (or maximize, with maximum: true) as R's optimize(): Brent's golden-section and parabolic search.\n * Returns 'minimum' or 'maximum', and the objective f(x).",
+ 'Phit\uniroot'=>"A root of f in [lower, upper] as R's uniroot(): Brent's method; f(lower) and f(upper) must not have the same sign.\n * Returns the root, f(root), the iterations used and the estimated precision; E_WARNING and iter = maxiter when not converged.",
+];
 $draws=[
  'Phit\draws_moments'=>['summary'=>"Weighted draw mean and covariance; weights normalized internally. Normalization 'population' or 'unbiased' (reliability weights, never frequency counts). Singular covariance is valid.",
   'params'=>['draws'=>'array<array<int|float>>','weights'=>'array<int|float>|null'],
@@ -124,6 +128,13 @@ foreach ($functions as $name) {
   $text.=" * @return array{\n";
   foreach($predict['result'] as $key=>$type)$text.=" *   $key: $type,\n";
   $text.=" * }\n * @throws \\Exception Input error (1001), malformed fit, new levels, or unsupported options (1007).\n */\n";
+ } elseif (isset($optimizers[$name])) {
+  $text.="/**\n * {$optimizers[$name]}\n * f receives one float and returns an int or float; an exception from f propagates. Nonfinite values during the search\n * are replaced by +/-PHP_FLOAT_MAX, as R does, with one E_WARNING.\n";
+  $text.=" * @param callable(float): (int|float) \$f\n * @param float|null \$tol Default PHP_FLOAT_EPSILON ** 0.25, as R\n";
+  $text.=$name==='Phit\optimize'
+   ? " * @return array{minimum: float, objective: float}|array{maximum: float, objective: float}\n"
+   : " * @return array{root: float, f_root: float, iter: int, estim_prec: float}\n";
+  $text.=" * @throws \\Exception Input error (code 1001).\n */\n";
  } elseif (isset($smoothing[$name])) {
   $text.="/**\n * {$smoothing[$name]['summary']}\n * Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.\n";
   foreach ($r->getParameters() as $p) {

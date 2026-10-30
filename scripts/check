@@ -30,7 +30,7 @@ esac
 "$PHP" -n -d "extension=$extension" -r 'if (Phit\dist_normal_cdf(0.0) !== 0.5) exit(1);'
 "$PHP" -n -d "extension=$extension" scripts/php-stubs.php --check
 "$PHP" -n -l stubs/phit.php
-for suite in ols logistic probit poisson formula formula-mixed predict lmm r-compatibility lmm-expanded logistic-mixed stability intercept distributions descriptive smoothing rng draws csv csv-conformance csv-phibble extreme-inputs; do
+for suite in ols logistic probit poisson formula formula-mixed predict lmm r-compatibility lmm-expanded logistic-mixed stability intercept distributions descriptive smoothing optimize rng draws csv csv-conformance csv-phibble extreme-inputs; do
     "$PHP" -n -d "extension=$extension" "tests/$suite.php"
 done
 for example in ols logistic probit poisson lmm lmm-slopes logistic-mixed poisson-offset distributions rng draws; do

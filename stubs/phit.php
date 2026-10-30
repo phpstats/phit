@@ -2058,6 +2058,18 @@ function fit_probit(array $x, array $y, string $missing = 'drop', ?array $weight
 function model_matrix(string $formula, mixed $data, string $missing = 'drop'): array {}
 
 /**
+ * Minimize f on [lower, upper] (or maximize, with maximum: true) as R's optimize(): Brent's golden-section and parabolic search.
+ * Returns 'minimum' or 'maximum', and the objective f(x).
+ * f receives one float and returns an int or float; an exception from f propagates. Nonfinite values during the search
+ * are replaced by +/-PHP_FLOAT_MAX, as R does, with one E_WARNING.
+ * @param callable(float): (int|float) $f
+ * @param float|null $tol Default PHP_FLOAT_EPSILON ** 0.25, as R
+ * @return array{minimum: float, objective: float}|array{maximum: float, objective: float}
+ * @throws \Exception Input error (code 1001).
+ */
+function optimize(callable $f, float $lower, float $upper, ?float $tol = NULL, bool $maximum = false): array {}
+
+/**
  * Predictions for new data from a fit_lm, fit_glm, fit_lmer or fit_glmer result, like R's predict():
  * the fit's formula is rebuilt over newdata with the fitted factor levels and poly() basis (its predvars key).
  * A level the fit never saw is an error. Rows with missing predictors predict null and are listed in missing_rows.
@@ -2246,3 +2258,15 @@ function stat_weighted_mean(array $values, array $weights, string $missing = 'ra
  * @throws \Exception Input error (codes 1001–1003).
  */
 function stat_weighted_var(array $values, array $weights, string $type = 'frequency', string $missing = 'raise'): float {}
+
+/**
+ * A root of f in [lower, upper] as R's uniroot(): Brent's method; f(lower) and f(upper) must not have the same sign.
+ * Returns the root, f(root), the iterations used and the estimated precision; E_WARNING and iter = maxiter when not converged.
+ * f receives one float and returns an int or float; an exception from f propagates. Nonfinite values during the search
+ * are replaced by +/-PHP_FLOAT_MAX, as R does, with one E_WARNING.
+ * @param callable(float): (int|float) $f
+ * @param float|null $tol Default PHP_FLOAT_EPSILON ** 0.25, as R
+ * @return array{root: float, f_root: float, iter: int, estim_prec: float}
+ * @throws \Exception Input error (code 1001).
+ */
+function uniroot(callable $f, float $lower, float $upper, ?float $tol = NULL, int $maxiter = 1000): array {}

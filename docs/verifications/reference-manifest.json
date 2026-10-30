@@ -24359,6 +24359,328 @@
           ]
         }
       ]
+    },
+    {
+      "path": "tests/fixtures/optimize-r.json",
+      "sha256": "137b16b6caa0e9544057084cf36a28b00e2bf9f732bc095ea54491f9bc74c1e2",
+      "generator": "tests/generate-optimize-fixtures.R",
+      "generator_sha256": "5c647068c5df7219471e6200258abf745819b2a4ed5507ec12a3f7c6950cc916",
+      "software_recorded_in_fixture": {
+        "r_version": "R version 4.6.1 (2026-06-24)"
+      },
+      "tolerance_policy": "Exact: optimum, objective, root, f(root), iterations, estimated precision and the number of function evaluations must equal R bit for bit; convergence warnings must agree.",
+      "model_specification": "Explicit saved matrices/vectors/options in fixture; generator records reference formula, family, seed and controls.",
+      "cases": [
+        {
+          "name": "parabola",
+          "section": "optimize",
+          "inputs_sha256": "302fba78b4b8ab3fa762951b36a467d12643684619fdebd62070ec7ec2f24b82",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "objective",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "parabola",
+          "section": "optimize",
+          "inputs_sha256": "289976a5b9ba882ec83ecd78995ada334a87a3d9515f373ce02da3a4a59d1227",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "objective",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "sine",
+          "section": "optimize",
+          "inputs_sha256": "9107721ca71315eafe92c9102eb33b8f416285f0adc0828ea64dc0613c94c951",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "objective",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "kink",
+          "section": "optimize",
+          "inputs_sha256": "113ecb121a281789dcff4fd6283cbfedd7d53a9aa5cff70c5dfb7991591a1834",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "objective",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "flat",
+          "section": "optimize",
+          "inputs_sha256": "6747f9a5aaa0e97b603fe06cac0048eb5883447e9f02fdc7fd05e2896513f8bb",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "objective",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "linear",
+          "section": "optimize",
+          "inputs_sha256": "ea5f4183925fdf8046662175f6f09dd6213067629fc3011faf7cfee566fd62eb",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "objective",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "decay",
+          "section": "optimize",
+          "inputs_sha256": "56f86c7bdaf464d19ac6a3518dceecd3b25ca720144002d8c046659774ff87f8",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "objective",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "double_well",
+          "section": "optimize",
+          "inputs_sha256": "1ebdebea6d2d965175f274af25e39165ad2f2260f76ecca7e76cf8b2a4ae837e",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "objective",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "wall",
+          "section": "optimize",
+          "inputs_sha256": "2a7c4dd6791b4d78367ea3dee27a578bd8a43fa34bf76aae4216ed6a7630f29d",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "objective",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "far",
+          "section": "optimize",
+          "inputs_sha256": "5242580048e17fc977e2ee335f8ea82224f492c7b663e1a62bb916282192ac50",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "objective",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "hump",
+          "section": "optimize",
+          "inputs_sha256": "e82dae57ac74d8bb47773ccb7562f10932d275181f0e4af009f9db731a1998e9",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "objective",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "sine",
+          "section": "optimize",
+          "inputs_sha256": "ba809ed85f82165ef876fa37d64b3616216df15a8c5386e964c7f22858806551",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "objective",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "sqrt2",
+          "section": "uniroot",
+          "inputs_sha256": "9c1df422cc5df1bec4ba7c9d8fb127b27e4d7fa968cd2768389ddecd76373600",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "root",
+            "f_root",
+            "iter",
+            "estim_prec",
+            "converged",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "sqrt2",
+          "section": "uniroot",
+          "inputs_sha256": "d2fc9c51ff0361203bdafda6a4fc021f207b31edacb6cb2773d988698ee53ea4",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "root",
+            "f_root",
+            "iter",
+            "estim_prec",
+            "converged",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "fixed_point",
+          "section": "uniroot",
+          "inputs_sha256": "07e35852731aa9a18a1fdc31a05fa2c7485574c455423d547f8cc7db20b2ca72",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "root",
+            "f_root",
+            "iter",
+            "estim_prec",
+            "converged",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "exp5",
+          "section": "uniroot",
+          "inputs_sha256": "611fa387da36d015053e57481541e1bcd70f173476826db57335e191455d469c",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "root",
+            "f_root",
+            "iter",
+            "estim_prec",
+            "converged",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "at_one",
+          "section": "uniroot",
+          "inputs_sha256": "c4b44aa871652205467cb98d72e10997115b37961f197a5202751b54c8007cde",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "root",
+            "f_root",
+            "iter",
+            "estim_prec",
+            "converged",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "at_three",
+          "section": "uniroot",
+          "inputs_sha256": "bd2944ea374f1e74200326dfcaf4ec66a4b1c4dbb81d6476b42454e6da058c65",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "root",
+            "f_root",
+            "iter",
+            "estim_prec",
+            "converged",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "step",
+          "section": "uniroot",
+          "inputs_sha256": "e5dbdbd8c6f89cd3659d7131bce594468ff89066bea4217dc741d6e348e28b8b",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "root",
+            "f_root",
+            "iter",
+            "estim_prec",
+            "converged",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "cubic",
+          "section": "uniroot",
+          "inputs_sha256": "59f662331cf651e938cb034c71b694704ef85a81534fe3767bf349522f45701b",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "root",
+            "f_root",
+            "iter",
+            "estim_prec",
+            "converged",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "cubic",
+          "section": "uniroot",
+          "inputs_sha256": "ca58482b1d87c1c8787e2de02e4f4a32814973f7b29a67aee945a3d4caa0b576",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "root",
+            "f_root",
+            "iter",
+            "estim_prec",
+            "converged",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "log",
+          "section": "uniroot",
+          "inputs_sha256": "b06c5b7b94424ba783a6ce867532ac30bb2e2f253fe164159c90eb8f5d8ca574",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "root",
+            "f_root",
+            "iter",
+            "estim_prec",
+            "converged",
+            "evaluations"
+          ]
+        },
+        {
+          "name": "cliff",
+          "section": "uniroot",
+          "inputs_sha256": "aa05df8a96fc613f71a469f5025d77f153e5fcd7fe153bcc22f501a387a04277",
+          "n": 1,
+          "p": 1,
+          "compared_quantities": [
+            "root",
+            "f_root",
+            "iter",
+            "estim_prec",
+            "converged",
+            "evaluations"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -10,6 +10,7 @@ mod csv;
 mod descriptive;
 mod distributions;
 mod draws;
+mod optimize;
 mod smoothing;
 fn stats_exception(e: stats_core::StatsError) -> PhpException {
     PhpException::new(
@@ -1106,7 +1107,6 @@ pub fn get_module(module: ModuleBuilder) -> ModuleBuilder {
         .function(wrap_function!(fit_logistic_mixed));
     let module = formula::register(module);
     let module = distributions::register(module);
-    csv::register(draws::register(smoothing::register(descriptive::register(
-        module,
-    ))))
+    let module = smoothing::register(descriptive::register(module));
+    csv::register(draws::register(optimize::register(module)))
 }

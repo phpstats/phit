@@ -17,7 +17,8 @@ GENERATORS={'ols-r':'tests/generate-fixtures.R','logistic-r':'tests/generate-log
  'formula-r':'tests/generate-formula-fixtures.R',
  'formula-lme4-r':'tests/generate-formula-lme4-fixtures.R',
  'predict-r':'tests/generate-predict-fixtures.R',
- 'smoothing-r':'tests/generate-smoothing-fixtures.R'}
+ 'smoothing-r':'tests/generate-smoothing-fixtures.R',
+ 'optimize-r':'tests/generate-optimize-fixtures.R'}
 POLICY={'ols-r':'1e-9 + 1e-7*abs(reference); zero/perfect fit conventions tested separately',
  'logistic-r':'1e-9 + 1e-7*abs(reference)','probit-r':'1e-9 + 1e-7*abs(reference)','poisson-r':'1e-9 + 1e-7*abs(reference)',
  'r-compatibility':'1e-7 + 1e-6*abs(reference)',
@@ -34,6 +35,7 @@ POLICY={'ols-r':'1e-9 + 1e-7*abs(reference); zero/perfect fit conventions tested
  'formula-lme4-r':'lmer as lmm-expanded-r bobyqa (likelihood/AIC/BIC 5e-6 + 1e-9*abs(reference); estimates 1e-5 + 1e-5*abs(reference)); glmer as logistic-mixed-r (likelihood 1e-6 + 1e-8*abs(reference); SE/covariance 2e-5 + 2e-3*abs(reference); others 2e-5 + 2e-4*abs(reference))',
  'predict-r':'fit/intervals/se 1e-7 + 1e-6*abs(reference); GLM se_fit_final (information at the final coefficients, recomputed in R) the same, R predict.glm se.fit 1e-6 + 1e-3*abs(reference); lmer 1e-5 + 1e-5*abs(reference); glmer 2e-5 + 2e-4*abs(reference); missing rows exact. GLM references use glm.control(epsilon = 1e-14).',
  'smoothing-r':'Relative 1e-12 for bandwidths, grids and interpolated values; density heights 1e-12 times the peak height; ECDF proportions and n exact. NA (null) must be NAN. Missing/error conventions tested separately.',
+ 'optimize-r':'Exact: optimum, objective, root, f(root), iterations, estimated precision and the number of function evaluations must equal R bit for bit; convergence warnings must agree.',
  'rng-python-r':'Independent ChaCha/seed/Open01 uniforms exact; R inverse-CDF values 1e-15 + 1e-12*abs(reference); discrete/point-mass samples exact. Prefix/repeatability, limits and moments tested separately.'}
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def compact_ref(ref):return {k:v for k,v in ref.items() if k not in ['result','results','expected']}
@@ -44,6 +46,9 @@ for stem,generator in GENERATORS.items():
  if stem=='descriptive-r':
   source_cases=[{**c,'section':section,'expected':{k:v for k,v in c.items() if k not in ['name','values','x','y','weights','quantile_probabilities']}}
     for section in ['descriptive','pairs','weighted'] for c in data[section]]
+ if stem=='optimize-r':
+  source_cases=[{'section':section,'name':c['f'],'inputs':{k:v for k,v in c.items() if k!='expected'},'expected':c['expected']}
+    for section in ['optimize','uniroot'] for c in data[section]]
  if stem=='smoothing-r':
   source_cases=[{'section':section,'name':c['name'],'inputs':{k:v for k,v in c.items() if k not in ['name','expected','nrd0','nrd']},
     'expected':c['expected'] if 'expected' in c else {'nrd0':c['nrd0'],'nrd':c['nrd']}}
@@ -59,7 +64,9 @@ for stem,generator in GENERATORS.items():
   if isinstance(c.get('reference'),dict):metadata['reference']=compact_ref(c['reference'])
   if references:metadata['references']={k:compact_ref(v) for k,v in references.items()}
   if 'nlme_reference' in c:metadata['nlme_reference']=compact_ref(c['nlme_reference'])
-  if stem=='smoothing-r':
+  if stem=='optimize-r':
+   inputs={**c['inputs'],'section':c['section']};n=1;p=1;quantities=list(expected)
+  elif stem=='smoothing-r':
    inputs={**c['inputs'],'section':c['section']};n=len(c['inputs']['x']);p=1
    quantities=list(expected) if isinstance(expected,dict) else [c['section']]
   elif stem=='predict-r':
@@ -80,7 +87,7 @@ for stem,generator in GENERATORS.items():
   cases.append({**metadata,'inputs_sha256':hashlib.sha256(json.dumps(inputs,sort_keys=True,separators=(',',':')).encode()).hexdigest(),
     'n':n,'p':p,'compared_quantities':quantities})
  report['fixtures'].append({'path':str(path.relative_to(ROOT)),'sha256':sha(path),'generator':generator,'generator_sha256':sha(ROOT/generator),
-  'software_recorded_in_fixture':{k:v for k,v in data.items() if k not in ['cases','descriptive','pairs','weighted','datasets','newdata','density','bandwidth','approx','ecdf']},'tolerance_policy':POLICY[stem],
+  'software_recorded_in_fixture':{k:v for k,v in data.items() if k not in ['cases','descriptive','pairs','weighted','datasets','newdata','density','bandwidth','approx','ecdf','optimize','uniroot']},'tolerance_policy':POLICY[stem],
   'model_specification':('Literal draw/covariance matrices and options; 80-digit independent Decimal formulas and decompositions.' if stem=='draws-python' else
     'Explicit saved matrices/vectors/options in fixture; generator records reference formula, family, seed and controls.'),
   'cases':cases})
