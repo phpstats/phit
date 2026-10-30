@@ -42,6 +42,8 @@ policies, pairwise alignment, weight definitions and arithmetic overflow errors.
 The [distribution record](verifications/distributions.qmd) describes provenance,
 reference limitations and operation-specific tolerances. The [utility contract](descriptive.qmd)
 documents undefined correlation separately from numerical failure.
+`tests/smoothing.php` compares 15,639 density, bandwidth, interpolation, and ECDF
+quantities with R at relative `1e-12`.
 
 Refresh PHP error evidence without changing independent expected values:
 

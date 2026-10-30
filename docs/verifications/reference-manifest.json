@@ -23959,6 +23959,406 @@
           ]
         }
       ]
+    },
+    {
+      "path": "tests/fixtures/smoothing-r.json",
+      "sha256": "ecd5cba76bbd985e33011e018cf3e6e1cee134aaa0e81fbd0896453eaa1eabf0",
+      "generator": "tests/generate-smoothing-fixtures.R",
+      "generator_sha256": "ee27664a4e491c15f893de9d700999346a9f1f44734aec0a80a1e800f2937a04",
+      "software_recorded_in_fixture": {
+        "r_version": "R version 4.6.1 (2026-06-24)",
+        "seed": 20261030
+      },
+      "tolerance_policy": "Relative 1e-12 for bandwidths, grids and interpolated values; density heights 1e-12 times the peak height; ECDF proportions and n exact. NA (null) must be NAN. Missing/error conventions tested separately.",
+      "model_specification": "Explicit distribution parameterization/evaluation points or numeric descriptive slices; no model fit or data filtering in reference generation.",
+      "cases": [
+        {
+          "name": "normal",
+          "section": "density",
+          "inputs_sha256": "3bbab34b341dd623df10f64d991272604eaf6288a76eaf59a8a62120fc0fdb83",
+          "n": 200,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "posterior_draws",
+          "section": "density",
+          "inputs_sha256": "84df137f157c504c2e43ee189fb9154a5d15ebb53de607e2f8450e34f56ae3bb",
+          "n": 4000,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "skewed_nrd_adjust",
+          "section": "density",
+          "inputs_sha256": "e43d38943118ce4094f78d32a519f8c717aad9599af65810776f8cc406c35146",
+          "n": 300,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "counts_iqr_zero",
+          "section": "density",
+          "inputs_sha256": "5c3f3ff2197048475fc129c486f963312f20c9c667708a97b628dec7e415a9e7",
+          "n": 45,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "constant",
+          "section": "density",
+          "inputs_sha256": "0e065eb9601f79a6a8e47e39fee616ae76bd9cb23ca2ac499a0c1ce7a61c5cef",
+          "n": 5,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "zeros",
+          "section": "density",
+          "inputs_sha256": "7acd04b02b967ccd487fdbf2f28e6b9be7fd2e38bc7be654a53861106262e97e",
+          "n": 3,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "fixed_bw_range",
+          "section": "density",
+          "inputs_sha256": "3da80b9b8ee7978562d9cdd98a5a894870bf676c4873870eb00e2ad855baddff",
+          "n": 7,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "cut_one_large_n",
+          "section": "density",
+          "inputs_sha256": "58759e629003b9b9ab1736187dce772b7897c4216e6764e68ec6eccc1504c360",
+          "n": 7,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "weighted",
+          "section": "density",
+          "inputs_sha256": "0e8624f33e5cec91220c7f59a262457e61ed93d3314126b8374c4bf875308bc3",
+          "n": 7,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "single_point_grid",
+          "section": "density",
+          "inputs_sha256": "6dfc065437738b674ed17fb6ceeed91a39ac902c9b98fd71f616871840a945d9",
+          "n": 7,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "kernel_epanechnikov",
+          "section": "density",
+          "inputs_sha256": "93d6146a320739768dde6c0594659ef07f856054629a2d6f02224405a3c29ade",
+          "n": 7,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "kernel_rectangular",
+          "section": "density",
+          "inputs_sha256": "8a2791f7e5d3571f514f587a4262d791e4fb476872c559dd3d6e264e6b0cab17",
+          "n": 7,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "kernel_triangular",
+          "section": "density",
+          "inputs_sha256": "fb9d353f5b9a64da1c6dbbe48a836556c80c75c3dfb348188c1dfe2dc1334a27",
+          "n": 7,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "kernel_biweight",
+          "section": "density",
+          "inputs_sha256": "a081d8a222cdb1a940adb12227bc7805efb5125770d76fdc145ee4daea0220b6",
+          "n": 7,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "kernel_cosine",
+          "section": "density",
+          "inputs_sha256": "e2caa85c3a0a67a130680eb4d2fecfde0169112341ef0e82550291f58daaacee",
+          "n": 7,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "kernel_optcosine",
+          "section": "density",
+          "inputs_sha256": "1312ec01d519ed465b0bf79e06e8582d8df3e4f4b990fe6882d5c6a2b50bb969",
+          "n": 7,
+          "p": 1,
+          "compared_quantities": [
+            "x",
+            "y",
+            "bw",
+            "n"
+          ]
+        },
+        {
+          "name": "normal",
+          "section": "bandwidth",
+          "inputs_sha256": "b4669cf8e46bc306968707ca8bd06db942a192e6b8426167e01e9fdbcb2af7c2",
+          "n": 200,
+          "p": 1,
+          "compared_quantities": [
+            "nrd0",
+            "nrd"
+          ]
+        },
+        {
+          "name": "draws",
+          "section": "bandwidth",
+          "inputs_sha256": "30eef2a017e3349ea579189f7d323dd2da47d7557b69e00a19c9a09e0f750bc0",
+          "n": 4000,
+          "p": 1,
+          "compared_quantities": [
+            "nrd0",
+            "nrd"
+          ]
+        },
+        {
+          "name": "skewed",
+          "section": "bandwidth",
+          "inputs_sha256": "79445d62c635e37708e08311ac813cb11d4f6ae5e0c997801f6fcb652ce86fec",
+          "n": 300,
+          "p": 1,
+          "compared_quantities": [
+            "nrd0",
+            "nrd"
+          ]
+        },
+        {
+          "name": "small",
+          "section": "bandwidth",
+          "inputs_sha256": "9bb250868bc390460fa234ebde3d85d1180ac87919b7a5974e5a182606a2ce7d",
+          "n": 7,
+          "p": 1,
+          "compared_quantities": [
+            "nrd0",
+            "nrd"
+          ]
+        },
+        {
+          "name": "counts",
+          "section": "bandwidth",
+          "inputs_sha256": "10bf36b3fde4bfebbb66e637b8493ed819c50b5e2962406221beebe90c854417",
+          "n": 45,
+          "p": 1,
+          "compared_quantities": [
+            "nrd0",
+            "nrd"
+          ]
+        },
+        {
+          "name": "constant",
+          "section": "bandwidth",
+          "inputs_sha256": "157caf667d89a77eb8de1c50729c74476485741751d3d3be11197d7706d8faac",
+          "n": 5,
+          "p": 1,
+          "compared_quantities": [
+            "nrd0",
+            "nrd"
+          ]
+        },
+        {
+          "name": "zeros",
+          "section": "bandwidth",
+          "inputs_sha256": "221c62ac3e90992b525c9e68e58d26a11b48dae56b978677618a2daee9c5948a",
+          "n": 3,
+          "p": 1,
+          "compared_quantities": [
+            "nrd0",
+            "nrd"
+          ]
+        },
+        {
+          "name": "pair",
+          "section": "bandwidth",
+          "inputs_sha256": "523edb66dda66db7f156f5a99130b2ec5ee51961c678a49c1147f07352c50f00",
+          "n": 2,
+          "p": 1,
+          "compared_quantities": [
+            "nrd0",
+            "nrd"
+          ]
+        },
+        {
+          "name": "linear_rule1",
+          "section": "approx",
+          "inputs_sha256": "81db1536022fb9465cbc0c8059018c2087b6a4ad576da898acd6c6f4ed4c6af8",
+          "n": 8,
+          "p": 1,
+          "compared_quantities": [
+            "approx"
+          ]
+        },
+        {
+          "name": "linear_rule2",
+          "section": "approx",
+          "inputs_sha256": "d15d0257a56a88629159007ccc5c7bd880de68cc8a0d67b3492d2c16f5de360d",
+          "n": 8,
+          "p": 1,
+          "compared_quantities": [
+            "approx"
+          ]
+        },
+        {
+          "name": "constant_left",
+          "section": "approx",
+          "inputs_sha256": "22c552aba06988baa060710d0af823165325b1b71cb7922109314213a2a7cf02",
+          "n": 8,
+          "p": 1,
+          "compared_quantities": [
+            "approx"
+          ]
+        },
+        {
+          "name": "constant_mid",
+          "section": "approx",
+          "inputs_sha256": "d5f1b28bef7c3a708b90e5bcabe9152f0dbef96a75fe68314638a016ee811a69",
+          "n": 8,
+          "p": 1,
+          "compared_quantities": [
+            "approx"
+          ]
+        },
+        {
+          "name": "ties_min",
+          "section": "approx",
+          "inputs_sha256": "948bee8e0c221d2c8fbf3ea3daae1470a80f3fc24a639eb6a0d3e7f2216493b9",
+          "n": 8,
+          "p": 1,
+          "compared_quantities": [
+            "approx"
+          ]
+        },
+        {
+          "name": "ties_max",
+          "section": "approx",
+          "inputs_sha256": "476d48ae8ad2f4bebbcceb302141fe90218a98df83f6cc452415becbb8445a42",
+          "n": 8,
+          "p": 1,
+          "compared_quantities": [
+            "approx"
+          ]
+        },
+        {
+          "name": "density_heights",
+          "section": "approx",
+          "inputs_sha256": "28c69f4c99425b4559ed322eb0bddcad6f727ffb0ddb7bba495ae59ea37a5e40",
+          "n": 512,
+          "p": 1,
+          "compared_quantities": [
+            "approx"
+          ]
+        },
+        {
+          "name": "small",
+          "section": "ecdf",
+          "inputs_sha256": "744c340e33da6af42be681f21daea86dbe47d259229cdc7779c449434826edb1",
+          "n": 5,
+          "p": 1,
+          "compared_quantities": [
+            "ecdf"
+          ]
+        },
+        {
+          "name": "draws",
+          "section": "ecdf",
+          "inputs_sha256": "7b0408e1997bed3d9a15a4a21914f9cb8a4ff5b4db15f37ac98f41cdd9ac97d1",
+          "n": 4000,
+          "p": 1,
+          "compared_quantities": [
+            "ecdf"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -2101,6 +2101,34 @@ function predict(array $fit, mixed $newdata, string $type = 'link', bool $seFit 
 function read_csv(string $path, array $options = []): array {}
 
 /**
+ * Interpolate (x, y) at xout as R's approx(): method 'linear' or 'constant' (f weights the right-hand value),
+ * rule 1 gives NAN outside [min(x), max(x)], rule 2 the nearest end value; tied x collapse by ties 'mean', 'min' or 'max'.
+ * Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+ * @param array<int|float|null> $x
+ * @param array<int|float|null> $y
+ * @param array<int|float|null> $xout Evaluation points; null or NAN gives NAN
+ * @return list<float>
+ * @throws \Exception Input error (codes 1001–1003).
+ */
+function stat_approx(array $x, array $y, array $xout, string $method = 'linear', int $rule = 1, string $ties = 'mean', float $f = 0.0, string $missing = 'raise'): array {}
+
+/**
+ * R's bw.nrd: 1.06 * min(sd, IQR/1.34) * n^(-1/5).
+ * Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+ * @param array<int|float|null> $x
+ * @throws \Exception Input error (codes 1001–1003).
+ */
+function stat_bw_nrd(array $x, string $missing = 'raise'): float {}
+
+/**
+ * R's bw.nrd0: 0.9 * min(sd, IQR/1.34) * n^(-1/5), with R's fallbacks when that is zero.
+ * Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+ * @param array<int|float|null> $x
+ * @throws \Exception Input error (codes 1001–1003).
+ */
+function stat_bw_nrd0(array $x, string $missing = 'raise'): float {}
+
+/**
  * Pearson correlation; NAN when either input is constant.
  * null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays).
  * Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
@@ -2119,6 +2147,29 @@ function stat_cor(array $x, array $y, string $missing = 'raise'): float {}
  * @throws \Exception Input error (codes 1001–1003).
  */
 function stat_cov(array $x, array $y, string $type = 'sample', string $missing = 'raise'): float {}
+
+/**
+ * Kernel density estimate as R's density(): linear binning, FFT convolution, then interpolation onto n points from `from` to `to`.
+ * bw: 'nrd0' (default), 'nrd' or a number, multiplied by adjust. Kernels: 'gaussian', 'epanechnikov', 'rectangular', 'triangular', 'biweight', 'cosine', 'optcosine'.
+ * Weights are not normalized; as in R, weights summing to one are renormalized after missing values are dropped.
+ * Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+ * @param array<int|float|null> $x
+ * @param string|float $bw 'nrd0', 'nrd' or a positive bandwidth
+ * @param array<int|float|null>|null $weights
+ * @return array{x: list<float>, y: list<float>, bw: float, n: int}
+ * @throws \Exception Input error (codes 1001–1003).
+ */
+function stat_density(array $x, mixed $bw = 'nrd0', float $adjust = 1.0, string $kernel = 'gaussian', int $n = 512, ?float $from = NULL, ?float $to = NULL, float $cut = 3.0, ?array $weights = NULL, string $missing = 'raise'): array {}
+
+/**
+ * Empirical CDF of x at each q: the proportion of x at or below q, as R's ecdf(x)(q).
+ * Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+ * @param array<int|float|null> $x
+ * @param array<int|float|null> $q Evaluation points; null or NAN gives NAN
+ * @return list<float>
+ * @throws \Exception Input error (codes 1001–1003).
+ */
+function stat_ecdf(array $x, array $q, string $missing = 'raise'): array {}
 
 /**
  * Arithmetic mean.

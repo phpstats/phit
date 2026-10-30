@@ -14,7 +14,7 @@ fn error(kind: ErrorKind, message: &str) -> PhpException {
     stats_exception(StatsError::new(kind, message))
 }
 
-fn element(value: &Zval) -> PhpResult<Option<f64>> {
+pub(crate) fn element(value: &Zval) -> PhpResult<Option<f64>> {
     if value.is_null() {
         return Ok(None);
     }
@@ -39,7 +39,7 @@ fn element(value: &Zval) -> PhpResult<Option<f64>> {
     }
 }
 
-fn drop_missing(missing: &str) -> PhpResult<bool> {
+pub(crate) fn drop_missing(missing: &str) -> PhpResult<bool> {
     match missing {
         "drop" => Ok(true),
         "raise" => Ok(false),
@@ -50,14 +50,14 @@ fn drop_missing(missing: &str) -> PhpResult<bool> {
     }
 }
 
-fn missing_error() -> PhpException {
+pub(crate) fn missing_error() -> PhpException {
     error(
         ErrorKind::InvalidInput,
         "missing values found with missing='raise'",
     )
 }
 
-fn values(input: &ZendHashTable, missing: &str) -> PhpResult<Vec<f64>> {
+pub(crate) fn values(input: &ZendHashTable, missing: &str) -> PhpResult<Vec<f64>> {
     let drop = drop_missing(missing)?;
     let mut out = Vec::with_capacity(input.len());
     for value in input.values() {
@@ -71,7 +71,11 @@ fn values(input: &ZendHashTable, missing: &str) -> PhpResult<Vec<f64>> {
 }
 
 // Two aligned arrays with pairwise deletion of missing values.
-fn pairs(x: &ZendHashTable, y: &ZendHashTable, missing: &str) -> PhpResult<(Vec<f64>, Vec<f64>)> {
+pub(crate) fn pairs(
+    x: &ZendHashTable,
+    y: &ZendHashTable,
+    missing: &str,
+) -> PhpResult<(Vec<f64>, Vec<f64>)> {
     let drop = drop_missing(missing)?;
     if x.len() != y.len() {
         return Err(error(

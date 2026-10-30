@@ -29,6 +29,15 @@ $descriptive=['Phit\stat_mean'=>'Arithmetic mean.','Phit\stat_var'=>"Variance; t
  'Phit\stat_quantile_array'=>'Several type 7 quantiles from one sort.','Phit\stat_median'=>'Median (type 7 quantile at 0.5).',
  'Phit\stat_weighted_mean'=>'Weighted mean sum(w*x)/sum(w); weights must be nonnegative with a positive sum. Negative weights reject before missing deletion.',
  'Phit\stat_weighted_var'=>"Weighted variance; type 'frequency' (W - 1), 'reliability' (W - sum(w^2)/W) or 'population' (W). Negative weights reject before missing deletion."];
+$smoothing=[
+ 'Phit\stat_density'=>['summary'=>"Kernel density estimate as R's density(): linear binning, FFT convolution, then interpolation onto n points from `from` to `to`.\n * bw: 'nrd0' (default), 'nrd' or a number, multiplied by adjust. Kernels: 'gaussian', 'epanechnikov', 'rectangular', 'triangular', 'biweight', 'cosine', 'optcosine'.\n * Weights are not normalized; as in R, weights summing to one are renormalized after missing values are dropped.",
+  'return'=>'array{x: list<float>, y: list<float>, bw: float, n: int}'],
+ 'Phit\stat_bw_nrd0'=>['summary'=>"R's bw.nrd0: 0.9 * min(sd, IQR/1.34) * n^(-1/5), with R's fallbacks when that is zero.",'return'=>null],
+ 'Phit\stat_bw_nrd'=>['summary'=>"R's bw.nrd: 1.06 * min(sd, IQR/1.34) * n^(-1/5).",'return'=>null],
+ 'Phit\stat_approx'=>['summary'=>"Interpolate (x, y) at xout as R's approx(): method 'linear' or 'constant' (f weights the right-hand value),\n * rule 1 gives NAN outside [min(x), max(x)], rule 2 the nearest end value; tied x collapse by ties 'mean', 'min' or 'max'.",
+  'return'=>'list<float>'],
+ 'Phit\stat_ecdf'=>['summary'=>"Empirical CDF of x at each q: the proportion of x at or below q, as R's ecdf(x)(q).",'return'=>'list<float>'],
+];
 $draws=[
  'Phit\draws_moments'=>['summary'=>"Weighted draw mean and covariance; weights normalized internally. Normalization 'population' or 'unbiased' (reliability weights, never frequency counts). Singular covariance is valid.",
   'params'=>['draws'=>'array<array<int|float>>','weights'=>'array<int|float>|null'],
@@ -115,6 +124,16 @@ foreach ($functions as $name) {
   $text.=" * @return array{\n";
   foreach($predict['result'] as $key=>$type)$text.=" *   $key: $type,\n";
   $text.=" * }\n * @throws \\Exception Input error (1001), malformed fit, new levels, or unsupported options (1007).\n */\n";
+ } elseif (isset($smoothing[$name])) {
+  $text.="/**\n * {$smoothing[$name]['summary']}\n * Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.\n";
+  foreach ($r->getParameters() as $p) {
+   $type=(string)$p->getType();
+   if (in_array($p->getName(),['xout','q'],true)) $text.=' * @param array<int|float|null> $'.$p->getName()." Evaluation points; null or NAN gives NAN\n";
+   elseif ($type==='array'||$type==='?array') $text.=' * @param array<int|float|null>'.($type==='?array'?'|null':'').' $'.$p->getName()."\n";
+   elseif ($p->getName()==='bw') $text.=" * @param string|float \$bw 'nrd0', 'nrd' or a positive bandwidth\n";
+  }
+  if ($smoothing[$name]['return']) $text.=" * @return {$smoothing[$name]['return']}\n";
+  $text.=" * @throws \\Exception Input error (codes 1001–1003).\n */\n";
  } elseif (isset($descriptive[$name])) {
   $text.="/**\n * {$descriptive[$name]}\n * null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays).\n";
   $text.=" * Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.\n";

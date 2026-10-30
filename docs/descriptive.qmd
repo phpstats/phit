@@ -99,3 +99,56 @@ Regenerate intentionally with `Rscript tests/generate-distribution-fixtures.R`;
 this also regenerates the distribution R fixture. The [provenance manifest](verifications/reference-manifest.json)
 records inputs, versions, generators and hashes. The [release gate](verification.qmd)
 includes the PHP suite and the runnable `examples/distributions.php`.
+
+## Density estimation, interpolation, and the ECDF
+
+Five functions follow R's `density()`, `bw.nrd0()`, `bw.nrd()`, `approx()`, and
+`ecdf()`. Argument names match R's.
+
+```php
+Phit\stat_density(array $x, string|float $bw = 'nrd0', float $adjust = 1.0, string $kernel = 'gaussian',
+    int $n = 512, ?float $from = null, ?float $to = null, float $cut = 3.0, ?array $weights = null,
+    string $missing = 'raise'): array; // ['x' => list, 'y' => list, 'bw' => float, 'n' => int]
+Phit\stat_bw_nrd0(array $x, string $missing = 'raise'): float;
+Phit\stat_bw_nrd(array $x, string $missing = 'raise'): float;
+Phit\stat_approx(array $x, array $y, array $xout, string $method = 'linear', int $rule = 1,
+    string $ties = 'mean', float $f = 0.0, string $missing = 'raise'): array;
+Phit\stat_ecdf(array $x, array $q, string $missing = 'raise'): array;
+```
+
+`stat_density` reproduces R's algorithm. The data are binned linearly onto a grid
+of at least 512 points (the next power of two above `n`), convolved with the kernel
+by FFT, and interpolated onto `n` points from `from` to `to`. The grid ends default
+to the data range extended by `cut` bandwidths. The bandwidth is `'nrd0'`
+(Silverman's rule, the default), `'nrd'` (Scott's variation), or a positive
+number, and is multiplied by `adjust`. The kernels are `gaussian`, `epanechnikov`,
+`rectangular`, `triangular`, `biweight`, `cosine`, and `optcosine`. Weights are
+used as given, as in R. Weights that sum to one are renormalized after missing
+values are dropped. The automatic bandwidths ignore weights, as R's do. R's
+`ucv`, `bcv`, and `SJ` bandwidths are not available.
+
+`stat_approx` sorts the points by x and collapses tied x values by `ties`
+(`'mean'`, `'min'`, or `'max'`). It then interpolates linearly or, with
+`method: 'constant'`, by a step function in which `f` weights the right-hand value.
+Outside the data range, `rule: 1` returns NAN and `rule: 2` returns the value at
+the nearer end. `stat_ecdf` returns the proportion of x at or below each q.
+
+The data arrays (`x`, `y`, and `weights`) follow the missing-value policy above.
+Pairs are dropped together. Evaluation points (`xout` and `q`) may be infinite,
+and a null or NAN point returns NAN, as R returns NA.
+
+```php
+$draws = Phit\dist_normal_rng(4000, 7, 0.3, 0.05);
+$d = Phit\stat_density($draws);
+$heights = Phit\stat_approx($d['x'], $d['y'], [0.25, 0.3, 0.35]);
+$below = Phit\stat_ecdf($draws, [0.0]); // share of draws at or below zero
+```
+
+`tests/smoothing.php` compares 15,639 quantities with R. The 16 density cases
+cover every kernel, both bandwidth rules, fixed bandwidths, weights, explicit
+ranges, grids larger than 512 points, and the zero-IQR and constant-data
+bandwidth fallbacks. The approx and ECDF cases cover both rules, both methods,
+each ties option, and reading density heights at quantiles of posterior draws.
+Bandwidths, grids, and interpolated values agree with R to relative `1e-12`.
+Density heights agree to `1e-12` times the peak height, and ECDF proportions
+agree exactly. Regenerate the fixture with `Rscript tests/generate-smoothing-fixtures.R`.

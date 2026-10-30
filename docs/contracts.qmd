@@ -13,7 +13,8 @@ The registered PHP module is `phit` (`extension=phit`; Composer `ext-phit`).
 Every function is in the `Phit` namespace, grouped by prefix: `fit_*` estimates
 models (`fit_lm`, `fit_glm`, `fit_lmer`, `fit_ols`, `fit_mixed`, ...), `dist_*`
 evaluates and samples distributions (`dist_normal_cdf`, `dist_binomial_rng`),
-`stat_*` computes descriptive statistics (`stat_mean`, `stat_quantile`), and
+`stat_*` computes descriptive statistics, densities, and interpolation (`stat_mean`,
+`stat_quantile`, `stat_density`), and
 `draws_*` transforms posterior draws. `model_matrix`, `predict` and `read_csv`
 complete the formula and I/O interface. Import what you use:
 

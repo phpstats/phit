@@ -4855,6 +4855,88 @@
             "problems"
         ]
     },
+    "Phit\\stat_approx": {
+        "parameters": [
+            {
+                "name": "x",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "y",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "xout",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "method",
+                "type": "string",
+                "optional": true,
+                "default": "linear"
+            },
+            {
+                "name": "rule",
+                "type": "int",
+                "optional": true,
+                "default": 1
+            },
+            {
+                "name": "ties",
+                "type": "string",
+                "optional": true,
+                "default": "mean"
+            },
+            {
+                "name": "f",
+                "type": "float",
+                "optional": true,
+                "default": 0.0
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "raise"
+            }
+        ],
+        "return_type": "array"
+    },
+    "Phit\\stat_bw_nrd": {
+        "parameters": [
+            {
+                "name": "x",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "raise"
+            }
+        ],
+        "return_type": "float"
+    },
+    "Phit\\stat_bw_nrd0": {
+        "parameters": [
+            {
+                "name": "x",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "raise"
+            }
+        ],
+        "return_type": "float"
+    },
     "Phit\\stat_cor": {
         "parameters": [
             {
@@ -4902,6 +4984,91 @@
             }
         ],
         "return_type": "float"
+    },
+    "Phit\\stat_density": {
+        "parameters": [
+            {
+                "name": "x",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "bw",
+                "type": "mixed",
+                "optional": true,
+                "default": "nrd0"
+            },
+            {
+                "name": "adjust",
+                "type": "float",
+                "optional": true,
+                "default": 1.0
+            },
+            {
+                "name": "kernel",
+                "type": "string",
+                "optional": true,
+                "default": "gaussian"
+            },
+            {
+                "name": "n",
+                "type": "int",
+                "optional": true,
+                "default": 512
+            },
+            {
+                "name": "from",
+                "type": "?float",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "to",
+                "type": "?float",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "cut",
+                "type": "float",
+                "optional": true,
+                "default": 3.0
+            },
+            {
+                "name": "weights",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "raise"
+            }
+        ],
+        "return_type": "array"
+    },
+    "Phit\\stat_ecdf": {
+        "parameters": [
+            {
+                "name": "x",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "q",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "raise"
+            }
+        ],
+        "return_type": "array"
     },
     "Phit\\stat_mean": {
         "parameters": [
