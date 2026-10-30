@@ -23,7 +23,6 @@ COPY . .
 # Exercise the actual installer, not just a hand-written make approximation.
 RUN php /usr/local/bin/pie repository:add path /src \
     && php /usr/local/bin/pie install 'phpstats/phit:*@dev' --no-interaction \
-       --with-php-config=/usr/local/bin/php-config --with-phpize-path=/usr/local/bin/phpize \
     && php tests/deployment.php
 
 FROM build AS checks

@@ -12,7 +12,7 @@ ifneq ($(filter install install-modules install-stats-rust,$(MAKECMDGOALS)),)
 stats-rust-build: stats-artifact-check
 else
 stats-rust-build:
-	PHP="$(STATS_PHP)" PHP_CONFIG="$(PHP_CONFIG)" CARGO_TARGET_DIR="$(STATS_CARGO_TARGET_DIR)" "$(CARGO)" build --manifest-path "$(top_srcdir)/../Cargo.toml" -p phit --lib --release --locked
+	PHP="$(STATS_PHP)" PHP_CONFIG="$(STATS_PHP_CONFIG)" CARGO_TARGET_DIR="$(STATS_CARGO_TARGET_DIR)" "$(CARGO)" build --manifest-path "$(top_srcdir)/../Cargo.toml" -p phit --lib --release --locked
 	@mkdir -p "$(top_builddir)/modules"
 	cp "$(STATS_ARTIFACT)" "$(STATS_MODULE)"
 endif

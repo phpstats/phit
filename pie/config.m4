@@ -15,12 +15,19 @@ if test "$PHP_PHIT" != "no"; then
     AC_MSG_ERROR([v0.1 packaging targets PHP 8.3, 8.4 and 8.5])
   fi
   STATS_PHP=`$PHP_CONFIG --php-binary`
+  dnl configure keeps PHP_CONFIG to itself; without --with-php-config it is the
+  dnl bare name php-config, so hand the build an absolute path.
+  STATS_PHP_CONFIG=`command -v "$PHP_CONFIG"`
+  if test -z "$STATS_PHP_CONFIG"; then
+    AC_MSG_ERROR([cannot find php-config ($PHP_CONFIG); pass --with-php-config])
+  fi
   AS_CASE([$host_os],
     [linux*], [STATS_DYLIB_SUFFIX=so],
     [darwin*], [STATS_DYLIB_SUFFIX=dylib],
     [AC_MSG_ERROR([v0.1 packaging supports Linux and macOS only])])
   PHP_SUBST([CARGO])
   PHP_SUBST([STATS_PHP])
+  PHP_SUBST([STATS_PHP_CONFIG])
   PHP_SUBST([STATS_DYLIB_SUFFIX])
   PHP_ADD_MAKEFILE_FRAGMENT([$srcdir/Makefile.frag])
 fi
