@@ -266,8 +266,13 @@ fn fft(re: &mut [f64], im: &mut [f64], inverse: bool) {
         let step = sign * 2.0 * PI / len as f64;
         for k in 0..half {
             // Twiddles computed directly rather than by recurrence keep the
-            // rounding error at a few ulps for large transforms.
-            let (s, c) = (step * k as f64).sin_cos();
+            // rounding error at a few ulps for large transforms. Separate sin
+            // and cos calls, kept apart by black_box, stop LLVM fusing them into
+            // Apple's __sincos_stret, which can differ from libm sin/cos by an
+            // ulp; phit-polyfill, which has only sin() and cos(), then matches
+            // bit for bit.
+            let angle = step * k as f64;
+            let (s, c) = (angle.sin(), std::hint::black_box(angle).cos());
             for start in (0..n).step_by(len) {
                 let (a, b) = (start + k, start + k + half);
                 let tr = re[b] * c - im[b] * s;
