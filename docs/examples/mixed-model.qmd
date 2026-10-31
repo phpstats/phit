@@ -1,0 +1,72 @@
+---
+title: "Fit a mixed model"
+---
+
+This example fits test scores on study hours with a random intercept for each school, using `fit_lmer()`, and reads the fixed effects, the variance components, and each school's estimated effect.
+
+Requires the phit extension ([Installation](../installation.qmd)) and a Composer project, for `vendor/autoload.php`.
+
+## Data
+
+The data are 30 simulated students, five from each of six schools. They are the first five students of each of the first six schools in [`docs/data/schools.csv`](https://github.com/phpstats/phit/blob/main/docs/data/schools.csv), with scores rounded to one decimal. `score` is a test score in points, and `study_hours` is time spent studying, in hours.
+
+## Code
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+use function Phit\fit_lmer;
+
+$students = [
+    'school' => array_merge(...array_map(fn ($s) => array_fill(0, 5, "school-0$s"), range(1, 6))),
+    'study_hours' => [11.58, 2.7, 10.02, 3.71, 4.38, 4.3, 2.8, 11.5, 1.15, 3.9, 7.27, 1.24, 6.08, 1.37, 11.43,
+        8.82, 11.44, 5.52, 2.04, 4.93, 3.52, 3.39, 1.15, 8.2, 9.63, 6.3, 9.93, 2.54, 2.08, 5.78],
+    'score' => [78.3, 67.2, 88.2, 68.5, 60.1, 69.2, 59.1, 92.1, 64.4, 67.1, 72.9, 55.8, 62.6, 52.6, 83.1,
+        63.7, 83.9, 52.8, 51.9, 57.1, 68.3, 67.6, 60.5, 81.6, 75.2, 81.5, 89.4, 60.7, 62.5, 68.6],
+];
+
+$fit = fit_lmer('score ~ study_hours + (1 | school)', $students);
+
+foreach ($fit['columns'] as $i => $name) {
+    printf("%-12s %7.2f (se %.2f)\n", $name, $fit['coefficients'][$i], $fit['std_errors'][$i]);
+}
+
+$school = $fit['random'][0];
+printf("\nschool SD %.2f, residual SD %.2f, %d students in %d schools\n\n",
+    sqrt($school['covariance'][0][0]), $fit['sigma'], $fit['n_observations'], count($school['group_labels']));
+
+foreach ($school['group_labels'] as $g => $label) {
+    $effect = $school['effects'][$g][0];
+    $se = sqrt($school['effects_cond_var'][$g][0][0]);
+    printf("%s %+6.2f (se %.2f)\n", $label, $effect, $se);
+}
+```
+
+## Output
+
+```
+(Intercept)    53.29 (se 2.70)
+study_hours     2.77 (se 0.27)
+
+school SD 4.93, residual SD 5.10, 30 students in 6 schools
+
+school-01  +0.99 (se 2.07)
+school-02  +3.27 (se 2.07)
+school-03  -2.54 (se 2.07)
+school-04  -7.89 (se 2.07)
+school-05  +2.47 (se 2.07)
+school-06  +3.69 (se 2.07)
+```
+
+## Explanation
+
+`(1 | school)` gives each school its own intercept, drawn from a normal distribution with a standard deviation that the model estimates. The fit uses REML, as `lme4::lmer()` does by default.
+
+- **Fixed effects.** Within a school, each additional study hour is associated with a score about 2.77 points higher.
+- **Variance components.** School intercepts vary with a standard deviation of about 4.9 points. Students within a school vary around their school's line with a residual standard deviation of about 5.1 points.
+- **Group-level estimates.** `effects` holds each school's predicted random intercept, the conditional mode that R reports as `ranef()`. `school-04` is about 7.9 points below the average school at the same study hours. These estimates are shrunk toward zero, more so for smaller schools. Here every school has five students, so their conditional standard errors are equal.
+
+See [Mixed models](../mixed-models.qmd) for the supported structures, the full result, singular fits, and `fit_glmer()`.
+
+[Interactive version](https://phit.phpstats.org/vignettes/school-shrinkage)

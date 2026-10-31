@@ -85,6 +85,14 @@
     <lastmod>2026-10-31T15:26:02.714Z</lastmod>
   </url>
   <url>
+    <loc>https://phit.phpstats.org/docs/examples/mixed-model</loc>
+    <lastmod>2026-10-31T21:58:03.170Z</lastmod>
+  </url>
+  <url>
+    <loc>https://phit.phpstats.org/docs/examples/glm</loc>
+    <lastmod>2026-10-31T21:57:10.396Z</lastmod>
+  </url>
+  <url>
     <loc>https://phit.phpstats.org/docs/draw-numerics</loc>
     <lastmod>2026-10-31T14:43:50.358Z</lastmod>
   </url>
@@ -155,6 +163,14 @@
   <url>
     <loc>https://phit.phpstats.org/docs/documentation</loc>
     <lastmod>2026-10-31T14:54:01.581Z</lastmod>
+  </url>
+  <url>
+    <loc>https://phit.phpstats.org/docs/examples/distributions</loc>
+    <lastmod>2026-10-31T21:57:10.519Z</lastmod>
+  </url>
+  <url>
+    <loc>https://phit.phpstats.org/docs/examples/linear-model</loc>
+    <lastmod>2026-10-31T21:57:10.339Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/extension-or-polyfill</loc>

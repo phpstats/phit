@@ -91,6 +91,12 @@ website:
           - draw-numerics.qmd
           - io.qmd
           - deployment.qmd
+      - section: "Examples"
+        contents:
+          - examples/linear-model.qmd
+          - examples/glm.qmd
+          - examples/mixed-model.qmd
+          - examples/distributions.qmd
       - section: "Reference"
         contents:
           - contracts.qmd

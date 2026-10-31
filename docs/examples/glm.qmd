@@ -1,0 +1,74 @@
+---
+title: "Fit logistic and Poisson models"
+---
+
+This example fits a logistic regression to a binary outcome and a Poisson regression to counts with an exposure offset, both with `fit_glm()`.
+
+Requires the phit extension ([Installation](../installation.qmd)) and a Composer project, for `vendor/autoload.php`.
+
+## Data
+
+Both data sets are small, made up, and inline. `$leases` records whether 16 tenants renewed (1 or 0), their rent increase in percent, and their tenure in years. `$accounts` records the support tickets of 10 accounts, the months each account was observed, and its plan.
+
+## Code
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+use function Phit\{fit_glm, predict};
+
+// Lease renewals: renewed (1 or 0), rent increase in percent, and tenure in years.
+$leases = [
+    'renewed' => [1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0],
+    'increase' => [2.0, 3.5, 8.0, 1.0, 6.5, 4.0, 2.5, 9.0, 5.0, 4.5, 3.0, 7.0, 10.0, 6.0, 5.5, 7.5],
+    'tenure' => [4, 2, 1, 6, 3, 1, 5, 2, 3, 1, 2, 6, 4, 3, 1, 2],
+];
+
+$logit = fit_glm('renewed ~ increase + tenure', $leases, family: 'binomial');
+echo "Logistic regression (log odds)\n";
+foreach ($logit['columns'] as $i => $name) {
+    printf("%-12s %7.3f (se %.3f)  odds ratio %.3f\n", $name, $logit['coefficients'][$i],
+        $logit['std_errors'][$i], exp($logit['coefficients'][$i]));
+}
+$p = predict($logit, ['increase' => [3.0, 8.0], 'tenure' => [2, 2]], type: 'response');
+printf("P(renew), 2 years' tenure: %.3f at a 3%% increase, %.3f at 8%%\n\n", ...$p['fit']);
+
+// Support tickets: count, months observed, and plan.
+$accounts = [
+    'tickets' => [3, 7, 1, 12, 4, 0, 9, 2, 5, 15],
+    'months' => [6, 12, 3, 12, 8, 2, 12, 5, 7, 12],
+    'plan' => ['basic', 'pro', 'basic', 'pro', 'basic', 'basic', 'pro', 'basic', 'pro', 'pro'],
+];
+
+$poisson = fit_glm('tickets ~ plan + offset(log(months))', $accounts, family: 'poisson');
+echo "Poisson regression (log rate per month)\n";
+foreach ($poisson['columns'] as $i => $name) {
+    printf("%-12s %7.3f (se %.3f)  rate ratio %.3f\n", $name, $poisson['coefficients'][$i],
+        $poisson['std_errors'][$i], exp($poisson['coefficients'][$i]));
+}
+printf("deviance %.3f on %d residual df\n", $poisson['deviance'], $poisson['df_residual']);
+```
+
+## Output
+
+```
+Logistic regression (log odds)
+(Intercept)    2.791 (se 2.644)  odds ratio 16.293
+increase      -1.031 (se 0.570)  odds ratio 0.357
+tenure         1.323 (se 0.863)  odds ratio 3.756
+P(renew), 2 years' tenure: 0.913 at a 3% increase, 0.057 at 8%
+
+Poisson regression (log rate per month)
+(Intercept)   -0.875 (se 0.316)  rate ratio 0.417
+planpro        0.739 (se 0.348)  rate ratio 2.095
+deviance 5.617 on 8 residual df
+```
+
+## Explanation
+
+Logistic coefficients are on the log-odds scale, so `exp()` gives odds ratios. Holding tenure fixed, each additional percentage point of rent increase is associated with renewal odds about 0.36 times as high. Each additional year of tenure is associated with odds about 3.8 times as high. With 16 leases the standard errors are large, and the 95% interval for each coefficient includes zero. `predict()` with `type: 'response'` returns probabilities. For a tenant of two years, the predicted probability of renewal is 0.913 at a 3% increase and 0.057 at 8%.
+
+The Poisson model uses `offset(log(months))`, so its coefficients describe tickets per month. The `(Intercept)` is the log rate on the basic plan, about 0.42 tickets per month. Pro accounts are associated with a ticket rate about 2.1 times as high. The model assumes the variance equals the mean. A residual deviance close to its degrees of freedom, as here, gives no sign of overdispersion.
+
+See [Linear and generalized linear models](../models.qmd) for links, weights, result keys, and the differences from R's `glm()`.

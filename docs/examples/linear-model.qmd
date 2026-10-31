@@ -1,0 +1,62 @@
+---
+title: "Fit a linear model and predict"
+---
+
+This example fits monthly rent on floor area and district with `fit_lm()`, then predicts the rent of two new flats with 95% prediction intervals.
+
+Requires the phit extension ([Installation](../installation.qmd)) and a Composer project, for `vendor/autoload.php`.
+
+## Data
+
+The data are ten simulated flats. `rent` is the monthly rent in an unnamed currency, `area` is the floor area in square meters, and `district` is one of three districts. The first eight rows are the teaching sample in [`docs/data/housing.csv`](https://github.com/phpstats/phit/blob/main/docs/data/housing.csv). The script defines them inline.
+
+## Code
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+use function Phit\{fit_lm, predict};
+
+$flats = [
+    'rent' => [1879.25, 1805.03, 2022.29, 1267.85, 1509.24, 2240.10, 959.51, 2386.54, 1655.80, 1420.00],
+    'area' => [74.4, 57.4, 66.4, 49.1, 45.7, 92.4, 37.0, 93.9, 61.2, 52.3],
+    'district' => ['north', 'south', 'north', 'east', 'south', 'north', 'east', 'south', 'east', 'south'],
+];
+
+$fit = fit_lm('rent ~ area + district', $flats);
+
+foreach ($fit['columns'] as $i => $name) {
+    printf("%-14s %8.2f (se %6.2f)  95%% CI [%8.2f, %8.2f]\n", $name, $fit['coefficients'][$i],
+        $fit['std_errors'][$i], ...$fit['conf_int'][$i]);
+}
+printf("R-squared %.3f, residual SD %.2f, %d flats\n\n", $fit['r_squared'], $fit['sigma'], $fit['n_observations']);
+
+$new = ['area' => [50.0, 80.0], 'district' => ['east', 'north']];
+$p = predict($fit, $new, interval: 'prediction');
+foreach ($p['fit'] as $i => $rent) {
+    printf("%.0f m2 in %-5s %8.2f  95%% PI [%7.2f, %7.2f]\n", $new['area'][$i], $new['district'][$i],
+        $rent, $p['lower'][$i], $p['upper'][$i]);
+}
+```
+
+## Output
+
+```
+(Intercept)      352.64 (se 179.87)  95% CI [  -87.49,   792.77]
+area              19.18 (se   3.23)  95% CI [   11.27,    27.09]
+districtnorth    203.64 (se 151.14)  95% CI [ -166.19,   573.47]
+districtsouth    232.16 (se 119.64)  95% CI [  -60.58,   524.90]
+R-squared 0.927, residual SD 146.29, 10 flats
+
+50 m2 in east   1311.65  95% PI [ 898.26, 1725.04]
+80 m2 in north  2090.69  95% PI [1676.97, 2504.41]
+```
+
+## Explanation
+
+`fit_lm()` takes an R formula and named columns. `district` is a string column, so it becomes a factor with `east` as the reference level. Among flats in the same district, each additional square meter is associated with a monthly rent about 19.18 units higher (95% CI 11.27 to 27.09). The district coefficients are differences from `east` for flats of the same area, and with ten flats their intervals include zero.
+
+`predict()` evaluates the fit on new rows. `interval: 'prediction'` gives an interval for the rent of a single new flat, which is wider than the interval for the mean (`interval: 'confidence'`).
+
+See [A first model](../getting-started.qmd) for the full result array, [Linear and generalized linear models](../models.qmd), and [Model formulas](../formulas.qmd).

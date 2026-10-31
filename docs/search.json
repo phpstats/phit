@@ -1672,6 +1672,116 @@
     ]
   },
   {
+    "objectID": "examples/mixed-model.html",
+    "href": "examples/mixed-model.html",
+    "title": "Fit a mixed model",
+    "section": "",
+    "text": "This example fits test scores on study hours with a random intercept for each school, using fit_lmer(), and reads the fixed effects, the variance components, and each school’s estimated effect.\nRequires the phit extension (Installation) and a Composer project, for vendor/autoload.php.",
+    "crumbs": [
+      "Examples",
+      "Fit a mixed model"
+    ]
+  },
+  {
+    "objectID": "examples/mixed-model.html#data",
+    "href": "examples/mixed-model.html#data",
+    "title": "Fit a mixed model",
+    "section": "Data",
+    "text": "Data\nThe data are 30 simulated students, five from each of six schools. They are the first five students of each of the first six schools in docs/data/schools.csv, with scores rounded to one decimal. score is a test score in points, and study_hours is time spent studying, in hours.",
+    "crumbs": [
+      "Examples",
+      "Fit a mixed model"
+    ]
+  },
+  {
+    "objectID": "examples/mixed-model.html#code",
+    "href": "examples/mixed-model.html#code",
+    "title": "Fit a mixed model",
+    "section": "Code",
+    "text": "Code\n&lt;?php\nrequire 'vendor/autoload.php';\n\nuse function Phit\\fit_lmer;\n\n$students = [\n    'school' =&gt; array_merge(...array_map(fn ($s) =&gt; array_fill(0, 5, \"school-0$s\"), range(1, 6))),\n    'study_hours' =&gt; [11.58, 2.7, 10.02, 3.71, 4.38, 4.3, 2.8, 11.5, 1.15, 3.9, 7.27, 1.24, 6.08, 1.37, 11.43,\n        8.82, 11.44, 5.52, 2.04, 4.93, 3.52, 3.39, 1.15, 8.2, 9.63, 6.3, 9.93, 2.54, 2.08, 5.78],\n    'score' =&gt; [78.3, 67.2, 88.2, 68.5, 60.1, 69.2, 59.1, 92.1, 64.4, 67.1, 72.9, 55.8, 62.6, 52.6, 83.1,\n        63.7, 83.9, 52.8, 51.9, 57.1, 68.3, 67.6, 60.5, 81.6, 75.2, 81.5, 89.4, 60.7, 62.5, 68.6],\n];\n\n$fit = fit_lmer('score ~ study_hours + (1 | school)', $students);\n\nforeach ($fit['columns'] as $i =&gt; $name) {\n    printf(\"%-12s %7.2f (se %.2f)\\n\", $name, $fit['coefficients'][$i], $fit['std_errors'][$i]);\n}\n\n$school = $fit['random'][0];\nprintf(\"\\nschool SD %.2f, residual SD %.2f, %d students in %d schools\\n\\n\",\n    sqrt($school['covariance'][0][0]), $fit['sigma'], $fit['n_observations'], count($school['group_labels']));\n\nforeach ($school['group_labels'] as $g =&gt; $label) {\n    $effect = $school['effects'][$g][0];\n    $se = sqrt($school['effects_cond_var'][$g][0][0]);\n    printf(\"%s %+6.2f (se %.2f)\\n\", $label, $effect, $se);\n}",
+    "crumbs": [
+      "Examples",
+      "Fit a mixed model"
+    ]
+  },
+  {
+    "objectID": "examples/mixed-model.html#output",
+    "href": "examples/mixed-model.html#output",
+    "title": "Fit a mixed model",
+    "section": "Output",
+    "text": "Output\n(Intercept)    53.29 (se 2.70)\nstudy_hours     2.77 (se 0.27)\n\nschool SD 4.93, residual SD 5.10, 30 students in 6 schools\n\nschool-01  +0.99 (se 2.07)\nschool-02  +3.27 (se 2.07)\nschool-03  -2.54 (se 2.07)\nschool-04  -7.89 (se 2.07)\nschool-05  +2.47 (se 2.07)\nschool-06  +3.69 (se 2.07)",
+    "crumbs": [
+      "Examples",
+      "Fit a mixed model"
+    ]
+  },
+  {
+    "objectID": "examples/mixed-model.html#explanation",
+    "href": "examples/mixed-model.html#explanation",
+    "title": "Fit a mixed model",
+    "section": "Explanation",
+    "text": "Explanation\n(1 | school) gives each school its own intercept, drawn from a normal distribution with a standard deviation that the model estimates. The fit uses REML, as lme4::lmer() does by default.\n\nFixed effects. Within a school, each additional study hour is associated with a score about 2.77 points higher.\nVariance components. School intercepts vary with a standard deviation of about 4.9 points. Students within a school vary around their school’s line with a residual standard deviation of about 5.1 points.\nGroup-level estimates. effects holds each school’s predicted random intercept, the conditional mode that R reports as ranef(). school-04 is about 7.9 points below the average school at the same study hours. These estimates are shrunk toward zero, more so for smaller schools. Here every school has five students, so their conditional standard errors are equal.\n\nSee Mixed models for the supported structures, the full result, singular fits, and fit_glmer().\nInteractive version",
+    "crumbs": [
+      "Examples",
+      "Fit a mixed model"
+    ]
+  },
+  {
+    "objectID": "examples/glm.html",
+    "href": "examples/glm.html",
+    "title": "Fit logistic and Poisson models",
+    "section": "",
+    "text": "This example fits a logistic regression to a binary outcome and a Poisson regression to counts with an exposure offset, both with fit_glm().\nRequires the phit extension (Installation) and a Composer project, for vendor/autoload.php.",
+    "crumbs": [
+      "Examples",
+      "Fit logistic and Poisson models"
+    ]
+  },
+  {
+    "objectID": "examples/glm.html#data",
+    "href": "examples/glm.html#data",
+    "title": "Fit logistic and Poisson models",
+    "section": "Data",
+    "text": "Data\nBoth data sets are small, made up, and inline. $leases records whether 16 tenants renewed (1 or 0), their rent increase in percent, and their tenure in years. $accounts records the support tickets of 10 accounts, the months each account was observed, and its plan.",
+    "crumbs": [
+      "Examples",
+      "Fit logistic and Poisson models"
+    ]
+  },
+  {
+    "objectID": "examples/glm.html#code",
+    "href": "examples/glm.html#code",
+    "title": "Fit logistic and Poisson models",
+    "section": "Code",
+    "text": "Code\n&lt;?php\nrequire 'vendor/autoload.php';\n\nuse function Phit\\{fit_glm, predict};\n\n// Lease renewals: renewed (1 or 0), rent increase in percent, and tenure in years.\n$leases = [\n    'renewed' =&gt; [1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0],\n    'increase' =&gt; [2.0, 3.5, 8.0, 1.0, 6.5, 4.0, 2.5, 9.0, 5.0, 4.5, 3.0, 7.0, 10.0, 6.0, 5.5, 7.5],\n    'tenure' =&gt; [4, 2, 1, 6, 3, 1, 5, 2, 3, 1, 2, 6, 4, 3, 1, 2],\n];\n\n$logit = fit_glm('renewed ~ increase + tenure', $leases, family: 'binomial');\necho \"Logistic regression (log odds)\\n\";\nforeach ($logit['columns'] as $i =&gt; $name) {\n    printf(\"%-12s %7.3f (se %.3f)  odds ratio %.3f\\n\", $name, $logit['coefficients'][$i],\n        $logit['std_errors'][$i], exp($logit['coefficients'][$i]));\n}\n$p = predict($logit, ['increase' =&gt; [3.0, 8.0], 'tenure' =&gt; [2, 2]], type: 'response');\nprintf(\"P(renew), 2 years' tenure: %.3f at a 3%% increase, %.3f at 8%%\\n\\n\", ...$p['fit']);\n\n// Support tickets: count, months observed, and plan.\n$accounts = [\n    'tickets' =&gt; [3, 7, 1, 12, 4, 0, 9, 2, 5, 15],\n    'months' =&gt; [6, 12, 3, 12, 8, 2, 12, 5, 7, 12],\n    'plan' =&gt; ['basic', 'pro', 'basic', 'pro', 'basic', 'basic', 'pro', 'basic', 'pro', 'pro'],\n];\n\n$poisson = fit_glm('tickets ~ plan + offset(log(months))', $accounts, family: 'poisson');\necho \"Poisson regression (log rate per month)\\n\";\nforeach ($poisson['columns'] as $i =&gt; $name) {\n    printf(\"%-12s %7.3f (se %.3f)  rate ratio %.3f\\n\", $name, $poisson['coefficients'][$i],\n        $poisson['std_errors'][$i], exp($poisson['coefficients'][$i]));\n}\nprintf(\"deviance %.3f on %d residual df\\n\", $poisson['deviance'], $poisson['df_residual']);",
+    "crumbs": [
+      "Examples",
+      "Fit logistic and Poisson models"
+    ]
+  },
+  {
+    "objectID": "examples/glm.html#output",
+    "href": "examples/glm.html#output",
+    "title": "Fit logistic and Poisson models",
+    "section": "Output",
+    "text": "Output\nLogistic regression (log odds)\n(Intercept)    2.791 (se 2.644)  odds ratio 16.293\nincrease      -1.031 (se 0.570)  odds ratio 0.357\ntenure         1.323 (se 0.863)  odds ratio 3.756\nP(renew), 2 years' tenure: 0.913 at a 3% increase, 0.057 at 8%\n\nPoisson regression (log rate per month)\n(Intercept)   -0.875 (se 0.316)  rate ratio 0.417\nplanpro        0.739 (se 0.348)  rate ratio 2.095\ndeviance 5.617 on 8 residual df",
+    "crumbs": [
+      "Examples",
+      "Fit logistic and Poisson models"
+    ]
+  },
+  {
+    "objectID": "examples/glm.html#explanation",
+    "href": "examples/glm.html#explanation",
+    "title": "Fit logistic and Poisson models",
+    "section": "Explanation",
+    "text": "Explanation\nLogistic coefficients are on the log-odds scale, so exp() gives odds ratios. Holding tenure fixed, each additional percentage point of rent increase is associated with renewal odds about 0.36 times as high. Each additional year of tenure is associated with odds about 3.8 times as high. With 16 leases the standard errors are large, and the 95% interval for each coefficient includes zero. predict() with type: 'response' returns probabilities. For a tenant of two years, the predicted probability of renewal is 0.913 at a 3% increase and 0.057 at 8%.\nThe Poisson model uses offset(log(months)), so its coefficients describe tickets per month. The (Intercept) is the log rate on the basic plan, about 0.42 tickets per month. Pro accounts are associated with a ticket rate about 2.1 times as high. The model assumes the variance equals the mean. A residual deviance close to its degrees of freedom, as here, gives no sign of overdispersion.\nSee Linear and generalized linear models for links, weights, result keys, and the differences from R’s glm().",
+    "crumbs": [
+      "Examples",
+      "Fit logistic and Poisson models"
+    ]
+  },
+  {
     "objectID": "draw-numerics.html",
     "href": "draw-numerics.html",
     "title": "Posterior-draw numerical kernels",
@@ -2857,6 +2967,116 @@
     "crumbs": [
       "Contributing",
       "Building and maintaining the documentation"
+    ]
+  },
+  {
+    "objectID": "examples/distributions.html",
+    "href": "examples/distributions.html",
+    "title": "Densities, quantiles, and random draws",
+    "section": "",
+    "text": "This example evaluates a density, a cumulative probability, and quantiles, compares Student’s t with the normal distribution, and draws seeded random numbers.\nRequires the phit extension (Installation) and a Composer project, for vendor/autoload.php.",
+    "crumbs": [
+      "Examples",
+      "Densities, quantiles, and random draws"
+    ]
+  },
+  {
+    "objectID": "examples/distributions.html#data",
+    "href": "examples/distributions.html#data",
+    "title": "Densities, quantiles, and random draws",
+    "section": "Data",
+    "text": "Data\nThe example needs no data. The normal distribution has mean 100 and standard deviation 15, as on a test scale.",
+    "crumbs": [
+      "Examples",
+      "Densities, quantiles, and random draws"
+    ]
+  },
+  {
+    "objectID": "examples/distributions.html#code",
+    "href": "examples/distributions.html#code",
+    "title": "Densities, quantiles, and random draws",
+    "section": "Code",
+    "text": "Code\n&lt;?php\nrequire 'vendor/autoload.php';\n\nuse function Phit\\{dist_normal_cdf, dist_normal_pdf, dist_normal_quantile, dist_normal_rng, dist_normal_sf, dist_t_quantile, dist_t_sf};\n\n// Normal distribution with mean 100 and standard deviation 15.\nprintf(\"density at 115      %.5f\\n\", dist_normal_pdf(115, 100, 15));\nprintf(\"P(X &lt;= 130)         %.5f\\n\", dist_normal_cdf(130, 100, 15));\nprintf(\"95th percentile     %.3f\\n\\n\", dist_normal_quantile(0.95, 100, 15));\n\n// Student's t: two-sided 95% critical values and the tail beyond 1.96.\nforeach ([3, 10, 30] as $df) {\n    printf(\"t, df %2d: critical value %.3f, P(|T| &gt; 1.96) %.4f\\n\", $df, dist_t_quantile(0.975, $df), 2 * dist_t_sf(1.96, $df));\n}\nprintf(\"normal:   critical value %.3f, P(|Z| &gt; 1.96) %.4f\\n\\n\", dist_normal_quantile(0.975), 2 * dist_normal_sf(1.96));\n\n// Seeded draws: the same seed and parameters give the same draws.\n$draws = dist_normal_rng(5, 42, 100, 15);\necho implode(', ', array_map(fn ($x) =&gt; sprintf('%.2f', $x), $draws)), \"\\n\";\n$many = dist_normal_rng(100000, 7, 100, 15);\nprintf(\"mean of 100000 draws %.2f\\n\", array_sum($many) / count($many));",
+    "crumbs": [
+      "Examples",
+      "Densities, quantiles, and random draws"
+    ]
+  },
+  {
+    "objectID": "examples/distributions.html#output",
+    "href": "examples/distributions.html#output",
+    "title": "Densities, quantiles, and random draws",
+    "section": "Output",
+    "text": "Output\ndensity at 115      0.01613\nP(X &lt;= 130)         0.97725\n95th percentile     124.673\n\nt, df  3: critical value 3.182, P(|T| &gt; 1.96) 0.1449\nt, df 10: critical value 2.228, P(|T| &gt; 1.96) 0.0784\nt, df 30: critical value 2.042, P(|T| &gt; 1.96) 0.0593\nnormal:   critical value 1.960, P(|Z| &gt; 1.96) 0.0500\n\n100.53, 96.59, 80.59, 85.53, 85.28\nmean of 100000 draws 100.00",
+    "crumbs": [
+      "Examples",
+      "Densities, quantiles, and random draws"
+    ]
+  },
+  {
+    "objectID": "examples/distributions.html#explanation",
+    "href": "examples/distributions.html#explanation",
+    "title": "Densities, quantiles, and random draws",
+    "section": "Explanation",
+    "text": "Explanation\nThe dist_* functions follow R’s naming: _pdf is R’s dnorm(), _cdf is pnorm(), _quantile is qnorm(), and _sf is the upper tail, pnorm(lower.tail = FALSE). The survival function keeps precision far into the tail, where 1 - cdf loses it.\nStudent’s t has heavier tails than the normal. With 3 degrees of freedom, the two-sided 95% critical value is 3.182 and 14% of the distribution lies beyond ±1.96. As the degrees of freedom grow, both approach the normal values.\ndist_normal_rng($n, $seed, $mean, $sd) returns $n draws. Every call starts its own stream from the seed, so the same seed and parameters give the same draws.\nSee Probability distributions for every family and its parameters, and Seeded sampling for the generator.",
+    "crumbs": [
+      "Examples",
+      "Densities, quantiles, and random draws"
+    ]
+  },
+  {
+    "objectID": "examples/linear-model.html",
+    "href": "examples/linear-model.html",
+    "title": "Fit a linear model and predict",
+    "section": "",
+    "text": "This example fits monthly rent on floor area and district with fit_lm(), then predicts the rent of two new flats with 95% prediction intervals.\nRequires the phit extension (Installation) and a Composer project, for vendor/autoload.php.",
+    "crumbs": [
+      "Examples",
+      "Fit a linear model and predict"
+    ]
+  },
+  {
+    "objectID": "examples/linear-model.html#data",
+    "href": "examples/linear-model.html#data",
+    "title": "Fit a linear model and predict",
+    "section": "Data",
+    "text": "Data\nThe data are ten simulated flats. rent is the monthly rent in an unnamed currency, area is the floor area in square meters, and district is one of three districts. The first eight rows are the teaching sample in docs/data/housing.csv. The script defines them inline.",
+    "crumbs": [
+      "Examples",
+      "Fit a linear model and predict"
+    ]
+  },
+  {
+    "objectID": "examples/linear-model.html#code",
+    "href": "examples/linear-model.html#code",
+    "title": "Fit a linear model and predict",
+    "section": "Code",
+    "text": "Code\n&lt;?php\nrequire 'vendor/autoload.php';\n\nuse function Phit\\{fit_lm, predict};\n\n$flats = [\n    'rent' =&gt; [1879.25, 1805.03, 2022.29, 1267.85, 1509.24, 2240.10, 959.51, 2386.54, 1655.80, 1420.00],\n    'area' =&gt; [74.4, 57.4, 66.4, 49.1, 45.7, 92.4, 37.0, 93.9, 61.2, 52.3],\n    'district' =&gt; ['north', 'south', 'north', 'east', 'south', 'north', 'east', 'south', 'east', 'south'],\n];\n\n$fit = fit_lm('rent ~ area + district', $flats);\n\nforeach ($fit['columns'] as $i =&gt; $name) {\n    printf(\"%-14s %8.2f (se %6.2f)  95%% CI [%8.2f, %8.2f]\\n\", $name, $fit['coefficients'][$i],\n        $fit['std_errors'][$i], ...$fit['conf_int'][$i]);\n}\nprintf(\"R-squared %.3f, residual SD %.2f, %d flats\\n\\n\", $fit['r_squared'], $fit['sigma'], $fit['n_observations']);\n\n$new = ['area' =&gt; [50.0, 80.0], 'district' =&gt; ['east', 'north']];\n$p = predict($fit, $new, interval: 'prediction');\nforeach ($p['fit'] as $i =&gt; $rent) {\n    printf(\"%.0f m2 in %-5s %8.2f  95%% PI [%7.2f, %7.2f]\\n\", $new['area'][$i], $new['district'][$i],\n        $rent, $p['lower'][$i], $p['upper'][$i]);\n}",
+    "crumbs": [
+      "Examples",
+      "Fit a linear model and predict"
+    ]
+  },
+  {
+    "objectID": "examples/linear-model.html#output",
+    "href": "examples/linear-model.html#output",
+    "title": "Fit a linear model and predict",
+    "section": "Output",
+    "text": "Output\n(Intercept)      352.64 (se 179.87)  95% CI [  -87.49,   792.77]\narea              19.18 (se   3.23)  95% CI [   11.27,    27.09]\ndistrictnorth    203.64 (se 151.14)  95% CI [ -166.19,   573.47]\ndistrictsouth    232.16 (se 119.64)  95% CI [  -60.58,   524.90]\nR-squared 0.927, residual SD 146.29, 10 flats\n\n50 m2 in east   1311.65  95% PI [ 898.26, 1725.04]\n80 m2 in north  2090.69  95% PI [1676.97, 2504.41]",
+    "crumbs": [
+      "Examples",
+      "Fit a linear model and predict"
+    ]
+  },
+  {
+    "objectID": "examples/linear-model.html#explanation",
+    "href": "examples/linear-model.html#explanation",
+    "title": "Fit a linear model and predict",
+    "section": "Explanation",
+    "text": "Explanation\nfit_lm() takes an R formula and named columns. district is a string column, so it becomes a factor with east as the reference level. Among flats in the same district, each additional square meter is associated with a monthly rent about 19.18 units higher (95% CI 11.27 to 27.09). The district coefficients are differences from east for flats of the same area, and with ten flats their intervals include zero.\npredict() evaluates the fit on new rows. interval: 'prediction' gives an interval for the rent of a single new flat, which is wider than the interval for the mean (interval: 'confidence').\nSee A first model for the full result array, Linear and generalized linear models, and Model formulas.",
+    "crumbs": [
+      "Examples",
+      "Fit a linear model and predict"
     ]
   },
   {
