@@ -856,7 +856,7 @@ herd SD 0.6475, adaptive_gauss_hermite</code></pre>
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/phpstats\.github\.io\/phit\/");
+        var filterRegex = new RegExp("https:\/\/phit\.phpstats\.org\/docs\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

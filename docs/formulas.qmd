@@ -243,9 +243,10 @@ $p = Phit\predict($fit, ['wt' => [2.2, 3.4], 'hp' => [95, 180]], type: 'response
   as in lme4.
 
 GLM standard errors use the covariance at the final coefficients. R's
-`predict.glm()` uses `vcov()`, which reuses the last IRLS weights (see
-[R compatibility](r-compatibility.qmd)). The two agree to about 1e-5 relative
-on well-conditioned fits and can differ by about 1e-4 near separation.
+`predict.glm()` uses `vcov()`, which reuses the weights of the iteration before
+the final one. The two differ by about the size of R's last IRLS step: 1e-7
+relative for `am ~ wt + hp` on `mtcars`, and up to about 1e-4 near separation.
+See [R compatibility](r-compatibility.qmd#evidence-and-tolerance-policy).
 
 ## Differences from R
 

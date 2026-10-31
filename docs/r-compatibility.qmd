@@ -90,12 +90,26 @@ cross-optimizer comparisons use `1e-3 + 3e-4 * abs(reference)`.
 counts and singular flags are exact where compared. The notebook reports actual
 errors, not only pass/fail.
 
-GLM covariances are evaluated at the final coefficients. R's `vcov()` for a `glm`
-reuses the weights of the last IRLS iteration, which were computed one step before
-the final update. On well-conditioned fits the two agree far inside the tolerance.
-On designs near separation they can differ by about 1e-5 relative. For
-`am ~ factor(cyl) + wt` on `mtcars`, the Fisher information recomputed in R at
-`coef(fit)` matches the phit covariance to about 1e-9.
+GLM covariances are the inverse Fisher information at the final coefficients.
+R's `vcov()` and `summary()` for a `glm` use the working weights of the last
+IRLS iteration, which were computed from the coefficients one step before the
+final update. Newton steps converge quadratically, so R's coefficients are
+already at the maximum to many digits, but its weights lag one step behind.
+Its covariance therefore differs from the information at its own coefficients
+by about the size of that last step. This is not a difference in the
+convergence tolerance, in Fisher versus observed information (they are equal
+for the canonical logit and log links), or in dispersion (fixed at one for the
+binomial and Poisson families).
+
+For `am ~ wt + hp` on `mtcars`, the coefficients agree to 12 digits. R's last
+step changed them by 3.4e-8 relative. The variance of the `wt` coefficient is
+9.41676694948 from `vcov()` and 9.41676794579 from phit, 1.1e-7 relative.
+Recomputing the information in R at `coef(fit)`, or refitting with
+`start = coef(fit)`, gives 9.41676794579. On designs near separation the last
+step is larger and the two can differ by about 1e-4 relative. phit's R
+fixtures restart `glm()` from its own solution until the coefficients stop
+changing, so they compare against the information at the converged
+coefficients.
 
 Different optimizers can stop at slightly different variance estimates on a flat
 likelihood. The cross-optimizer tolerance accommodates that observed spread,

@@ -877,7 +877,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>interval: 'confidence'</code> or <code>'prediction'</code> adds <code>lower</code> and <code>upper</code> for <code>fit_lm</code> fits, using t with <code>df_residual</code> at <code>level</code>. A prediction interval adds the residual variance; as in R, it assumes constant variance for a weighted fit.</li>
 <li>For <code>fit_lmer</code> and <code>fit_glmer</code> fits, predictions add each known group’s random effects (lme4’s default <code>re.form = NULL</code>). <code>random: false</code> gives population predictions (<code>re.form = NA</code>), and the grouping columns can then be absent. An unseen group raises 1001 unless <code>allowNewLevels: true</code>, which predicts it at the population level. Mixed predictions have no standard errors, as in lme4.</li>
 </ul>
-<p>GLM standard errors use the covariance at the final coefficients. R’s <code>predict.glm()</code> uses <code>vcov()</code>, which reuses the last IRLS weights (see <a href="./r-compatibility.html">R compatibility</a>). The two agree to about 1e-5 relative on well-conditioned fits and can differ by about 1e-4 near separation.</p>
+<p>GLM standard errors use the covariance at the final coefficients. R’s <code>predict.glm()</code> uses <code>vcov()</code>, which reuses the weights of the iteration before the final one. The two differ by about the size of R’s last IRLS step: 1e-7 relative for <code>am ~ wt + hp</code> on <code>mtcars</code>, and up to about 1e-4 near separation. See <a href="./r-compatibility.html#evidence-and-tolerance-policy">R compatibility</a>.</p>
 </section>
 <section id="differences-from-r" class="level2">
 <h2 class="anchored" data-anchor-id="differences-from-r">Differences from R</h2>
@@ -977,7 +977,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/phpstats\.github\.io\/phit\/");
+        var filterRegex = new RegExp("https:\/\/phit\.phpstats\.org\/docs\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

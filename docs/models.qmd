@@ -156,6 +156,13 @@ together.
 - A rank-deficient design throws code 1004. R reports aliased coefficients
   as `NA`.
 - Zero weights are rejected. R gives such rows zero weight.
+- Binomial and Poisson covariances are the inverse information at the final
+  coefficients. R's `vcov()` uses the IRLS weights of the iteration before
+  the final one, so standard errors differ by about the size of R's last
+  step: 1.1e-7 relative for `am ~ wt + hp` on `mtcars`, up to about 1e-4
+  near separation. Refitting in R with `start = coef(fit)` gives phit's value.
+  [R compatibility](r-compatibility.qmd#evidence-and-tolerance-policy) has the
+  details.
 - Gaussian `fit_glm()` intervals use t, as `fit_lm()` does. R's
   `confint.default()` uses z and `confint()` profiles the likelihood.
 
