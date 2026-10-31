@@ -193,7 +193,7 @@ def manifest(benchmarks, verifications):
                    'fit_lmer, fit_glmer, predict), and results are plain PHP arrays.',
         'install': ['pie install phpstats/phit'],
         'php': ['8.3', '8.4', '8.5'],
-        'requires': ['PIE'],
+        'requires': ['PIE', 'unzip or the PHP zip extension'],
         'optional': [],
         'build': ['Rust toolchain', 'Clang and libclang', 'PHP development files (phpize and php-config)',
                   'autoconf and make'],

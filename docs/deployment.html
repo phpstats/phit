@@ -649,7 +649,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="supported-targets" class="level2">
 <h2 class="anchored" data-anchor-id="supported-targets">Supported targets</h2>
-<p>The extension supports PHP 8.3, 8.4 and 8.5, non-thread-safe, on Linux and macOS. Windows and ZTS builds are not supported. The prebuilt binaries target Debian Bookworm with glibc on x86_64 and aarch64. Alpine (musl) and older glibc releases need a PIE or manual build. CI tests Linux x86_64 and aarch64 at all three PHP versions, and macOS on Apple silicon.</p>
+<p>The extension supports PHP 8.3, 8.4 and 8.5, non-thread-safe, on Linux and macOS. Windows and ZTS builds are not supported. The prebuilt binaries, which <code>pie install</code> downloads on Linux, are built on Debian Bookworm for x86_64 and arm64 and need glibc 2.35 or later. Alpine (musl) and older glibc releases need a source build with PIE or by hand. CI tests Linux x86_64 and arm64 at all three PHP versions, and macOS on Apple silicon.</p>
 </section>
 <section id="php-fpm" class="level2">
 <h2 class="anchored" data-anchor-id="php-fpm">PHP-FPM</h2>

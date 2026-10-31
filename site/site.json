@@ -12,7 +12,8 @@
   "8.5"
  ],
  "requires": [
-  "PIE"
+  "PIE",
+  "unzip or the PHP zip extension"
  ],
  "optional": [],
  "build": [

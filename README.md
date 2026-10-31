@@ -34,12 +34,12 @@ pie install phpstats/phit
 ```
 
 phit supports PHP 8.3, 8.4 and 8.5, non-thread-safe builds, on Linux and macOS.
-[PIE](https://github.com/php/pie) builds it from source, which needs Rust,
-Clang and libclang, and PHP's development files. Each
-[release](https://github.com/phpstats/phit/releases) also has prebuilt binaries
-for Debian Bookworm on x86_64 and aarch64. The
-[installation guide](https://phit.phpstats.org/docs/installation) covers both
-and how to check the install.
+On Linux x86_64 and arm64 with glibc 2.35 or later, [PIE](https://github.com/php/pie)
+downloads a prebuilt binary from the
+[release](https://github.com/phpstats/phit/releases). Elsewhere, including
+macOS, it builds from source, which needs Rust, Clang and libclang, and PHP's
+development files. The [installation guide](https://phit.phpstats.org/docs/installation)
+covers both and how to check the install.
 
 [phit-polyfill](https://github.com/phpstats/phit-polyfill)
 (`composer require phpstats/phit-polyfill`) provides the same functions in

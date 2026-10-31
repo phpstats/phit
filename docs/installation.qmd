@@ -11,19 +11,8 @@ install extensions can use the [polyfill](extension-or-polyfill.qmd) instead.
 - PHP 8.3, 8.4 or 8.5, non-thread-safe (NTS). Thread-safe (ZTS) builds are
   not supported.
 - Linux or macOS. Windows is not supported.
-- [PIE](https://github.com/php/pie), PHP's extension installer, for the
-  standard installation.
-
-PIE builds the extension from source, so the machine also needs:
-
-- PHP's development files: `phpize` and `php-config` for the same PHP
-  installation.
-- A C toolchain with `autoconf` and `make`.
-- Rust, stable, from [rustup](https://rustup.rs).
-- Clang and libclang.
-
-These build tools are not needed at runtime. The [prebuilt Linux
-binaries](#prebuilt-linux-binaries) need none of them.
+- [PIE](https://github.com/php/pie), PHP's extension installer.
+- `unzip`, or PHP's zip extension, for PIE to unpack a prebuilt binary.
 
 ## Install with PIE
 
@@ -31,9 +20,29 @@ binaries](#prebuilt-linux-binaries) need none of them.
 pie install phpstats/phit
 ```
 
-PIE downloads the latest release from Packagist, builds it, copies `phit.so`
-into the extension directory, and enables it for the PHP it runs under. To
-choose another PHP installation, pass `--with-php-config=/path/to/php-config`.
+PIE finds the latest release on Packagist, installs `phit.so` into the
+extension directory, and enables it for the PHP it runs under. To choose
+another PHP installation, pass `--with-php-config=/path/to/php-config`.
+
+On Linux x86_64 and arm64 with glibc 2.35 or later, PIE downloads a prebuilt
+binary from the release, so nothing is compiled. Installing v0.3.1 this way
+was tested in the official `php:8.4-cli-bookworm` image with PIE 1.5.0 and
+`unzip`, and no Rust toolchain. The release workflow repeats the test for PHP
+8.3, 8.4 and 8.5 on both architectures.
+
+## Building from source
+
+On macOS, and on Linux systems without a matching binary (Alpine and other
+musl systems, or glibc older than 2.35), PIE builds the extension from
+source. The build needs:
+
+- PHP's development files: `phpize` and `php-config` for the same PHP
+  installation.
+- A C toolchain with `autoconf` and `make`.
+- Rust, stable, from [rustup](https://rustup.rs).
+- Clang and libclang.
+
+These build tools are not needed at runtime.
 
 On Debian or Ubuntu, the build tools come from:
 
@@ -42,10 +51,9 @@ sudo apt-get install build-essential autoconf pkg-config clang libclang-dev php-
 curl -fsSL https://sh.rustup.rs | sh -s -- -y
 ```
 
-Installing v0.3.0 this way was tested in a Debian Bookworm container with the
-official `php:8.4-cli-bookworm` image, PIE 1.5.0 and stable Rust. The image
-provides PHP's development files, and the test added Clang, libclang and the
-image's `$PHPIZE_DEPS`.
+A source build of v0.3.0 was tested in the official `php:8.4-cli-bookworm`
+image with PIE 1.5.0 and stable Rust. The image provides PHP's development
+files, and the test added Clang, libclang and the image's `$PHPIZE_DEPS`.
 
 On macOS, install the Xcode command-line tools (`xcode-select --install`),
 Rust from rustup, and PHP and autoconf from Homebrew (`brew install php
@@ -56,30 +64,31 @@ select Homebrew's LLVM.
 
 ## Prebuilt Linux binaries
 
-Each [GitHub release](https://github.com/phpstats/phit/releases) has tested
-binaries for Debian Bookworm (glibc), NTS, non-debug PHP:
+Each [GitHub release](https://github.com/phpstats/phit/releases) has the
+binaries PIE uses, built and tested on Debian Bookworm for NTS, non-debug
+PHP. They can also be installed by hand:
 
-| PHP | x86_64 | aarch64 |
+| PHP | x86_64 | arm64 |
 | --- | --- | --- |
-| 8.3 | `phit-0.3.0-php8.3-x86_64-nts-bookworm.tar.gz` | `phit-0.3.0-php8.3-aarch64-nts-bookworm.tar.gz` |
-| 8.4 | `phit-0.3.0-php8.4-x86_64-nts-bookworm.tar.gz` | `phit-0.3.0-php8.4-aarch64-nts-bookworm.tar.gz` |
-| 8.5 | `phit-0.3.0-php8.5-x86_64-nts-bookworm.tar.gz` | `phit-0.3.0-php8.5-aarch64-nts-bookworm.tar.gz` |
+| 8.3 | `php_phit-v0.3.1_php8.3-x86_64-linux-glibc-nts.zip` | `php_phit-v0.3.1_php8.3-arm64-linux-glibc-nts.zip` |
+| 8.4 | `php_phit-v0.3.1_php8.4-x86_64-linux-glibc-nts.zip` | `php_phit-v0.3.1_php8.4-arm64-linux-glibc-nts.zip` |
+| 8.5 | `php_phit-v0.3.1_php8.5-x86_64-linux-glibc-nts.zip` | `php_phit-v0.3.1_php8.5-arm64-linux-glibc-nts.zip` |
 
 Each archive holds `phit.so`, `INSTALL.txt`, a `manifest.json` that records
-the build environment, the license, and the third-party notices. A `.sha256`
-file sits beside each archive.
+the build environment and the minimum glibc, the license, and the third-party
+notices. A `.sha256` file sits beside each archive.
 
 ```sh
-sha256sum -c phit-0.3.0-php8.4-x86_64-nts-bookworm.sha256
-tar xzf phit-0.3.0-php8.4-x86_64-nts-bookworm.tar.gz
-sudo cp phit-0.3.0-php8.4-x86_64-nts-bookworm/phit.so "$(php-config --extension-dir)/"
+sha256sum -c php_phit-v0.3.1_php8.4-x86_64-linux-glibc-nts.sha256
+unzip php_phit-v0.3.1_php8.4-x86_64-linux-glibc-nts.zip -d phit
+sudo cp phit/phit.so "$(php-config --extension-dir)/"
 ```
 
 Then add `extension=phit.so` to the PHP configuration for each runtime that
-needs it, and restart PHP-FPM. These steps, with the aarch64 archive for PHP
-8.4, were tested in the official `php:8.4-cli-bookworm` image. A binary matches the PHP version, architecture
-and C library in its manifest. Alpine (musl) and other distributions should
-build with PIE instead.
+needs it, and restart PHP-FPM. The release workflow tests these steps for
+every archive in the matching official PHP image. Releases up to v0.3.0 used
+`.tar.gz` archives named `phit-0.3.0-php8.4-x86_64-nts-bookworm.tar.gz`,
+which PIE does not download.
 
 ## Verify
 
@@ -88,7 +97,7 @@ php -r 'echo phpversion("phit"), PHP_EOL;'
 ```
 
 ```
-0.3.0
+0.3.1
 ```
 
 The command line and PHP-FPM often read different configuration files. Check

@@ -19,9 +19,10 @@ this page covers PHP-FPM, containers and manual builds.
 ## Supported targets
 
 The extension supports PHP 8.3, 8.4 and 8.5, non-thread-safe, on Linux and
-macOS. Windows and ZTS builds are not supported. The prebuilt binaries target
-Debian Bookworm with glibc on x86_64 and aarch64. Alpine (musl) and older glibc
-releases need a PIE or manual build. CI tests Linux x86_64 and aarch64 at all
+macOS. Windows and ZTS builds are not supported. The prebuilt binaries, which
+`pie install` downloads on Linux, are built on Debian Bookworm for x86_64 and
+arm64 and need glibc 2.35 or later. Alpine (musl) and older glibc releases
+need a source build with PIE or by hand. CI tests Linux x86_64 and arm64 at all
 three PHP versions, and macOS on Apple silicon.
 
 ## PHP-FPM

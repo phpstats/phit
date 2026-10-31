@@ -606,6 +606,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#requirements" id="toc-requirements" class="nav-link active" data-scroll-target="#requirements">Requirements</a></li>
   <li><a href="#install-with-pie" id="toc-install-with-pie" class="nav-link" data-scroll-target="#install-with-pie">Install with PIE</a></li>
+  <li><a href="#building-from-source" id="toc-building-from-source" class="nav-link" data-scroll-target="#building-from-source">Building from source</a></li>
   <li><a href="#prebuilt-linux-binaries" id="toc-prebuilt-linux-binaries" class="nav-link" data-scroll-target="#prebuilt-linux-binaries">Prebuilt Linux binaries</a></li>
   <li><a href="#verify" id="toc-verify" class="nav-link" data-scroll-target="#verify">Verify</a></li>
   <li><a href="#declare-the-dependency" id="toc-declare-the-dependency" class="nav-link" data-scroll-target="#declare-the-dependency">Declare the dependency</a></li>
@@ -641,30 +642,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>PHP 8.3, 8.4 or 8.5, non-thread-safe (NTS). Thread-safe (ZTS) builds are not supported.</li>
 <li>Linux or macOS. Windows is not supported.</li>
-<li><a href="https://github.com/php/pie">PIE</a>, PHP’s extension installer, for the standard installation.</li>
+<li><a href="https://github.com/php/pie">PIE</a>, PHP’s extension installer.</li>
+<li><code>unzip</code>, or PHP’s zip extension, for PIE to unpack a prebuilt binary.</li>
 </ul>
-<p>PIE builds the extension from source, so the machine also needs:</p>
+</section>
+<section id="install-with-pie" class="level2">
+<h2 class="anchored" data-anchor-id="install-with-pie">Install with PIE</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pie</span> install phpstats/phit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>PIE finds the latest release on Packagist, installs <code>phit.so</code> into the extension directory, and enables it for the PHP it runs under. To choose another PHP installation, pass <code>--with-php-config=/path/to/php-config</code>.</p>
+<p>On Linux x86_64 and arm64 with glibc 2.35 or later, PIE downloads a prebuilt binary from the release, so nothing is compiled. Installing v0.3.1 this way was tested in the official <code>php:8.4-cli-bookworm</code> image with PIE 1.5.0 and <code>unzip</code>, and no Rust toolchain. The release workflow repeats the test for PHP 8.3, 8.4 and 8.5 on both architectures.</p>
+</section>
+<section id="building-from-source" class="level2">
+<h2 class="anchored" data-anchor-id="building-from-source">Building from source</h2>
+<p>On macOS, and on Linux systems without a matching binary (Alpine and other musl systems, or glibc older than 2.35), PIE builds the extension from source. The build needs:</p>
 <ul>
 <li>PHP’s development files: <code>phpize</code> and <code>php-config</code> for the same PHP installation.</li>
 <li>A C toolchain with <code>autoconf</code> and <code>make</code>.</li>
 <li>Rust, stable, from <a href="https://rustup.rs">rustup</a>.</li>
 <li>Clang and libclang.</li>
 </ul>
-<p>These build tools are not needed at runtime. The <a href="#prebuilt-linux-binaries">prebuilt Linux binaries</a> need none of them.</p>
-</section>
-<section id="install-with-pie" class="level2">
-<h2 class="anchored" data-anchor-id="install-with-pie">Install with PIE</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pie</span> install phpstats/phit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>PIE downloads the latest release from Packagist, builds it, copies <code>phit.so</code> into the extension directory, and enables it for the PHP it runs under. To choose another PHP installation, pass <code>--with-php-config=/path/to/php-config</code>.</p>
+<p>These build tools are not needed at runtime.</p>
 <p>On Debian or Ubuntu, the build tools come from:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install build-essential autoconf pkg-config clang libclang-dev php-dev</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://sh.rustup.rs <span class="kw">|</span> <span class="fu">sh</span> <span class="at">-s</span> <span class="at">--</span> <span class="at">-y</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Installing v0.3.0 this way was tested in a Debian Bookworm container with the official <code>php:8.4-cli-bookworm</code> image, PIE 1.5.0 and stable Rust. The image provides PHP’s development files, and the test added Clang, libclang and the image’s <code>$PHPIZE_DEPS</code>.</p>
+<p>A source build of v0.3.0 was tested in the official <code>php:8.4-cli-bookworm</code> image with PIE 1.5.0 and stable Rust. The image provides PHP’s development files, and the test added Clang, libclang and the image’s <code>$PHPIZE_DEPS</code>.</p>
 <p>On macOS, install the Xcode command-line tools (<code>xcode-select --install</code>), Rust from rustup, and PHP and autoconf from Homebrew (<code>brew install php autoconf</code>). <code>pie build phpstats/phit</code> completed for v0.3.0 on macOS 27 (Apple silicon) with Homebrew PHP 8.5. If the build cannot find libclang, the <a href="./development.html#environment">development guide</a> shows the variables that select Homebrew’s LLVM.</p>
 </section>
 <section id="prebuilt-linux-binaries" class="level2">
 <h2 class="anchored" data-anchor-id="prebuilt-linux-binaries">Prebuilt Linux binaries</h2>
-<p>Each <a href="https://github.com/phpstats/phit/releases">GitHub release</a> has tested binaries for Debian Bookworm (glibc), NTS, non-debug PHP:</p>
+<p>Each <a href="https://github.com/phpstats/phit/releases">GitHub release</a> has the binaries PIE uses, built and tested on Debian Bookworm for NTS, non-debug PHP. They can also be installed by hand:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -675,37 +681,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="header">
 <th>PHP</th>
 <th>x86_64</th>
-<th>aarch64</th>
+<th>arm64</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>8.3</td>
-<td><code>phit-0.3.0-php8.3-x86_64-nts-bookworm.tar.gz</code></td>
-<td><code>phit-0.3.0-php8.3-aarch64-nts-bookworm.tar.gz</code></td>
+<td><code>php_phit-v0.3.1_php8.3-x86_64-linux-glibc-nts.zip</code></td>
+<td><code>php_phit-v0.3.1_php8.3-arm64-linux-glibc-nts.zip</code></td>
 </tr>
 <tr class="even">
 <td>8.4</td>
-<td><code>phit-0.3.0-php8.4-x86_64-nts-bookworm.tar.gz</code></td>
-<td><code>phit-0.3.0-php8.4-aarch64-nts-bookworm.tar.gz</code></td>
+<td><code>php_phit-v0.3.1_php8.4-x86_64-linux-glibc-nts.zip</code></td>
+<td><code>php_phit-v0.3.1_php8.4-arm64-linux-glibc-nts.zip</code></td>
 </tr>
 <tr class="odd">
 <td>8.5</td>
-<td><code>phit-0.3.0-php8.5-x86_64-nts-bookworm.tar.gz</code></td>
-<td><code>phit-0.3.0-php8.5-aarch64-nts-bookworm.tar.gz</code></td>
+<td><code>php_phit-v0.3.1_php8.5-x86_64-linux-glibc-nts.zip</code></td>
+<td><code>php_phit-v0.3.1_php8.5-arm64-linux-glibc-nts.zip</code></td>
 </tr>
 </tbody>
 </table>
-<p>Each archive holds <code>phit.so</code>, <code>INSTALL.txt</code>, a <code>manifest.json</code> that records the build environment, the license, and the third-party notices. A <code>.sha256</code> file sits beside each archive.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sha256sum</span> <span class="at">-c</span> phit-0.3.0-php8.4-x86_64-nts-bookworm.sha256</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> xzf phit-0.3.0-php8.4-x86_64-nts-bookworm.tar.gz</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cp phit-0.3.0-php8.4-x86_64-nts-bookworm/phit.so <span class="st">"</span><span class="va">$(</span><span class="ex">php-config</span> <span class="at">--extension-dir</span><span class="va">)</span><span class="st">/"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then add <code>extension=phit.so</code> to the PHP configuration for each runtime that needs it, and restart PHP-FPM. These steps, with the aarch64 archive for PHP 8.4, were tested in the official <code>php:8.4-cli-bookworm</code> image. A binary matches the PHP version, architecture and C library in its manifest. Alpine (musl) and other distributions should build with PIE instead.</p>
+<p>Each archive holds <code>phit.so</code>, <code>INSTALL.txt</code>, a <code>manifest.json</code> that records the build environment and the minimum glibc, the license, and the third-party notices. A <code>.sha256</code> file sits beside each archive.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sha256sum</span> <span class="at">-c</span> php_phit-v0.3.1_php8.4-x86_64-linux-glibc-nts.sha256</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span> php_phit-v0.3.1_php8.4-x86_64-linux-glibc-nts.zip <span class="at">-d</span> phit</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cp phit/phit.so <span class="st">"</span><span class="va">$(</span><span class="ex">php-config</span> <span class="at">--extension-dir</span><span class="va">)</span><span class="st">/"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then add <code>extension=phit.so</code> to the PHP configuration for each runtime that needs it, and restart PHP-FPM. The release workflow tests these steps for every archive in the matching official PHP image. Releases up to v0.3.0 used <code>.tar.gz</code> archives named <code>phit-0.3.0-php8.4-x86_64-nts-bookworm.tar.gz</code>, which PIE does not download.</p>
 </section>
 <section id="verify" class="level2">
 <h2 class="anchored" data-anchor-id="verify">Verify</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-r</span> <span class="st">'echo phpversion("phit"), PHP_EOL;'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>0.3.0</code></pre>
+<pre><code>0.3.1</code></pre>
 <p>The command line and PHP-FPM often read different configuration files. Check the web runtime separately, for example with <code>extension_loaded('phit')</code> in a request, and restart PHP-FPM workers after installing or upgrading. <a href="./deployment.html">Deploying to servers</a> covers containers and FPM.</p>
 </section>
 <section id="declare-the-dependency" class="level2">
