@@ -28,7 +28,7 @@
  ],
  "verify": {
   "command": "php -r 'echo phpversion(\"phit\"), PHP_EOL;'",
-  "output": "0.3.0",
+  "output": "0.3.1",
   "note": "This checks the command line. PHP-FPM can read other configuration files: check extension_loaded('phit') in a web request and restart FPM after installing."
  },
  "quickstart": "getting-started",
