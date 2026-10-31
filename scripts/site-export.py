@@ -187,14 +187,9 @@ def manifest(benchmarks, verifications):
                    'distributions and descriptive statistics. Formulas work as in R (fit_lm, fit_glm, fit_lmer, '
                    'fit_glmer, predict), results are plain PHP arrays, and every estimator is checked against R, '
                    'lme4 and statsmodels.',
-        'install': ['git clone https://github.com/phpstats/phit && cd phit',
-                    'cargo build -p phit --release --locked',
-                    '# One run (libphit.dylib on macOS):',
-                    'php -d extension=$PWD/target/release/libphit.so script.php',
-                    '# Every run: add the same extension= line to the php.ini that php --ini reports.',
-                    'php --ini'],
-        'requires': ['PHP 8.3, 8.4 or 8.5 (NTS)', 'Linux or macOS',
-                     'A stable Rust toolchain and libclang to build the extension'],
+        'install': ['pie install phpstats/phit'],
+        'requires': ['PHP 8.3+, NTS build', 'macOS or Linux', 'PIE', 'Rust toolchain and libclang'],
+        'optional': [],
         'repository': 'https://github.com/phpstats/phit',
         'example': {
             'chain': "use function Phit\\{fit_lm, predict};\n\n"
