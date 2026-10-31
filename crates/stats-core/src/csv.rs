@@ -7,8 +7,14 @@
 //! character) and with a character-level reader otherwise. Both are
 //! reproduced here, including their corner cases; the values and types follow
 //! phibble's `TextParser`.
+//!
+//! The input is read a block at a time. [`read`] reads it all; [`Reader`]
+//! reads it a chunk of rows at a time, as phibble's `DataFrame::csvChunks()`
+//! does. Neither result depends on the block size.
 
 use std::borrow::Cow;
+use std::io::{self, Read};
+use std::sync::Arc;
 
 /// Column type requested for one position.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -59,6 +65,9 @@ pub struct Options {
     /// None: the default (`.` when the decimal mark is `,`, else `,`).
     /// Some(None): no grouping mark.
     pub grouping_mark: Option<Option<u8>>,
+    /// Bytes read from the input at a time. Tests shrink it to put block
+    /// boundaries everywhere; the result does not depend on it.
+    pub block_size: usize,
 }
 
 impl Default for Options {
@@ -79,6 +88,7 @@ impl Default for Options {
             guess_max: 1000,
             decimal_mark: b'.',
             grouping_mark: None,
+            block_size: 1 << 22,
         }
     }
 }
@@ -97,6 +107,9 @@ impl Options {
     }
 
     pub fn validate(&self) -> Result<(), String> {
+        if self.block_size < 1 {
+            return Err("block_size must be at least 1".into());
+        }
         if self.guess_max < 1 {
             return Err("guess_max must be at least 1".into());
         }
@@ -120,8 +133,8 @@ impl Options {
     }
 }
 
-/// A field: bytes `start..start + len` of the reader's text, where offsets
-/// past the text address its arena. `len == NA_LEN` marks a missing value.
+/// A field: bytes `start..start + len` of the reader's text, or of its arena
+/// when `start` has the ARENA bit. `len == NA_LEN` marks a missing value.
 #[derive(Clone, Copy, Debug)]
 pub struct Span {
     start: usize,
@@ -129,6 +142,17 @@ pub struct Span {
 }
 
 const NA_LEN: u32 = u32::MAX;
+const ARENA: usize = 1 << (usize::BITS - 1);
+
+fn view<'a>(text: &'a [u8], arena: &'a [u8], span: Span) -> &'a [u8] {
+    let len = span.len as usize;
+    if span.start & ARENA != 0 {
+        let start = span.start & !ARENA;
+        &arena[start..start + len]
+    } else {
+        &text[span.start..span.start + len]
+    }
+}
 
 impl Span {
     pub const NA: Span = Span {
@@ -198,13 +222,7 @@ pub struct Table {
 
 impl Table {
     pub fn bytes(&self, span: Span) -> &[u8] {
-        let end = span.start + span.len as usize;
-        if span.start >= self.text.len() {
-            let base = self.text.len();
-            &self.arena[span.start - base..end - base]
-        } else {
-            &self.text[span.start..end]
-        }
+        view(&self.text, &self.arena, span)
     }
 }
 
@@ -219,18 +237,45 @@ enum Record {
     Fields,
 }
 
-struct Tokenizer<'o> {
+/// Tokenizes text read a block at a time. A record is parsed only once the
+/// text holds all of it: one that runs into the end of the text before the
+/// input is exhausted is parsed again after the next block, so records never
+/// depend on where blocks end.
+struct Tokenizer {
     text: Vec<u8>,
     arena: Vec<u8>,
     pos: usize,
-    o: &'o Options,
+    o: Arc<Options>,
     /// vroom's quote tokenizer, or phibble's character-level reader.
     fast: bool,
     /// Set when the last record ended inside an open quote.
     unterminated: bool,
     /// Whether a record has been produced yet, for the leading comment rule.
     emitted: bool,
+    source: Box<dyn Read + Send>,
+    /// The input is exhausted and all of it is in `text`.
+    exhausted: bool,
+    /// Set when the last record stopped at the end of the text, not at a newline.
+    hit_end: bool,
+    /// Lines still to skip, as phibble skips them with fgets().
+    to_skip: usize,
+    /// Input read but not yet in `text`: the start of the file until it can
+    /// be checked for a byte order mark, a CR that may begin a CRLF, and the
+    /// bytes needed to decide `cr_only`.
+    raw: Vec<u8>,
+    /// Whether `raw` still starts the file (the byte order mark is unchecked).
+    at_start: bool,
+    /// Input bytes moved from `raw` into `text` so far.
+    consumed: usize,
+    /// Whether lines end in CR alone, decided by the window of input holding
+    /// the first line break.
+    cr_only: Option<bool>,
 }
+
+/// phibble reads 4 MiB blocks and reads lines as ending in CR alone when the
+/// first block with a line break holds no LF. The same window, aligned the
+/// same way, decides it here whatever the block size.
+const CR_WINDOW: usize = 1 << 22;
 
 /// Builds a field from pieces of the text, copying into the arena only
 /// when it is not one contiguous slice.
@@ -263,10 +308,10 @@ impl Acc {
         }
     }
 
-    fn finish(self, text_len: usize, arena: &[u8]) -> Span {
+    fn finish(self, arena: &[u8]) -> Span {
         match (self.owned, self.slice) {
             (Some(start), _) => Span {
-                start: text_len + start,
+                start: ARENA | start,
                 len: (arena.len() - start) as u32,
             },
             (None, Some((a, b))) => Span {
@@ -278,60 +323,152 @@ impl Acc {
     }
 }
 
-impl<'o> Tokenizer<'o> {
-    fn new(data: Vec<u8>, o: &'o Options) -> Self {
+impl Tokenizer {
+    fn new(source: Box<dyn Read + Send>, o: Arc<Options>) -> Self {
         let fast =
             o.comment.is_empty() && o.escape_double && !o.escape_backslash && o.quote.is_some();
-        // Lines skipped with fgets() before anything else.
-        let mut pos = 0;
-        let mut exhausted = false;
-        for _ in 0..o.skip {
-            if pos >= data.len() {
-                exhausted = true;
-                break;
-            }
-            pos = memchr::memchr(b'\n', &data[pos..]).map_or(data.len(), |i| pos + i + 1);
-        }
-        let mut text = if exhausted { Vec::new() } else { data };
-        pos = pos.min(text.len());
-        // As phibble does before tokenizing: drop a byte order mark at the
-        // start of the file and read CR as the line ending when there is no LF.
-        if o.skip == 0 && text[pos..].starts_with(b"\xEF\xBB\xBF") {
-            pos += 3;
-        }
-        let rest = &text[pos..];
-        let cr_only =
-            memchr::memchr(b'\n', rest).is_none() && memchr::memchr(b'\r', rest).is_some();
-        if cr_only {
-            text = rest
-                .iter()
-                .map(|&b| if b == b'\r' { b'\n' } else { b })
-                .collect();
-            pos = 0;
-        }
-        // Both readers work on text with CRLF folded to LF.
-        if memchr::memchr(b'\r', &text[pos..]).is_some() {
-            text = replace_crlf(&text[pos..]);
-            pos = 0;
-        }
         Self {
-            text,
+            text: Vec::new(),
             arena: Vec::new(),
-            pos,
-            o,
+            pos: 0,
             fast,
             unterminated: false,
             emitted: false,
+            source,
+            exhausted: false,
+            hit_end: false,
+            to_skip: o.skip,
+            raw: Vec::new(),
+            at_start: true,
+            consumed: 0,
+            cr_only: None,
+            o,
         }
     }
 
-    fn next(&mut self, fields: &mut Vec<Span>) -> Record {
-        fields.clear();
-        self.unterminated = false;
-        if self.fast {
-            self.next_quoted(fields)
-        } else {
-            self.next_chars(fields)
+    fn next(&mut self, fields: &mut Vec<Span>) -> io::Result<Record> {
+        loop {
+            let (pos, arena, emitted) = (self.pos, self.arena.len(), self.emitted);
+            fields.clear();
+            self.unterminated = false;
+            self.hit_end = false;
+            let record = if self.fast {
+                self.next_quoted(fields)
+            } else {
+                self.next_chars(fields)
+            };
+            if self.exhausted || !(self.hit_end || matches!(record, Record::Eof)) {
+                return Ok(record);
+            }
+            self.pos = pos;
+            self.arena.truncate(arena);
+            self.emitted = emitted;
+            self.refill()?;
+        }
+    }
+
+    /// Whether no record remains, consuming any blank lines before the next one.
+    fn at_end(&mut self) -> io::Result<bool> {
+        let mut fields = Vec::new();
+        loop {
+            let (pos, arena, emitted) = (self.pos, self.arena.len(), self.emitted);
+            match self.next(&mut fields)? {
+                Record::Eof => return Ok(true),
+                Record::Blank => {}
+                Record::Fields => {
+                    self.pos = pos;
+                    self.arena.truncate(arena);
+                    self.emitted = emitted;
+                    return Ok(false);
+                }
+            }
+        }
+    }
+
+    /// Drops text and arena bytes no span refers to any more: called between
+    /// chunks. The text is moved only once most of it has been read, so the
+    /// cost stays linear in the input.
+    fn release(&mut self) {
+        self.arena.clear();
+        if self.pos > 0 && self.pos * 2 >= self.text.len() {
+            self.text.drain(..self.pos);
+            self.pos = 0;
+        }
+    }
+
+    /// Appends input to the text, prepared as phibble prepares it: lines
+    /// skipped, a byte order mark dropped, and line endings made LF.
+    fn refill(&mut self) -> io::Result<()> {
+        loop {
+            // A record longer than a block is read in growing blocks.
+            let size = self.o.block_size.max(self.text.len() - self.pos);
+            let mut block = read_up_to(&mut self.source, size)?;
+            let eof = block.len() < size;
+            while self.to_skip > 0 {
+                match memchr::memchr(b'\n', &block) {
+                    Some(i) => {
+                        block.drain(..=i);
+                        self.to_skip -= 1;
+                    }
+                    None => {
+                        block.clear();
+                        break;
+                    }
+                }
+            }
+            if self.to_skip > 0 {
+                if eof {
+                    self.exhausted = true;
+                    return Ok(());
+                }
+                continue;
+            }
+            self.raw.extend_from_slice(&block);
+            if self.at_start {
+                if self.raw.len() < 3 && !eof {
+                    continue;
+                }
+                if self.o.skip == 0 && self.raw.starts_with(b"\xEF\xBB\xBF") {
+                    self.raw.drain(..3);
+                }
+                self.at_start = false;
+            }
+            if self.cr_only.is_none()
+                && let Some(i) = memchr::memchr2(b'\r', b'\n', &self.raw)
+            {
+                let first = self.consumed + i;
+                let window = first - first % CR_WINDOW;
+                let end = window + CR_WINDOW - self.consumed;
+                if self.raw.len() < end && !eof {
+                    continue;
+                }
+                let from = window.saturating_sub(self.consumed);
+                let to = end.min(self.raw.len());
+                self.cr_only = Some(memchr::memchr(b'\n', &self.raw[from..to]).is_none());
+            }
+            // A CR at the end may start a CRLF that the next block finishes.
+            let mut take = self.raw.len();
+            if !eof && self.cr_only != Some(true) && self.raw.last() == Some(&b'\r') {
+                take -= 1;
+            }
+            let ready = &self.raw[..take];
+            if self.cr_only == Some(true) {
+                self.text
+                    .extend(ready.iter().map(|&b| if b == b'\r' { b'\n' } else { b }));
+            } else if memchr::memchr(b'\r', ready).is_some() {
+                self.text.extend_from_slice(&replace_crlf(ready));
+            } else {
+                self.text.extend_from_slice(ready);
+            }
+            self.raw.drain(..take);
+            self.consumed += take;
+            if eof {
+                self.exhausted = true;
+                return Ok(());
+            }
+            if take > 0 {
+                return Ok(());
+            }
         }
     }
 
@@ -387,9 +524,10 @@ impl<'o> Tokenizer<'o> {
                         let Some(i) = memchr::memchr(quote, &self.text[pos..]) else {
                             // End of file inside quotes: the field takes the rest.
                             acc.push(&self.text, &mut self.arena, pos, len);
-                            fields.push(acc.finish(len, &self.arena));
+                            fields.push(acc.finish(&self.arena));
                             self.pos = len;
                             self.unterminated = true;
+                            self.hit_end = true;
                             return Record::Fields;
                         };
                         acc.push(&self.text, &mut self.arena, pos, pos + i);
@@ -418,7 +556,7 @@ impl<'o> Tokenizer<'o> {
                     }
                     break;
                 }
-                fields.push(acc.finish(len, &self.arena));
+                fields.push(acc.finish(&self.arena));
             } else {
                 let run = memchr::memchr2(delim, b'\n', &self.text[pos..]).map_or(len, |i| pos + i);
                 let field = self.unquote_trimmed(Span {
@@ -429,6 +567,7 @@ impl<'o> Tokenizer<'o> {
                 pos = run;
             }
             if pos >= len {
+                self.hit_end = true;
                 break;
             }
             let end = self.text[pos];
@@ -439,6 +578,7 @@ impl<'o> Tokenizer<'o> {
             if pos >= len {
                 // A delimiter at the very end leaves one empty field.
                 fields.push(Span { start: 0, len: 0 });
+                self.hit_end = true;
                 break;
             }
         }
@@ -451,18 +591,20 @@ impl<'o> Tokenizer<'o> {
     /// made single and other quotes dropped (escape_double), or one closing
     /// quote dropped (without escape_double).
     fn unquote_trimmed(&mut self, field: Span) -> Span {
-        let o = self.o;
-        let Some(quote) = o.quote else { return field };
-        if !o.trim_ws {
+        let Some(quote) = self.o.quote else {
+            return field;
+        };
+        if !self.o.trim_ws {
             return field;
         }
+        let escape_double = self.o.escape_double;
         let bytes = self.bytes(field);
         let trimmed = trim_tabs(bytes);
         if trimmed.first() != Some(&quote) {
             return field;
         }
         let inner = &trimmed[1..];
-        let out = if o.escape_double {
+        let out = if escape_double {
             let mut out = Vec::with_capacity(inner.len());
             let mut i = 0;
             while i < inner.len() {
@@ -480,7 +622,7 @@ impl<'o> Tokenizer<'o> {
         } else {
             drop_closing_quote(inner, quote).to_vec()
         };
-        let start = self.text.len() + self.arena.len();
+        let start = ARENA | self.arena.len();
         self.arena.extend_from_slice(&out);
         Span {
             start,
@@ -494,7 +636,7 @@ impl<'o> Tokenizer<'o> {
 
     /// phibble's character-level reader (comments, backslash escapes, no quote).
     fn next_chars(&mut self, fields: &mut Vec<Span>) -> Record {
-        let o = self.o;
+        let o = Arc::clone(&self.o);
         let len = self.text.len();
         loop {
             if self.pos >= len {
@@ -525,6 +667,7 @@ impl<'o> Tokenizer<'o> {
         let mut quoted = false;
         let mut in_quotes = false;
         let mut pos = self.pos;
+        let mut ended = false;
         while pos < len {
             let c = self.text[pos];
             if in_quotes {
@@ -552,6 +695,7 @@ impl<'o> Tokenizer<'o> {
             }
             if c == b'\n' {
                 pos += 1;
+                ended = true;
                 break;
             }
             if Some(c) == quote && (quoted || self.arena.len() == field_start) {
@@ -571,6 +715,7 @@ impl<'o> Tokenizer<'o> {
             }
             if self.starts_with_at(pos, &o.comment) {
                 pos = self.line_end(pos);
+                ended = self.text[pos - 1] == b'\n';
                 break;
             }
             if c == delim {
@@ -589,6 +734,7 @@ impl<'o> Tokenizer<'o> {
             pos += 1;
         }
         self.pos = pos;
+        self.hit_end = !ended;
         self.unterminated = in_quotes;
         fields.push(self.finish_field(field_start, quoted));
         self.emitted = true;
@@ -600,9 +746,8 @@ impl<'o> Tokenizer<'o> {
     /// only the opening and closing ones; next_chars() keeps every inner quote,
     /// so the closing one is dropped here.
     fn finish_field(&mut self, start: usize, quoted: bool) -> Span {
-        let base = self.text.len();
         let span = Span {
-            start: base + start,
+            start: ARENA | start,
             len: (self.arena.len() - start) as u32,
         };
         if !quoted {
@@ -622,19 +767,13 @@ impl<'o> Tokenizer<'o> {
         self.arena.truncate(start);
         self.arena.extend_from_slice(&out);
         Span {
-            start: base + start,
+            start: ARENA | start,
             len: out.len() as u32,
         }
     }
 
     fn bytes(&self, span: Span) -> &[u8] {
-        let end = span.start + span.len as usize;
-        let base = self.text.len();
-        if span.start >= base {
-            &self.arena[span.start - base..end - base]
-        } else {
-            &self.text[span.start..end]
-        }
+        view(&self.text, &self.arena, span)
     }
 }
 
@@ -708,118 +847,19 @@ fn trim_span(text: &[u8], span: Span) -> Span {
 
 /// Read delimited text. Errors are option errors.
 pub fn read(data: Vec<u8>, o: &Options) -> Result<Table, String> {
-    o.validate()?;
-    let mut tok = Tokenizer::new(data, o);
-    let mut fields = Vec::new();
-    let mut problems = Vec::new();
+    read_from(Box::new(io::Cursor::new(data)), o)
+}
 
-    // The first non-empty record is the header (or sets the width).
-    loop {
-        match tok.next(&mut fields) {
-            Record::Eof => {
-                return Ok(Table {
-                    names: Vec::new(),
-                    columns: Vec::new(),
-                    problems,
-                    text: tok.text,
-                    arena: tok.arena,
-                });
-            }
-            Record::Blank => continue,
-            Record::Fields => break,
-        }
-    }
-    // As phibble: an open quote at the end of the file is a problem once the
-    // reader has gone past it, which it always has for the header.
-    let mut unterminated = tok.unterminated;
-    // A UTF-8 byte order mark on the first field.
-    if tok.bytes(fields[0]).starts_with(b"\xEF\xBB\xBF") {
-        fields[0].start += 3;
-        fields[0].len -= 3;
-    }
-    let width = fields.len();
-    let names: Vec<Vec<u8>> = if o.col_names {
-        fields
-            .iter()
-            .map(|&f| {
-                let b = tok.bytes(f);
-                if o.trim_ws {
-                    php_trim(b).to_vec()
-                } else {
-                    b.to_vec()
-                }
-            })
-            .collect()
-    } else {
-        (1..=width).map(|i| format!("X{i}").into_bytes()).collect()
+/// Read delimited text from a stream. Errors are option and input errors.
+pub fn read_from(source: Box<dyn Read + Send>, o: &Options) -> Result<Table, String> {
+    let mut reader = Reader::new(source, o.clone())?;
+    let (columns, problems) = match reader.batch(usize::MAX).map_err(input_error)? {
+        Some(batch) => (batch.columns, batch.problems),
+        None => (reader.header_only(), Vec::new()),
     };
-
-    let mut rows = Rows {
-        cells: vec![Vec::new(); width],
-        count: 0,
-        joined: Vec::new(),
-    };
-    let full = |count: usize| o.n_max.is_some_and(|m| count >= m);
-    if !o.col_names && !full(rows.count) {
-        rows.take(&mut tok, &fields, &mut problems);
-    }
-    while !full(rows.count) {
-        match tok.next(&mut fields) {
-            Record::Eof => break,
-            Record::Blank => {}
-            Record::Fields => {
-                rows.take(&mut tok, &fields, &mut problems);
-                // Reaching n_max on this record stops before the reader moves on.
-                unterminated |= tok.unterminated && !full(rows.count);
-            }
-        }
-    }
-    if unterminated {
-        problems.push(format!(
-            "row {}: unterminated quoted field at end of file",
-            rows.count + 1
-        ));
-    }
-    let Rows { cells, count, .. } = rows;
-
-    let sample = sample_rows(count, o.guess_max);
-    let parser = Parser {
-        decimal: o.decimal_mark,
-        grouping: o.grouping(),
-    };
-    let mut columns = Vec::with_capacity(width);
-    for (i, column) in cells.into_iter().enumerate() {
-        let code = o.types.get(i).copied().unwrap_or(TypeCode::Guess);
-        let view = |s: Span| -> Option<&[u8]> { if s.is_na() { None } else { Some(tok.bytes(s)) } };
-        let (code, grouping) = if code == TypeCode::Guess {
-            // As phibble does: readr reads the columns of a header-only file as
-            // text, so zero data rows gives string before the guesser's
-            // empty-column rule applies.
-            let guessed = if count == 0 {
-                TypeCode::String
-            } else {
-                parser.guess(sample.iter().map(|&r| view(column[r])))
-            };
-            (guessed, true)
-        } else {
-            (code, false)
-        };
-        columns.push(match code {
-            TypeCode::Skip => None,
-            TypeCode::String | TypeCode::Guess => Some(Column {
-                values: Values::Str(column),
-                failed: 0,
-            }),
-            _ => Some(parser.parse(
-                column.iter().map(|&s| view(s)),
-                code,
-                grouping,
-                column.len(),
-            )),
-        });
-    }
+    let tok = reader.tok;
     Ok(Table {
-        names,
+        names: reader.names,
         columns,
         problems,
         text: tok.text,
@@ -827,17 +867,307 @@ pub fn read(data: Vec<u8>, o: &Options) -> Result<Table, String> {
     })
 }
 
-/// Data rows, column by column.
-struct Rows {
-    cells: Vec<Vec<Span>>,
+fn input_error(e: io::Error) -> String {
+    format!("cannot read the input: {e}")
+}
+
+/// Reads delimited text a chunk of rows at a time, holding only the current
+/// chunk, as phibble's DataFrame::csvChunks() reads it. Types not given are
+/// guessed from the first chunk's rows and every later chunk is parsed as
+/// those types. Problem rows are numbered from the start of the input.
+pub struct Reader {
+    tok: Tokenizer,
+    o: Arc<Options>,
+    names: Vec<Vec<u8>>,
+    /// The first record, when there is no header line: the first data row.
+    first: Option<Vec<Vec<u8>>>,
+    /// Data rows read so far.
     count: usize,
+    /// Whether the last record read ended inside an open quote.
+    unterminated: bool,
+    done: bool,
+    /// The type and grouping of each column, fixed by the first chunk.
+    codes: Option<Vec<(TypeCode, bool)>>,
+    fields: Vec<Span>,
     joined: Vec<u8>,
 }
 
+/// One chunk's columns and problems; resolve string spans with [`Chunk::bytes`].
+pub struct Chunk<'a> {
+    /// The 1-based index of the chunk's first row.
+    pub position: usize,
+    pub rows: usize,
+    /// None for skipped columns.
+    pub columns: Vec<Option<Column>>,
+    pub problems: Vec<String>,
+    text: &'a [u8],
+    arena: &'a [u8],
+}
+
+impl Chunk<'_> {
+    pub fn bytes(&self, span: Span) -> &[u8] {
+        view(self.text, self.arena, span)
+    }
+}
+
+struct Batch {
+    position: usize,
+    rows: usize,
+    columns: Vec<Option<Column>>,
+    problems: Vec<String>,
+}
+
+impl Reader {
+    /// Reads up to the header (or the first record, which sets the width).
+    pub fn new(source: Box<dyn Read + Send>, o: Options) -> Result<Self, String> {
+        o.validate()?;
+        let o = Arc::new(o);
+        let mut tok = Tokenizer::new(source, Arc::clone(&o));
+        let mut fields = Vec::new();
+        let mut reader = loop {
+            match tok.next(&mut fields).map_err(input_error)? {
+                Record::Eof => {
+                    break Self::with(tok, o, Vec::new(), None);
+                }
+                Record::Blank => continue,
+                Record::Fields => {}
+            }
+            // A UTF-8 byte order mark on the first field.
+            if tok.bytes(fields[0]).starts_with(b"\xEF\xBB\xBF") {
+                fields[0].start += 3;
+                fields[0].len -= 3;
+            }
+            let raw: Vec<Vec<u8>> = fields.iter().map(|&f| tok.bytes(f).to_vec()).collect();
+            let unterminated = tok.unterminated;
+            let (names, first) = if o.col_names {
+                let names = raw
+                    .into_iter()
+                    .map(|b| if o.trim_ws { php_trim(&b).to_vec() } else { b })
+                    .collect();
+                (names, None)
+            } else {
+                let names = (1..=raw.len())
+                    .map(|i| format!("X{i}").into_bytes())
+                    .collect();
+                (names, Some(raw))
+            };
+            let mut reader = Self::with(tok, o, names, first);
+            reader.unterminated = unterminated;
+            break reader;
+        };
+        reader.done = reader.names.is_empty();
+        reader.fields = fields;
+        Ok(reader)
+    }
+
+    fn with(
+        tok: Tokenizer,
+        o: Arc<Options>,
+        names: Vec<Vec<u8>>,
+        first: Option<Vec<Vec<u8>>>,
+    ) -> Self {
+        Self {
+            tok,
+            o,
+            names,
+            first,
+            count: 0,
+            unterminated: false,
+            done: false,
+            codes: None,
+            fields: Vec::new(),
+            joined: Vec::new(),
+        }
+    }
+
+    /// Column names: the header's, or X1..Xn without one. Empty for empty input.
+    pub fn names(&self) -> &[Vec<u8>] {
+        &self.names
+    }
+
+    /// The next chunk of at most `size` rows, or None when no rows remain. A
+    /// chunk with no rows is returned only to carry problems found after the
+    /// last row (an open quote at the end of an input without data rows).
+    pub fn next_chunk(&mut self, size: usize) -> io::Result<Option<Chunk<'_>>> {
+        let size = size.max(1);
+        Ok(self.batch(size)?.map(|b| Chunk {
+            position: b.position,
+            rows: b.rows,
+            columns: b.columns,
+            problems: b.problems,
+            text: &self.tok.text,
+            arena: &self.tok.arena,
+        }))
+    }
+
+    fn batch(&mut self, size: usize) -> io::Result<Option<Batch>> {
+        if self.done {
+            return Ok(None);
+        }
+        self.tok.release();
+        let o = Arc::clone(&self.o);
+        let width = self.names.len();
+        let mut rows = Rows {
+            cells: vec![Vec::new(); width],
+            count: self.count,
+        };
+        let start = self.count;
+        let limit = size.min(o.n_max.map_or(usize::MAX, |m| m - start));
+        let mut problems = Vec::new();
+        if limit > 0
+            && let Some(first) = self.first.take()
+        {
+            self.fields.clear();
+            for bytes in first {
+                let start = ARENA | self.tok.arena.len();
+                self.tok.arena.extend_from_slice(&bytes);
+                self.fields.push(Span {
+                    start,
+                    len: bytes.len() as u32,
+                });
+            }
+            rows.take(
+                &mut self.tok,
+                &self.fields,
+                &o,
+                &mut self.joined,
+                &mut problems,
+            );
+        }
+        while rows.count - start < limit {
+            match self.tok.next(&mut self.fields)? {
+                Record::Eof => break,
+                Record::Blank => {}
+                Record::Fields => {
+                    rows.take(
+                        &mut self.tok,
+                        &self.fields,
+                        &o,
+                        &mut self.joined,
+                        &mut problems,
+                    );
+                    self.unterminated = self.tok.unterminated;
+                }
+            }
+        }
+        self.count = rows.count;
+        let capped = o.n_max.is_some_and(|m| self.count >= m);
+        // Past any blank lines, to know whether records remain.
+        let exhausted = !capped && self.tok.at_end()?;
+        if exhausted && self.unterminated {
+            problems.push(format!(
+                "row {}: unterminated quoted field at end of file",
+                self.count + 1
+            ));
+        }
+        self.done = exhausted || capped;
+        let n = self.count - start;
+        if n == 0 && problems.is_empty() {
+            return Ok(None);
+        }
+        let columns = if n == 0 {
+            self.header_only()
+        } else {
+            self.columns(rows.cells, n)
+        };
+        Ok(Some(Batch {
+            position: start + 1,
+            rows: n,
+            columns,
+            problems,
+        }))
+    }
+
+    fn code(&self, i: usize) -> TypeCode {
+        self.o.types.get(i).copied().unwrap_or(TypeCode::Guess)
+    }
+
+    /// The columns of an input without data rows. As phibble does: readr reads
+    /// the columns of a header-only file as text, so zero data rows gives
+    /// string before the guesser's empty-column rule applies.
+    fn header_only(&self) -> Vec<Option<Column>> {
+        (0..self.names.len())
+            .map(|i| match self.code(i) {
+                TypeCode::Skip => None,
+                TypeCode::Guess => Some(TypeCode::String),
+                code => Some(code),
+            })
+            .map(|code| {
+                code.map(|code| {
+                    let values = match code {
+                        TypeCode::Bool => Values::Bool(Vec::new()),
+                        TypeCode::Int => Values::Int(Vec::new()),
+                        TypeCode::Double => Values::Float(Vec::new()),
+                        TypeCode::Date => Values::Date(Vec::new()),
+                        TypeCode::DateTime => Values::DateTime(Vec::new()),
+                        _ => Values::Str(Vec::new()),
+                    };
+                    Column { values, failed: 0 }
+                })
+            })
+            .collect()
+    }
+
+    fn columns(&mut self, cells: Vec<Vec<Span>>, count: usize) -> Vec<Option<Column>> {
+        let parser = Parser {
+            decimal: self.o.decimal_mark,
+            grouping: self.o.grouping(),
+        };
+        let tok = &self.tok;
+        let view = |s: Span| -> Option<&[u8]> { if s.is_na() { None } else { Some(tok.bytes(s)) } };
+        let codes = self.codes.get_or_insert_with(|| {
+            // Types: guessed from the first chunk, then fixed for the rest.
+            let sample = sample_rows(count, self.o.guess_max);
+            cells
+                .iter()
+                .enumerate()
+                .map(
+                    |(i, column)| match self.o.types.get(i).copied().unwrap_or(TypeCode::Guess) {
+                        TypeCode::Guess => {
+                            (parser.guess(sample.iter().map(|&r| view(column[r]))), true)
+                        }
+                        code => (code, false),
+                    },
+                )
+                .collect()
+        });
+        cells
+            .into_iter()
+            .zip(codes.iter())
+            .map(|(column, &(code, grouping))| match code {
+                TypeCode::Skip => None,
+                TypeCode::String | TypeCode::Guess => Some(Column {
+                    values: Values::Str(column),
+                    failed: 0,
+                }),
+                _ => Some(parser.parse(
+                    column.iter().map(|&s| view(s)),
+                    code,
+                    grouping,
+                    column.len(),
+                )),
+            })
+            .collect()
+    }
+}
+
+/// Data rows, column by column.
+struct Rows {
+    cells: Vec<Vec<Span>>,
+    /// Data rows read from the start of the input.
+    count: usize,
+}
+
 impl Rows {
-    fn take(&mut self, tok: &mut Tokenizer, fields: &[Span], problems: &mut Vec<String>) {
+    fn take(
+        &mut self,
+        tok: &mut Tokenizer,
+        fields: &[Span],
+        o: &Options,
+        joined: &mut Vec<u8>,
+        problems: &mut Vec<String>,
+    ) {
         let width = self.cells.len();
-        let o = tok.o;
         self.count += 1;
         let n = fields.len();
         if n != width {
@@ -849,18 +1179,18 @@ impl Rows {
         for (i, &field) in fields.iter().enumerate().take(kept) {
             let field = if i == width - 1 && n > width {
                 // The extra fields, joined by the delimiter, go into the last column.
-                self.joined.clear();
+                joined.clear();
                 for (k, &f) in fields[width - 1..].iter().enumerate() {
                     if k > 0 {
-                        self.joined.push(o.delimiter);
+                        joined.push(o.delimiter);
                     }
-                    self.joined.extend_from_slice(tok.bytes(f));
+                    joined.extend_from_slice(tok.bytes(f));
                 }
-                let start = tok.text.len() + tok.arena.len();
-                tok.arena.extend_from_slice(&self.joined);
+                let start = ARENA | tok.arena.len();
+                tok.arena.extend_from_slice(joined);
                 Span {
                     start,
-                    len: self.joined.len() as u32,
+                    len: joined.len() as u32,
                 }
             } else {
                 field
@@ -876,13 +1206,7 @@ impl Rows {
 /// Trim and map na strings to NA.
 fn clean(tok: &Tokenizer, field: Span, o: &Options) -> Span {
     let field = if o.trim_ws {
-        let base = tok.text.len();
-        let bytes = if field.start >= base {
-            &tok.arena[field.start - base..]
-        } else {
-            &tok.text[field.start..]
-        };
-        trim_span(bytes, field)
+        trim_span(tok.bytes(field), field)
     } else {
         field
     };
@@ -892,6 +1216,12 @@ fn clean(tok: &Tokenizer, field: Span, o: &Options) -> Span {
     } else {
         field
     }
+}
+
+fn read_up_to(source: &mut dyn Read, size: usize) -> io::Result<Vec<u8>> {
+    let mut block = Vec::with_capacity(size.min(1 << 22));
+    source.take(size as u64).read_to_end(&mut block)?;
+    Ok(block)
 }
 
 /// vroom's guessing rows: all when there are at most guess_max, else
@@ -1447,6 +1777,86 @@ mod tests {
         assert_eq!(p.parse_double(b"1.", false), Some(1.0));
         assert_eq!(p.parse_double(b"1,000.5", true), Some(1000.5));
         assert_eq!(p.parse_double(b"1,000.5", false), None);
+    }
+
+    /// Every column as text, or the type name for typed columns.
+    fn texts(t: &Table) -> Vec<Vec<Option<String>>> {
+        (0..t.columns.len()).map(|i| strings(t, i)).collect()
+    }
+
+    #[test]
+    fn independent_of_block_size() {
+        let inputs = [
+            "\u{feff}a,b\r\n\"x,\r\n\"\"y\"\"\",1\r\n\r\r\n\"multi\nline\",2,3\r\nz\r\n\"open",
+            "a;b\rx;1\r\ry;\"q\r\"\r",
+            "junk\nmore\n# c\na,b\n#x\n1,2\n  # y\n3,4",
+        ];
+        for (n, input) in inputs.iter().enumerate() {
+            let mut o = Options {
+                types: vec![TypeCode::String; 2],
+                ..Options::default()
+            };
+            if n == 1 {
+                o.delimiter = b';';
+            }
+            if n == 2 {
+                o.skip = 2;
+                o.comment = b"#".to_vec();
+            }
+            let whole = run(input, &o);
+            for block_size in 1..40 {
+                o.block_size = block_size;
+                let t = run(input, &o);
+                assert_eq!(
+                    (&t.names, texts(&t), &t.problems),
+                    (&whole.names, texts(&whole), &whole.problems),
+                    "input {n}, block {block_size}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn chunks_follow_the_whole_read() {
+        let input = "a,b\n1,x\n\n2,y\n3\n4,z,w\n5,v\n";
+        let whole = run(input, &Options::default());
+        for size in 1..7 {
+            for block_size in [1, 2, 5, 1 << 22] {
+                let o = Options {
+                    block_size,
+                    guess_max: size,
+                    ..Options::default()
+                };
+                let mut reader =
+                    Reader::new(Box::new(io::Cursor::new(input.as_bytes().to_vec())), o).unwrap();
+                assert_eq!(reader.names(), &whole.names[..]);
+                let (mut next, mut problems, mut letters) = (1, Vec::new(), Vec::new());
+                while let Some(chunk) = reader.next_chunk(size).unwrap() {
+                    assert_eq!(chunk.position, next);
+                    assert!(chunk.rows <= size);
+                    next += chunk.rows;
+                    problems.extend(chunk.problems.iter().cloned());
+                    let Some(Column {
+                        values: Values::Str(v),
+                        ..
+                    }) = &chunk.columns[1]
+                    else {
+                        panic!()
+                    };
+                    letters.extend(
+                        v.iter()
+                            .map(|&s| (!s.is_na()).then(|| chunk.bytes(s).to_vec())),
+                    );
+                }
+                assert_eq!(next, 6, "size {size}");
+                assert_eq!(problems, whole.problems);
+                let want: Vec<_> = strings(&whole, 1)
+                    .into_iter()
+                    .map(|s| s.map(String::into_bytes))
+                    .collect();
+                assert_eq!(letters, want);
+            }
+        }
     }
 
     #[test]

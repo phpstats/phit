@@ -2106,7 +2106,7 @@ function predict(array $fit, mixed $newdata, string $type = 'link', bool $seFit 
  * @param string $path A readable file (bytes are passed through; no encoding validation)
  * @param array{delimiter?: string, quote?: string, escape_double?: bool, escape_backslash?: bool, na?: list<string>, trim_ws?: bool,
  *   skip?: int, n_max?: ?int, comment?: string, skip_empty_rows?: bool, col_names?: bool, types?: array<int, '?'|'l'|'i'|'d'|'c'|'D'|'T'|'_'>,
- *   guess_max?: int, decimal_mark?: string, grouping_mark?: ?string} $options readr's defaults when omitted
+ *   guess_max?: int, decimal_mark?: string, grouping_mark?: ?string, block_size?: int} $options readr's defaults when omitted
  * @return array{names: list<string>, columns: list<null|array{type: 'bool'|'int'|'float'|'string'|'date'|'datetime', values: list<bool|int|float|string|null>, failed: int}>, problems: list<string>}
  * @throws \ValueError Missing or unreadable file, or an invalid option.
  */
@@ -2270,3 +2270,35 @@ function stat_weighted_var(array $values, array $weights, string $type = 'freque
  * @throws \Exception Input error (code 1001).
  */
 function uniroot(callable $f, float $lower, float $upper, ?float $tol = NULL, int $maxiter = 1000): array {}
+
+/**
+ * Reads a CSV file a chunk of rows at a time, as phibble's DataFrame::csvChunks() (after readr::read_delim_chunked()):
+ * only the current chunk is held. Options are read_csv()'s; types not given are guessed from the first chunk (guess_max
+ * of its rows) and every later chunk is parsed as those types. Problem rows are numbered from the start of the file.
+ */
+final class CsvReader
+{
+  /**
+   * Opens the file and reads its header line.
+   * @param string $path A readable file
+   * @param array{delimiter?: string, quote?: string, escape_double?: bool, escape_backslash?: bool, na?: list<string>, trim_ws?: bool,
+ *   skip?: int, n_max?: ?int, comment?: string, skip_empty_rows?: bool, col_names?: bool, types?: array<int, '?'|'l'|'i'|'d'|'c'|'D'|'T'|'_'>,
+ *   guess_max?: int, decimal_mark?: string, grouping_mark?: ?string, block_size?: int} $options
+   * @throws \ValueError Missing or unreadable file, or an invalid option.
+   */
+  public function __construct(string $path, array $options = []) {}
+
+  /**
+   * Column names: the header's, or X1..Xn with col_names false; [] for an empty file.
+   * @return list<string>
+   */
+  public function names(): array {}
+
+  /**
+   * The next chunk of at most $rows rows in read_csv()'s shape, with the 1-based position of its first row and its
+   * row count; null once no rows remain. A chunk without rows comes only to carry problems found after the last row.
+   * @return null|array{position: int, rows: int, names: list<string>, columns: list<null|array{type: 'bool'|'int'|'float'|'string'|'date'|'datetime', values: list<bool|int|float|string|null>, failed: int}>, problems: list<string>}
+   * @throws \ValueError rows below 1, or a read error.
+   */
+  public function next(int $rows): ?array {}
+}

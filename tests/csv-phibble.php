@@ -155,6 +155,109 @@ for ($n = 1; $n <= 40; $n++) {
     }
 }
 
+// 4. Chunks: Phit\CsvReader against DataFrame::csvChunks(), as the events
+// each produces in order: a warning per chunk with problems, then the chunk.
+/** Warnings as phibble raises them for one chunk's problems. */
+function chunkWarning(array $problems): ?string {
+    if ($problems === []) return null;
+    $more = count($problems) > 5 ? ' (and '.(count($problems) - 5).' more)' : '';
+    return 'One or more parsing issues: '.implode('; ', array_slice($problems, 0, 5)).$more.'.';
+}
+/** @return array{0: list<array>, 1: list<string>} The events and the column names. */
+function phpChunks(string $path, int $size, array $options): array {
+    $events = [];
+    $names = [];
+    set_error_handler(function (int $level, string $message) use (&$events) {
+        if ($level === E_USER_WARNING) $events[] = ['warn', $message];
+        return true;
+    });
+    try {
+        foreach (DataFrame::csvChunks($path, $size, ...$options) as $position => $df) {
+            $columns = [];
+            $names = $df->columns();
+            foreach ($df->columns() as $name) {
+                $storage = $df->storage($name);
+                $values = $storage instanceof TemporalColumn ? $storage->ticks() : $storage->values();
+                $columns[] = [$df->type($name)->value, array_map(canonical(...), $values)];
+            }
+            $events[] = ['chunk', $position, $columns];
+        }
+    } catch (Throwable $e) {
+        $events[] = ['error'];
+    } finally {
+        restore_error_handler();
+    }
+    return [$events, $names];
+}
+function nativeChunks(string $path, int $size, array $options, int $blockSize, array $names): array {
+    $events = [];
+    try {
+        $native = nativeOptions($options) + ['guess_max' => $size, 'block_size' => $blockSize];
+        if (isset($options['types'])) $native['types'] = str_split($options['types']);
+        $reader = new Phit\CsvReader($path, $native);
+        while (($chunk = $reader->next($size)) !== null) {
+            $problems = $chunk['problems'];
+            $columns = [];
+            foreach ($chunk['columns'] as $i => $c) {
+                if ($c === null) continue;
+                if ($c['failed'] > 0) {
+                    $problems[] = "column '".($names[count($columns)] ?? "X$i")."': {$c['failed']} value".($c['failed'] === 1 ? '' : 's')." could not be parsed as {$c['type']}";
+                }
+                $columns[] = [$c['type'], array_map(canonical(...), $c['values'])];
+            }
+            if (($warning = chunkWarning($problems)) !== null) $events[] = ['warn', $warning];
+            if ($chunk['rows'] > 0) $events[] = ['chunk', $chunk['position'], $columns];
+        }
+    } catch (Throwable $e) {
+        $events[] = ['error'];
+    }
+    return $events;
+}
+// DataFrame::csvChunks() arrived in phibble 9ac2b0d.
+$chunkCases = method_exists(DataFrame::class, 'csvChunks') ? (int) (getenv('CSV_CHUNK_CASES') ?: 2000) : 0;
+for ($case = 0; $case < $chunkCases; $case++) {
+    $delimiter = $separators[mt_rand(0, count($separators) - 1)];
+    $end = $ends[mt_rand(0, count($ends) - 1)];
+    $width = mt_rand(1, 3);
+    $rows = [];
+    for ($r = 0, $nrows = mt_rand(0, 12); $r < $nrows; $r++) {
+        $w = mt_rand(0, 9) === 0 ? mt_rand(0, 5) : $width;
+        $fields = [];
+        for ($f = 0; $f < $w; $f++) $fields[] = $tokens[mt_rand(0, count($tokens) - 1)];
+        $rows[] = implode($delimiter, $fields);
+    }
+    $text = implode($end, $rows).(mt_rand(0, 2) > 0 ? $end : '');
+    $options = ['delimiter' => $delimiter];
+    if (mt_rand(0, 3) === 0) $options['quote'] = ['', "'", '"'][mt_rand(0, 2)];
+    if (mt_rand(0, 4) === 0) $options['escapeBackslash'] = true;
+    if (mt_rand(0, 3) === 0) $options['comment'] = ['#', '//'][mt_rand(0, 1)];
+    if (mt_rand(0, 4) === 0) $options['skip'] = mt_rand(0, 2);
+    if (mt_rand(0, 3) === 0) $options['nMax'] = mt_rand(0, 8);
+    if (mt_rand(0, 4) === 0) $options['skipEmptyRows'] = false;
+    if (mt_rand(0, 4) === 0) $options['colNames'] = false;
+    if (mt_rand(0, 3) === 0) $options['guessMax'] = mt_rand(1, 4);
+    if (mt_rand(0, 3) === 0) {
+        $letters = 'lidcDT_?';
+        $options['types'] = '';
+        for ($i = 0; $i < $width; $i++) $options['types'] .= $letters[mt_rand(0, strlen($letters) - 1)];
+    }
+    $size = mt_rand(1, 5);
+    // phibble reads at its default block size, where its CR handling is
+    // the reference; the native reader's result does not depend on the size.
+    $blockSize = [1, 2, 3, 5, 8, 64, 1 << 22][mt_rand(0, 6)];
+    $path = "$dir/chunks.csv";
+    file_put_contents($path, $text);
+    // Column names (after phibble's name repair) for the problem messages.
+    [$php, $names] = phpChunks($path, $size, $options);
+    // phibble rejects some options (a types string of the wrong length) before
+    // reading; it never asks the native reader for those.
+    if (($php[0] ?? null) === ['error']) continue;
+    $rust = nativeChunks($path, $size, $options, $blockSize, $names);
+    check($php === $rust, "chunks differ: chunk case $case ".json_encode(['text' => $text, 'options' => $options, 'size' => $size, 'block' => $blockSize], JSON_INVALID_UTF8_SUBSTITUTE)
+        ."\nphp:    ".json_encode($php, JSON_INVALID_UTF8_SUBSTITUTE)."\nnative: ".json_encode($rust, JSON_INVALID_UTF8_SUBSTITUTE));
+    $compared++;
+}
+
 array_map(unlink(...), glob("$dir/*"));
 rmdir($dir);
 echo "csv-phibble: $compared comparisons against phibble's PHP reader passed\n";

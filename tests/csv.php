@@ -295,6 +295,42 @@ $r = csv("a\n1\n", ['delimiter' => ',', 'quote' => '"', 'escape_double' => true,
     'types' => [], 'guess_max' => 1000, 'decimal_mark' => '.', 'grouping_mark' => null]);
 column($r, 0, 'int', [1], label: 'every option at its default');
 
+// --- Chunks -----------------------------------------------------------------------
+/** Every chunk of $rows rows from $text. */
+function chunked(string $text, int $rows, array $options = []): array {
+    global $dir;
+    file_put_contents("$dir/chunks.csv", $text);
+    $reader = new Phit\CsvReader("$dir/chunks.csv", $options);
+    $out = [];
+    while (($chunk = $reader->next($rows)) !== null) $out[] = $chunk;
+    return $out;
+}
+$c = chunked("n,s\n1,a\n2,b\n\n3,c\n4,d\n5,e\n", 2);
+same(array_column($c, 'position'), [1, 3, 5], 'chunk positions');
+same(array_column($c, 'rows'), [2, 2, 1], 'chunk rows');
+same($c[0]['names'], ['n', 's'], 'chunk names');
+same(array_merge(...array_map(fn ($k) => $k['columns'][0]['values'], $c)), [1, 2, 3, 4, 5], 'chunk values');
+// Types are guessed from the first chunk and fixed for the rest.
+$c = chunked("n\n1\n2\nx\n", 2, ['guess_max' => 2]);
+same([$c[1]['columns'][0]['type'], $c[1]['columns'][0]['values'], $c[1]['columns'][0]['failed']], ['int', [null], 1], 'later chunk keeps the type');
+// Problems are numbered from the start of the file and go with their chunk.
+$c = chunked("a,b\n1,2\n3\n4,5\n6,7,8\n", 2);
+same(array_column($c, 'problems'), [['row 3: expected 2 columns, got 1'], ['row 5: expected 2 columns, got 3']], 'chunk problems');
+$c = chunked("a\n1\n\"x\n", 1);
+same($c[1]['problems'], ['row 3: unterminated quoted field at end of file'], 'unterminated goes with the last chunk');
+$c = chunked("\"a\n", 5);
+same([count($c), $c[0]['rows'], $c[0]['problems']], [1, 0, ['row 1: unterminated quoted field at end of file']], 'a chunk without rows carries problems');
+same(chunked("a,b\n", 5), [], 'header only: no chunks');
+same(chunked("", 5), [], 'empty file: no chunks');
+same(count(chunked("a\n1\n2\n3\n", 1, ['n_max' => 2])), 2, 'n_max across chunks');
+same(array_column(chunked("x\n1\n2\n", 1, ['col_names' => false]), 'rows'), [1, 1, 1], 'no header: the first record is a row');
+file_put_contents("$dir/names.csv", "\xEF\xBB\xBF a ,b\n1,2\n");
+same((new Phit\CsvReader("$dir/names.csv"))->names(), ['a', 'b'], 'names before the first chunk');
+valueError(fn () => new Phit\CsvReader("$dir/missing.csv"), 'Phit\\CsvReader::__construct(): cannot read CSV file');
+valueError(fn () => new Phit\CsvReader("$dir/names.csv", ['delimter' => ',']), "unknown option 'delimter'");
+valueError(fn () => new Phit\CsvReader("$dir/names.csv", ['block_size' => 0]), "'block_size' must be an int of at least 1");
+valueError(fn () => (new Phit\CsvReader("$dir/names.csv"))->next(0), 'rows must be at least 1');
+
 array_map(unlink(...), glob("$dir/*"));
 rmdir($dir);
 echo "csv: $checked checks passed\n";

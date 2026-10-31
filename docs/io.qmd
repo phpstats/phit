@@ -39,6 +39,7 @@ Every option is optional. The defaults are readr's.
 | `guess_max` | `1000` | Rows sampled for guessing. |
 | `decimal_mark` | `'.'` | One byte. |
 | `grouping_mark` | `null` | `null` uses `.` when the decimal mark is `,` and `,` otherwise. `''` means none. |
+| `block_size` | `4194304` | Bytes read from the file at a time. The result does not depend on it; tests use small values. |
 
 The type codes are `?` (guess), `l` (bool), `i` (int), `d` (double), `c`
 (string), `D` (date), `T` (datetime), and `_` (skip). phibble reads `f`
@@ -72,6 +73,42 @@ the file, counting skipped lines and the header. A multi-line quoted field
 counts as one record. A file that ends inside a quoted field adds
 `row N: unterminated quoted field at end of file`.
 
+## Reading in chunks
+
+`Phit\CsvReader` reads a file a chunk of rows at a time. It is the native
+reader behind phibble's `DataFrame::csvChunks()` and `fromCsvChunked()`, which
+follow readr's `read_delim_chunked()`. It holds the text of one chunk and one
+read block, so its memory follows the chunk size and not the file size.
+
+```php
+$reader = new Phit\CsvReader(string $path, array $options = []);
+$reader->names(): array;           // list<string>
+$reader->next(int $rows): ?array;  // the next chunk, or null
+```
+
+The options are `read_csv()`'s. The constructor reads the header, so
+`names()` is available before the first chunk. It returns the header's names,
+`X1`..`Xn` when `col_names` is false, or `[]` for an empty file. `next()`
+returns at most `$rows` rows in `read_csv()`'s result shape, with two more
+keys: `position`, the 1-based index of the chunk's first row, and `rows`, the
+chunk's row count. It returns `null` once no rows remain.
+
+Chunks follow phibble's chunked reader:
+
+- Types not given in `types` are guessed from the first chunk, from
+  `guess_max` of its rows sampled as above. Every later chunk is parsed as
+  those types. phibble sets `guess_max` to the chunk size by default, as readr
+  does. A value in a later chunk that does not fit its column's type counts in
+  that chunk's `failed`.
+- Problem rows are numbered from the start of the file. Each chunk carries the
+  problems of its own rows.
+- The unterminated-quote problem goes with the last chunk. After each chunk
+  the reader looks past blank lines to see whether records remain.
+- `n_max` caps the rows across all chunks.
+- A file with no data rows gives no chunks. The one exception is an
+  unterminated quote in the header: `next()` then returns a chunk with no rows
+  that carries the problem.
+
 ## Records
 
 - Short rows are padded with NA. Long rows put the extra fields, joined by the
@@ -79,8 +116,11 @@ counts as one record. A file that ends inside a quoted field adds
 - A UTF-8 byte order mark at the start of the file is removed before
   tokenizing (when `skip` is 0), so a quoted first header loses its quotes.
   One at the start of the first record after skipped lines is also removed.
-- LF and CRLF line endings are accepted. Text with no LF reads CR as the line
-  ending. Otherwise a lone CR is data. Quoted fields can hold delimiters and
+- LF and CRLF line endings are accepted. CR is read as the line ending when
+  the first line break falls in a 4 MiB stretch of the file (counted from the
+  first byte after skipped lines) that holds no LF. phibble reads 4 MiB blocks
+  and decides from the first block with a line break, so the two agree.
+  Otherwise a lone CR is data. Quoted fields can hold delimiters and
   line breaks, which are kept as written.
 - A line is blank when its raw text holds nothing but spaces, tabs and
   carriage returns. That is the raw line and not the parsed fields, so a quoted
@@ -99,14 +139,15 @@ counts as one record. A file that ends inside a quoted field adds
   that leaves no row after the header, and every row empty under
   `skip_empty_rows`. An explicit code in `types` still applies.
 
-phibble tokenizes with PHP's `fgetcsv()` when it can (no comment, `""`
-escapes, no backslash escapes, and a quote character) and with its own
-character-level reader otherwise. The native reader reproduces both. The two
-differ in small ways:
+phibble tokenizes by vroom's (readr 2's) quote rules with a fast reader when
+it can (no comment, `""` escapes, no backslash escapes, and a quote character)
+and with its own character-level reader otherwise. The native reader
+reproduces both. The two differ in small ways:
 
-- With `fgetcsv()`, whitespace before an opening quote is dropped, text after
-  a closing quote is appended to the field, and one trailing CR is removed from
-  an unquoted field.
+- In the fast reader, a field is quoted when its first byte is the quote.
+  Inside it, every lone quote toggles quoting and is dropped, and a doubled
+  quote is a literal quote, so `"x "y" z"` reads as `x y z`. Quotes in an
+  unquoted field are literal.
 - The character-level reader folds CRLF to LF everywhere, including inside
   quotes. A quote opens a quoted section only when the field so far is
   whitespace. Text after the comment prefix ends the record, so a line holding
@@ -184,8 +225,8 @@ rows) takes 0.12 seconds through `DataFrame::fromCsv()` with the extension and
 ## Verification
 
 `tests/csv.php` checks quoting, escapes, NA handling, trimming, every option,
-every type code, the guessing rules, datetimes, ragged rows, and the error
-cases.
+every type code, the guessing rules, datetimes, ragged rows, chunks, and the
+error cases.
 
 `tests/csv-conformance.php` checks `read_csv()` against phibble's reader
 without a phibble checkout. phibble generates `tests/fixtures/csv-conformance.json`
@@ -197,7 +238,11 @@ are not valid UTF-8, the four ways to read no data rows, and the blank-line
 rule in its eighteen shapes. Each case records
 the input, the options, and the names, types, values, failure counts, and
 problems phibble produces. The suite requires `read_csv()` to reproduce all of
-it, so a change in either reader fails in its own repository.
+it, so a change in either reader fails in its own repository. It reads every
+case again at block sizes of 1, 2, 3, 5, 8, and 64 bytes, and through
+`CsvReader` in one chunk and in chunks of 1, 2, and 3 rows. One chunk must
+equal the whole read. Small chunks must give the same problems in order and,
+read as text, the same values.
 
 The copy is pinned. `tests/fixtures/PHIBBLE_REFERENCE` names the phibble commit
 it came from, and `bin/fetch-csv-fixtures` copies the file from that commit,
@@ -215,4 +260,7 @@ at phibble's `vendor/autoload.php`. It compares both readers through
 `DataFrame::fromCsv()` on the fixtures and on thousands of random files and
 option combinations, with the case count and the seed taken from
 `CSV_FUZZ_CASES` and `CSV_FUZZ_SEED`. It requires identical names, types,
-values, and warnings.
+values, and warnings. With a phibble that has `DataFrame::csvChunks()`, it also
+compares `CsvReader` with phibble's PHP chunked reader on random files, chunk
+sizes, and native block sizes (`CSV_CHUNK_CASES` of them). It requires the same
+chunks, positions, types, values, and per-chunk warnings, in the same order.

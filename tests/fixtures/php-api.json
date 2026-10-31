@@ -5299,5 +5299,39 @@
             }
         ],
         "return_type": "array"
+    },
+    "Phit\\CsvReader": {
+        "methods": {
+            "__construct": {
+                "parameters": [
+                    {
+                        "name": "path",
+                        "type": "string",
+                        "optional": false
+                    },
+                    {
+                        "name": "options",
+                        "type": "array",
+                        "optional": true,
+                        "default": []
+                    }
+                ],
+                "return_type": ""
+            },
+            "names": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "next": {
+                "parameters": [
+                    {
+                        "name": "rows",
+                        "type": "int",
+                        "optional": false
+                    }
+                ],
+                "return_type": "?array"
+            }
+        }
     }
 }
