@@ -80,7 +80,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" \
-            --notes "Prebuilt Linux x86_64 and aarch64 NTS extensions for PHP 8.3, 8.4 and 8.5 on Debian Bookworm, with the source archive. Each binary archive carries its own manifest.json recording the exact ABI it was built and tested against." \
+            --notes "Prebuilt Linux x86_64 and arm64 NTS extensions, named for PIE's prebuilt-binary download, for PHP 8.3, 8.4 and 8.5 on Debian Bookworm, with the source archive. Each binary archive carries its own manifest.json recording the exact ABI it was built and tested against." \
             artifacts/phit-source/* artifacts/linux-*-nts-bookworm/*
       - name: Verify the published source archive against its checksum
         env:
@@ -113,7 +113,7 @@ jobs:
             machine: x86_64
           - arch: arm64
             runner: ubuntu-24.04-arm
-            machine: aarch64
+            machine: arm64
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
@@ -123,11 +123,26 @@ jobs:
         run: |
           mkdir -p release
           gh release download "$GITHUB_REF_NAME" --dir release \
-            --pattern "phit-*-php${{ matrix.php }}-${{ matrix.machine }}-nts-bookworm.*"
-          cd release && sha256sum -c ./*.sha256 && tar -xzf ./*.tar.gz && cd ..
+            --pattern "php_phit-${GITHUB_REF_NAME}_php${{ matrix.php }}-${{ matrix.machine }}-linux-glibc-nts.*"
+          cd release && sha256sum -c ./*.sha256 && unzip -q ./*.zip -d binary && cd ..
           docker run --rm --volume "$PWD:/src:ro" "${{ matrix.image }}" sh -euc '
-            cp /src/release/phit-*-nts-bookworm/phit.so "$(php-config --extension-dir)/"
+            cp /src/release/binary/phit.so "$(php-config --extension-dir)/"
             echo "extension=phit.so" > /usr/local/etc/php/conf.d/90-phit.ini
+            php -m | grep -qx phit
+            php /src/tests/deployment.php'
+      - name: PIE picks the prebuilt binary in a clean image without Rust
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          docker run --rm -e GH_TOKEN -e TAG="$GITHUB_REF_NAME" --volume "$PWD:/src:ro" "${{ matrix.image }}" sh -euc '
+            apt-get update -qq && apt-get install -y -qq --no-install-recommends unzip >/dev/null
+            curl -fsSL https://github.com/php/pie/releases/download/1.5.0/pie.phar -o /usr/local/bin/pie
+            echo "d195dc35d311b6e0d5e2a3bd02893628f9898db3c004563f0c3a333a02010873  /usr/local/bin/pie" | sha256sum -c -
+            export COMPOSER_AUTH="{\"github-oauth\":{\"github.com\":\"$GH_TOKEN\"}}"
+            php /usr/local/bin/pie repository:add vcs https://github.com/${{ github.repository }}
+            php /usr/local/bin/pie install "phpstats/phit:${TAG#v}" --no-interaction --no-build-tools-check | tee /tmp/pie.log
+            grep -q "Found prebuilt archive" /tmp/pie.log
+            ! command -v cargo
             php -m | grep -qx phit
             php /src/tests/deployment.php'
 
@@ -157,7 +172,7 @@ jobs:
             machine: x86_64
           - arch: arm64
             runner: ubuntu-24.04-arm
-            machine: aarch64
+            machine: arm64
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
@@ -167,9 +182,9 @@ jobs:
           path: release
       - name: Install the packaged binary into a clean PHP ${{ matrix.php }} image
         run: |
-          cd release && sha256sum -c ./*.sha256 && tar -xzf ./*.tar.gz && cd ..
+          cd release && sha256sum -c ./*.sha256 && unzip -q ./*.zip -d binary && cd ..
           docker run --rm --volume "$PWD:/src:ro" "${{ matrix.image }}" sh -euc '
-            cp /src/release/phit-*-nts-bookworm/phit.so "$(php-config --extension-dir)/"
+            cp /src/release/binary/phit.so "$(php-config --extension-dir)/"
             echo "extension=phit.so" > /usr/local/etc/php/conf.d/90-phit.ini
             php -m | grep -qx phit
             php /src/tests/deployment.php'

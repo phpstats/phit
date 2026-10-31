@@ -641,17 +641,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Create the tested Linux binary bundle locally:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">--target</span> binaries <span class="at">--output</span> type=local,dest=.context/binaries <span class="dt">\</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-f</span> docker/Dockerfile .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The archive name includes the library version, PHP major/minor, architecture, NTS mode and Bookworm target. It contains <code>phit.so</code>, installation instructions, a manifest, the project MIT license and dependency notices. A separate SHA-256 file checks archive integrity. Dependency notices include the Cargo dependency closure and build dependencies; exact upstream MIT notices missing from published crate archives are preserved under <code>third-party/</code> with provenance hashes.</p>
+<p>From the release after v0.3.0, each archive is named as PIE’s prebuilt-binary download expects, <code>php_phit-vX.Y.Z_php8.4-arm64-linux-glibc-nts.zip</code>, and composer.json lists <code>pre-packaged-binary</code> first in <code>download-url-method</code>. <code>pie install phpstats/phit</code> on Linux then downloads the matching archive and builds from source only when none matches. Releases up to v0.3.0 used <code>phit-X.Y.Z-php8.4-aarch64-nts-bookworm.tar.gz</code>, which PIE does not recognize. The zip holds <code>phit.so</code> at its root, installation instructions, a manifest that records the ABI and the minimum glibc, the project MIT license and dependency notices. A separate SHA-256 file checks archive integrity. Dependency notices include the Cargo dependency closure and build dependencies; exact upstream MIT notices missing from published crate archives are preserved under <code>third-party/</code> with provenance hashes.</p>
 <p>Treat a binary as matching the manifest’s build environment. It is not a universal Linux file. Verify its checksum, use the matching PHP extension directory, enable it for the required SAPIs, restart workers and execute a real fit.</p>
 </section>
 <section id="versioned-release-process" class="level2">
 <h2 class="anchored" data-anchor-id="versioned-release-process">Versioned release process</h2>
-<p>The installer and FPM workflow (<code>packaging.yml</code>) builds and tests the extension on Linux x86_64 and aarch64 at PHP 8.3, 8.4 and 8.5, and prepares the binary archives. Pushing a <code>vX.Y.Z</code> tag starts the release workflow (<code>release.yml</code>):</p>
+<p>The installer and FPM workflow (<code>packaging.yml</code>) builds and tests the extension on Linux x86_64 and arm64 at PHP 8.3, 8.4 and 8.5, and prepares the binary archives. Pushing a <code>vX.Y.Z</code> tag starts the release workflow (<code>release.yml</code>):</p>
 <ol type="1">
 <li>It runs the packaging matrix.</li>
 <li>It checks that the tag matches both crate versions and the MIT license, creates the source archive and its checksum, and tests installation from the extracted archive.</li>
 <li>It creates the GitHub release with the source archive, the six binary archives, their checksums and <code>SHA256SUMS</code>.</li>
-<li>It downloads the published assets and installs each binary in the matching PHP image.</li>
+<li>It downloads the published assets and installs each binary in the matching PHP image, by hand and with <code>pie install</code>, which must pick the prebuilt archive in an image without Rust.</li>
 </ol>
 <p>Export rules remove generated website caches and figures from the source archive, and keep the source, locked dependencies, model fixtures, test data and their notices. Packagist reads the tag through the repository’s GitHub webhook.</p>
 <p>Before tagging:</p>
@@ -784,7 +784,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/phpstats\.github\.io\/phit\/");
+        var filterRegex = new RegExp("https:\/\/phit\.phpstats\.org\/docs\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

@@ -14,9 +14,15 @@ docker build --target binaries --output type=local,dest=.context/binaries \
   -f docker/Dockerfile .
 ```
 
-The archive name includes the library version, PHP major/minor, architecture,
-NTS mode and Bookworm target. It contains `phit.so`, installation instructions,
-a manifest, the project MIT license and dependency notices. A separate SHA-256
+From the release after v0.3.0, each archive is named as PIE's prebuilt-binary
+download expects, `php_phit-vX.Y.Z_php8.4-arm64-linux-glibc-nts.zip`, and
+composer.json lists `pre-packaged-binary` first in `download-url-method`.
+`pie install phpstats/phit` on Linux then downloads the matching archive and
+builds from source only when none matches. Releases up to v0.3.0 used
+`phit-X.Y.Z-php8.4-aarch64-nts-bookworm.tar.gz`, which PIE does not recognize.
+The zip holds `phit.so` at its root, installation instructions, a manifest
+that records the ABI and the minimum glibc, the project MIT license and
+dependency notices. A separate SHA-256
 file checks archive integrity. Dependency notices include the Cargo dependency
 closure and build dependencies; exact upstream MIT notices missing from published
 crate archives are preserved under `third-party/` with provenance hashes.
@@ -28,7 +34,7 @@ it for the required SAPIs, restart workers and execute a real fit.
 ## Versioned release process
 
 The installer and FPM workflow (`packaging.yml`) builds and tests the extension
-on Linux x86_64 and aarch64 at PHP 8.3, 8.4 and 8.5, and prepares the binary
+on Linux x86_64 and arm64 at PHP 8.3, 8.4 and 8.5, and prepares the binary
 archives. Pushing a `vX.Y.Z` tag starts the release workflow (`release.yml`):
 
 1. It runs the packaging matrix.
@@ -38,7 +44,8 @@ archives. Pushing a `vX.Y.Z` tag starts the release workflow (`release.yml`):
 3. It creates the GitHub release with the source archive, the six binary
    archives, their checksums and `SHA256SUMS`.
 4. It downloads the published assets and installs each binary in the matching
-   PHP image.
+   PHP image, by hand and with `pie install`, which must pick the prebuilt
+   archive in an image without Rust.
 
 Export rules remove generated website caches and figures from the source
 archive, and keep the source, locked dependencies, model fixtures, test data
