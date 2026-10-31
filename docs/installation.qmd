@@ -1,0 +1,119 @@
+---
+title: "Installation"
+---
+
+phit is a PHP extension. It is installed into PHP itself, once per PHP
+installation, rather than into a project with Composer. Projects that cannot
+install extensions can use the [polyfill](extension-or-polyfill.qmd) instead.
+
+## Requirements
+
+- PHP 8.3, 8.4 or 8.5, non-thread-safe (NTS). Thread-safe (ZTS) builds are
+  not supported.
+- Linux or macOS. Windows is not supported.
+- [PIE](https://github.com/php/pie), PHP's extension installer, for the
+  standard installation.
+
+PIE builds the extension from source, so the machine also needs:
+
+- PHP's development files: `phpize` and `php-config` for the same PHP
+  installation.
+- A C toolchain with `autoconf` and `make`.
+- Rust, stable, from [rustup](https://rustup.rs).
+- Clang and libclang.
+
+These build tools are not needed at runtime. The [prebuilt Linux
+binaries](#prebuilt-linux-binaries) need none of them.
+
+## Install with PIE
+
+```sh
+pie install phpstats/phit
+```
+
+PIE downloads the latest release from Packagist, builds it, copies `phit.so`
+into the extension directory, and enables it for the PHP it runs under. To
+choose another PHP installation, pass `--with-php-config=/path/to/php-config`.
+
+On Debian or Ubuntu, the build tools come from:
+
+```sh
+sudo apt-get install build-essential autoconf pkg-config clang libclang-dev php-dev
+curl -fsSL https://sh.rustup.rs | sh -s -- -y
+```
+
+Installing v0.3.0 this way was tested in a Debian Bookworm container with the
+official `php:8.4-cli-bookworm` image, PIE 1.5.0 and stable Rust. The image
+provides PHP's development files, and the test added Clang, libclang and the
+image's `$PHPIZE_DEPS`.
+
+On macOS, install the Xcode command-line tools (`xcode-select --install`),
+Rust from rustup, and PHP and autoconf from Homebrew (`brew install php
+autoconf`). `pie build phpstats/phit` completed for v0.3.0 on macOS 27 (Apple
+silicon) with Homebrew PHP 8.5. If the build cannot find libclang, the
+[development guide](development.qmd#environment) shows the variables that
+select Homebrew's LLVM.
+
+## Prebuilt Linux binaries
+
+Each [GitHub release](https://github.com/phpstats/phit/releases) has tested
+binaries for Debian Bookworm (glibc), NTS, non-debug PHP:
+
+| PHP | x86_64 | aarch64 |
+| --- | --- | --- |
+| 8.3 | `phit-0.3.0-php8.3-x86_64-nts-bookworm.tar.gz` | `phit-0.3.0-php8.3-aarch64-nts-bookworm.tar.gz` |
+| 8.4 | `phit-0.3.0-php8.4-x86_64-nts-bookworm.tar.gz` | `phit-0.3.0-php8.4-aarch64-nts-bookworm.tar.gz` |
+| 8.5 | `phit-0.3.0-php8.5-x86_64-nts-bookworm.tar.gz` | `phit-0.3.0-php8.5-aarch64-nts-bookworm.tar.gz` |
+
+Each archive holds `phit.so`, `INSTALL.txt`, a `manifest.json` that records
+the build environment, the license, and the third-party notices. A `.sha256`
+file sits beside each archive.
+
+```sh
+sha256sum -c phit-0.3.0-php8.4-x86_64-nts-bookworm.sha256
+tar xzf phit-0.3.0-php8.4-x86_64-nts-bookworm.tar.gz
+sudo cp phit-0.3.0-php8.4-x86_64-nts-bookworm/phit.so "$(php-config --extension-dir)/"
+```
+
+Then add `extension=phit.so` to the PHP configuration for each runtime that
+needs it, and restart PHP-FPM. These steps, with the aarch64 archive for PHP
+8.4, were tested in the official `php:8.4-cli-bookworm` image. A binary matches the PHP version, architecture
+and C library in its manifest. Alpine (musl) and other distributions should
+build with PIE instead.
+
+## Verify
+
+```sh
+php -r 'echo phpversion("phit"), PHP_EOL;'
+```
+
+```
+0.3.0
+```
+
+The command line and PHP-FPM often read different configuration files. Check
+the web runtime separately, for example with `extension_loaded('phit')` in a
+request, and restart PHP-FPM workers after installing or upgrading.
+[Deploying to servers](deployment.qmd) covers containers and FPM.
+
+## Declare the dependency
+
+An application can declare the extension in its composer.json, so Composer
+reports a missing extension at install time:
+
+```json
+{
+    "require": {
+        "ext-phit": "*"
+    }
+}
+```
+
+The polyfill also satisfies `ext-phit`. See [Extension or
+polyfill](extension-or-polyfill.qmd).
+
+## Upgrade
+
+Run `pie install phpstats/phit` again, or replace `phit.so` with the newer
+binary, then restart PHP-FPM. The [release notes](https://github.com/phpstats/phit/releases)
+describe each release.

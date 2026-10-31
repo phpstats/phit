@@ -63,6 +63,6 @@ add `--export` only when intentionally refreshing upstream data.
 
 Use matching PHP tools and `.so` on Linux. Regenerate intentionally with
 `Rscript tests/generate-lmm-fixtures.R`; lme4 is a development dependency.
-See the [contract](../contracts.qmd#gaussian-random-intercept-mixed-model),
+See the [contract](../reference-models.qmd#gaussian-random-intercept-mixed-model),
 [math](../notebooks/lmm-math.qmd) and [benchmark](../benchmarks/lmm.qmd).
 Linux/PHP-FPM and broader mixed-model structures are not established by this evidence.

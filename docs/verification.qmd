@@ -2,9 +2,9 @@
 title: "Verification"
 ---
 
-Correctness is part of the implementation. Passing compilation alone does not
-establish a working PHP extension or correct inference. Use the environment and
-matching PHP executable described in [development.qmd](development.qmd).
+This page lists the checks that run on every change, the reference results
+they compare against, and their tolerances. Running them needs the build
+environment described in [Development](development.qmd).
 
 ## Routine checks
 
@@ -136,9 +136,10 @@ For ordinary fixtures, comparisons include coefficients, covariance, fitted
 values, residuals, standard errors, t-statistics, p-values, confidence intervals,
 RSS, residual variance, sigma, R-squared, adjusted R-squared and likelihood.
 Residual degrees of freedom is also checked. This is a small deterministic suite,
-not proof of correctness for every floating-point input. It does not currently
-exercise Linux, PHP-FPM, every PHP 8.3+ version, extreme scales, or every array-key
-pattern. Do not report those environments or behaviors as verified.
+not proof of correctness for every floating-point input. CI runs it on
+Linux and macOS, and the packaging workflow runs it on Linux x86_64 and aarch64
+at PHP 8.3, 8.4 and 8.5, including a PHP-FPM request. It does not exercise
+extreme scales or every array-key pattern.
 
 ## Maintaining evidence
 

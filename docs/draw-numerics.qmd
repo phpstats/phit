@@ -112,7 +112,7 @@ $transformed = Phit\draws_affine($draws, matrix: $a, shift: $shift);
 
 The transformation acts in the caller's chosen parameter coordinates. Handling
 constrained Stan parameters and any model-specific Jacobians belongs to the caller.
-The [contracts](contracts.qmd#posterior-draw-numerical-kernels) list result keys and
+The [contracts](reference-utilities.qmd#posterior-draw-numerical-kernels) list result keys and
 exception codes.
 
 ## Independent verification

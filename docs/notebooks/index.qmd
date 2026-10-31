@@ -1,73 +1,19 @@
 ---
-title: "Estimation walkthrough notebooks"
+title: "Estimation walkthroughs"
 ---
 
-Each implemented estimator should have an executable notebook walking through its
-objective, solution, residuals, uncertainty, likelihood (where relevant), and
-numerical edge cases. Start with OLS; do not create placeholder notebooks for
-methods the project does not implement.
+Each walkthrough derives one estimator step by step on a small data set: the
+objective, the matrices, the solution, the uncertainty and, where it applies,
+the likelihood. Each shows the intermediate quantities, and the comparison
+notebooks fit the same models in R, statsmodels and phit. The pages show saved
+outputs, so reading them needs no Python or R.
+
+## OLS
 
 - [OLS mathematics](ols-math.qmd): derives the estimator and evaluates each
   intermediate quantity on the PHP example data.
 - [OLS verification](ols-verification.qmd): estimates identical models in R,
   Python statsmodels and the PHP extension, displays results and checks agreement.
-
-The walkthroughs are authored as Quarto .qmd files. The rendered website includes
-saved outputs from docs/_freeze/ so readers can follow the calculations without
-running them. Executable Python chunks show intermediate matrices and invoke R/PHP
-through subprocesses for comparisons. The production library still requires
-neither Python nor R.
-
-## Render and recompute
-
-See [documentation setup](../documentation.qmd) for Quarto installation and the
-complete environment setup. Render or preview the saved website from the
-repository root with `quarto render docs` or `quarto preview docs`.
-
-To refresh calculations, select the virtual environment with QUARTO_PYTHON, build
-the matching PHP extension, then run:
-
-```sh
-export QUARTO_PYTHON="$PWD/.context/notebooks-venv/bin/python"
-.context/notebooks-venv/bin/python docs/verifications/compare_ols.py
-quarto render docs/notebooks/ols-math.qmd
-quarto render docs/notebooks/ols-verification.qmd
-.context/notebooks-venv/bin/python docs/verifications/compare_logistic.py
-quarto render docs/notebooks/logistic-math.qmd
-quarto render docs/notebooks/logistic-verification.qmd
-.context/notebooks-venv/bin/python docs/verifications/compare_probit.py
-.context/notebooks-venv/bin/python docs/verifications/compare_poisson.py
-quarto render docs/notebooks/probit-math.qmd
-quarto render docs/notebooks/probit-verification.qmd
-quarto render docs/notebooks/poisson-math.qmd
-quarto render docs/notebooks/poisson-verification.qmd
-.context/notebooks-venv/bin/python docs/verifications/compare_lmm.py
-quarto render docs/notebooks/lmm-math.qmd
-quarto render docs/notebooks/lmm-verification.qmd
-quarto render docs
-```
-
-The individual page renders execute all chunks in order and update _freeze/.
-Review source, output and comparison-report diffs when regenerating. Outputs record
-evidence from the environment used, not a guarantee for every platform. The
-verification scripts capture PHP warnings to keep JSON output valid, then show
-and check those warnings explicitly. Use a Quarto-compatible editor for interactive
-.qmd authoring; generated .ipynb files are not the maintained source.
-
-## Writing future walkthroughs
-
-Use a small reproducible simulated dataset with named variables, units, noise,
-and meaningful relationships. State its generating equation, seed, population
-parameters, and observed sample correlations. Save and share the actual observations;
-label them synthetic and explain that correlation alone is not causation.
-See the [learning-data convention](../design-philosophy.qmd#learning-examples-use-meaningful-simulated-data).
-State the model assumptions and input ordering,
-derive the calculations before displaying them, connect fields to production code,
-and explain edge cases. Supply equivalent R, statsmodels and PHP calls when those
-references support the estimator. State any differences in statistical conventions
-rather than silently adapting one library's results. Keep assertions near the
-results and preserve executed outputs. Share inputs with reference tests where
-possible; avoid three separate datasets that only look similar.
 
 ## Binary logistic regression
 

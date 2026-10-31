@@ -1,0 +1,146 @@
+---
+title: "Mixed models"
+---
+
+`fit_lmer()` fits Gaussian linear mixed models, as `lme4::lmer()` does.
+`fit_glmer()` fits a binomial logit model with one random intercept, as
+`lme4::glmer()` does for that structure. Both take an R formula with lme4's
+bar syntax for random effects.
+
+```php
+Phit\fit_lmer(string $formula, array|object $data, bool $reml = true, string $missing = 'drop',
+    array|string|null $weights = null, ?array $start = null, int $maxEvaluations = 20000,
+    float $tolerance = 1e-7, string $optimizer = 'bobyqa', float $objectiveTolerance = 1e-12): array;
+Phit\fit_glmer(string $formula, array|object $data, string $family = 'binomial', string $link = '',
+    string $missing = 'drop', array|string|null $weights = null, int $quadraturePoints = 1,
+    int $maxEvaluations = 20000, float $tolerance = 1e-7): array;
+```
+
+## Supported structures
+
+| Function | Random terms | Family and link | Fitting method |
+| --- | --- | --- | --- |
+| `fit_lmer` | `(1 | g)`, `(x | g)`, `(0 + x | g)`, `(x || g)` (uncorrelated), several terms such as `(1 | g1) + (1 | g2)`, interaction groups `(1 | g1:g2)`, and nesting `(1 | g1/g2)` | Gaussian, identity | REML (default) or ML (`reml: false`); BOBYQA (default) or Nelder–Mead (`optimizer: 'nelder_mead'`) |
+| `fit_glmer` | Exactly one `(1 | g)` | Binomial, logit | ML by Laplace (`quadraturePoints: 1`, the default) or adaptive Gauss–Hermite quadrature with 2 to 61 points |
+
+Any other random-effect structure, family or link throws code 1007. Random
+slopes, several random terms, the Poisson and probit families, and REML are
+not available in `fit_glmer()`. Random-effect terms in `fit_lm()` or
+`fit_glm()` also throw code 1007.
+
+## A random-intercept model
+
+The example uses `docs/data/schools.csv` from the repository: 250 simulated
+students in 12 schools, with study hours, a prior score and a test score.
+
+```php
+use function Phit\{fit_lmer, read_csv};
+
+$csv = read_csv('docs/data/schools.csv');
+$schools = array_combine($csv['names'], array_column($csv['columns'], 'values'));
+
+$fit = fit_lmer('score ~ study_hours + prior_score + (1 | school)', $schools);
+foreach ($fit['columns'] as $i => $name) {
+    printf("%-12s %8.4f %8.4f\n", $name, $fit['coefficients'][$i], $fit['std_errors'][$i]);
+}
+$school = $fit['random'][0];
+printf("%s: school SD %.4f, residual SD %.4f, %d schools\n", $fit['method'],
+    sqrt($school['covariance'][0][0]), $fit['sigma'], count($school['group_labels']));
+printf("%s %+.4f\n", $school['group_labels'][0], $school['effects'][0][0]);
+```
+
+```
+(Intercept)   46.6627   2.2438
+study_hours    1.6141   0.1609
+prior_score    0.2453   0.0419
+REML: school SD 4.4579, residual SD 5.0566, 12 schools
+school-01 +0.1353
+```
+
+`school-01`'s predicted random intercept is 0.14 points above the average
+school.
+
+## Reading a fit_lmer result
+
+| Key | Contents |
+| --- | --- |
+| `coefficients`, `std_errors`, `z_statistics`, `p_values`, `conf_int`, `covariance` | Fixed effects, with normal (Wald) tests and 95% intervals |
+| `random` | One entry per random term, in formula order |
+| `sigma`, `residual_variance` | Residual standard deviation and variance |
+| `theta` | Relative covariance factors, as lme4's `getME(fit, "theta")` |
+| `log_likelihood`, `aic`, `bic`, `n_parameters` | The REML criterion or the ML log-likelihood, according to `method` |
+| `fitted`, `fixed_fitted`, `residuals`, `marginal_residuals` | Conditional and fixed-effects-only predictions and residuals |
+| `method`, `optimizer`, `evaluations`, `converged`, `singular` | Fitting details |
+
+Each `random` entry has `label`, `group`, `columns` and `correlated`, the
+term's `covariance` matrix, `effects` (one row of conditional modes per group),
+`effects_cond_var` (one k×k conditional covariance per group, lme4's
+`ranef(condVar = TRUE)`), `group_labels` and `group_sizes`. Groups are ordered by
+first appearance after missing-value deletion. lme4 sorts them instead. The
+estimates do not depend on the order.
+
+The fixed-effect tests use the normal distribution. lme4 reports t values
+without p-values, and packages such as lmerTest add degrees-of-freedom
+approximations. phit has no degrees-of-freedom correction.
+
+## Singular fits
+
+A random-effect variance estimated at or near zero, or a correlation at ±1,
+makes the covariance singular. The fit returns with `singular` true and the
+warning `random-effect covariance is singular or near singular` in
+`diagnostics.warnings`. With these data, `score ~ study_hours + (1 +
+study_hours | school)` is singular: the slope variance is about 0.001. A
+singular fit usually means the random-effect structure is more complex than
+the data support.
+
+## A binomial random-intercept model
+
+`docs/data/cbpp.csv` holds lme4's `cbpp` data: cases of contagious bovine
+pleuropneumonia in 15 herds over four periods.
+
+```php
+use function Phit\{fit_glmer, read_csv};
+
+$csv = read_csv('docs/data/cbpp.csv', ['types' => ['c', 'i', 'i', 'c']]);
+$herds = array_combine($csv['names'], array_column($csv['columns'], 'values'));
+$herds['healthy'] = array_map(fn ($n, $k) => $n - $k, $herds['size'], $herds['incidence']);
+
+$fit = fit_glmer('cbind(incidence, healthy) ~ period + (1 | herd)', $herds, quadraturePoints: 10);
+foreach ($fit['named'] as $name => $b) printf("%-12s %8.4f\n", $name, $b);
+printf("herd SD %.4f, %s\n", $fit['random_intercept_sd'], $fit['integration']);
+```
+
+```
+(Intercept)   -1.3992
+period2       -0.9914
+period3       -1.1278
+period4       -1.5795
+herd SD 0.6475, adaptive_gauss_hermite
+```
+
+`quadraturePoints` is lme4's `nAGQ`. The Laplace default is fastest. More
+points approximate the likelihood more closely, which matters most for small
+groups and rare events. No number of points guarantees accuracy for every data
+set, so compare a few values when the estimates matter.
+
+A `fit_glmer` result reports the herd effects directly: `random_effects`,
+`random_effects_cond_var`, `group_labels`, `group_sizes`, `n_groups`,
+`random_intercept_variance` and `random_intercept_sd`. It also has
+`linear_predictor`, `neg2_log_likelihood`, `quadrature_points`, `integration`,
+`gradient_max` and `boundary`, and the fixed-effect keys of `fit_lmer`.
+
+## Prediction
+
+`predict()` adds each known group's random effects by default, as lme4's
+`re.form = NULL` does. `random: false` predicts at the population level, and
+the grouping columns can then be absent. A group the fit never saw throws
+code 1001 unless `allowNewLevels: true`, which predicts it at the population
+level. Mixed-model predictions have no standard errors, as in lme4.
+
+## Matrix functions
+
+`fit_mixed()`, `fit_mixed_intercept()` and `fit_logistic_mixed()` fit the same
+models from numeric matrices and explicit random-effect designs.
+`fit_mixed_intercept()` is a faster path for a Gaussian random intercept by
+ML. [Matrix model functions](reference-models.qmd) defines their inputs, the
+optimizer controls and the convergence rules.

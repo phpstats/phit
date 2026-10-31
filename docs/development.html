@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Development and installation – phit</title>
+<title>Development – phit</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -121,7 +121,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./visualization.html">Project</a></li><li class="breadcrumb-item"><a href="./development.html">Development and installation</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./development.html">Contributing</a></li><li class="breadcrumb-item"><a href="./development.html">Development</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -149,13 +149,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Project documentation</span></a>
+ <span class="menu-text">Overview</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Project</span></a>
+ <span class="menu-text">Getting started</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -163,40 +163,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./visualization.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Figure conventions and reproducibility</span></a>
+  <a href="./installation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Installation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./licensing.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Licensing</span></a>
+  <a href="./extension-or-polyfill.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Extension or polyfill</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./v0.1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.1 stabilization and release assessment</span></a>
+  <a href="./getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">A first model</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./v0.2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.2 numerical API readiness</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./design-philosophy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Design philosophy</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./contracts.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Public contracts</span></a>
-  </div>
-</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Guides</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./formulas.html" class="sidebar-item-text sidebar-link">
@@ -205,75 +198,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./r-compatibility.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">R compatibility: target, coverage and remaining work</span></a>
+  <a href="./models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear and generalized linear models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mixed-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mixed models</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./missing-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Missing data and listwise deletion</span></a>
+ <span class="menu-text">Missing values and sample accounting</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./development.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Development and installation</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./deployment.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Installation, containers and releases</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Verification</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./draw-numerics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Posterior-draw numerical kernels</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./benchmarks/draws.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Posterior-draw scale validation and performance</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./io.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Reading CSV files</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./documentation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Building and maintaining the documentation</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Walkthrough index</span></a>
-  </div>
-</li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Probability distributions &amp; statistical utilities</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./distributions.html" class="sidebar-item-text sidebar-link">
@@ -294,20 +234,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./benchmarks/rng.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Seeded sampling verification and performance</span></a>
+  <a href="./draw-numerics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Posterior-draw numerical kernels</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./verifications/distributions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Distribution and utility verification</span></a>
+  <a href="./io.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading CSV files</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./benchmarks/distributions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Distribution performance and regression preservation</span></a>
+  <a href="./deployment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Deploying to servers</span></a>
   </div>
 </li>
       </ul>
@@ -315,7 +255,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">OLS</span></a>
+ <span class="menu-text">Reference</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -323,32 +263,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/ols-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation walkthrough</span></a>
+  <a href="./contracts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">API overview</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/ols-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">R and statsmodels comparison</span></a>
+  <a href="./reference-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Matrix model functions</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./verifications/ols.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Verification record</span></a>
+  <a href="./reference-utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, statistics, draws, optimization and CSV</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./benchmarks/ols.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scale and performance</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./ols-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Math and Rust implementation notes</span></a>
+  <a href="./licensing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Licensing</span></a>
   </div>
 </li>
       </ul>
@@ -356,7 +290,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">Binary logistic regression</span></a>
+ <span class="menu-text">Compatibility and limitations</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -364,26 +298,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/logistic-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation walkthrough</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/logistic-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">R and statsmodels comparison</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./verifications/logistic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Verification record</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./benchmarks/logistic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scale and performance</span></a>
+  <a href="./r-compatibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R compatibility: target, coverage and remaining work</span></a>
   </div>
 </li>
       </ul>
@@ -391,7 +307,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Probit regression</span></a>
+ <span class="menu-text">Benchmarks and verification</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -399,122 +315,248 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/probit-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation walkthrough</span></a>
+  <a href="./verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Verification</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/probit-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">R and statsmodels comparison</span></a>
+  <a href="./verifications/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./benchmarks/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./benchmarks/rng.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Seeded sampling: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./benchmarks/draws.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Posterior draws: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./verifications/ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/ols-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: R and statsmodels comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./benchmarks/ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./verifications/logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/logistic-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic: R and statsmodels comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./benchmarks/logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic: performance</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./verifications/probit.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Verification record</span></a>
+ <span class="menu-text">Probit: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/probit-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probit: R and statsmodels comparison</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./benchmarks/probit.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scale and performance</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Poisson regression</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/poisson-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation walkthrough</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/poisson-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">R and statsmodels comparison</span></a>
+ <span class="menu-text">Probit: performance</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./verifications/poisson.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Verification record</span></a>
+ <span class="menu-text">Poisson: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/poisson-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson: R and statsmodels comparison</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./benchmarks/poisson.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scale and performance</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">Gaussian mixed model</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/lmm-general-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Random slopes and REML walkthrough</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/r-compatibility.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Expanded R and optimizer audit</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/lmm-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation walkthrough</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/lmm-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Synthetic reference comparison</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/lmm-public-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Published dataset comparison</span></a>
+ <span class="menu-text">Poisson: performance</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./verifications/lmm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Verification record</span></a>
+ <span class="menu-text">Gaussian mixed: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/lmm-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: synthetic comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/lmm-public-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: published data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/r-compatibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: lme4 optimizer audit</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./benchmarks/lmm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scale and performance</span></a>
+ <span class="menu-text">Gaussian mixed: performance</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/logistic-mixed-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Binomial mixed: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./benchmarks/logistic-mixed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Binomial mixed: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data/lmm/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Published data sets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Mathematics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Walkthroughs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/ols-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ols-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: Rust implementation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/logistic-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/probit-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probit regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/poisson-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/lmm-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian random intercept</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/lmm-general-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Random slopes and REML</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/logistic-mixed-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Binomial random intercept</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+ <span class="menu-text">History</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./v0.1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">v0.1 stabilization assessment (historical)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./v0.2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">v0.2 numerical API assessment (historical)</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Binomial mixed models</span></a>
+ <span class="menu-text">Contributing</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -522,20 +564,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/logistic-mixed-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Likelihood and integration walkthrough</span></a>
+  <a href="./development.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Development</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/logistic-mixed-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">R and independent Python verification</span></a>
+  <a href="./releasing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Releasing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./benchmarks/logistic-mixed.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scale and performance</span></a>
+  <a href="./documentation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Building and maintaining the documentation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Figure conventions and reproducibility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./design-philosophy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Design philosophy</span></a>
   </div>
 </li>
       </ul>
@@ -552,7 +606,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#environment" id="toc-environment" class="nav-link active" data-scroll-target="#environment">Environment</a></li>
   <li><a href="#build-and-run" id="toc-build-and-run" class="nav-link" data-scroll-target="#build-and-run">Build and run</a></li>
-  <li><a href="#running-in-an-application" id="toc-running-in-an-application" class="nav-link" data-scroll-target="#running-in-an-application">Running in an application</a></li>
   <li><a href="#numerical-dependency-policy" id="toc-numerical-dependency-policy" class="nav-link" data-scroll-target="#numerical-dependency-policy">Numerical dependency policy</a></li>
   <li><a href="#changing-the-implementation" id="toc-changing-the-implementation" class="nav-link" data-scroll-target="#changing-the-implementation">Changing the implementation</a></li>
   </ul>
@@ -561,9 +614,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./visualization.html">Project</a></li><li class="breadcrumb-item"><a href="./development.html">Development and installation</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./development.html">Contributing</a></li><li class="breadcrumb-item"><a href="./development.html">Development</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Development and installation</h1>
+<h1 class="title">Development</h1>
 </div>
 
 
@@ -580,7 +633,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Run commands from the checkout containing Cargo.toml, crates/, and examples/. Polyscope workspaces are separate checkouts from the original project directory. Source changes and build outputs in a workspace do not automatically appear in another checkout. The gitignored target/ directory must be rebuilt there after transferring source changes.</p>
+<p>This page is for working on phit itself: building from a checkout, running the tests, and changing the implementation. To use phit in an application, see <a href="./installation.html">Installation</a>. Run the commands below from the repository root, which holds Cargo.toml, crates/ and examples/.</p>
 <section id="environment" class="level2">
 <h2 class="anchored" data-anchor-id="environment">Environment</h2>
 <p>Following the official <a href="https://ext-php.rs/getting-started/installation.html">ext-php-rs installation guide</a> and <a href="https://ext-php.rs/getting-started/hello_world.html">Hello World build workflow</a>:</p>
@@ -592,7 +645,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="ex">brew</span> <span class="at">--prefix</span> php<span class="va">)</span><span class="st">/bin:</span><span class="va">$PATH</span><span class="st">"</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># If bindgen cannot find libclang:</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">LIBCLANG_PATH</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="ex">brew</span> <span class="at">--prefix</span> llvm<span class="va">)</span><span class="st">/lib"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Linux (Debian/Ubuntu with PHP 8.3+ available in the configured repositories):</p>
+<p>Linux (Debian or Ubuntu with PHP 8.3, 8.4 or 8.5 in the configured repositories):</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install build-essential clang libclang-dev php-cli php-dev curl</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Install stable Rust using https://rustup.rs, then source ~/.cargo/env.</span></span>
@@ -616,7 +669,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux instead:</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># export STATS_EXTENSION="$PWD/target/debug/libphit.so"</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> <span class="at">-m</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> <span class="at">-r</span> <span class="st">'echo Phit\hello(), PHP_EOL;'</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> <span class="at">-r</span> <span class="st">'echo phpversion("phit"), PHP_EOL;'</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/ols.php</span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/logistic.php</span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/probit.php</span>
@@ -633,13 +686,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> examples/lmm-slopes.php</span>
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> examples/logistic-mixed.php</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>For persistent installation, the official optional <a href="https://ext-php.rs/getting-started/cargo-php.html">cargo-php workflow</a> is <code>cargo install cargo-php --locked</code>, then from <code>crates/php-extension</code>, <code>cargo php install --release</code>. Back up php.ini first. Alternatively build with <code>cargo build -p phit --release --locked</code> and add <code>extension=/absolute/path/to/target/release/libphit.dylib</code> (Linux: <code>.so</code>) to the CLI php.ini shown by <code>php --ini</code>. Then <code>php examples/ols.php</code> runs directly. Rebuild for each PHP version; <code>-n</code> skips ini files for isolated development tests.</p>
-<p>For PIE installation, container builds, production FPM checks and release artifacts, see <a href="./deployment.html">installation and deployment</a>.</p>
-</section>
-<section id="running-in-an-application" class="level2">
-<h2 class="anchored" data-anchor-id="running-in-an-application">Running in an application</h2>
-<p>Build the release extension against the PHP installation used by the application. Deploy the library for that OS, architecture, PHP version and build configuration; a macOS dylib cannot be used by a Linux server. Keep the deployed library at a permanent absolute path and enable it in the relevant PHP configuration.</p>
-<p>CLI and PHP-FPM may read different ini files. Enable the extension for FPM as well as CLI when serving web requests, and restart FPM after installation or replacement. Verify <code>extension_loaded('phit')</code> and <code>function_exists('fit_ols')</code> and <code>function_exists('fit_logistic')</code> in the actual application runtime. Once enabled, application code calls fit_ols(), fit_logistic(), fit_probit() or fit_poisson() directly. There is no per-call import, autoloader or Composer dependency.</p>
-<p>PHP loads the library when it starts. Each call synchronously converts PHP arrays into owned Rust numeric vectors, fits the model, and returns an associative array. It does not launch R, a subprocess, or an external service. The deployed runtime needs the compiled library and its platform dependencies; Rust/Cargo and R are build/development tools.</p>
+<p><a href="./installation.html">Installation</a> covers PIE and the prebuilt binaries. <a href="./deployment.html">Deploying to servers</a> covers containers and PHP-FPM, and <a href="./releasing.html">Releasing</a> covers release artifacts.</p>
 </section>
 <section id="numerical-dependency-policy" class="level2">
 <h2 class="anchored" data-anchor-id="numerical-dependency-policy">Numerical dependency policy</h2>
@@ -649,9 +696,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="changing-the-implementation" class="level2">
 <h2 class="anchored" data-anchor-id="changing-the-implementation">Changing the implementation</h2>
 <p>Keep statistical calculations in crates/stats-core and PHP conversion in crates/php-extension. Work in small increments with established numerical crates. Check APIs against the dependency versions in Cargo.lock. Explain important mathematical steps near the code, and update contracts and reference tests when behavior changes. Do not add abstractions for hypothetical models.</p>
-<p>Follow <a href="./verification.html">verification.qmd</a> for the checks appropriate to a change. The tested baseline is Apple Silicon, Rust 1.99 and Homebrew PHP 8.5.10. Linux container/PIE/FPM evidence is now recorded in <a href="./deployment.html#deployment-verification">deployment verification</a>; other configurations remain subject to the supported-matrix checks.</p>
+<p>Follow <a href="./verification.html">verification.qmd</a> for the checks appropriate to a change. The tested baseline is Apple Silicon, Rust 1.99 and Homebrew PHP 8.5.10. CI runs the checks on macOS and Ubuntu, and the packaging workflow tests Linux x86_64 and aarch64 at PHP 8.3, 8.4 and 8.5.</p>
 <p>The general mixed fitter also uses pinned Rust-native <code>bobyqa</code> and <code>argmin</code> (Nelder–Mead). These add no C/Fortran, BLAS or LAPACK runtime requirements. See <a href="./r-compatibility.html">R compatibility</a> for reference regeneration and the remaining native optimizer backend work.</p>
-<p>See the <a href="./v0.1.html">v0.1 stabilization assessment</a> for the offline <code>scripts/check</code> gate, IDE stubs, structured diagnostics, stress fixtures, provenance manifest, performance preservation and remaining release/deployment gates.</p>
+<p><code>./scripts/check</code> runs the complete offline gate: Rust tests and clippy, every PHP suite and example, the stub and signature checks, the reference manifest, and the site export. Run it before pushing.</p>
 
 
 </section>

@@ -1,12 +1,11 @@
 ---
-title: "Development and installation"
+title: "Development"
 ---
 
-Run commands from the checkout containing Cargo.toml, crates/, and examples/.
-Polyscope workspaces are separate checkouts from the original project directory.
-Source changes and build outputs in a workspace do not automatically appear in
-another checkout. The gitignored target/ directory must be rebuilt there after
-transferring source changes.
+This page is for working on phit itself: building from a checkout, running the
+tests, and changing the implementation. To use phit in an application, see
+[Installation](installation.qmd). Run the commands below from the repository
+root, which holds Cargo.toml, crates/ and examples/.
 
 ## Environment
 
@@ -25,7 +24,7 @@ export PATH="$(brew --prefix php)/bin:$PATH"
 export LIBCLANG_PATH="$(brew --prefix llvm)/lib"
 ```
 
-Linux (Debian/Ubuntu with PHP 8.3+ available in the configured repositories):
+Linux (Debian or Ubuntu with PHP 8.3, 8.4 or 8.5 in the configured repositories):
 
 ```sh
 sudo apt-get update
@@ -95,27 +94,9 @@ is `cargo install cargo-php --locked`, then from `crates/php-extension`,
 to the CLI php.ini shown by `php --ini`. Then `php examples/ols.php` runs directly.
 Rebuild for each PHP version; `-n` skips ini files for isolated development tests.
 
-For PIE installation, container builds, production FPM checks and release artifacts,
-see [installation and deployment](deployment.qmd).
-
-## Running in an application
-
-Build the release extension against the PHP installation used by the application.
-Deploy the library for that OS, architecture, PHP version and build configuration;
-a macOS dylib cannot be used by a Linux server. Keep the deployed library at a
-permanent absolute path and enable it in the relevant PHP configuration.
-
-CLI and PHP-FPM may read different ini files. Enable the extension for FPM as well
-as CLI when serving web requests, and restart FPM after installation or replacement.
-Verify `extension_loaded('phit')` and `function_exists('fit_ols')` and `function_exists('fit_logistic')` in the
-actual application runtime. Once enabled, application code calls fit_ols(), fit_logistic(), fit_probit() or fit_poisson()
-directly. There is no per-call import, autoloader or Composer dependency.
-
-PHP loads the library when it starts. Each call synchronously converts PHP arrays
-into owned Rust numeric vectors, fits the model, and returns an associative array.
-It does not launch R, a subprocess, or an external service. The deployed runtime
-needs the compiled library and its platform dependencies; Rust/Cargo and R are
-build/development tools.
+[Installation](installation.qmd) covers PIE and the prebuilt binaries.
+[Deploying to servers](deployment.qmd) covers containers and PHP-FPM, and
+[Releasing](releasing.qmd) covers release artifacts.
 
 ## Numerical dependency policy
 
@@ -139,15 +120,15 @@ mathematical steps near the code, and update contracts and reference tests when
 behavior changes. Do not add abstractions for hypothetical models.
 
 Follow [verification.qmd](verification.qmd) for the checks appropriate to a change.
-The tested baseline is Apple Silicon, Rust 1.99 and Homebrew PHP 8.5.10. Linux container/PIE/FPM evidence is now recorded in
-[deployment verification](deployment.qmd#deployment-verification); other configurations
-remain subject to the supported-matrix checks.
+The tested baseline is Apple Silicon, Rust 1.99 and Homebrew PHP 8.5.10. CI runs
+the checks on macOS and Ubuntu, and the packaging workflow tests Linux x86_64
+and aarch64 at PHP 8.3, 8.4 and 8.5.
 
 The general mixed fitter also uses pinned Rust-native `bobyqa` and `argmin`
 (Nelder–Mead). These add no C/Fortran, BLAS or LAPACK runtime requirements.
 See [R compatibility](r-compatibility.qmd) for reference regeneration and the
 remaining native optimizer backend work.
 
-See the [v0.1 stabilization assessment](v0.1.qmd) for the offline `scripts/check` gate,
-IDE stubs, structured diagnostics, stress fixtures, provenance manifest,
-performance preservation and remaining release/deployment gates.
+`./scripts/check` runs the complete offline gate: Rust tests and clippy, every
+PHP suite and example, the stub and signature checks, the reference manifest,
+and the site export. Run it before pushing.

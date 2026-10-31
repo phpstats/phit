@@ -1,6 +1,10 @@
 ---
-title: "v0.2 numerical API readiness"
+title: "v0.2 numerical API assessment (historical)"
 ---
+
+::: {.callout-note}
+This record was written from 2026-10-12 to 2026-10-17, before the first tagged release. It describes the code and evidence as they were then, and is kept as history. The [API overview](contracts.qmd) and [verification](verification.qmd) pages describe the current releases.
+:::
 
 The distribution and statistical utility implementation includes probability
 evaluation, descriptive/draw kernels and explicitly seeded batch sampling.
@@ -86,7 +90,7 @@ pages into the local `_site` output without publishing them.
 ## Release and platform limits
 
 The new completion run verifies macOS arm64/PHP 8.5.10. Earlier packaging evidence
-in [deployment](deployment.qmd#deployment-verification) covers Linux arm64 PHP
+in [deployment](releasing.qmd#deployment-verification) covers Linux arm64 PHP
 8.3/8.4/8.5 for the preceding source snapshot. That historical evidence does not
 establish that the latest hardening changes passed those environments. The configured
 remote amd64/PHP matrix and updated binary/container builds must run as part of

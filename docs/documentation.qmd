@@ -36,30 +36,6 @@ verification. The walkthroughs show versions from their last execution. Quarto's
 explains why incremental file renders execute code even when a project-wide
 render reuses outputs.
 
-## Polyscope workspace preview
-
-polyscope.json connects the workspace lifecycle to two scripts:
-
-- Setup runs scripts/workspace-up: render the saved documentation and link
-  docs/_site/ in Laravel Herd at http://phit-{{folder}}.test.
-- Opening Preview runs setup again (safe to repeat), then starts Quarto's watcher
-  with --no-serve. Herd serves the HTML without reserving a shared localhost port.
-- Archive runs scripts/workspace-down to remove this workspace's Herd link.
-  Stop Preview to stop its watcher. Cleanup does not delete source or build outputs.
-
-This integration requires Quarto and Herd on PATH. Each workspace gets its own
-URL based on its folder name, so multiple workspaces can be browsed concurrently.
-The served files are static documentation; the compiled PHP extension does not
-need to be loaded into Herd. Polyscope's automatic Expose tunnel is enabled so
-the preview can be shared with other devices. The public URL is managed by
-Polyscope and is available while its tunnel is running.
-
-For manual setup or cleanup, run `./scripts/workspace-up` or
-`./scripts/workspace-down` from the checkout. Opening Preview displays the linked
-site and keeps its rendering watcher in Polyscope's preview terminal. Editing a
-computational walkthrough can require the execution environment described below;
-re-rendering saved results does not establish fresh numerical verification.
-
 ## Recompute the walkthroughs
 
 Follow [development setup](development.qmd) to select matching PHP and headers,
@@ -101,6 +77,56 @@ machine-specific paths to the project configuration. Review changes to .qmd,
 _freeze/ and verifications/ols-results.json together. Input-data or estimator
 changes require re-execution even if the prose has not changed.
 
+## Recompute each model's notebooks
+
+With the environment above, each estimator's comparison script and notebooks
+run in this order:
+
+```sh
+export QUARTO_PYTHON="$PWD/.context/notebooks-venv/bin/python"
+.context/notebooks-venv/bin/python docs/verifications/compare_ols.py
+quarto render docs/notebooks/ols-math.qmd
+quarto render docs/notebooks/ols-verification.qmd
+.context/notebooks-venv/bin/python docs/verifications/compare_logistic.py
+quarto render docs/notebooks/logistic-math.qmd
+quarto render docs/notebooks/logistic-verification.qmd
+.context/notebooks-venv/bin/python docs/verifications/compare_probit.py
+.context/notebooks-venv/bin/python docs/verifications/compare_poisson.py
+quarto render docs/notebooks/probit-math.qmd
+quarto render docs/notebooks/probit-verification.qmd
+quarto render docs/notebooks/poisson-math.qmd
+quarto render docs/notebooks/poisson-verification.qmd
+.context/notebooks-venv/bin/python docs/verifications/compare_lmm.py
+quarto render docs/notebooks/lmm-math.qmd
+quarto render docs/notebooks/lmm-verification.qmd
+quarto render docs
+```
+
+The individual page renders execute all chunks in order and update _freeze/.
+Review source, output and comparison-report diffs when regenerating. Outputs record
+evidence from the environment used, not a guarantee for every platform. The
+verification scripts capture PHP warnings to keep JSON output valid, then show
+and check those warnings explicitly. Use a Quarto-compatible editor for interactive
+.qmd authoring; generated .ipynb files are not the maintained source.
+
+## Writing a walkthrough
+
+Each implemented estimator has an executable walkthrough. Do not create
+placeholder notebooks for methods phit does not implement.
+
+Use a small reproducible simulated dataset with named variables, units, noise,
+and meaningful relationships. State its generating equation, seed, population
+parameters, and observed sample correlations. Save and share the actual observations;
+label them synthetic and explain that correlation alone is not causation.
+See the [learning-data convention](design-philosophy.qmd#learning-examples-use-meaningful-simulated-data).
+State the model assumptions and input ordering,
+derive the calculations before displaying them, connect fields to production code,
+and explain edge cases. Supply equivalent R, statsmodels and PHP calls when those
+references support the estimator. State any differences in statistical conventions
+rather than silently adapting one library's results. Keep assertions near the
+results and preserve executed outputs. Share inputs with reference tests where
+possible; avoid three separate datasets that only look similar.
+
 ## Authoring and verification
 
 Edit .qmd files directly. Ordinary fenced blocks such as `python`, `r` and `php`
@@ -122,11 +148,11 @@ results must never be mistaken for a new estimator test run.
 
 ## Standard figures
 
-All benchmark and notebook figures now use the shared R/ggplot2 strategy in
+All benchmark and notebook figures use the shared R/ggplot2 strategy in
 [Figure conventions](visualization.qmd). SVG/PNG exports, fixed language ordering,
 colors/shapes, units, scale choices and input/package provenance use the same
 renderer. Python remains a numerical/verification notebook engine rather than a
-second drawing implementation. Matplotlib is no longer a documentation dependency.
+second drawing implementation. Matplotlib is not a documentation dependency.
 
 To refresh saved figures without estimating or timing anything:
 
@@ -139,11 +165,13 @@ The renderer uses saved reports and small notebook-exported point snapshots.
 Individual .qmd execution invokes the R renderer when appropriate. Saved images
 and frozen outputs support browsing/rendering without rerunning scientific checks.
 
-## Publish GitHub Pages
+## Publish
 
-The repository serves [the documentation website](https://phpstats.github.io/phit/)
-from the main branch's `/docs` directory. After editing .qmd sources or refreshing
-frozen results, run:
+phpstats.org imports the rendered HTML committed under `docs/`, and GitHub
+Pages serves the same directory at <https://phpstats.github.io/phit/>. Neither
+runs Quarto. The site's navigation is the sidebar in `docs/_quarto.yml`, so
+every page listed there needs its rendered HTML committed. After editing .qmd
+sources or refreshing frozen results, run:
 
 ```sh
 ./scripts/render-docs
@@ -152,4 +180,4 @@ frozen results, run:
 Commit the regenerated HTML/assets with their sources and push to main.
 `docs/.nojekyll` lets GitHub Pages serve the static Quarto website directly,
 including asset directories containing underscores. `quarto render docs` alone
-updates the workspace preview; the publication script also refreshes `/docs/index.html`.
+writes only `docs/_site/`; the script also copies the result into `docs/`.

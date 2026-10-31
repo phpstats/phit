@@ -1,99 +1,71 @@
 ---
-title: "Project documentation"
+title: "phit"
 ---
 
-Fit statistical models directly in PHP using ordinary numeric arrays. The native
-Rust engine returns coefficients, uncertainty, fitted values, and model statistics.
-A fixed intercept is added automatically; `intercept: false` accepts a literal
-design or fits a model through the origin.
+phit is a PHP extension, written in Rust, for statistical models. It fits
+linear, logistic, probit, Poisson and mixed-effects regression models, and
+evaluates probability distributions and descriptive statistics. Data go in as
+ordinary PHP arrays and results come back as associative arrays, with no model
+objects or services.
+
+Models are written as R formulas: `rent ~ area + district` models rent from
+floor area and district. Factors, interactions and transformations such as
+`log(area)` are written in the formula, and phit builds the numeric design
+from named columns.
 
 ```php
-$result = Phit\fit_ols(
-    x: [[74.4], [57.4], [66.4], [49.1], [45.7], [92.4], [37.0], [93.9]],
-    y: [1879.25, 1805.03, 2022.29, 1267.85, 1509.24, 2240.10, 959.51, 2386.54],
-);
-// coefficients: approximately [372.478545, 21.479724] — intercept, floor area.
+use function Phit\{fit_lm, predict};
+
+$fit = fit_lm('rent ~ area + district', $flats);
+$fit['named'];     // ['(Intercept)' => 352.64, 'area' => 19.18, 'districtnorth' => 203.64, ...]
+$fit['p_values'];  // One per coefficient, in the same order
+$fit['r_squared']; // 0.927
+
+$p = predict($fit, ['area' => [55.0], 'district' => ['east']], interval: 'prediction');
+$p['fit'];         // [1407.55], with $p['lower'] and $p['upper']
 ```
 
-Start with [installation](development.qmd) and the [PHP contracts](contracts.qmd).
-For unequal exposure in a Poisson model, pass `offset: log(exposure)` as an aligned
-array on the log scale; see the [exposure example](contracts.qmd#poisson-exposure-example).
-Existing callers that supply a ones column should remove it or use
-`intercept: false`; random-effect design matrices remain explicit.
+[A first model](getting-started.qmd) runs this example with its data and
+explains each part of the result.
 
-The [math walkthroughs](notebooks/index.qmd) build the matrices and likelihoods
-step by step. The verification pages compare the same models with R, Python,
-and independent numerical references.
+## What phit provides
 
-- [Building the documentation](documentation.qmd): Quarto rendering and refreshing computations.
-- [Design philosophy](design-philosophy.qmd): priorities, raw interface, helper
-  responsibilities and scope.
-- [Contracts](contracts.qmd): current PHP and Rust APIs, shapes, ordering, errors
-  and statistical edge cases.
-- [Server deployment and releases](deployment.qmd): PIE, Docker, PHP-FPM and tested artifacts.
-- [Development and installation](development.qmd): local setup, separate checkouts,
-  builds and application deployment.
-- [Verification](verification.qmd): checks, reference fixtures, tolerances and
-  evidence limits.
-- [Missing data](missing-data.qmd): omission policy, warnings and sample metadata.
-- [Walkthrough notebooks](notebooks/index.qmd): executable mathematics and comparisons.
-- [OLS verification](verifications/ols.qmd): the same fits in R, statsmodels and PHP.
-- [OLS mathematics and Rust notes](ols-math.qmd): derivations and implementation.
+- **Regression models**: `fit_lm()` and `fit_glm()` for linear, logistic,
+  probit and Poisson regression, with weights and offsets. See [Linear and
+  generalized linear models](models.qmd).
+- **Mixed models**: `fit_lmer()` for Gaussian models with random intercepts
+  and slopes, and `fit_glmer()` for a binomial model with a random intercept.
+  See [Mixed models](mixed-models.qmd).
+- **Prediction** on new data with confidence and prediction intervals.
+- **Probability distributions**: densities, CDFs, survival functions and
+  quantiles for 12 families (13 parameterizations), and seeded random
+  samples, including uniform, categorical and permutation sampling. See [Probability
+  distributions](distributions.qmd) and [Seeded sampling](rng.qmd).
+- **Descriptive statistics**: means, variances, quantiles, weighted
+  statistics, kernel density estimates and the ECDF. See [Descriptive
+  statistics](descriptive.qmd).
+- **Posterior draws**: weighted moments and transforms for MCMC output. See
+  [Posterior draws](draw-numerics.qmd).
+- **CSV input**: a native reader used by phibble. See [Reading CSV
+  files](io.qmd).
 
-Keep the root README as a quick entry point. Put detailed guidance here and
-update the relevant document alongside code changes. Distinguish implemented
-behavior, verified behavior and proposed direction; do not present plans as
-existing features. Add new documents only when a topic needs its own explanation.
+Each model also has a function over numeric matrices, such as `fit_ols()` and
+`fit_logistic()`, for code that builds its own design matrix. See [Matrix
+model functions](reference-models.qmd).
 
-## Probability distributions and statistical utilities
+## Results
 
-- [Probability distributions](distributions.qmd): scalar/batch APIs, parameterizations, tails and numerical implementation.
-- [Descriptive statistics](descriptive.qmd): type-7 quantiles, weighted definitions and missing policies.
-- [R/SciPy/mpmath verification](verifications/distributions.qmd): independent references, error tables and boundary differences.
-- [Performance](benchmarks/distributions.qmd): PHP scalar/batch, internal Rust, R and SciPy, plus preserved regression behavior.
-- [Seeded sampling](rng.qmd): local ChaCha20 streams, family APIs and reproducibility.
-- [v0.2 readiness](v0.2.qmd): completed scope and release limits.
-- [Posterior-draw kernels](draw-numerics.qmd): weighted moments, covariance maps and affine transformations.
-- [Reading CSV files](io.qmd): `read_csv()`, the native reader behind phibble's `DataFrame::fromCsv()`.
+Results follow R's conventions: coefficient names, treatment contrasts, the
+order of terms, deviance and AIC as `glm()` reports them, and lme4's REML
+estimates. Rows with missing values are dropped with a warning, and every
+result reports which rows it used. Errors are PHP exceptions with stable
+numeric codes. The [verification](verification.qmd) pages compare each model
+with R, lme4 and statsmodels, and record the tolerances.
 
-## Binary logistic regression
+## Requirements
 
-- [Math walkthrough](notebooks/logistic-math.qmd): likelihood, matrix calculations, Newton/IRLS and Wald inference.
-- [Executed comparison](notebooks/logistic-verification.qmd): identical models in R, statsmodels and PHP.
-- [Verification record](verifications/logistic.qmd): fixtures, edge cases and tolerances.
-- [Scale and performance](benchmarks/logistic.qmd): standard release benchmarks.
-
-## Probit regression
-
-- [Math walkthrough](notebooks/probit-math.qmd): likelihood, scoring, matrices and inference.
-- [Executed comparison](notebooks/probit-verification.qmd): identical fits in R, statsmodels and PHP.
-- [Verification record](verifications/probit.qmd): conventions and failure cases.
-- [Scale and performance](benchmarks/probit.qmd): standard release benchmarks.
-
-## Poisson regression
-
-- [Math walkthrough](notebooks/poisson-math.qmd): likelihood, scoring, matrices and inference.
-- [Executed comparison](notebooks/poisson-verification.qmd): identical fits in R, statsmodels and PHP.
-- [Verification record](verifications/poisson.qmd): conventions and failure cases.
-- [Scale and performance](benchmarks/poisson.qmd): standard release benchmarks.
-
-## Gaussian random-intercept mixed model
-
-- [Math walkthrough](notebooks/lmm-math.qmd): covariance, marginal likelihood and shrinkage.
-- [Synthetic reference comparison](notebooks/lmm-verification.qmd): lme4 ML, statsmodels and PHP.
-- [Published dataset comparison](notebooks/lmm-public-verification.qmd): four studies, lme4, nlme, statsmodels and PHP.
-- [Verification record](verifications/lmm.qmd): conventions, boundary fits and limits.
-- [Scale and performance](benchmarks/lmm.qmd): release API benchmarks and charts.
-
-The [R compatibility ledger](r-compatibility.qmd) records the expanded weighted,
-offset and general Gaussian mixed-model capabilities and remaining work toward
-full parity. See the [executed optimizer audit](notebooks/r-compatibility.qmd) and
-[random-slopes/REML walkthrough](notebooks/lmm-general-math.qmd).
-
-[Binomial random-intercept models](notebooks/logistic-mixed-math.qmd) now add
-non-Gaussian multilevel likelihoods, with
-[R/SciPy verification and approximation-error checks](notebooks/logistic-mixed-verification.qmd).
-
-See the [v0.1 stabilization assessment](v0.1.qmd) for the offline `scripts/check` gate,
-IDE stubs, structured diagnostics, stress fixtures, provenance manifest,
-performance preservation and remaining release/deployment gates.
+phit runs on PHP 8.3, 8.4 and 8.5 (non-thread-safe builds) on Linux and macOS.
+It installs with PIE, or from prebuilt Linux binaries. See
+[Installation](installation.qmd). The pure-PHP
+[polyfill](extension-or-polyfill.qmd) provides the same functions where the
+extension cannot be installed, at lower speed.

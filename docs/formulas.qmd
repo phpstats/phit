@@ -37,8 +37,8 @@ $fit['columns'];  // ['(Intercept)', 'log(area)', 'districtnorth', 'districtsout
 $fit['named'];    // ['(Intercept)' => ..., 'log(area)' => ..., ...]
 $fit['p_values']; // Aligned with columns, as in Phit\fit_ols.
 
-$model = Phit\fit_glm('passed ~ hours * score', $learning, family: 'binomial', link: 'probit');
-$mixed = Phit\fit_lmer('score ~ hours + (1 + hours | school)', $schools);
+$model = Phit\fit_glm('passed ~ study_hours * practice_score', $learning, family: 'binomial', link: 'probit');
+$mixed = Phit\fit_lmer('score ~ study_hours + prior_score + (1 | school)', $schools);
 ```
 
 ## Data

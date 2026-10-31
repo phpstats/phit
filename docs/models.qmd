@@ -1,0 +1,163 @@
+---
+title: "Linear and generalized linear models"
+---
+
+`fit_lm()` fits a linear model by least squares. `fit_glm()` fits a
+generalized linear model by maximum likelihood. Both take an R formula and
+named columns, as described in [Model formulas](formulas.qmd).
+
+```php
+Phit\fit_lm(string $formula, array|object $data, string $missing = 'drop',
+    array|string|null $weights = null): array;
+Phit\fit_glm(string $formula, array|object $data, string $family = 'gaussian', string $link = '',
+    string $missing = 'drop', array|string|null $weights = null): array;
+```
+
+## Families and links
+
+| Family | Links | Response | Matrix function |
+| --- | --- | --- | --- |
+| `gaussian` | `identity` | Numbers | `fit_ols` |
+| `binomial` | `logit` (default), `probit` | 0/1 numbers, booleans, a factor or strings (first level is failure), proportions with integer trial weights, or `cbind(successes, failures)` | `fit_logistic`, `fit_probit` |
+| `poisson` | `log` | Nonnegative integer counts | `fit_poisson` |
+
+An empty `link` selects the canonical link. Any other family or link throws an
+`Exception` with code 1007, such as `family 'gamma' is not supported; use
+gaussian, binomial or poisson`.
+
+## Linear models
+
+`fit_lm()` assumes independent errors with constant variance. Intervals and
+tests use Student's t with `df_residual` degrees of freedom. The result has
+`t_statistics`, `rss`, `residual_variance`, `sigma`, `r_squared` and
+`adj_r_squared`. [A first model](getting-started.qmd) shows a complete fit and
+its output.
+
+`fit_glm(family: 'gaussian')` returns the same fit plus `deviance`,
+`null_deviance` and `aic` as R's `glm()` reports them.
+
+## Logistic and probit regression
+
+```php
+use function Phit\{fit_glm, predict};
+
+$leases = [
+    'renewed' => [1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0],
+    'increase' => [2.0, 3.5, 8.0, 1.0, 6.5, 4.0, 2.5, 9.0, 5.0, 4.5, 3.0, 7.0, 10.0, 6.0, 5.5, 7.5],
+    'tenure' => [4, 2, 1, 6, 3, 1, 5, 2, 3, 1, 2, 6, 4, 3, 1, 2],
+];
+
+$logit = fit_glm('renewed ~ increase + tenure', $leases, family: 'binomial');
+foreach ($logit['named'] as $name => $b) printf("%-12s %8.4f\n", $name, $b);
+printf("deviance %.4f, null deviance %.4f, AIC %.4f, %d iterations\n",
+    $logit['deviance'], $logit['null_deviance'], $logit['aic'], $logit['iterations']);
+```
+
+```
+(Intercept)    2.7907
+increase      -1.0308
+tenure         1.3233
+deviance 10.5555, null deviance 21.9301, AIC 16.5555, 8 iterations
+```
+
+Coefficients are on the log-odds scale. A rent increase of one percentage
+point multiplies the odds of renewal by `exp(-1.0308)`, about 0.36.
+`link: 'probit'` fits the same model on the probit scale:
+
+```php
+$probit = fit_glm('renewed ~ increase + tenure', $leases, family: 'binomial', link: 'probit');
+```
+
+```
+(Intercept)    1.8063
+increase      -0.6257
+tenure         0.7672
+```
+
+Predicted probabilities come from `predict()` with `type: 'response'`.
+`seFit: true` adds delta-method standard errors:
+
+```php
+$p = predict($logit, ['increase' => [3.0, 8.0], 'tenure' => [2, 2]], type: 'response', seFit: true);
+foreach ($p['fit'] as $i => $v) printf("%.4f (se %.4f)\n", $v, $p['se_fit'][$i]);
+```
+
+```
+0.9125 (se 0.1227)
+0.0568 (se 0.0916)
+```
+
+Binomial fits report `z_statistics`, with p-values and 95% intervals from the
+normal distribution (Wald inference). `fitted` holds probabilities and
+`residuals` holds `y - fitted`. The dispersion is fixed at one.
+
+Complete or quasi-complete separation, where a combination of predictors
+divides successes from failures, means no finite maximum-likelihood estimate
+exists. The fit then throws code 1006 with the message `complete or
+quasi-complete separation: no finite unpenalized logistic MLE`. A fit near
+separation can converge with very large standard errors. Convergence does not
+show that the inference is reliable.
+
+## Poisson regression
+
+Counts observed over different exposures take the log exposure as an offset:
+
+```php
+$accounts = [
+    'tickets' => [3, 7, 1, 12, 4, 0, 9, 2, 5, 15],
+    'months' => [6, 12, 3, 12, 8, 2, 12, 5, 7, 12],
+    'plan' => ['basic', 'pro', 'basic', 'pro', 'basic', 'basic', 'pro', 'basic', 'pro', 'pro'],
+];
+
+$poisson = fit_glm('tickets ~ plan + offset(log(months))', $accounts, family: 'poisson');
+printf("rate ratio pro/basic %.4f\n", exp($poisson['named']['planpro']));
+```
+
+```
+rate ratio pro/basic 2.0945
+```
+
+The coefficients are log rate ratios per month. The `(Intercept)` is
+-0.8755, a rate of `exp(-0.8755)`, about 0.42 tickets per month on the basic
+plan. Poisson fits have the same inference keys as binomial fits. The model
+assumes the variance equals the mean. Overdispersion is not estimated or
+corrected.
+
+## Result keys
+
+`fit_glm()` with the binomial or Poisson family returns:
+
+| Key | Contents |
+| --- | --- |
+| `coefficients`, `std_errors`, `z_statistics`, `p_values`, `conf_int`, `covariance` | Wald inference, in `columns` order |
+| `fitted`, `residuals` | Fitted means and response residuals, one per retained row |
+| `log_likelihood`, `deviance`, `null_deviance`, `aic` | Likelihood statistics as R's `glm()` reports them |
+| `df_residual`, `iterations`, `converged` | Residual degrees of freedom and Newton iterations |
+| `family`, `link` | The family and link used |
+| `formula`, `response`, `columns`, `terms`, `assign`, `intercept`, `named`, `predvars` | Formula and naming keys, shared by all formula fits |
+| `n_input`, `n_observations`, `n_dropped`, `retained_rows`, `dropped_rows` | Sample accounting |
+| `diagnostics` | `converged`, `solver`, `iterations` and `warnings` |
+
+Each family's matrix function in [Matrix model functions](reference-models.qmd)
+defines these quantities exactly, including the null-deviance baseline and the
+convergence rule.
+
+## Weights and offsets
+
+`weights` is an array aligned with the original rows, or the name of a numeric
+column. Weights must be positive, and a missing weight drops its row. For
+`fit_lm()` they are precision weights. For the binomial family they are
+integer trial counts, with the response given as proportions. Offsets are
+written in the formula with `offset(expr)`. Several offsets are added
+together.
+
+## Differences from R
+
+- A rank-deficient design throws code 1004. R reports aliased coefficients
+  as `NA`.
+- Zero weights are rejected. R gives such rows zero weight.
+- Gaussian `fit_glm()` intervals use t, as `fit_lm()` does. R's
+  `confint.default()` uses z and `confint()` profiles the likelihood.
+
+[Model formulas](formulas.qmd#differences-from-r) lists the remaining
+differences in formula handling.

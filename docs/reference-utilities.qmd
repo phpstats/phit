@@ -1,0 +1,141 @@
+---
+title: "Distributions, statistics, draws, optimization and CSV"
+---
+
+## Probability distributions and descriptive statistics
+
+Thirteen distribution parameterizations expose seven operations, each in scalar
+and `_array` form: 182 functions in total. Continuous families use `pdf`, `logpdf`,
+`cdf`, `logcdf`, `sf`, `logsf`, `quantile`; discrete families replace pdf/logpdf with
+pmf/logpmf. Names follow `dist_{family}_{operation}` and
+`dist_{family}_{operation}_array`. The [distribution contract](distributions.qmd)
+lists every family, parameter name/default, domain and support. The generated
+`stubs/phit.php` is the exact signature reference.
+
+Numeric arguments/elements accept PHP integers or floats; binomial `size` is an
+integer in `[0,2^53]`. Batch results are packed lists preserving iteration order,
+with keys discarded. Empty input returns an empty result after parameter validation.
+Null, NAN and malformed elements reject the entire batch; there is no row deletion
+or missing policy. Distribution evaluation points may be ±INF; parameters must be
+finite. Invalid domains raise 1001, NAN points/nonfinite parameters raise 1003,
+unsupported binomial size raises 1007, and a NAN numerical result raises 1006.
+Boundary densities/log values can legitimately be ±INF. Discrete quantiles are
+floats with a `64*EPSILON` relative allowance at CDF steps. Degenerate distributions
+return their point mass at quantile p=1, even where R/SciPy differ.
+
+The ten [descriptive functions](descriptive.qmd) are mean, variance, SD, covariance,
+correlation, scalar/batch type-7 quantiles, median, weighted mean and weighted
+variance. They default to `missing: 'raise'`, with explicit `'drop'` deletion,
+pairwise for aligned inputs. Variance/SD/covariance defaults to sample normalization;
+weighted variance defaults to frequency weighting, with reliability and population
+options. Missing null/NAN raises 1001 by default; infinity always raises 1003.
+Constant-input correlation is explicitly NAN. Other nonfinite arithmetic raises
+1003, rather than allowing overflow to appear as zero variance. Negative weights
+are rejected before missing-value deletion. These policies differ from regression
+defaults and from strict literal draw kernels, and are not inferred from input shape.
+
+Each family also exposes `dist_{family}_rng(int $n, int $seed, ...parameters): array`,
+with the same distribution parameters/defaults. n is in `[0,1000000]`, seed is a
+nonnegative PHP integer, and every call owns local ChaCha20 state. Successful
+results are packed lists of n finite floats, including discrete counts. Repeated
+seed/parameters reproduce prefixes within the pinned build; empty batches still
+validate parameters. Negative count/seed raises 1001, excessive count raises 1007,
+and nonfinite parameters/generated samples raise 1003. Runtime argument-conversion
+errors retain code zero. The [sampling contract](rng.qmd) defines the inverse-CDF
+method, finite uniform grid and version/platform reproducibility limits.
+
+All calls are stateless with respect to the caller's PHP RNG state. The [reference record](verifications/distributions.qmd),
+[benchmarks](benchmarks/distributions.qmd) and [v0.2 assessment](v0.2.qmd) distinguish
+implemented behavior, verified accuracy and publication/platform limits.
+
+## Posterior-draw numerical kernels
+
+```php
+Phit\draws_moments(array $draws, ?array $weights = null, string $normalization = 'population'): array;
+Phit\draws_covariance_map(array $sourceCovariance, array $targetCovariance): array;
+Phit\draws_affine(array $draws, array $matrix, array $shift): array;
+```
+
+These synchronous, stateless functions accept ordinary PHP numeric arrays.
+Draw matrices have one row per draw and one column per parameter, with at least
+one row and column. All matrices must be rectangular. Only integer/float elements
+are accepted: null, strings and booleans raise 1001; NAN/INF raise 1003. The optional
+`weights` argument itself may be null to select uniform weights. Array keys are
+ignored; iteration order determines row and parameter order, and output arrays
+are packed lists. Inputs are not mutated. No rows are dropped and no intercept
+is inserted; there is no `missing` or `intercept` option.
+
+`draws_moments` returns exactly `['mean' => list<float>, 'covariance' =>
+list<list<float>>]`. Weights must be finite and nonnegative with one per draw and
+positive total weight. They are normalized internally to sum to one. The mean is
+$\sum_i w_i x_i$ and population covariance is
+$\sum_i w_i(x_i-\mu)(x_i-\mu)^T$. `'unbiased'` divides that covariance by
+$1-\sum_i w_i^2$: weights express **reliability, not frequency counts**. Zero total
+weight, unknown normalization and undefined unbiased normalization raise 1001.
+Zero-weight rows are still validated. One effective draw is valid for population
+moments (zero covariance); unbiased normalization must be positive in floating-point
+arithmetic. Singular covariance is valid, including when draws are fewer than parameters.
+
+`draws_covariance_map` returns exactly `['matrix' => list<list<float>>,
+'log_abs_det' => float]`. Both covariances must be square, finite, symmetric and
+positive definite with equal dimensions. It returns $A=L_tL_s^{-1}$ using Cholesky
+factors and a triangular solve, so $A C_s A^T=C_t$, with the identity interpreted
+to floating-point precision. This parameter-order-dependent map is deterministic
+but not unique. Asymmetry beyond the documented tolerance raises 1001; failed
+positive definiteness or numerical singularity raises 1005. There is no ridge,
+jitter or silent regularization.
+
+`draws_affine` returns exactly `['draws' => list<list<float>>,
+'log_abs_det' => float]`. A square, numerically invertible $A$ and a shift of the
+same parameter dimension are required. Each row becomes $y_i=A x_i+b$;
+row-oriented matrix notation is $Y=X A^T+b$. The output has exactly the original
+row/column counts and draw order. Negative determinants are allowed; the returned
+quantity is $\log|\det A|$. Singular or numerically singular maps raise 1004.
+
+In all three functions, ragged/incompatible dimensions raise 1002 and nonfinite
+arithmetic results raise 1003. Zend errors for non-array arguments follow the
+existing runtime conventions. The [numerical notes](draw-numerics.qmd) define
+symmetry/rank tolerances, formulas, implementation boundaries and verification.
+Stan evaluation, PSIS, moment-matching iteration and diagnostics belong to the
+consuming CmdStan package.
+
+## One-dimensional optimization and root finding
+
+```php
+Phit\optimize(callable $f, float $lower, float $upper, ?float $tol = null, bool $maximum = false): array;
+Phit\uniroot(callable $f, float $lower, float $upper, ?float $tol = null, int $maxiter = 1000): array;
+```
+
+`optimize` ports R's `optimize()`. It returns `['minimum' => x, 'objective' => f(x)]`,
+or `['maximum' => x, 'objective' => f(x)]` with `maximum: true`. `uniroot` ports
+R's `uniroot()` and returns `['root', 'f_root', 'iter', 'estim_prec']`. Both run
+R's C code (Brent_fmin and R_zeroin2) step by step, so they evaluate f at the same
+points and return the same doubles. The default `tol` is R's
+`.Machine$double.eps^0.25`.
+
+`f` is any PHP callable that takes one float and returns an int or float. Any
+other return value raises 1001, and an exception thrown by `f` propagates
+unchanged. As in R, nonfinite values during the search are replaced by the
+largest finite value, with the sign kept for `-INF` in `uniroot`. One `E_WARNING`
+reports the replacement. `uniroot` requires f(lower) and f(upper) without NAN and
+without the same sign. When it runs out of iterations, it raises an `E_WARNING`,
+sets `iter` to `maxiter`, and returns its last estimate. R's `extendInt` and
+`check.conv` options are not available.
+
+`tests/optimize.php` compares 91 results with R 4.6.1 bit for bit, including the
+number of function evaluations. The cases cover smooth, flat, kinked, multimodal,
+and boundary minima, infinite values, roots at the endpoints, a step function, and
+a search that does not converge. Regenerate the fixture with
+`Rscript tests/generate-optimize-fixtures.R`.
+
+## CSV input
+
+```php
+Phit\read_csv(string $path, array $options = []): array;
+```
+
+The reader returns `['names' => list<string>, 'columns' => list<null|array{type,
+values, failed}>, 'problems' => list<string>]`. Missing or unreadable files and
+invalid options throw `\ValueError`. The options, type rules, and storage forms
+are defined in [Reading CSV files](io.qmd).
+

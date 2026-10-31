@@ -178,18 +178,30 @@ def r_compatibility_verification():
             'source': 'docs/verifications/r-compatibility-results.json', 'cases': cases}
 
 
+def version():
+    import tomllib
+    return tomllib.loads((ROOT / 'crates/php-extension/Cargo.toml').read_text())['package']['version']
+
+
 def manifest(benchmarks, verifications):
     return {
         'package': 'phit',
         'title': 'phit',
-        'tagline': 'Fast, verified statistical models for PHP.',
-        'summary': 'phit is a native PHP extension, written in Rust, for regression and mixed models, probability '
-                   'distributions and descriptive statistics. Formulas work as in R (fit_lm, fit_glm, fit_lmer, '
-                   'fit_glmer, predict), results are plain PHP arrays, and every estimator is checked against R, '
-                   'lme4 and statsmodels.',
+        'tagline': 'Regression, mixed models and probability distributions for PHP.',
+        'summary': 'phit is a PHP extension, written in Rust, for regression and mixed models, probability '
+                   'distributions and descriptive statistics. Models are written as R formulas (fit_lm, fit_glm, '
+                   'fit_lmer, fit_glmer, predict), and results are plain PHP arrays.',
         'install': ['pie install phpstats/phit'],
-        'requires': ['PHP 8.3+, NTS build', 'macOS or Linux', 'PIE', 'Rust toolchain and libclang'],
+        'php': ['8.3', '8.4', '8.5'],
+        'requires': ['PIE'],
         'optional': [],
+        'build': ['Rust toolchain', 'Clang and libclang', 'PHP development files (phpize and php-config)',
+                  'autoconf and make'],
+        'platforms': ['Linux', 'macOS', 'NTS (non-thread-safe) PHP'],
+        'verify': {'command': "php -r 'echo phpversion(\"phit\"), PHP_EOL;'", 'output': version(),
+                   'note': 'This checks the command line. PHP-FPM can read other configuration files: '
+                           "check extension_loaded('phit') in a web request and restart FPM after installing."},
+        'quickstart': 'getting-started',
         'repository': 'https://github.com/phpstats/phit',
         'example': {
             'chain': "use function Phit\\{fit_lm, predict};\n\n"
@@ -206,21 +218,23 @@ def manifest(benchmarks, verifications):
             'sidebar': 'docs/_quarto.yml',
             'nav': [
                 {'title': 'Overview', 'path': 'index.qmd'},
-                {'title': 'Formulas: fit_lm, fit_glm, fit_lmer, predict', 'path': 'formulas.qmd'},
-                {'title': 'Function reference and contracts', 'path': 'contracts.qmd'},
+                {'title': 'Installation', 'path': 'installation.qmd'},
+                {'title': 'Extension or polyfill', 'path': 'extension-or-polyfill.qmd'},
+                {'title': 'A first model', 'path': 'getting-started.qmd'},
+                {'title': 'Model formulas', 'path': 'formulas.qmd'},
+                {'title': 'Linear and generalized linear models', 'path': 'models.qmd'},
+                {'title': 'Mixed models', 'path': 'mixed-models.qmd'},
+                {'title': 'Missing values and sample accounting', 'path': 'missing-data.qmd'},
                 {'title': 'Probability distributions', 'path': 'distributions.qmd'},
                 {'title': 'Descriptive statistics', 'path': 'descriptive.qmd'},
-                {'title': 'Random numbers', 'path': 'rng.qmd'},
+                {'title': 'Seeded sampling', 'path': 'rng.qmd'},
                 {'title': 'Posterior draws', 'path': 'draw-numerics.qmd'},
                 {'title': 'Reading CSV files', 'path': 'io.qmd'},
-                {'title': 'Missing data', 'path': 'missing-data.qmd'},
+                {'title': 'Deploying to servers', 'path': 'deployment.qmd'},
+                {'title': 'API overview', 'path': 'contracts.qmd'},
                 {'title': 'R compatibility', 'path': 'r-compatibility.qmd'},
-                {'title': 'Installation and deployment', 'path': 'deployment.qmd'},
-                {'title': 'Building from source', 'path': 'development.qmd'},
-                {'title': 'Math walkthroughs', 'path': 'notebooks/index.qmd'},
-                {'title': 'Verification approach', 'path': 'verification.qmd'},
-                {'title': 'Design philosophy', 'path': 'design-philosophy.qmd'},
-                {'title': 'Licensing', 'path': 'licensing.qmd'},
+                {'title': 'Verification', 'path': 'verification.qmd'},
+                {'title': 'Development', 'path': 'development.qmd'},
             ],
         },
         'benchmarks': benchmarks,

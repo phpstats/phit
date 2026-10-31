@@ -1,0 +1,95 @@
+---
+title: "Extension or polyfill"
+---
+
+phit has two implementations of the same `Phit\` functions:
+
+- **The extension**, `phpstats/phit`, is compiled Rust installed into PHP with
+  PIE or a prebuilt binary. See [Installation](installation.qmd).
+- **The polyfill**, `phpstats/phit-polyfill`, is plain PHP installed with
+  Composer. It needs no PHP extension.
+
+```sh
+composer require phpstats/phit-polyfill
+```
+
+Code written against one runs unchanged on the other. Each polyfill release
+reproduces one phit release. Polyfill 0.3.0 reproduces phit v0.3.0, 0.2.0
+reproduces v0.2.0, and 0.1.0 reproduces v0.1.1.
+
+## How they coexist
+
+Composer loads the polyfill's `bootstrap.php` through its `files` autoload. If
+`extension_loaded('phit')` is true, the bootstrap returns before defining
+anything, so every `Phit\` function is the extension's. Installing both is
+therefore safe: the extension is used where it is loaded, and the polyfill
+everywhere else, such as a CI runner or a host where extensions cannot be
+installed.
+
+The polyfill does not fill gaps in an older extension. If the loaded extension
+is older than the polyfill's phit release, the functions added since then stay
+undefined.
+
+The polyfill's composer.json declares `"provide": {"ext-phit": "*"}`. A package
+that requires `ext-phit` is therefore satisfied by the polyfill, including one
+that uses the functions the polyfill lacks.
+
+## What the polyfill covers
+
+The polyfill provides 232 of phit 0.3.0's 233 functions. It does not provide
+`Phit\read_csv()` or the `Phit\CsvReader` class. Without the extension,
+`function_exists('Phit\read_csv')` and `class_exists('Phit\CsvReader')` return
+false, and `Phit\Polyfill::supports('Phit\read_csv')` returns false.
+
+| Area | Polyfill |
+| --- | --- |
+| Formula models and prediction | `model_matrix`, `fit_lm`, `fit_glm`, `fit_lmer`, `fit_glmer` and `predict`, with a port of the extension's formula parser |
+| Matrix models | All seven `fit_*` matrix functions |
+| Mixed models | The same structures as the extension: `fit_lmer` with random intercepts and slopes, `(x || g)`, several terms and nesting, by REML or ML with BOBYQA or Nelder–Mead; `fit_glmer` with one binomial logit `(1 | g)`, by Laplace or adaptive quadrature with up to 61 points |
+| Distributions, descriptive statistics, seeded sampling | All functions |
+| Posterior-draw kernels | `draws_moments`, `draws_covariance_map` and `draws_affine` |
+| CSV input | Not provided; phibble's `DataFrame::fromCsv()` falls back to its own PHP reader |
+
+The polyfill's test suite runs the extension's reference fixtures, including
+the lme4 and seeded-sampling references, at the extension's tolerances.
+Randomized parity tests compare its results with the extension's. In those
+tests the posterior-draw kernels and the random-intercept and random-slope
+fits are bit-identical.
+
+## Differences
+
+- The listwise-deletion warning is `E_USER_WARNING` in the polyfill and
+  `E_WARNING` in the extension. The text is the same.
+- Arguments of the wrong scalar type follow PHP's userland rules in the
+  polyfill: coercion, or a `TypeError` under `strict_types`.
+- Every polyfill function throws an exception with code 1007 while OPcache's
+  JIT is compiling the process. The JIT has produced wrong numerical results
+  in the polyfill, so the polyfill refuses to run under it. PHP 8.4 and 8.5
+  disable the JIT by default. PHP 8.3's default settings (`opcache.jit=tracing`
+  with `opcache.jit_buffer_size=0`) also leave it off. The extension runs under
+  any JIT setting.
+- On an x86-64 CPU without fused multiply-add, the extension's products of
+  matrices larger than 5×5 can differ from the polyfill's in the last bit.
+
+## Speed
+
+The polyfill is slower, and the gap grows with model size. These timings were
+recorded on an Apple M5 Ultra with PHP 8.5.10, OPcache on and the JIT off.
+
+| Fit | Recorded | Polyfill | Extension | Ratio |
+| --- | --- | --- | --- | --- |
+| `fit_ols`, n = 100,000, 10 predictors | 2026-10-28, polyfill ab803fd, phit 3861d77 | 262 ms | 29 ms | 9.1× |
+| `fit_logistic`, same design | 2026-10-28, polyfill ab803fd, phit 3861d77 | 1.60 s | 72 ms | 22× |
+| Mixed model with 120 random coefficients | 2026-10-16 | 8.0 s | 103 ms | 78× |
+
+Mixed models ran 13 to 78 times slower in that comparison. The polyfill's cost
+grows with roughly the cube of the number of random coefficients.
+
+## Versions and platforms
+
+The polyfill's composer.json requires PHP `^8.3`. Its CI tests PHP 8.3, 8.4
+and 8.5 on Linux, in five OPcache and JIT modes, and on macOS in two. Windows
+is untested. The extension supports PHP 8.3, 8.4 and 8.5 on Linux and macOS.
+
+The polyfill's own documentation is in the
+[phit-polyfill repository](https://github.com/phpstats/phit-polyfill).

@@ -7,7 +7,7 @@ We compare the native binomial random-intercept fitter with **R lme4**, and
 independently evaluate its likelihood with **SciPy**. The model uses marginal
 maximum likelihood, a logit link and a Gaussian random intercept. Inputs remain
 plain design/outcome/group arrays. See the [math walkthrough](logistic-mixed-math.qmd)
-and [contract](../contracts.qmd#binomial-random-intercept-ml).
+and [contract](../reference-models.qmd#binomial-random-intercept-ml).
 
 ## Execute the comparisons
 

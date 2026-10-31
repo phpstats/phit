@@ -1,35 +1,48 @@
 ---
-title: "Installation, containers and releases"
+title: "Deploying to servers"
 ---
 
-The native library installs into PHP itself. Applications call `fit_ols()`,
-`fit_poisson()` and the other functions directly after the extension is enabled.
-The deployed PHP process does not need Cargo, R or Python. Build tools and the
-installer live in the build environment.
+The deployed PHP process needs only `phit.so` and its system libraries. Rust,
+Clang, PIE, R and Python are build or development tools and are not needed at
+runtime. [Installation](installation.qmd) covers PIE and the prebuilt binaries;
+this page covers PHP-FPM, containers and manual builds.
 
-## Names and supported packaging targets
+## Names
 
-- Package: `phpstats/phit` (PIE/Packagist metadata).
-- Registered extension: **`phit`**; check `extension_loaded('phit')`.
-- Installed module: `phit.so`, including the macOS phpize install path.
-- Direct Cargo output remains `libphit.so` on Linux and `libphit.dylib`
-  on macOS. They contain the same native extension, using different filenames.
+- Composer and PIE package: `phpstats/phit`.
+- Registered extension: `phit`. Use it with `extension_loaded('phit')`,
+  `phpversion('phit')`, `get_extension_funcs('phit')` and Composer's `ext-phit`.
+- Installed module: `phit.so`. A direct Cargo build produces `libphit.so` on
+  Linux and `libphit.dylib` on macOS; they are the same extension.
+- Functions are in the `Phit` namespace, such as `Phit\fit_lm`.
 
-The registered extension name is `phit`: use it with `extension_loaded()`,
-`get_extension_funcs()`, `phpversion()` and Composer (`ext-phit`). Functions are
-in the `Phit` namespace (`Phit\fit_lm`, `Phit\dist_normal_cdf`).
+## Supported targets
 
-Package metadata targets **PHP 8.3, 8.4 and 8.5**, non-thread-safe PHP, Linux and
-macOS. Windows and ZTS are excluded. Container and binary builds use Debian
-Bookworm/glibc. Alpine/musl and older glibc builds are not covered by these binaries.
-The CI matrix targets Linux amd64 and arm64 at all three PHP versions, and each
-release publishes x86_64 and aarch64 binaries. Actual local evidence
-and its architecture/version are recorded separately in the verification section;
-a configured CI job is not a passed job.
+The extension supports PHP 8.3, 8.4 and 8.5, non-thread-safe, on Linux and
+macOS. Windows and ZTS builds are not supported. The prebuilt binaries target
+Debian Bookworm with glibc on x86_64 and aarch64. Alpine (musl) and older glibc
+releases need a PIE or manual build. CI tests Linux x86_64 and aarch64 at all
+three PHP versions, and macOS on Apple silicon.
 
-## Build a ready-to-use PHP-FPM image
+## PHP-FPM
 
-From the repository root:
+PHP loads the extension when a process starts. After installing or replacing
+`phit.so`:
+
+1. Enable it in the configuration PHP-FPM reads. `php --ini` shows the CLI's
+   files, which can differ from FPM's.
+2. Restart the PHP-FPM service so every worker loads the new module.
+3. Check the web runtime, not only the CLI, for example with
+   `extension_loaded('phit')` and `phpversion('phit')` in a request.
+
+Each call converts PHP arrays into Rust vectors, fits the model and returns an
+array within the request. No background process, subprocess or network service
+is involved.
+
+## A PHP-FPM container image
+
+`docker/Dockerfile` builds a PHP-FPM image with the extension installed. From
+the repository root:
 
 ```sh
 docker build --target checks -f docker/Dockerfile -t phit:checks .
@@ -37,7 +50,7 @@ docker build -f docker/Dockerfile -t phit:local .
 ./scripts/check-container phit:local phit:checks
 ```
 
-The build installs the extension through **PIE 1.5.0** and runs the Rust/PHP gate.
+The build installs the extension through PIE 1.5.0 and runs the Rust and PHP checks.
 The isolated FPM check sends a real FastCGI request. The production-image check
 then exercises both CLI and FPM using the shipped PHP configuration and verifies
 identical OLS coefficients and a Poisson log-exposure fit.
@@ -66,44 +79,13 @@ a pinned SHA-256. Update those pins deliberately and rerun the gate.
 Debian APT packages are resolved at build time. These pins establish a repeatable
 base and dependency selection, not a promise that every future rebuild has the
 same bytes. Binary manifests record the compiler, PHP API, architecture, libc,
-linked libraries, extension hash and Cargo.lock hash. This is preferable to
-claiming reproducibility without recording the environment.
+linked libraries, extension hash and Cargo.lock hash.
 
-## Install through PIE
+## Manual build without PIE
 
-**The package has not been submitted to Packagist or publicly released yet.**
-Today, use a local checkout with PHP headers, phpize/autoconf/make, a stable Rust
-toolchain and libclang configured as in [development](development.qmd).
-
-To build without enabling or changing your PHP configuration:
-
-```sh
-pie repository:add --with-php-config=/path/to/php-config path "$PWD"
-pie build 'phpstats/phit:*@dev' \
-  --with-php-config=/path/to/php-config \
-  --with-phpize-path=/path/to/phpize
-```
-
-To install that checkout, change `build` to `install`. PIE tries to enable the
-extension for the selected PHP installation. CLI and FPM can read different INI
-files: verify the application SAPI separately and restart its workers after
-installation. Source installation requires Rust/Clang; they are not runtime
-requirements. Pin a release version once published.
-
-After Packagist registration and a tagged release, the public command will be:
-
-```sh
-pie install phpstats/phit:0.1.0
-```
-
-That public package command is a release target, not an available registry entry.
-The [official PIE documentation](https://php.github.io/pie/) explains installer
-selection, repositories, and PHP configuration.
-
-## Manual source installation and staging
-
-The maintained `pie/config.m4` and `pie/Makefile.frag` delegate the standard
-Unix PHP build to locked Cargo compilation:
+From a checkout of the repository or the release's source archive, the
+standard phpize build works without PIE. `pie/config.m4` and
+`pie/Makefile.frag` run the locked Cargo build:
 
 ```sh
 cd pie
@@ -125,82 +107,3 @@ Add `extension=phit.so` to the relevant PHP INI configuration after a manual
 install. Inspect `php --ini` for CLI; check the FPM configuration separately.
 Verify the native functions through both. Rebuild for another PHP ABI,
 architecture, thread-safety/debug configuration, or platform.
-
-## Binary artifacts
-
-Create the tested Linux binary bundle locally:
-
-```sh
-docker build --target binaries --output type=local,dest=.context/binaries \
-  -f docker/Dockerfile .
-```
-
-The archive name includes the library version, PHP major/minor, architecture,
-NTS mode and Bookworm target. It contains `phit.so`, installation instructions,
-a manifest, the project MIT license and dependency notices. A separate SHA-256
-file checks archive integrity. Dependency notices include the Cargo dependency
-closure and build dependencies; exact upstream MIT notices missing from published
-crate archives are preserved under `third-party/` with provenance hashes.
-
-Treat a binary as matching the manifest's build environment. It is not a universal
-Linux file. Verify its checksum, use the matching PHP extension directory, enable
-it for the required SAPIs, restart workers and execute a real fit.
-
-## Versioned release process
-
-The installer/FPM workflow tests the supported Linux PHP matrix and prepares
-binary artifacts. The release workflow runs that matrix, checks tag/crate version
-agreement and MIT licensing, creates a source archive/checksum, then builds and
-tests installation from the **extracted archive**. Export rules remove generated
-website caches and figures while preserving the source, locked dependencies,
-model fixtures, test datasets and their original notices.
-
-These workflows prepare GitHub Actions artifacts. They do not publish GitHub
-Releases, container images or Packagist entries. No release tag is created by a
-build or test command. Maintainer publication remains a separate deliberate step:
-
-1. Complete all numerical/API checks on the exact intended source revision.
-2. Check Linux CI and the documented platform/PHP support matrix.
-3. Review source/binary artifacts, checksums and notices.
-4. Align both Cargo versions; create the corresponding `vX.Y.Z` tag when authorized.
-5. Publish the approved release artifacts and register/update Packagist metadata.
-
-Composer can declare `"ext-phit": "*"` as an application requirement. That
-checks availability; PIE or the deployment image installs the native extension.
-No userland Composer framework is needed.
-
-## Deployment verification
-
-`tests/deployment.php` verifies extension identity/version, automatic-intercept OLS,
-and a closed-form Poisson log-exposure model. `scripts/check-fpm` sends an isolated
-FastCGI request; `scripts/check-container` checks the final runtime image using
-its normal FPM pool. The scripts compare CLI/FPM version, coefficients and fitted
-rate. They fail on a loader error or wrong output instead of trusting `php -m`.
-
-The recorded [packaging verification](verifications/packaging-results.json) states
-which local image/version/architecture actually passed. Remote CI results and
-registry publication must be checked independently before announcing a release.
-
-### Results from this packaging pass
-
-| Environment | PHP | Verified paths |
-| --- | --- | --- |
-| Linux aarch64, Debian Bookworm/glibc | 8.3.35 | PIE install; complete gate; CLI/FPM in production image; extracted binary; extracted source archive |
-| Linux aarch64, Debian Bookworm/glibc | 8.4.26 | PIE install; complete gate; CLI/FPM in production image; extracted binary |
-| Linux aarch64, Debian Bookworm/glibc | 8.5.11 | PIE install; complete gate; CLI/FPM in production image; extracted binary |
-| macOS arm64 | 8.5.10 | phpize/make/staged installation; native load; complete gate |
-
-Each complete gate passed **56 Rust tests, 11 PHP suites and 8 examples**. The
-binary bundles preserve 107 dependency notices and their ABI/library hashes.
-Linux amd64 is configured in CI but has no new remote result from this pass.
-macOS FPM, ZTS, Windows, musl, and other PHP versions are not covered by this evidence.
-
-The newly included distribution gate checks 8,618 points. It preserves the
-original tolerances, using the stored high-precision reference for 25 cases where
-R and that reference disagree. It retains 43 documented boundary-convention
-exceptions with separate semantic assertions. The gate exposed normal/log-normal
-PDF underflow before scale adjustment, now fixed with regression cases. Four
-independent reference endpoints for degenerate count distributions were also
-corrected in their generator. Numerical changes and evidence are recorded in the
-[packaging record](verifications/packaging-results.json) and
-[refreshed distribution comparison](verifications/distributions-results.json).

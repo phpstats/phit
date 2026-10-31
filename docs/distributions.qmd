@@ -4,7 +4,8 @@ title: "Probability distributions"
 
 The extension provides 182 probability-evaluation functions: 13 parameterizations,
 seven operations each, and scalar plus native `_array` forms, plus 13 explicitly
-[seeded batch sampling functions](rng.qmd). These return ordinary
+[seeded batch sampling functions](rng.qmd). Uniform, categorical and
+permutation samplers have no probability functions and are described there. These return ordinary
 PHP numbers and arrays. Distribution evaluation is separate from regression fitting;
 `fit_poisson()` still fits a count model, while `dist_poisson_pmf()` evaluates a
 specified Poisson distribution. [Descriptive statistics](descriptive.qmd) add ten

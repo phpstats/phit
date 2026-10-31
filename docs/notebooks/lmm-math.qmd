@@ -403,7 +403,7 @@ search remains visible in `crates/stats-core/src/mixed.rs`. Result/`?` propagate
 validation and numerical errors. The binding preserves typed PHP group labels,
 handles missing rows and converts the complete result to ordinary arrays.
 
-See the [PHP contract](../contracts.qmd#gaussian-random-intercept-mixed-model),
+See the [PHP contract](../reference-models.qmd#gaussian-random-intercept-mixed-model),
 [executed comparison](lmm-verification.qmd),
 [lme4 lmer reference](https://lme4.github.io/lme4/reference/lmer.html), and
 [statsmodels MixedLM](https://www.statsmodels.org/stable/mixed_linear.html).

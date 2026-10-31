@@ -1,204 +1,77 @@
 # phit
 
-Fit regressions directly in PHP. This native extension uses Rust for estimation
-and returns ordinary associative arrays with coefficients, uncertainty, fitted
-values, and model statistics.
+phit is a PHP extension, written in Rust, for regression and mixed models,
+probability distributions and descriptive statistics. Models are written as R
+formulas over named columns, and results are plain PHP arrays.
 
-**[Documentation and math walkthroughs](https://phpstats.github.io/phit/)** ·
-[PHP API](https://phpstats.github.io/phit/contracts.html) · [Installation](https://phpstats.github.io/phit/development.html) ·
-[Verification](https://phpstats.github.io/phit/verification.html)
+**[Documentation](https://phit.phpstats.org/docs)** ·
+[Installation](https://phit.phpstats.org/docs/installation) ·
+[A first model](https://phit.phpstats.org/docs/getting-started) ·
+[API overview](https://phit.phpstats.org/docs/contracts) ·
+[Verification](https://phit.phpstats.org/docs/verification)
 
 ```php
-use function Phit\fit_ols;
+use function Phit\{fit_lm, predict};
 
-// Simulated apartments: floor area (m²) predicts monthly rent.
-$result = fit_ols(
-    x: [[74.4], [57.4], [66.4], [49.1], [45.7], [92.4], [37.0], [93.9]],
-    y: [1879.25, 1805.03, 2022.29, 1267.85, 1509.24, 2240.10, 959.51, 2386.54],
-);
+$flats = [
+    'rent' => [1879.25, 1805.03, 2022.29, 1267.85, 1509.24, 2240.10, 959.51, 2386.54, 1655.80, 1420.00],
+    'area' => [74.4, 57.4, 66.4, 49.1, 45.7, 92.4, 37.0, 93.9, 61.2, 52.3],
+    'district' => ['north', 'south', 'north', 'east', 'south', 'north', 'east', 'south', 'east', 'south'],
+];
 
-$result['coefficients']; // [372.478545..., 21.479724...] — intercept, area
-$result['std_errors'];   // Standard error for each coefficient
-$result['conf_int'];     // 95% intervals: [[lower, upper], ...]
-$result['r_squared'];    // Approximately 0.876
+$fit = fit_lm('rent ~ area + district', $flats);
+$fit['named'];     // ['(Intercept)' => 352.64, 'area' => 19.18, 'districtnorth' => 203.64, 'districtsouth' => 232.16]
+$fit['r_squared']; // 0.927
+
+$p = predict($fit, ['area' => [55.0], 'district' => ['east']], interval: 'prediction');
+// $p['fit'] [1407.55], $p['lower'] [991.59], $p['upper'] [1823.51]
 ```
 
-Supply one row per observation and one column per predictor. **The fixed intercept
-is added automatically** and returned first. Use `intercept: false` for a model
-through the origin, or to supply a complete design matrix yourself. Every
-function lives in the `Phit` namespace: import it with `use function Phit\fit_ols;`
-or call it as `Phit\fit_ols()`. Names are grouped by prefix: `fit_*` for models,
-`dist_*` for distributions, `stat_*` for descriptive statistics and `draws_*` for
-posterior draws.
+## Install
 
-## Models
+```sh
+pie install phpstats/phit
+```
 
-| Function | Model |
+phit supports PHP 8.3, 8.4 and 8.5, non-thread-safe builds, on Linux and macOS.
+[PIE](https://github.com/php/pie) builds it from source, which needs Rust,
+Clang and libclang, and PHP's development files. Each
+[release](https://github.com/phpstats/phit/releases) also has prebuilt binaries
+for Debian Bookworm on x86_64 and aarch64. The
+[installation guide](https://phit.phpstats.org/docs/installation) covers both
+and how to check the install.
+
+[phit-polyfill](https://github.com/phpstats/phit-polyfill)
+(`composer require phpstats/phit-polyfill`) provides the same functions in
+plain PHP, except the CSV reader, for hosts where extensions cannot be
+installed.
+
+## What it includes
+
+| Area | Functions |
 | --- | --- |
-| `fit_ols()` | Continuous outcome; ordinary or weighted least squares |
-| `fit_logistic()` | Binary/grouped-binomial outcome; logit link |
-| `fit_probit()` | Binary/grouped-binomial outcome; probit link |
-| `fit_poisson()` | Counts; log link, weights and offsets |
-| `fit_mixed_intercept()` | Gaussian random intercept; optimized ML fit |
-| `fit_mixed()` | Gaussian mixed model; ML/REML, random slopes, multiple grouping terms |
-| `fit_logistic_mixed()` | Binomial random intercept; Laplace or adaptive quadrature |
-| `fit_lm()`, `fit_glm()` | R formulas over named columns; OLS, logit, probit and Poisson cores |
-| `fit_lmer()`, `fit_glmer()` | lme4-style formulas over the mixed-model cores |
-| `model_matrix()` | R-compatible `model.matrix()` with names, contrasts and random-effect designs |
+| Formula models | `fit_lm`, `fit_glm` (Gaussian, binomial logit and probit, Poisson), `fit_lmer`, `fit_glmer`, `model_matrix`, `predict` |
+| Matrix models | `fit_ols`, `fit_logistic`, `fit_probit`, `fit_poisson`, `fit_mixed_intercept`, `fit_mixed`, `fit_logistic_mixed` |
+| Distributions | `dist_*`: densities, CDFs, survival functions, quantiles and seeded samples |
+| Descriptive statistics | `stat_*`: moments, quantiles, weighted statistics, kernel density, interpolation, ECDF |
+| Posterior draws | `draws_moments`, `draws_covariance_map`, `draws_affine` |
+| Optimization | `optimize`, `uniroot` |
+| CSV input | `read_csv`, `CsvReader` |
 
-The formula functions accept R syntax such as `'log(rent) ~ log(area) + district'`
-and return coefficient names with the matrix function's results. See the
-[formula guide](docs/formulas.qmd).
+All functions are in the `Phit` namespace. [stubs/phit.php](stubs/phit.php)
+declares them for IDEs and static analysis; do not load it at runtime.
 
-Each fitter has its own documented inference and diagnostics. General Gaussian
-mixed models support explicit correlated/independent random designs; binomial
-mixed models currently support one grouping factor and a random intercept.
-See [supported structures and numerical limits](https://phpstats.github.io/phit/contracts.html).
+## Development
 
-## Probability and descriptive statistics
-
-Evaluate normal, t, chi-square, F, beta, gamma, exponential, lognormal, logistic,
-binomial, Poisson and negative-binomial distributions. Each has scalar and native
-batch density/mass, CDF, survival, log-tail and quantile functions. For example:
-
-```php
-$upperTail = Phit\dist_normal_sf(10); // About 7.62e-24.
-$logLikelihood = array_sum(Phit\dist_poisson_logpmf_array([2, 5, 3, 0], lambda: 2.5));
-$quartiles = Phit\stat_quantile_array([2.5, 3.1, 4.7, 1.2, 9.8], [.25, .5, .75]);
-```
-
-Ten descriptive utilities provide mean, variance, SD, covariance/correlation,
-type-7 quantiles, median and weighted moments. These utilities reject missing
-values by default; dropping is explicit. Read the [distribution API](docs/distributions.qmd),
-[descriptive conventions](docs/descriptive.qmd) and [v0.2 verification/readiness](docs/v0.2.qmd).
-Seeded batch sampling uses `dist_{family}_rng()`, for example
-`dist_normal_rng(n: 5, seed: 42)`. Every call owns its stream; see the
-[sampling contract](docs/rng.qmd) for reproducibility and limits.
-
-## Posterior draws
-
-Three numerical kernels accept ordinary row-oriented PHP arrays:
-`draws_moments()` returns a weighted mean and covariance,
-`draws_covariance_map()` returns a Cholesky covariance transformation, and
-`draws_affine()` applies a matrix and shift while preserving draw order.
-Maps and affine transformations return `log_abs_det`. Draw inputs always reject
-null/NAN/INF, with no row deletion or intercept insertion. Unbiased covariance
-uses reliability weights. See the [numerical notes](docs/draw-numerics.qmd) for
-shapes, tolerances, examples and independent verification. Stan evaluation, PSIS
-and moment-matching control belong to the consuming CmdStan interface.
-
-## Reading CSV files
-
-`read_csv($path, $options)` reads delimited text into typed columns with
-readr's options, type guessing, and problem reports. It is the native reader
-behind phibble's `DataFrame::fromCsv()` and matches phibble's PHP reader exactly.
-A 1,000,000-row file reads in about 0.1 seconds. See the
-[CSV contract](docs/io.qmd).
-
-## Poisson counts with exposure
-
-Different observation periods belong in an offset on the **log scale**:
-
-```php
-$visitors = [82, 104, 96, 131, 87, 115, 142, 98];
-$days = [1, 2, 1, 3, 2, 1, 2, 3];
-$calls = [5, 12, 4, 22, 8, 8, 19, 16];
-
-$result = Phit\fit_poisson(
-    x: array_map(fn($v) => [$v], $visitors),
-    y: $calls,
-    offset: array_map(fn($d) => log($d), $days),
-);
-
-$expectedCount = $result['fitted'][0];
-$expectedRate = $expectedCount / $days[0];
-```
-
-The model is `log(expected count) = intercept + predictors × coefficients + offset`.
-The offset's coefficient is fixed at 1. Exposure must be positive; `weights:`
-means positive prior likelihood weights and serves a different purpose. Offset
-and weight arrays must align with the original observations. See the complete
-[exposure example](examples/poisson-offset.php).
-
-## Build and run
-
-Requires **PHP 8.3+**, matching PHP development headers, stable Rust, and Clang.
-Follow the [macOS/Linux setup guide](https://phpstats.github.io/phit/development.html) first, especially when
-selecting `php`, `php-config`, and libclang. In that configured shell:
+Building from a checkout, running the tests and the release process are
+described in the [development guide](https://phit.phpstats.org/docs/development).
+The complete check is:
 
 ```sh
-cargo build -p phit --release --locked
-
-# macOS; use libphit.so on Linux.
-export STATS_EXTENSION="$PWD/target/release/libphit.dylib"
-php -n -d "extension=$STATS_EXTENSION" examples/ols.php
-php -n -d "extension=$STATS_EXTENSION" examples/poisson-offset.php
+PHP_CONFIG=/path/to/php-config ./scripts/check
 ```
-
-The `-d` flag loads the extension for one run. To load it on every run, add
-`extension=$PWD/target/release/libphit.dylib`, with the path written out in
-full, to the php.ini that `php --ini` reports.
-
-For a real application, install the compiled library and enable it in the
-application runtime's PHP configuration as described in
-[installation and deployment](https://phpstats.github.io/phit/development.html#running-in-an-application).
-Then call `fit_ols()`, `fit_poisson()`, etc. normally. The
-[PHP stubs](stubs/phit.php) support IDEs and static analysis; do not include
-them at runtime.
-
-## Server installation and containers
-
-The [deployment guide](https://phpstats.github.io/phit/deployment.html)
-explains PIE, PHP-FPM, Docker and versioned binary/source artifacts.
-
-```sh
-docker build --target checks -f docker/Dockerfile -t phit:checks .
-docker build -f docker/Dockerfile -t phit:local .
-./scripts/check-container phit:local phit:checks
-```
-
-The runtime image has the native extension enabled; use it as your application's
-PHP-FPM base. The registered extension name is `phit`. PIE support is prepared
-for local checkouts; public Packagist installation and tagged releases are pending.
-
-## Data and errors
-
-Inputs are numeric PHP arrays. Null and `NAN` values are dropped listwise with a
-warning by default; `missing: 'raise'` rejects them. Results record retained and
-dropped row positions. Invalid shapes, infinite values, rank deficiency, and
-failed estimation raise exceptions with documented error codes. Fitted values
-and residuals follow retained-row order.
-
-**Migration:** older calls supplied their own ones column. Either remove that
-column and use the default, or add `intercept: false` to preserve the previous
-matrix exactly. Automatic insertion applies to fixed effects only; `random[*].z`
-remains an explicit random-effect design.
-
-## Tests and learning
-
-```sh
-cargo test --workspace --locked
-PHP_CONFIG=/path/to/php-config ./scripts/check  # PHP defaults to its binary
-```
-
-The release gate checks Rust, native PHP signatures, integration suites, and
-examples. Deterministic fixtures compare appropriate quantities against R,
-statsmodels, lme4, and independent numerical integration. Tests need neither R
-nor Python for fitting; provenance and tolerances are documented in the
-[verification record](https://phpstats.github.io/phit/verification.html).
-
-The [Quarto walkthroughs](https://phpstats.github.io/phit/notebooks/index.html) explain matrices, estimation,
-likelihood, and inference with simulated and published data. Figures use a shared
-[R/ggplot2 strategy](https://phpstats.github.io/phit/visualization.html). R/Python are development tools;
-PHP runtime computation uses Rust-native nalgebra.
-
-The v0.1 fitting and packaging baseline is a **release candidate**, with the
-v0.2 numerical additions documented in the [readiness assessment](docs/v0.2.qmd).
-Read the
-[stabilization assessment](https://phpstats.github.io/phit/v0.1.html) for verified scope and remaining release
-gates.
 
 ## License
 
-[MIT](LICENSE). Bundled reference datasets and third-party assets retain their
-original licenses; see [licensing](https://phpstats.github.io/phit/licensing.html).
+[MIT](LICENSE). Bundled reference datasets and third-party code keep their
+original licenses; see [licensing](https://phit.phpstats.org/docs/licensing).

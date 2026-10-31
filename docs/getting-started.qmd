@@ -1,0 +1,131 @@
+---
+title: "A first model"
+---
+
+This page fits a linear model to a small table of flats, reads the estimates,
+and predicts rents for flats that are not in the table. It assumes the
+extension is [installed](installation.qmd).
+
+## Data
+
+The formula functions take a data set as named columns: an associative array
+of `column => list of values`, with every column the same length.
+phibble's `DataFrame` is also accepted, through its `toModelData()` method.
+
+```php
+use function Phit\{fit_lm, predict};
+
+$flats = [
+    'rent' => [1879.25, 1805.03, 2022.29, 1267.85, 1509.24, 2240.10, 959.51, 2386.54, 1655.80, 1420.00],
+    'area' => [74.4, 57.4, 66.4, 49.1, 45.7, 92.4, 37.0, 93.9, 61.2, 52.3],
+    'district' => ['north', 'south', 'north', 'east', 'south', 'north', 'east', 'south', 'east', 'south'],
+];
+```
+
+Numbers are numeric columns. Strings become a factor whose levels are sorted in
+byte order, so `east` is the reference level here. [Model formulas](formulas.qmd#data)
+lists every accepted column type.
+
+## Fit
+
+```php
+$fit = fit_lm('rent ~ area + district', $flats);
+```
+
+The formula follows R: `rent` is the response, and `area + district` adds a
+slope for floor area and treatment-coded indicators for the districts. An
+intercept is included unless the formula removes it with `- 1` or `+ 0`.
+
+## Read the result
+
+The result is a plain PHP array. Every coefficient list follows the order of
+`columns`.
+
+```php
+foreach ($fit['columns'] as $i => $name) {
+    printf("%-14s %9.2f %8.2f %7.4f  [%8.2f, %8.2f]\n", $name, $fit['coefficients'][$i],
+        $fit['std_errors'][$i], $fit['p_values'][$i], ...$fit['conf_int'][$i]);
+}
+```
+
+```
+(Intercept)       352.64   179.87  0.0976  [  -87.49,   792.77]
+area               19.18     3.23  0.0010  [   11.27,    27.09]
+districtnorth     203.64   151.14  0.2265  [ -166.19,   573.47]
+districtsouth     232.16   119.64  0.1004  [  -60.58,   524.90]
+```
+
+Each additional square meter adds about 19 to the expected rent. The district
+coefficients are differences from `east`.
+
+| Key | Contents |
+| --- | --- |
+| `columns`, `named` | Coefficient names, and a `name => coefficient` map |
+| `coefficients`, `std_errors`, `t_statistics`, `p_values` | One value per column |
+| `conf_int` | 95% intervals, `[lower, upper]` per column |
+| `covariance` | The coefficient covariance matrix |
+| `fitted`, `residuals` | One value per retained row |
+| `r_squared`, `adj_r_squared`, `sigma`, `rss`, `log_likelihood`, `df_residual` | Fit statistics |
+| `n_input`, `n_observations`, `n_dropped`, `retained_rows`, `dropped_rows` | Sample accounting |
+| `diagnostics` | Solver, convergence and warnings |
+
+```php
+printf("R-squared %.4f, sigma %.2f, %d residual df, %d of %d rows\n",
+    $fit['r_squared'], $fit['sigma'], $fit['df_residual'], $fit['n_observations'], $fit['n_input']);
+echo json_encode($fit['diagnostics']), "\n";
+```
+
+```
+R-squared 0.9270, sigma 146.29, 6 residual df, 10 of 10 rows
+{"converged":true,"solver":"scaled_svd","warnings":[]}
+```
+
+`fit_glm`, `fit_lmer` and `fit_glmer` return the same naming and accounting
+keys, with the statistics of their model. [Linear and generalized linear
+models](models.qmd) and [mixed models](mixed-models.qmd) list them.
+
+## Predict
+
+`predict()` rebuilds the formula over new data. The response column is not
+needed, and the factor levels are the ones the fit saw.
+
+```php
+$new = ['area' => [55.0, 80.0], 'district' => ['east', 'north']];
+$p = predict($fit, $new, interval: 'prediction');
+foreach ($p['fit'] as $i => $value) {
+    printf("%.2f [%.2f, %.2f]\n", $value, $p['lower'][$i], $p['upper'][$i]);
+}
+```
+
+```
+1407.55 [991.59, 1823.51]
+2090.69 [1676.97, 2504.41]
+```
+
+`interval: 'confidence'` gives intervals for the mean instead. A district the
+fit never saw raises an exception with code 1001. [Prediction](formulas.qmd#prediction-predict)
+covers GLM and mixed-model predictions.
+
+## Missing values
+
+`null` and `NAN` are missing. By default, a row with a missing value in any
+column the formula uses is dropped, and the fit emits one `E_WARNING`. With
+`rent` set to `null` in the third row:
+
+```
+Warning: Phit\fit_lm(): Phit\fit_lm dropped 1 of 10 observations with missing values (listwise deletion)
+```
+
+The result then reports `n_observations` 9, `n_input` 10 and `dropped_rows`
+`[2]`, and `diagnostics.warnings` holds the same notice. Pass
+`missing: 'raise'` to reject missing values instead. The call then throws an
+`Exception` with code 1001 and the message `missing values found with
+missing='raise'`. [Missing data](missing-data.qmd) defines which values count
+as missing and how rows are counted.
+
+## Errors
+
+Invalid input and failed fits throw a PHP `Exception`. Its `getCode()` gives
+the category: 1001 for invalid input, 1002 for mismatched lengths, 1004 for a
+rank-deficient design, 1006 for nonconvergence, and so on. The full table is in
+the [API overview](contracts.qmd#v01-diagnostics-and-errors).

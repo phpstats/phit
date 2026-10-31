@@ -170,5 +170,5 @@ R requires lme4 as a development package. Use matching PHP tools and `.so` on
 Linux. For a quick check preserving the published report, add
 `--cases 1000:3 --repeats 2 --output .context/lmm-smoke.json`.
 Numerical failures abort before publication. Ordinary renders read saved results
-and do not rerun these timings. See the [contract](../contracts.qmd#gaussian-random-intercept-mixed-model)
+and do not rerun these timings. See the [contract](../reference-models.qmd#gaussian-random-intercept-mixed-model)
 for model and inference limits.

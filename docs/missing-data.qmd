@@ -1,11 +1,13 @@
 ---
-title: "Missing data and listwise deletion"
+title: "Missing values and sample accounting"
 ---
 
-fit_ols() now defaults to listwise deletion: if any supplied predictor or the
-outcome is missing, omit the entire observation from both x and y. This applies
-to the supplied model columns, not unrelated fields in an application's records.
-The raw API remains ordinary PHP arrays with an optional string policy:
+Every model function defaults to listwise deletion: a row with a missing value
+in any variable the model uses is left out of the fit. For the formula
+functions these are the variables the formula references, including weights,
+offsets and grouping factors; other columns may contain missing values. For the
+matrix functions they are the supplied predictors, outcome, weights, offsets
+and groups. The `missing` argument selects the policy:
 
 ```php
 $result = Phit\fit_ols(x: $x, y: $y); // missing: 'drop'

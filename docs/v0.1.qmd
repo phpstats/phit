@@ -1,7 +1,11 @@
 ---
-title: "v0.1 stabilization and release assessment"
+title: "v0.1 stabilization assessment (historical)"
 jupyter: python3
 ---
+
+::: {.callout-note}
+This record was written from 2026-10-11 to 2026-10-17, before the first tagged release. It describes the code and evidence as they were then, and is kept as history. The [API overview](contracts.qmd) and [verification](verification.qmd) pages describe the current releases.
+:::
 
 This pass stabilizes the existing estimators. It adds no model families, backend
 interfaces, formula handling, or broader R compatibility. The core remains PHP-free;

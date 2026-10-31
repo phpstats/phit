@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Public contracts – phit</title>
+<title>API overview – phit</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -109,35 +109,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
@@ -150,7 +121,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./visualization.html">Project</a></li><li class="breadcrumb-item"><a href="./contracts.html">Public contracts</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./contracts.html">Reference</a></li><li class="breadcrumb-item"><a href="./contracts.html">API overview</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -178,13 +149,13 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Project documentation</span></a>
+ <span class="menu-text">Overview</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Project</span></a>
+ <span class="menu-text">Getting started</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -192,40 +163,33 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./visualization.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Figure conventions and reproducibility</span></a>
+  <a href="./installation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Installation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./licensing.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Licensing</span></a>
+  <a href="./extension-or-polyfill.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Extension or polyfill</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./v0.1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.1 stabilization and release assessment</span></a>
+  <a href="./getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">A first model</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./v0.2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.2 numerical API readiness</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./design-philosophy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Design philosophy</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./contracts.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Public contracts</span></a>
-  </div>
-</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Guides</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./formulas.html" class="sidebar-item-text sidebar-link">
@@ -234,75 +198,22 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./r-compatibility.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">R compatibility: target, coverage and remaining work</span></a>
+  <a href="./models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear and generalized linear models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mixed-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mixed models</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./missing-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Missing data and listwise deletion</span></a>
+ <span class="menu-text">Missing values and sample accounting</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./development.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Development and installation</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./deployment.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Installation, containers and releases</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Verification</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./draw-numerics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Posterior-draw numerical kernels</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./benchmarks/draws.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Posterior-draw scale validation and performance</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./io.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Reading CSV files</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./documentation.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Building and maintaining the documentation</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Walkthrough index</span></a>
-  </div>
-</li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Probability distributions &amp; statistical utilities</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./distributions.html" class="sidebar-item-text sidebar-link">
@@ -323,20 +234,20 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./benchmarks/rng.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Seeded sampling verification and performance</span></a>
+  <a href="./draw-numerics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Posterior-draw numerical kernels</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./verifications/distributions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Distribution and utility verification</span></a>
+  <a href="./io.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading CSV files</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./benchmarks/distributions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Distribution performance and regression preservation</span></a>
+  <a href="./deployment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Deploying to servers</span></a>
   </div>
 </li>
       </ul>
@@ -344,7 +255,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">OLS</span></a>
+ <span class="menu-text">Reference</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -352,32 +263,26 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/ols-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation walkthrough</span></a>
+  <a href="./contracts.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">API overview</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/ols-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">R and statsmodels comparison</span></a>
+  <a href="./reference-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Matrix model functions</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./verifications/ols.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Verification record</span></a>
+  <a href="./reference-utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, statistics, draws, optimization and CSV</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./benchmarks/ols.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scale and performance</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./ols-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Math and Rust implementation notes</span></a>
+  <a href="./licensing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Licensing</span></a>
   </div>
 </li>
       </ul>
@@ -385,7 +290,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">Binary logistic regression</span></a>
+ <span class="menu-text">Compatibility and limitations</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -393,26 +298,8 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/logistic-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation walkthrough</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/logistic-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">R and statsmodels comparison</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./verifications/logistic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Verification record</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./benchmarks/logistic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scale and performance</span></a>
+  <a href="./r-compatibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R compatibility: target, coverage and remaining work</span></a>
   </div>
 </li>
       </ul>
@@ -420,7 +307,7 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Probit regression</span></a>
+ <span class="menu-text">Benchmarks and verification</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -428,122 +315,248 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/probit-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation walkthrough</span></a>
+  <a href="./verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Verification</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/probit-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">R and statsmodels comparison</span></a>
+  <a href="./verifications/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./benchmarks/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./benchmarks/rng.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Seeded sampling: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./benchmarks/draws.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Posterior draws: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./verifications/ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/ols-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: R and statsmodels comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./benchmarks/ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./verifications/logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/logistic-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic: R and statsmodels comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./benchmarks/logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic: performance</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./verifications/probit.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Verification record</span></a>
+ <span class="menu-text">Probit: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/probit-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probit: R and statsmodels comparison</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./benchmarks/probit.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scale and performance</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Poisson regression</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/poisson-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation walkthrough</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/poisson-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">R and statsmodels comparison</span></a>
+ <span class="menu-text">Probit: performance</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./verifications/poisson.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Verification record</span></a>
+ <span class="menu-text">Poisson: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/poisson-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson: R and statsmodels comparison</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./benchmarks/poisson.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scale and performance</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
- <span class="menu-text">Gaussian mixed model</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/lmm-general-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Random slopes and REML walkthrough</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/r-compatibility.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Expanded R and optimizer audit</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/lmm-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Estimation walkthrough</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/lmm-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Synthetic reference comparison</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notebooks/lmm-public-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Published dataset comparison</span></a>
+ <span class="menu-text">Poisson: performance</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./verifications/lmm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Verification record</span></a>
+ <span class="menu-text">Gaussian mixed: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/lmm-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: synthetic comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/lmm-public-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: published data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/r-compatibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: lme4 optimizer audit</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./benchmarks/lmm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scale and performance</span></a>
+ <span class="menu-text">Gaussian mixed: performance</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/logistic-mixed-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Binomial mixed: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./benchmarks/logistic-mixed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Binomial mixed: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data/lmm/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Published data sets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
+ <span class="menu-text">Mathematics</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Walkthroughs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/ols-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ols-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: Rust implementation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/logistic-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/probit-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probit regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/poisson-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/lmm-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian random intercept</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/lmm-general-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Random slopes and REML</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./notebooks/logistic-mixed-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Binomial random intercept</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false">
+ <span class="menu-text">History</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./v0.1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">v0.1 stabilization assessment (historical)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./v0.2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">v0.2 numerical API assessment (historical)</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Binomial mixed models</span></a>
+ <span class="menu-text">Contributing</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -551,20 +564,32 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/logistic-mixed-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Likelihood and integration walkthrough</span></a>
+  <a href="./development.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Development</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notebooks/logistic-mixed-verification.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">R and independent Python verification</span></a>
+  <a href="./releasing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Releasing</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./benchmarks/logistic-mixed.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Scale and performance</span></a>
+  <a href="./documentation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Building and maintaining the documentation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Figure conventions and reproducibility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./design-philosophy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Design philosophy</span></a>
   </div>
 </li>
       </ul>
@@ -581,33 +606,20 @@ window.Quarto = {
   <ul>
   <li><a href="#php-entry-points" id="toc-php-entry-points" class="nav-link active" data-scroll-target="#php-entry-points">PHP entry points</a></li>
   <li><a href="#formula-interfaces" id="toc-formula-interfaces" class="nav-link" data-scroll-target="#formula-interfaces">Formula interfaces</a></li>
-  <li><a href="#probability-distributions-and-descriptive-statistics" id="toc-probability-distributions-and-descriptive-statistics" class="nav-link" data-scroll-target="#probability-distributions-and-descriptive-statistics">Probability distributions and descriptive statistics</a></li>
-  <li><a href="#posterior-draw-numerical-kernels" id="toc-posterior-draw-numerical-kernels" class="nav-link" data-scroll-target="#posterior-draw-numerical-kernels">Posterior-draw numerical kernels</a></li>
-  <li><a href="#csv-input" id="toc-csv-input" class="nav-link" data-scroll-target="#csv-input">CSV input</a></li>
-  <li><a href="#fixed-intercept-convention-and-migration" id="toc-fixed-intercept-convention-and-migration" class="nav-link" data-scroll-target="#fixed-intercept-convention-and-migration">Fixed-intercept convention and migration</a></li>
-  <li><a href="#ols-input-and-output" id="toc-ols-input-and-output" class="nav-link" data-scroll-target="#ols-input-and-output">OLS input and output</a></li>
+  <li><a href="#matrix-model-contracts" id="toc-matrix-model-contracts" class="nav-link" data-scroll-target="#matrix-model-contracts">Matrix model contracts</a></li>
+  <li><a href="#fixed-intercept-convention-and-migration" id="toc-fixed-intercept-convention-and-migration" class="nav-link" data-scroll-target="#fixed-intercept-convention-and-migration">Fixed intercept</a></li>
   <li><a href="#errors-and-conversion" id="toc-errors-and-conversion" class="nav-link" data-scroll-target="#errors-and-conversion">Errors and conversion</a></li>
   <li><a href="#rust-boundary" id="toc-rust-boundary" class="nav-link" data-scroll-target="#rust-boundary">Rust boundary</a></li>
-  <li><a href="#binary-logistic-regression" id="toc-binary-logistic-regression" class="nav-link" data-scroll-target="#binary-logistic-regression">Binary logistic regression</a></li>
-  <li><a href="#probit-regression" id="toc-probit-regression" class="nav-link" data-scroll-target="#probit-regression">Probit regression</a></li>
-  <li><a href="#poisson-regression" id="toc-poisson-regression" class="nav-link" data-scroll-target="#poisson-regression">Poisson regression</a></li>
-  <li><a href="#gaussian-random-intercept-mixed-model" id="toc-gaussian-random-intercept-mixed-model" class="nav-link" data-scroll-target="#gaussian-random-intercept-mixed-model">Gaussian random-intercept mixed model</a></li>
-  <li><a href="#weights-offsets-and-grouped-binomial-responses" id="toc-weights-offsets-and-grouped-binomial-responses" class="nav-link" data-scroll-target="#weights-offsets-and-grouped-binomial-responses">Weights, offsets and grouped binomial responses</a>
-  <ul class="collapse">
-  <li><a href="#poisson-exposure-example" id="toc-poisson-exposure-example" class="nav-link" data-scroll-target="#poisson-exposure-example">Poisson exposure example</a></li>
-  </ul></li>
-  <li><a href="#general-gaussian-mixed-model-call" id="toc-general-gaussian-mixed-model-call" class="nav-link" data-scroll-target="#general-gaussian-mixed-model-call">General Gaussian mixed-model call</a></li>
-  <li><a href="#binomial-random-intercept-ml" id="toc-binomial-random-intercept-ml" class="nav-link" data-scroll-target="#binomial-random-intercept-ml">Binomial random-intercept ML</a></li>
-  <li><a href="#v01-diagnostics-and-errors" id="toc-v01-diagnostics-and-errors" class="nav-link" data-scroll-target="#v01-diagnostics-and-errors">v0.1 diagnostics and errors</a></li>
+  <li><a href="#v01-diagnostics-and-errors" id="toc-v01-diagnostics-and-errors" class="nav-link" data-scroll-target="#v01-diagnostics-and-errors">Diagnostics and error codes</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./visualization.html">Project</a></li><li class="breadcrumb-item"><a href="./contracts.html">Public contracts</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./contracts.html">Reference</a></li><li class="breadcrumb-item"><a href="./contracts.html">API overview</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Public contracts</h1>
+<h1 class="title">API overview</h1>
 </div>
 
 
@@ -624,125 +636,102 @@ window.Quarto = {
 </header>
 
 
-<p>This document defines the supported native API, including the v0.1 fitters and v0.2 distribution, descriptive and draw additions. Reflected signatures/defaults, result keys and statistical conventions are checked by the release gate. Changes to signatures, parameter names, result keys, missing-data policy, ordering, validation or statistical conventions must be documented and accompanied by relevant tests. PHP parameter names x, y and missing matter because callers can use named arguments.</p>
-<p>The registered PHP module is <code>phit</code> (<code>extension=phit</code>; Composer <code>ext-phit</code>). Every function is in the <code>Phit</code> namespace, grouped by prefix: <code>fit_*</code> estimates models (<code>fit_lm</code>, <code>fit_glm</code>, <code>fit_lmer</code>, <code>fit_ols</code>, <code>fit_mixed</code>, …), <code>dist_*</code> evaluates and samples distributions (<code>dist_normal_cdf</code>, <code>dist_binomial_rng</code>), <code>stat_*</code> computes descriptive statistics (<code>stat_mean</code>, <code>stat_quantile</code>), and <code>draws_*</code> transforms posterior draws. <code>model_matrix</code>, <code>predict</code> and <code>read_csv</code> complete the formula and I/O interface. Import what you use:</p>
+<p>The extension registers the PHP module <code>phit</code> (<code>extension=phit</code>, Composer <code>ext-phit</code>). Every function is in the <code>Phit</code> namespace and is named by prefix.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Prefix or name</th>
+<th>Purpose</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>fit_lm</code>, <code>fit_glm</code>, <code>fit_lmer</code>, <code>fit_glmer</code>, <code>model_matrix</code>, <code>predict</code></td>
+<td>Formula models and prediction</td>
+<td><a href="./formulas.html">Model formulas</a></td>
+</tr>
+<tr class="even">
+<td><code>fit_ols</code>, <code>fit_logistic</code>, <code>fit_probit</code>, <code>fit_poisson</code>, <code>fit_mixed_intercept</code>, <code>fit_mixed</code>, <code>fit_logistic_mixed</code></td>
+<td>Models on numeric matrices</td>
+<td><a href="./reference-models.html">Matrix model functions</a></td>
+</tr>
+<tr class="odd">
+<td><code>dist_*</code></td>
+<td>Densities, CDFs, quantiles and seeded samples</td>
+<td><a href="./reference-utilities.html">Distributions and utilities</a></td>
+</tr>
+<tr class="even">
+<td><code>stat_*</code></td>
+<td>Descriptive statistics, kernel density, interpolation and the ECDF</td>
+<td><a href="./reference-utilities.html">Distributions and utilities</a></td>
+</tr>
+<tr class="odd">
+<td><code>draws_*</code></td>
+<td>Weighted posterior-draw summaries and transforms</td>
+<td><a href="./reference-utilities.html#posterior-draw-numerical-kernels">Distributions and utilities</a></td>
+</tr>
+<tr class="even">
+<td><code>optimize</code>, <code>uniroot</code></td>
+<td>One-dimensional minimization and root finding</td>
+<td><a href="./reference-utilities.html#one-dimensional-optimization-and-root-finding">Distributions and utilities</a></td>
+</tr>
+<tr class="odd">
+<td><code>permutation_rng</code></td>
+<td>Seeded permutations and samples without replacement</td>
+<td><a href="./rng.html">Seeded sampling</a></td>
+</tr>
+<tr class="even">
+<td><code>read_csv</code>, <code>CsvReader</code></td>
+<td>Reading delimited text files</td>
+<td><a href="./io.html">Reading CSV files</a></td>
+</tr>
+</tbody>
+</table>
+<p>Import the functions you use:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_lm<span class="ot">,</span> predict<span class="ot">,</span> dist_normal_quantile}<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>See <a href="./deployment.html">deployment</a> for supported packaging targets and installation.</p>
+<p><code>stubs/phit.php</code> in the repository declares every signature with PHPDoc array shapes for IDEs and static analysis. Do not load it at runtime.</p>
 <section id="php-entry-points" class="level2">
 <h2 class="anchored" data-anchor-id="php-entry-points">PHP entry points</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Phit\hello()<span class="ot">:</span> <span class="dt">string</span><span class="ot">;</span> <span class="co">// "Hello from Rust!"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Phit\fit_logistic(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>Phit\fit_probit(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>Phit\fit_poisson(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">// Formula interfaces over the same cores; $data is named columns or an object with toModelData()/toColumns().</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>Phit\model_matrix(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>Phit\fit_lm(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>Phit\fit_glm(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$family</span> <span class="op">=</span> <span class="st">'gaussian'</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$link</span> <span class="op">=</span> <span class="st">''</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>Phit\fit_lmer(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$reml</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> ...)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>Phit\fit_glmer(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$family</span> <span class="op">=</span> <span class="st">'binomial'</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$link</span> <span class="op">=</span> <span class="st">''</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> ...)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>These are global native functions available when the extension is loaded. All estimators are synchronous and stateless: each returns a complete fit without retaining a model handle, input data or mutable configuration. It does not mutate the caller’s arrays. Repeated fits are independent.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Phit\fit_logistic(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Phit\fit_probit(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>Phit\fit_poisson(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Formula interfaces over the same cores; $data is named columns or an object with toModelData()/toColumns().</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>Phit\model_matrix(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>Phit\fit_lm(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>Phit\fit_glm(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$family</span> <span class="op">=</span> <span class="st">'gaussian'</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$link</span> <span class="op">=</span> <span class="st">''</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>Phit\fit_lmer(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$reml</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> ...)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>Phit\fit_glmer(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$family</span> <span class="op">=</span> <span class="st">'binomial'</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$link</span> <span class="op">=</span> <span class="st">''</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> ...)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>All estimators are synchronous and stateless: each returns a complete fit without retaining a model handle, input data or mutable configuration. It does not mutate the caller’s arrays. Repeated fits are independent.</p>
 </section>
 <section id="formula-interfaces" class="level2">
 <h2 class="anchored" data-anchor-id="formula-interfaces">Formula interfaces</h2>
 <p>The formula functions parse an R model formula, build R’s <code>model.matrix()</code> over named columns, and call the estimation cores of <code>fit_ols</code>, <code>fit_logistic</code>, <code>fit_probit</code>, <code>fit_poisson</code>, <code>fit_mixed</code>, and <code>fit_logistic_mixed</code>. Each fit returns the complete result contract of its matrix function. It adds <code>formula</code>, <code>response</code>, <code>columns</code> (coefficient names in coefficient order), <code>terms</code>, <code>assign</code>, <code>intercept</code>, and <code>named</code> (<code>column =&gt; coefficient</code>). <code>fit_glm</code> and <code>fit_glmer</code> also return <code>family</code> and <code>link</code>. <code>model_matrix</code> returns <code>y</code>, <code>x</code> (including the <code>(Intercept)</code> column), the naming keys, <code>offset</code>, <code>random</code> designs in the shape <code>fit_mixed</code> accepts, and the deletion accounting.</p>
 <p>Missing-value deletion covers only the variables a formula uses, with the same warning, <code>missing: 'raise'</code> behavior, and row accounting as the matrix functions. <code>model_matrix</code> keeps unused factor levels, as <code>model.matrix()</code> does. The fitting functions drop them, as <code>lm()</code>, <code>glm()</code>, and lme4 do. Unknown columns, malformed factor descriptors, referenced list-columns, and invalid formulas raise 1001. Column-length mismatch raises 1002. Infinite transform results raise 1003. Unsupported functions, families, links, and random-effect structures raise 1007. Rank deficiency raises 1004. The <a href="./formulas.html">formula guide</a> defines the syntax, contrasts, data shapes, verification, and every known difference from R.</p>
 </section>
-<section id="probability-distributions-and-descriptive-statistics" class="level2">
-<h2 class="anchored" data-anchor-id="probability-distributions-and-descriptive-statistics">Probability distributions and descriptive statistics</h2>
-<p>Thirteen distribution parameterizations expose seven operations, each in scalar and <code>_array</code> form: 182 functions in total. Continuous families use <code>pdf</code>, <code>logpdf</code>, <code>cdf</code>, <code>logcdf</code>, <code>sf</code>, <code>logsf</code>, <code>quantile</code>; discrete families replace pdf/logpdf with pmf/logpmf. Names follow <code>dist_{family}_{operation}</code> and <code>dist_{family}_{operation}_array</code>. The <a href="./distributions.html">distribution contract</a> lists every family, parameter name/default, domain and support. The generated <code>stubs/phit.php</code> is the exact signature reference.</p>
-<p>Numeric arguments/elements accept PHP integers or floats; binomial <code>size</code> is an integer in <code>[0,2^53]</code>. Batch results are packed lists preserving iteration order, with keys discarded. Empty input returns an empty result after parameter validation. Null, NAN and malformed elements reject the entire batch; there is no row deletion or missing policy. Distribution evaluation points may be ±INF; parameters must be finite. Invalid domains raise 1001, NAN points/nonfinite parameters raise 1003, unsupported binomial size raises 1007, and a NAN numerical result raises 1006. Boundary densities/log values can legitimately be ±INF. Discrete quantiles are floats with a <code>64*EPSILON</code> relative allowance at CDF steps. Degenerate distributions return their point mass at quantile p=1, even where R/SciPy differ.</p>
-<p>The ten <a href="./descriptive.html">descriptive functions</a> are mean, variance, SD, covariance, correlation, scalar/batch type-7 quantiles, median, weighted mean and weighted variance. They default to <code>missing: 'raise'</code>, with explicit <code>'drop'</code> deletion, pairwise for aligned inputs. Variance/SD/covariance defaults to sample normalization; weighted variance defaults to frequency weighting, with reliability and population options. Missing null/NAN raises 1001 by default; infinity always raises 1003. Constant-input correlation is explicitly NAN. Other nonfinite arithmetic raises 1003, rather than allowing overflow to appear as zero variance. Negative weights are rejected before missing-value deletion. These policies differ from regression defaults and from strict literal draw kernels, and are not inferred from input shape.</p>
-<p>Each family also exposes <code>dist_{family}_rng(int $n, int $seed, ...parameters): array</code>, with the same distribution parameters/defaults. n is in <code>[0,1000000]</code>, seed is a nonnegative PHP integer, and every call owns local ChaCha20 state. Successful results are packed lists of n finite floats, including discrete counts. Repeated seed/parameters reproduce prefixes within the pinned build; empty batches still validate parameters. Negative count/seed raises 1001, excessive count raises 1007, and nonfinite parameters/generated samples raise 1003. Runtime argument-conversion errors retain code zero. The <a href="./rng.html">sampling contract</a> defines the inverse-CDF method, finite uniform grid and version/platform reproducibility limits.</p>
-<p>All calls are stateless with respect to the caller’s PHP RNG state. The <a href="./verifications/distributions.html">reference record</a>, <a href="./benchmarks/distributions.html">benchmarks</a> and <a href="./v0.2.html">v0.2 assessment</a> distinguish implemented behavior, verified accuracy and publication/platform limits.</p>
-</section>
-<section id="posterior-draw-numerical-kernels" class="level2">
-<h2 class="anchored" data-anchor-id="posterior-draw-numerical-kernels">Posterior-draw numerical kernels</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Phit\draws_moments(<span class="dt">array</span> <span class="va">$draws</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$normalization</span> <span class="op">=</span> <span class="st">'population'</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Phit\draws_covariance_map(<span class="dt">array</span> <span class="va">$sourceCovariance</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$targetCovariance</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Phit\draws_affine(<span class="dt">array</span> <span class="va">$draws</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$matrix</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$shift</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>These synchronous, stateless functions accept ordinary PHP numeric arrays. Draw matrices have one row per draw and one column per parameter, with at least one row and column. All matrices must be rectangular. Only integer/float elements are accepted: null, strings and booleans raise 1001; NAN/INF raise 1003. The optional <code>weights</code> argument itself may be null to select uniform weights. Array keys are ignored; iteration order determines row and parameter order, and output arrays are packed lists. Inputs are not mutated. No rows are dropped and no intercept is inserted; there is no <code>missing</code> or <code>intercept</code> option.</p>
-<p><code>draws_moments</code> returns exactly <code>['mean' =&gt; list&lt;float&gt;, 'covariance' =&gt; list&lt;list&lt;float&gt;&gt;]</code>. Weights must be finite and nonnegative with one per draw and positive total weight. They are normalized internally to sum to one. The mean is <span class="math inline">\(\sum_i w_i x_i\)</span> and population covariance is <span class="math inline">\(\sum_i w_i(x_i-\mu)(x_i-\mu)^T\)</span>. <code>'unbiased'</code> divides that covariance by <span class="math inline">\(1-\sum_i w_i^2\)</span>: weights express <strong>reliability, not frequency counts</strong>. Zero total weight, unknown normalization and undefined unbiased normalization raise 1001. Zero-weight rows are still validated. One effective draw is valid for population moments (zero covariance); unbiased normalization must be positive in floating-point arithmetic. Singular covariance is valid, including when draws are fewer than parameters.</p>
-<p><code>draws_covariance_map</code> returns exactly <code>['matrix' =&gt; list&lt;list&lt;float&gt;&gt;, 'log_abs_det' =&gt; float]</code>. Both covariances must be square, finite, symmetric and positive definite with equal dimensions. It returns <span class="math inline">\(A=L_tL_s^{-1}\)</span> using Cholesky factors and a triangular solve, so <span class="math inline">\(A C_s A^T=C_t\)</span>, with the identity interpreted to floating-point precision. This parameter-order-dependent map is deterministic but not unique. Asymmetry beyond the documented tolerance raises 1001; failed positive definiteness or numerical singularity raises 1005. There is no ridge, jitter or silent regularization.</p>
-<p><code>draws_affine</code> returns exactly <code>['draws' =&gt; list&lt;list&lt;float&gt;&gt;, 'log_abs_det' =&gt; float]</code>. A square, numerically invertible <span class="math inline">\(A\)</span> and a shift of the same parameter dimension are required. Each row becomes <span class="math inline">\(y_i=A x_i+b\)</span>; row-oriented matrix notation is <span class="math inline">\(Y=X A^T+b\)</span>. The output has exactly the original row/column counts and draw order. Negative determinants are allowed; the returned quantity is <span class="math inline">\(\log|\det A|\)</span>. Singular or numerically singular maps raise 1004.</p>
-<p>In all three functions, ragged/incompatible dimensions raise 1002 and nonfinite arithmetic results raise 1003. Zend errors for non-array arguments follow the existing runtime conventions. The <a href="./draw-numerics.html">numerical notes</a> define symmetry/rank tolerances, formulas, implementation boundaries and verification. Stan evaluation, PSIS, moment-matching iteration and diagnostics belong to the consuming CmdStan package.</p>
-</section>
-<section id="csv-input" class="level2">
-<h2 class="anchored" data-anchor-id="csv-input">CSV input</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Phit\read_csv(<span class="dt">string</span> <span class="va">$path</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$options</span> <span class="op">=</span> [])<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The reader returns <code>['names' =&gt; list&lt;string&gt;, 'columns' =&gt; list&lt;null|array{type, values, failed}&gt;, 'problems' =&gt; list&lt;string&gt;]</code>. Missing or unreadable files and invalid options throw <code>\ValueError</code>. The options, type rules, and storage forms are defined in <a href="./io.html">Reading CSV files</a>.</p>
+<section id="matrix-model-contracts" class="level2">
+<h2 class="anchored" data-anchor-id="matrix-model-contracts">Matrix model contracts</h2>
+<p><a href="./reference-models.html">Matrix model functions</a> defines the inputs, results, convergence rules and failure cases of each matrix function:</p>
+<ul>
+<li><a href="./reference-models.html#ols-input-and-output">OLS</a></li>
+<li><span id="binary-logistic-regression"></span><a href="./reference-models.html#binary-logistic-regression">Binary logistic regression</a></li>
+<li><a href="./reference-models.html#probit-regression">Probit regression</a></li>
+<li><a href="./reference-models.html#poisson-regression">Poisson regression</a></li>
+<li><span id="gaussian-random-intercept-mixed-model"></span><a href="./reference-models.html#gaussian-random-intercept-mixed-model">Gaussian random-intercept mixed model</a></li>
+<li><a href="./reference-models.html#weights-offsets-and-grouped-binomial-responses">Weights, offsets and grouped binomial responses</a></li>
+<li><a href="./reference-models.html#general-gaussian-mixed-model-call">General Gaussian mixed model</a></li>
+<li><span id="binomial-random-intercept-ml"></span><a href="./reference-models.html#binomial-random-intercept-ml">Binomial random-intercept model</a></li>
+</ul>
 </section>
 <section id="fixed-intercept-convention-and-migration" class="level2">
-<h2 class="anchored" data-anchor-id="fixed-intercept-convention-and-migration">Fixed-intercept convention and migration</h2>
-<p>All seven PHP estimators append <code>bool $intercept = true</code> to their existing arguments. Supply predictor columns only: the binding prepends an exact ones column and the estimated intercept is coefficient 0, followed by predictors in supplied column order. Covariance, standard errors, tests and intervals follow that same order. Parameter counts and residual degrees of freedom include the added coefficient. No input array is mutated.</p>
+<h2 class="anchored" data-anchor-id="fixed-intercept-convention-and-migration">Fixed intercept</h2>
+<p>The seven matrix estimators take <code>bool $intercept = true</code>. Supply predictor columns only: the binding prepends an exact ones column and the estimated intercept is coefficient 0, followed by predictors in supplied column order. Covariance, standard errors, tests and intervals follow that same order. Parameter counts and residual degrees of freedom include the added coefficient. No input array is mutated.</p>
 <p><code>intercept: false</code> passes the supplied x matrix literally. It is both the opt-out for a through-origin model and the compatibility option for callers already supplying a complete design with ones. There is <strong>no automatic detection</strong> of existing constant columns: leaving ones in x with the default creates a duplicate intercept and a rank-deficiency error, rather than silently guessing intent.</p>
 <p>For an intercept-only fit, supply one empty predictor row per outcome, such as <code>x: array_fill(0, count($y), [])</code>. An empty sample or ragged matrix is still invalid; empty predictor rows require <code>intercept: true</code>. Missing-row validation and deletion still apply to outcomes, predictors, groups, weights and offsets before fitting.</p>
-<p>This changes the default interpretation of x from the earlier release candidate. Remove the old ones column or add <code>intercept: false</code> when migrating. Stored reference/benchmark matrices keep their literal design and their PHP runners explicitly opt out. The independent Rust core remains a literal-design API.</p>
+<p>The Rust core takes the design literally.</p>
 <p>Random-effect designs <code>random[*].z</code> remain explicit; this option only constructs the fixed design. For a random intercept/slope, z still needs <code>[1, slope]</code> rows.</p>
-</section>
-<section id="ols-input-and-output" class="level2">
-<h2 class="anchored" data-anchor-id="ols-input-and-output">OLS input and output</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="va">$result</span> <span class="op">=</span> Phit\fit_ols(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    x<span class="ot">:</span> [[<span class="fl">1.0</span>]<span class="ot">,</span> [<span class="fl">2.0</span>]<span class="ot">,</span> [<span class="fl">3.0</span>]<span class="ot">,</span> [<span class="fl">4.0</span>]<span class="ot">,</span> [<span class="fl">5.0</span>]]<span class="ot">,</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    y<span class="ot">:</span> [<span class="fl">2.1</span><span class="ot">,</span> <span class="fl">4.2</span><span class="ot">,</span> <span class="fl">5.8</span><span class="ot">,</span> <span class="fl">8.1</span><span class="ot">,</span> <span class="fl">10.2</span>]<span class="ot">,</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print_r</span>(<span class="va">$result</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Expected coefficients: <code>[0.05, 2.01]</code>; standard errors: <code>[0.198074, 0.059722]</code>; R-squared <code>0.997359</code>; log-likelihood <code>2.516218</code>. See examples/ols.php in the repository for formatted inference output, or the <a href="./notebooks/ols-verification.html">rendered comparison walkthrough</a> for result tables.</p>
-<p>Numeric inputs accept PHP integers or floats. null and NAN are missing values; rows containing them are dropped by default with a warning, or rejected with missing: ‘raise’. Strings, booleans and infinity are rejected. Arrays are consumed in iteration order; keys are ignored. Supply a rectangular n × k predictor matrix and n outcomes. The default prepends ones, giving p=k+1 coefficients; <code>intercept: false</code> gives p=k and uses x exactly. The retained sample must have n &gt; p.&nbsp;An exact ones column enables centered R-squared and its adjusted version; other constant columns are not interpreted as intercepts. Without ones, R-squared is uncentered, matching R’s no-intercept models. Empty, ragged, infinite, numerically rank-deficient or overflowing inputs throw PHP exceptions. Rust returns <code>Result&lt;OlsResult, StatsError&gt;</code>.</p>
-<p>Returned keys (all numeric arrays are zero-indexed):</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Keys</th>
-<th>PHP types</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>coefficients, std_errors, t_statistics, p_values</td>
-<td>list<float> of length p</float></td>
-</tr>
-<tr class="even">
-<td>conf_int</td>
-<td>list&lt;[float, float]&gt; of length p, lower/upper 95% limits</td>
-</tr>
-<tr class="odd">
-<td>covariance</td>
-<td>list&lt;list<float>&gt;, p × p</float></td>
-</tr>
-<tr class="even">
-<td>fitted, residuals</td>
-<td>list<float> of retained sample length n</float></td>
-</tr>
-<tr class="odd">
-<td>rss, residual_variance, sigma</td>
-<td>float; RSS, RSS/(n-p), square root of variance</td>
-</tr>
-<tr class="even">
-<td>r_squared, adj_r_squared, log_likelihood</td>
-<td>float</td>
-</tr>
-<tr class="odd">
-<td>df_residual</td>
-<td>int, retained n-p</td>
-</tr>
-<tr class="even">
-<td>n_input, n_observations, n_dropped</td>
-<td>int: original, retained and dropped counts</td>
-</tr>
-<tr class="odd">
-<td>retained_rows, dropped_rows</td>
-<td>list<int>: original zero-based iteration positions</int></td>
-</tr>
-</tbody>
-</table>
-<p>Inference assumes independent homoskedastic Gaussian errors. Rank is checked by SVD after column scaling, using <code>epsilon * max(n,p) * largest singular value</code>. Very ill-conditioned full-rank designs may therefore be rejected.</p>
-<p>Exact zero RSS yields zero standard errors and point confidence intervals; nonzero coefficients yield infinite t and zero p, while 0/0 gives NaN t and p. Intercept-only OLS reports R-squared and adjusted R-squared as zero, matching R. For other designs, zero total outcome variation gives NaN R-squared when RSS is also zero (otherwise negative infinity). Zero RSS gives positive infinite log-likelihood: the Gaussian likelihood is unbounded as variance approaches zero. PHP exposes <code>NAN</code>/<code>INF</code>, not null; these values cannot be encoded directly by ordinary JSON encoding. Mathematically perfect fits often retain tiny decomposition-dependent residuals; we do not round them to zero. Their t-statistics and likelihood can differ greatly from R despite coefficients and predictions agreeing to machine precision.</p>
 </section>
 <section id="errors-and-conversion" class="level2">
 <h2 class="anchored" data-anchor-id="errors-and-conversion">Errors and conversion</h2>
@@ -753,429 +742,16 @@ window.Quarto = {
 </section>
 <section id="rust-boundary" class="level2">
 <h2 class="anchored" data-anchor-id="rust-boundary">Rust boundary</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">fn</span> fit_ols(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;&gt;,</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;,</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>OlsResult<span class="op">,</span> StatsError<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">fn</span> fit_ols(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;&gt;,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>OlsResult<span class="op">,</span> StatsError<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The core owns its inputs and has no PHP dependency. OlsResult exposes the same statistical fields as the PHP array (sample-deletion metadata is PHP-only), with Vec<f64> for numeric lists, Vec&lt;Vec<f64>&gt; for covariance, Vec&lt;[f64; 2]&gt; for confidence intervals, f64 for scalars, and usize for residual degrees of freedom. StatsError implements Display and Error. The binding converts errors and values without implementing statistical formulas.</f64></f64></p>
 <p>See <a href="./design-philosophy.html">design-philosophy.qmd</a> for the boundary between this raw API and optional convenience layers.</p>
 </section>
-<section id="binary-logistic-regression" class="level2">
-<h2 class="anchored" data-anchor-id="binary-logistic-regression">Binary logistic regression</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">$result</span> <span class="op">=</span> Phit\fit_logistic(x<span class="ot">:</span> <span class="va">$design</span><span class="ot">,</span> y<span class="ot">:</span> <span class="va">$binaryOutcomes</span><span class="ot">,</span> missing<span class="ot">:</span> <span class="st">'drop'</span><span class="ot">,</span> intercept<span class="ot">:</span> <span class="kw">false</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Use the same plain rectangular arrays, automatic fixed intercept, ordering, numeric validation and missing-data policy as OLS. With default unit weights, outcomes must encode 0 or 1 under the documented success-count rounding tolerance. Integer trial weights also permit grouped proportions; successes and failures must both remain after deletion, and retained n must exceed p.&nbsp;Invalid numeric outcomes are rejected even if another value in their row is missing. The model uses independent binomial observations with linear log-odds <code>offset + X beta</code>. Unit trial weights give Bernoulli outcomes; positive integer trial weights allow grouped successes/trials supplied as proportions. General fractional likelihood weights and penalties are unsupported.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Keys</th>
-<th>PHP types and meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>coefficients, std_errors, z_statistics, p_values</td>
-<td>list<float>, length p; normal Wald tests of coefficient = 0</float></td>
-</tr>
-<tr class="even">
-<td>conf_int</td>
-<td>list&lt;[float, float]&gt;, length p; two-sided 95% normal Wald limits</td>
-</tr>
-<tr class="odd">
-<td>covariance</td>
-<td>list&lt;list<float>&gt;, p × p, inverse observed information</float></td>
-</tr>
-<tr class="even">
-<td>fitted</td>
-<td>list<float>, retained length n, estimated success probabilities</float></td>
-</tr>
-<tr class="odd">
-<td>residuals</td>
-<td>list<float>, retained length n, response residuals y - fitted</float></td>
-</tr>
-<tr class="even">
-<td>log_likelihood</td>
-<td>float, normalized binomial log-likelihood including grouped binomial coefficients; unit weights give Bernoulli likelihood</td>
-</tr>
-<tr class="odd">
-<td>deviance</td>
-<td>float, twice saturated minus fitted log-likelihood; equals -2 × log_likelihood for individual binary outcomes</td>
-</tr>
-<tr class="even">
-<td>null_deviance</td>
-<td>float, intercept-only baseline retaining offsets if an exact ones column exists; otherwise offset-only baseline (probability 0.5 with zero offsets)</td>
-</tr>
-<tr class="odd">
-<td>aic</td>
-<td>float, 2p - 2 × log_likelihood</td>
-</tr>
-<tr class="even">
-<td>df_residual</td>
-<td>int, retained n - p; no variance parameter is estimated</td>
-</tr>
-<tr class="odd">
-<td>iterations</td>
-<td>int, accepted Newton updates, at most 100</td>
-</tr>
-<tr class="even">
-<td>converged</td>
-<td>bool, always true for a successful returned fit</td>
-</tr>
-<tr class="odd">
-<td>n_input, n_observations, n_dropped</td>
-<td>int, same original/retained/dropped accounting as OLS</td>
-</tr>
-<tr class="even">
-<td>retained_rows, dropped_rows</td>
-<td>list<int>, original zero-based iteration positions</int></td>
-</tr>
-</tbody>
-</table>
-<p>Bernoulli dispersion is fixed at one. Inference uses asymptotic normal z tests, not Student t tests or profile-likelihood confidence intervals. No sigma, R-squared or Gaussian variance estimate is returned. Other constant columns are not treated as intercepts for the null baseline. This baseline convention agrees with R glm’s no-intercept null deviance; statsmodels may choose a different null model, so our comparison constructs that baseline explicitly.</p>
-<p>The dedicated fitter normally starts coefficients at zero. For an absolute logit offset &gt;20, an explicit ones-column intercept starts from the marginal response link minus the mean offset. It then solves Newton/IRLS updates with column-scaled weighted SVD. Rank tolerance is epsilon × max(n,p) × largest singular value. Backtracking tries the full step and at most 30 halvings. Convergence requires each full scaled coefficient step to be at most 1e-8 × (1 + absolute next scaled coefficient), together with likelihood change at most 1e-10 × (1 + absolute likelihood). These fixed defaults are currently implementation choices, without a public tuning API.</p>
-<p>Complete or quasi separation means the ordinary finite maximum-likelihood estimate may not exist. A separating direction encountered during fitting is rejected. This is a certificate check, not an exhaustive linear-programming separation detector: other difficult cases can fail the information-rank check, line search or iteration limit. Those failures throw exceptions rather than returning an unconverged model. Near separation can still produce very uncertain finite estimates; convergence is not assurance of reliable statistical inference. Overflowing inference also fails explicitly.</p>
-<p>The PHP-free Rust entry point is <code>fit_logistic(x: Vec&lt;Vec&lt;f64&gt;&gt;, y: Vec&lt;f64&gt;) -&gt; Result&lt;LogisticResult, StatsError&gt;</code>. It rejects nonfinite inputs; missing deletion belongs to the binding. Numeric field types match OlsResult, with usize for iterations and degrees of freedom. <code>converged</code> and sample deletion metadata are binding-only. See the <a href="./notebooks/logistic-math.html">executed derivation</a> and <a href="./verifications/logistic.html">verification record</a>.</p>
-</section>
-<section id="probit-regression" class="level2">
-<h2 class="anchored" data-anchor-id="probit-regression">Probit regression</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_probit(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The binomial input contract and output keys match logistic regression: binary outcomes or grouped proportions with integer trial weights, both successes and failures after deletion, full rank, n &gt; p after fixed-intercept insertion, probabilities in fitted, response residuals, coefficients/covariance/SE/z/p/Wald intervals, likelihood, deviance, null_deviance, AIC, df_residual, iterations, converged and sample metadata. Its link is Phi(offset + X beta), not sigmoid(offset + X beta). No latent variance parameter is estimated; it is fixed to one for identification.</p>
-<p>The dedicated Fisher-scoring fitter uses expected information X’ diag(trials × phi(eta)^2/[Phi(eta)Phi(-eta)]) X, recalculated at the final fit. This convention matches R glm(probit) and statsmodels GLM(Binomial(Probit)). An observed-Hessian covariance from a discrete Probit implementation may differ. Confidence intervals and tests remain normal Wald, not profile likelihood. Coefficients are latent-normal effects; exponentiating them does not give a constant odds ratio. Null deviance uses an intercept-only fit retaining offsets with an exact ones column, otherwise the offset-only baseline (probability 0.5 with zero offsets).</p>
-<p>The limit is 100 updates with up to 30 step halvings. Probit uses tighter full scaled-coordinate step tolerance 1e-11 × (1 + absolute next coordinate), and likelihood-change tolerance 1e-13 × (1 + absolute likelihood), because Fisher scoring can converge more slowly than canonical Newton updates. Rank tolerance and separation-certificate behavior match logistic regression. Failed convergence, rank failure or overflowing calculations throw rather than returning a partial fit. Tail likelihood uses erfc and a Mills-ratio continued fraction beyond -8.</p>
-<p>The PHP-free entry point is <code>fit_probit(x: Vec&lt;Vec&lt;f64&gt;&gt;, y: Vec&lt;f64&gt;) -&gt; Result&lt;ProbitResult, StatsError&gt;</code>. Fields have the same Rust types as LogisticResult. Missing filtering and converged/sample metadata remain in the PHP binding. See the <a href="./notebooks/probit-math.html">walkthrough</a>.</p>
-</section>
-<section id="poisson-regression" class="level2">
-<h2 class="anchored" data-anchor-id="poisson-regression">Poisson regression</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_poisson(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The raw design and missing-data contracts are the same. Outcomes must be finite, nonnegative integer counts (PHP integers or floats with an integer value). Fractions, negatives, strings and booleans are rejected, even in rows with a missing predictor. The retained sample must have at least one positive count, full numerical rank and n &gt; p.&nbsp;All-zero samples are conservatively rejected, including no-intercept designs where a finite optimum might otherwise exist.</p>
-<p>The model is independent Poisson observations with log mean <code>offset + X beta</code>. Returned keys and types match the logistic table, but fitted is a <strong>mean count</strong>, not a probability, and residuals are y - fitted. Confidence intervals/tests are normal Wald with dispersion fixed at one. There is no estimated sigma, RSS-based variance or robust covariance. Positive prior likelihood weights and additive offsets are supported. There is no separate exposure argument: supply <code>offset = log(exposure)</code> for positive known exposure. A coefficient’s exponential is a conditional mean multiplier per unit.</p>
-<p>Likelihood includes -log Gamma(y+1). Deviance is twice saturated minus fitted log-likelihood, including the limiting zero-count convention; it is <strong>not</strong> -2 × log_likelihood. Null deviance uses mean count y-bar with a ones column, otherwise fixed mean one. AIC is 2p - 2 × log_likelihood, and df_residual is n-p. Zero individual counts are valid. Conditional variance equals the conditional mean; overdispersion can invalidate conventional standard errors.</p>
-<p>The dedicated weighted-SVD Newton/IRLS fitter uses information weights equal to prior likelihood weights times the fitted means and final inverse information for covariance. It uses the logistic step and likelihood tolerances (1e-8 and 1e-10), at most 100 updates and 30 halvings. Certain predictor patterns have no finite MLE; numerical rank failure or iteration exhaustion throws. There is no exhaustive boundary-MLE existence check. Converged is always true in returned results; no partial fits are returned.</p>
-<p>The PHP-free entry point is <code>fit_poisson(x: Vec&lt;Vec&lt;f64&gt;&gt;, y: Vec&lt;f64&gt;) -&gt; Result&lt;PoissonResult, StatsError&gt;</code>. Its numeric Rust field types match LogisticResult. See the <a href="./notebooks/poisson-math.html">walkthrough</a> for the likelihood, score, matrices and deviance.</p>
-</section>
-<section id="gaussian-random-intercept-mixed-model" class="level2">
-<h2 class="anchored" data-anchor-id="gaussian-random-intercept-mixed-model">Gaussian random-intercept mixed model</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_intercept(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$groups</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This first mixed model has continuous Gaussian outcomes and <strong>one random intercept per group</strong>. The fixed intercept is prepended by default; use <code>intercept: false</code> for a literal fixed design. This specialized call has no random slopes, crossed/nested grouping arguments, random-effects covariance matrices, offsets or observation weights. The estimation method is marginal maximum likelihood (ML), not REML.</p>
-<p>Groups is a list of integer or UTF-8 string IDs aligned with x/y in iteration order. Labels are identities, not numbers used as predictors: integer 1 and string ‘1’ identify different groups. null is missing; floats (including NAN), booleans, arrays and objects are invalid IDs. Validation occurs before deletion. Listwise deletion includes all three inputs, warns once on a successful fit, and preserves original row accounting. Groups with no retained observations vanish. Labels and group-level outputs follow first retained appearance.</p>
-<p>The retained design must be finite, full rank and have n &gt; p.&nbsp;At least two groups and at least one repeated group are required; singleton groups are allowed when other groups repeat. One group or all-singleton data cannot identify the two variance components under this first contract. Numerically perfect fits, rank failures, unsupported variance-ratio ranges and overflowing calculations throw exceptions. No partial failed fit is returned.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Keys</th>
-<th>PHP types and meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>coefficients, std_errors, z_statistics, p_values</td>
-<td>list<float>, length p; fixed effects and normal Wald inference</float></td>
-</tr>
-<tr class="even">
-<td>covariance, conf_int</td>
-<td>p × p numeric covariance and p × 2 95% Wald limits</td>
-</tr>
-<tr class="odd">
-<td>fixed_fitted</td>
-<td>list<float>, length retained n, population fit X beta</float></td>
-</tr>
-<tr class="even">
-<td>fitted, residuals</td>
-<td>list<float>, length n, conditional fit X beta + group effect and y - conditional fit</float></td>
-</tr>
-<tr class="odd">
-<td>marginal_residuals</td>
-<td>list<float>, length n, y - fixed_fitted</float></td>
-</tr>
-<tr class="even">
-<td>group_labels</td>
-<td>list&lt;int|string&gt;, first retained appearance, type preserved</td>
-</tr>
-<tr class="odd">
-<td>group_sizes</td>
-<td>list<int>, length G, retained observations per group</int></td>
-</tr>
-<tr class="even">
-<td>random_effects</td>
-<td>list<float>, length G, shrunken conditional group-intercept estimates</float></td>
-</tr>
-<tr class="odd">
-<td>random_effects_cond_var</td>
-<td>list<float>, length G, conditional variance of each group intercept given y at the estimates, tau²/(1 + n_g tau²/sigma²); lme4 <code>ranef(condVar = TRUE)</code></float></td>
-</tr>
-<tr class="even">
-<td>n_groups</td>
-<td>int, number of retained groups</td>
-</tr>
-<tr class="odd">
-<td>residual_variance, sigma</td>
-<td>float, ML residual variance and its square root</td>
-</tr>
-<tr class="even">
-<td>random_intercept_variance</td>
-<td>float, estimated between-group variance</td>
-</tr>
-<tr class="odd">
-<td>icc</td>
-<td>float, tau²/(tau² + sigma²), within-group residual correlation</td>
-</tr>
-<tr class="even">
-<td>log_likelihood</td>
-<td>float, Gaussian likelihood with group effects integrated out</td>
-</tr>
-<tr class="odd">
-<td>aic</td>
-<td>float, 2(p+2) - 2 log_likelihood; both variance parameters counted even at a boundary</td>
-</tr>
-<tr class="even">
-<td>df_residual</td>
-<td>int, n-p, informational; never used as a t-test denominator</td>
-</tr>
-<tr class="odd">
-<td>boundary</td>
-<td>bool, true when the selected random-intercept variance is exactly zero</td>
-</tr>
-<tr class="even">
-<td>method, converged</td>
-<td>string ‘ML’, bool true on every returned fit</td>
-</tr>
-<tr class="odd">
-<td>evaluations</td>
-<td>int, number of profiled-likelihood evaluations</td>
-</tr>
-<tr class="even">
-<td>n_input, n_observations, n_dropped, retained_rows, dropped_rows</td>
-<td>same counts and original row positions as other estimators</td>
-</tr>
-</tbody>
-</table>
-<p>Fixed-effect covariance is the <strong>plug-in GLS covariance</strong> (X’ V^-1 X)^-1 with estimated variance components. This matches lme4’s conventional covariance. It does not account fully for variance-component uncertainty. Normal Wald inference can be optimistic with few groups; there are no Satterthwaite or Kenward–Roger degrees of freedom, cluster-robust errors, variance-component p-values, or uncertainty intervals for predicted random effects. Our Python comparison recomputes this declared GLS convention from statsmodels estimates; statsmodels’ joint observed-Hessian standard errors may differ. df_residual n-p is a project convention; R merMod methods may count variance parameters too.</p>
-<p>The dedicated fitter profiles sigma² and beta for rho=tau²/sigma², using group whitening and column-scaled SVD. A one-time QR square-root summary of within-group centered [X, y] rows, plus cached group means, reduces each trial to p+1+G rows. This is the random-intercept specialization of penalized least-squares elimination; no full observation-level SVD or covariance calculation is repeated in the search. The final covariance uses the compact SVD. It scans t=log(1+rho) from 0 to 32 in steps of 0.5 and refines every sampled negative-to-positive objective-score crossing with 40 bisections. It compares those candidate minima with the exact tau²=0 boundary. A decreasing objective at the upper limit is rejected. The finite grid is not a proof of a global optimum for every possible sample; very narrow unbracketed stationary points or extreme ratios are outside this initial guarantee. This is one dedicated profile search, without a generic optimizer interface.</p>
-<p>A zero random-intercept variance is a valid ML boundary fit, indicated by boundary=true. Positive residual variance remains required. At that boundary fixed coefficients match OLS, but covariance uses the ML scale RSS/n, rather than OLS’s unbiased RSS/(n-p). Missing deletion is the only automatic warning policy; callers should also inspect boundary.</p>
-<p>The PHP-free Rust entry point is <code>fit_random_intercept(x: Vec&lt;Vec&lt;f64&gt;&gt;, y: Vec&lt;f64&gt;, groups: Vec&lt;usize&gt;) -&gt; Result&lt;MixedResult, StatsError&gt;</code>. Rust group IDs are arbitrary usize values and group_ids records first appearance. The binding preserves PHP labels separately and adds method/convergence/deletion metadata. See the <a href="./notebooks/lmm-math.html">walkthrough</a>.</p>
-</section>
-<section id="weights-offsets-and-grouped-binomial-responses" class="level2">
-<h2 class="anchored" data-anchor-id="weights-offsets-and-grouped-binomial-responses">Weights, offsets and grouped binomial responses</h2>
-<p>The four fixed-model signatures accept optional weights/offsets and append the fixed-intercept option after existing positional arguments:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>Phit\fit_logistic(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>Phit\fit_probit(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>Phit\fit_poisson(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Optional vectors must have one value per <strong>original</strong> observation. null means unit weights or zero offsets. An explicitly supplied empty array is an invalid length, not the default. Weights are positive finite numbers; zero/negative weights are rejected. Offsets are known additive terms: <code>eta = offset + X beta</code>. For OLS they add directly to the outcome mean; Poisson log exposure is supplied as <code>offset = log(exposure)</code> with exposure positive. Numeric strings are not coerced.</p>
-<p>OLS weights specify residual variance <code>sigma²/weight</code>. OLS RSS is weighted RSS; returned fitted values/residuals are on the original response scale. R-squared removes the known offset before calculating fitted variation, following R <code>summary.lm</code>. Gaussian likelihood includes <code>sum(log(weights))/2</code>.</p>
-<p>Logistic/probit weights are <strong>positive integer trial counts</strong>, with y a proportion in [0,1] and <code>weights[i] * y[i]</code> an integer success count (absolute rounding tolerance 1e-8). Unit weights preserve binary-only behavior. For ten trials with three successes, supply <code>y: [0.3, ...], weights: [10, ...]</code>. Do not repeat a grouped response as ten fractional Bernoulli outcomes. The likelihood includes the binomial coefficient; deviance compares to the grouped saturated model. Fitted values and response residuals are proportions. Residual degrees of freedom count rows, not the sum of trials. Poisson weights are positive prior likelihood weights, not an exposure substitute.</p>
-<p>Missing values in any supplied optional vector participate in listwise deletion with x and y. One warning and the same retained/dropped row metadata apply. Invalid values and original shapes are checked before deleting rows.</p>
-<section id="poisson-exposure-example" class="level3">
-<h3 class="anchored" data-anchor-id="poisson-exposure-example">Poisson exposure example</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="va">$exposure</span> <span class="op">=</span> [<span class="dv">1</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">4</span><span class="ot">,</span> <span class="dv">8</span><span class="ot">,</span> <span class="dv">16</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">,</span> <span class="dv">6</span><span class="ot">,</span> <span class="dv">12</span>]<span class="ot">;</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="va">$counts</span> <span class="op">=</span> [<span class="dv">1</span><span class="ot">,</span> <span class="dv">4</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">,</span> <span class="dv">12</span><span class="ot">,</span> <span class="dv">23</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">11</span><span class="ot">,</span> <span class="dv">14</span>]<span class="ot">;</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="va">$r</span> <span class="op">=</span> Phit\fit_poisson(</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    x<span class="ot">:</span> <span class="fu">array_fill</span>(<span class="dv">0</span><span class="ot">,</span> <span class="fu">count</span>(<span class="va">$counts</span>)<span class="ot">,</span> [])<span class="ot">,</span> <span class="co">// Intercept-only rate model.</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    y<span class="ot">:</span> <span class="va">$counts</span><span class="ot">,</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    offset<span class="ot">:</span> <span class="fu">array_map</span>(<span class="kw">fn</span>(<span class="va">$e</span>) =&gt; <span class="fu">log</span>(<span class="va">$e</span>)<span class="ot">,</span> <span class="va">$exposure</span>)<span class="ot">,</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="va">$rate</span> <span class="op">=</span> <span class="fu">exp</span>(<span class="va">$r</span>[<span class="st">'coefficients'</span>][<span class="dv">0</span>])<span class="ot">;</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">// fitted[i] = exposure[i] * rate; the result contains expected counts.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The offset has a known coefficient of 1 and adds no estimated parameter. It is on the linear-predictor scale, not the count scale. With a unit exposure use zero; with a general positive exposure pass its natural logarithm. Multiplying every exposure by a constant shifts the intercept and preserves fitted counts. To get a fitted rate, divide a fitted count by its original exposure. Invalid/nonfinite or misaligned offsets fail validation; missing offsets follow <code>missing</code>. The runnable repository example <code>examples/poisson-offset.php</code> adds a visitor predictor.</p>
-</section>
-</section>
-<section id="general-gaussian-mixed-model-call" class="level2">
-<h2 class="anchored" data-anchor-id="general-gaussian-mixed-model-call">General Gaussian mixed-model call</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$random</span><span class="ot">,</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$reml</span> <span class="op">=</span> <span class="kw">false</span><span class="ot">,</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$start</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$maxEvaluations</span> <span class="op">=</span> <span class="dv">20000</span><span class="ot">,</span> <span class="dt">float</span> <span class="va">$tolerance</span> <span class="op">=</span> <span class="fl">1e-7</span><span class="ot">,</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$optimizer</span> <span class="op">=</span> <span class="st">'bobyqa'</span><span class="ot">,</span> <span class="dt">float</span> <span class="va">$objectiveTolerance</span> <span class="op">=</span> <span class="fl">1e-12</span><span class="ot">,</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Each random term is an array with <code>z</code> (n×k explicit random-design matrix), <code>groups</code> (n integer/string labels), and optional boolean <code>correlated</code> (default true). For <code>(1 + slope | group)</code>, supply z columns <code>[1, slope]</code>; for independent intercept and slope use the same z with <code>correlated: false</code>. Multiple terms are independent of one another. Repeated labels across terms do not connect their random effects. For nested groups, supply explicit identifiers for each parent and parent/child combination. There is no two-level limit: supply three, four or more random terms within the documented dense-design limits. Groups and output ordering follow first appearance after deletion; integer 1 and string “1” remain distinct.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="va">$r</span> <span class="op">=</span> Phit\fit_mixed(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    x<span class="ot">:</span> <span class="va">$fixedPredictors</span><span class="ot">,</span> <span class="co">// Fixed intercept is added automatically.</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    y<span class="ot">:</span> <span class="va">$outcomes</span><span class="ot">,</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    random<span class="ot">:</span> [</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'z'</span> =&gt; <span class="va">$interceptAndSlope</span><span class="ot">,</span> <span class="st">'groups'</span> =&gt; <span class="va">$subjects</span><span class="ot">,</span> <span class="st">'correlated'</span> =&gt; <span class="kw">true</span>]<span class="ot">,</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        [<span class="st">'z'</span> =&gt; <span class="va">$interceptOnes</span><span class="ot">,</span> <span class="st">'groups'</span> =&gt; <span class="va">$sites</span>]<span class="ot">,</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    reml<span class="ot">:</span> <span class="kw">true</span><span class="ot">,</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    optimizer<span class="ot">:</span> <span class="st">'bobyqa'</span><span class="ot">,</span> <span class="co">// or 'nelder_mead'</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>All original random-design/group/weight/offset rows participate in one deletion mask. Each term needs at least two groups and a repeated observation. For a correlated term, n must exceed its total random-coefficient count, matching lme4’s default check. Fixed columns must be numerically full rank, n&gt;p, and residual scale must be positive. Singular random covariance is permitted and flagged with <code>singular</code> rather than an error. The engine rejects nonfinite results, exhausted budgets and invalid starts/controls.</p>
-<p>BOBYQA is the pinned Rust PRIMA port; tolerance is its final parameter trust radius in <code>(0, 0.1]</code>. Nelder–Mead is the pinned argmin implementation; objectiveTolerance is the positive finite standard-deviation threshold of simplex objective values. The other control is unused by that optimizer. Both use a 0.1 initial step/radius, nonnegative Cholesky diagonals, off-diagonal bounds ±10,000 and diagonal upper bound 10,000. Starting values are in the supplied random-column units; omission uses diagonal factors one and off-diagonal factors zero. <code>maxEvaluations</code> limits optimizer cost calls, including rejected Nelder–Mead bound trials. <code>evaluations</code> also counts two pre/post likelihood evaluations. These are local optimizers; convergence does not establish global optimality or model identifiability.</p>
-<p>Theta order is term order, then lower-triangular <strong>column-major</strong> order; independent terms include diagonals only. Each term’s covariance is <code>sigma² L Lᵀ</code>. Random effects are conditional means (BLUPs), ordered by retained group then z column. Each term’s <code>effects_cond_var</code> gives, per group, the k×k conditional covariance of that group’s effect vector given y at the estimated theta and sigma. It is the group’s diagonal block of <code>sigma² Λ (ΛᵀZᵀWZΛ + I)⁻¹ Λᵀ</code>, the matrix lme4 reports through <code>ranef(condVar = TRUE)</code> (the <code>postVar</code> attribute). The variance is conditional on the fixed effects, as in lme4. It uses the REML or ML sigma according to <code>method</code>. Blocks between different terms are not returned. A zero relative factor gives a zero block. lme4 splits <code>(x || g)</code> into one-column terms and reports only the diagonal; here the term is one block, so its off-diagonal conditional covariances are also returned. Dense limits are q≤512 random coefficients and n(q+p+1)≤50,000,000 entries; exceeding them fails explicitly. The existing <code>fit_mixed_intercept</code> remains the faster random-intercept ML path.</p>
-<p>The result contains:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Keys</th>
-<th>Type and meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>coefficients, std_errors, z_statistics, p_values</td>
-<td>float arrays in fixed-column order; normal Wald inference</td>
-</tr>
-<tr class="even">
-<td>covariance, conf_int</td>
-<td>p×p fixed-effect covariance, p×2 95% normal Wald intervals</td>
-</tr>
-<tr class="odd">
-<td>fixed_fitted, fitted</td>
-<td>float arrays: offset+Xβ; offset+Xβ plus all random terms</td>
-</tr>
-<tr class="even">
-<td>residuals, marginal_residuals</td>
-<td>y−fitted; y−fixed_fitted, retained row order</td>
-</tr>
-<tr class="odd">
-<td>random</td>
-<td>term array; each has k×k covariance, group×k effects, group×k×k effects_cond_var, group_labels, group_sizes</td>
-</tr>
-<tr class="even">
-<td>theta</td>
-<td>relative Cholesky parameters in the order above</td>
-</tr>
-<tr class="odd">
-<td>residual_variance, sigma</td>
-<td>positive residual scale and its square root</td>
-</tr>
-<tr class="even">
-<td>log_likelihood</td>
-<td>marginal ML likelihood or restricted REML likelihood, according to method</td>
-</tr>
-<tr class="odd">
-<td>aic, bic, n_parameters</td>
-<td>parameter count p + number of theta parameters + 1 residual scale; criteria computed from selected likelihood</td>
-</tr>
-<tr class="even">
-<td>df_residual</td>
-<td>integer n−n_parameters, matching lme4’s extractor; REML scale uses n−p, ML scale uses n</td>
-</tr>
-<tr class="odd">
-<td>singular</td>
-<td>boolean; at least one relative Cholesky diagonal &lt;1e-4</td>
-</tr>
-<tr class="even">
-<td>method, optimizer, optimizer_implementation</td>
-<td>strings identifying ML/REML and the actual algorithm implementation</td>
-</tr>
-<tr class="odd">
-<td>converged, evaluations</td>
-<td>true on a successful return; integer cost-call accounting</td>
-</tr>
-<tr class="even">
-<td>n_input, n_observations, n_dropped, retained_rows, dropped_rows</td>
-<td>standard sample metadata</td>
-</tr>
-</tbody>
-</table>
-<p>The covariance is plug-in GLS at estimated variance components. Wald intervals cover fixed effects only; random effects and variance estimates do not yet have intervals. REML likelihoods should not be used to compare different fixed-effect designs. <a href="./r-compatibility.html">Compatibility coverage and remaining work</a> describes the exact boundary of the R/lme4 parity claim.</p>
-</section>
-<section id="binomial-random-intercept-ml" class="level2">
-<h2 class="anchored" data-anchor-id="binomial-random-intercept-ml">Binomial random-intercept ML</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_logistic_mixed(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$groups</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$quadraturePoints</span> <span class="op">=</span> <span class="dv">1</span><span class="ot">,</span> <span class="dt">int</span> <span class="va">$maxEvaluations</span> <span class="op">=</span> <span class="dv">20000</span><span class="ot">,</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$tolerance</span> <span class="op">=</span> <span class="fl">1e-7</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The conditional model is <code>successes_i ~ Binomial(trials_i, logistic(offset_i + x_i beta + b_group))</code>, with independent Gaussian group intercepts of variance tau². Unit weights mean one trial per row. For grouped responses, supply y as successes/trials and positive integer weights as trials. Success counts must be integer within absolute tolerance 1e-8; accepted floating-point count encodings are rounded to integer successes before fitting. This prevents near-zero input rounding from creating fictitious events. Residuals use the canonical count proportions. The first implementation limits trials per row to <strong>1,000,000</strong> to protect direct binomial likelihood arithmetic; larger counts need another stable log-mass implementation. R has broader input support.</p>
-<p>The fixed intercept is prepended by default; <code>intercept: false</code> uses x literally. Require finite full-rank fixed design, n&gt;p, at least two groups, a repeated group, and both successes/failures after count canonicalization and deletion. Some groups may contain only successes or only failures. Fixed-design separation prevents a finite unpenalized MLE and fails explicitly. Group labels use the existing integer/string contract and first-retained-appearance ordering. All original x/y/groups/weights/offset values and lengths are checked before one shared listwise deletion mask.</p>
-<p><code>quadraturePoints: 1</code> uses Laplace, matching lme4’s default integration method. Values 2..61 use adaptive Gauss-Hermite quadrature for each group. Begin with 25 or 61 nodes for accuracy checks on small groups or rare events, and inspect sensitivity; no node count guarantees accuracy for every dataset. This function has <strong>one grouping factor and a random intercept only</strong>. Random slopes, multiple random terms, Poisson/probit mixed likelihoods, and REML are not implemented here. The general Gaussian mixed call continues to support its broader designs.</p>
-<p>The optimizer is the pinned native Rust BOBYQA port. It starts from the ordinary binomial GLM coefficients and group SD one, and compares the solution with an exact zero-variance GLM candidate. Fixed columns are RMS-scaled for optimization. Scaled fixed coefficients are bounded ±100; group SD is bounded [0,20]. Reaching a bound fails. Tolerance is the final trust radius in (0,0.1]; maxEvaluations limits optimizer calls. The group mode solver uses bracketed Newton steps and positive posterior curvature. Nonconvergence, nonfinite results, nonstationary solutions or nonpositive observed information fail with an exception. A near-zero SD below 1e-4 is snapped to exact zero only when the likelihood gain is within floating-point resolution. These controls establish a local fit, not global optimality or scientific model adequacy.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Keys</th>
-<th>Types and conventions</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>coefficients, covariance</td>
-<td>p-vector, p×p matrix; fixed-effect marginal ML estimates and joint-observed-information covariance</td>
-</tr>
-<tr class="even">
-<td>std_errors, z_statistics, p_values, conf_int</td>
-<td>p-vectors and p×2 95% normal Wald intervals; covariance uses coupling to estimated group scale</td>
-</tr>
-<tr class="odd">
-<td>fixed_fitted</td>
-<td>probabilities evaluated at group effect zero; <strong>not</strong> population probabilities averaged over random effects</td>
-</tr>
-<tr class="even">
-<td>fitted, linear_predictor, residuals</td>
-<td>probabilities/log odds at conditional group modes; canonical y−fitted; retained row order</td>
-</tr>
-<tr class="odd">
-<td>random_effects</td>
-<td>conditional group <strong>modes</strong>, log-odds scale; not posterior means</td>
-</tr>
-<tr class="even">
-<td>random_effects_cond_var</td>
-<td>per group, tau²/h_g with h_g = 1 + tau² Σ w_i μ_i(1−μ_i) the conditional-mode Hessian at the final parameters (lme4 <code>ranef(condVar = TRUE)</code> for <code>glmer</code>, the same for Laplace and quadrature); zero when tau = 0</td>
-</tr>
-<tr class="odd">
-<td>group_labels, group_sizes, n_groups</td>
-<td>typed labels/counts in first retained appearance order</td>
-</tr>
-<tr class="even">
-<td>random_intercept_sd, random_intercept_variance</td>
-<td>float tau and tau²; no Gaussian residual variance is estimated</td>
-</tr>
-<tr class="odd">
-<td>log_likelihood, neg2_log_likelihood</td>
-<td>normalized approximate marginal binomial likelihood and −2 times it; includes binomial coefficients for every integration setting</td>
-</tr>
-<tr class="even">
-<td>aic, bic, n_parameters, df_residual</td>
-<td>p+1 parameters including tau even at zero; AIC=2k−2LL, BIC=k log(n)−2LL, df_residual=n−k; n counts rows, not trials</td>
-</tr>
-<tr class="odd">
-<td>integration, quadrature_points</td>
-<td>‘laplace’ at one node; otherwise ‘adaptive_gauss_hermite’; integer node count</td>
-</tr>
-<tr class="even">
-<td>method, family, link, optimizer, converged</td>
-<td>‘ML’, ‘binomial’, ‘logit’, ‘bobyqa’, true on a successful return</td>
-</tr>
-<tr class="odd">
-<td>evaluations, gradient_max</td>
-<td>outer optimizer call count (excludes inference probes); maximum absolute finite-difference score in scaled optimizer coordinates</td>
-</tr>
-<tr class="even">
-<td>boundary, singular</td>
-<td>exact tau=0; tau&lt;1e-4, respectively</td>
-</tr>
-<tr class="odd">
-<td>n_input, n_observations, n_dropped, retained_rows, dropped_rows</td>
-<td>existing sample metadata</td>
-</tr>
-</tbody>
-</table>
-<p>At an exact zero variance boundary, coefficient inference and likelihood reduce to the ordinary binomial GLM; AIC/BIC still count the additional variance parameter, as lme4 does. Otherwise covariance comes from the beta block of inverse joint information in beta/tau, computed with centered finite differences and Richardson extrapolation. Normal Wald inference is asymptotic; no random-effect or variance-component confidence intervals are returned. <code>neg2_log_likelihood</code> is deliberately explicit: it is not lme4’s conditional deviance extractor.</p>
-<p>For grouped data, lme4 nAGQ&gt;1’s reported likelihood uses a different additive constant. Our verification retains that raw value and adds the saturated binomial log likelihood before comparing LL/AIC/BIC. See the <a href="./notebooks/logistic-mixed-verification.html">executed verification</a> and <a href="./notebooks/logistic-mixed-math.html">math walkthrough</a>.</p>
-</section>
 <section id="v01-diagnostics-and-errors" class="level2">
-<h2 class="anchored" data-anchor-id="v01-diagnostics-and-errors">v0.1 diagnostics and errors</h2>
-<p>Existing signatures, argument names/defaults and result keys are compatibility-sensitive. The native fixture <code>tests/fixtures/php-api.json</code> and Reflection-based stub generator check them; <code>stubs/phit.php</code> includes each exact procedural signature and per-estimator result-array PHPDoc. Do not include the stubs in an application.</p>
-<p>Every successful estimator now adds <code>diagnostics</code>:</p>
+<h2 class="anchored" data-anchor-id="v01-diagnostics-and-errors">Diagnostics and error codes</h2>
+<p>Every successful estimator returns <code>diagnostics</code>:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -1215,7 +791,7 @@ window.Quarto = {
 </tbody>
 </table>
 <p>Warnings in this array are interpretation notices. Only listwise deletion also emits the existing single PHP E_WARNING. Missing/undefined diagnostics are omitted; there is no fabricated iteration count or universal score. General Gaussian convergence still uses optimizer termination, parameter bounds, valid factors and finite output; it does not have a final variance-parameter gradient/Hessian gate. OLS has no iterative optimizer. Normal/Wald inference and local convergence do not guarantee model adequacy or quadrature accuracy.</p>
-<p>Statistical/input failures retain PHP <code>Exception</code>, now with numeric <code>getCode()</code>:</p>
+<p>Statistical and input failures throw PHP <code>Exception</code> with a numeric <code>getCode()</code>:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -1273,7 +849,7 @@ window.Quarto = {
 </tbody>
 </table>
 <p>Messages remain explanatory, not stable machine identifiers. Validation can report the first failed check when multiple problems exist; combined validation checks may use the most relevant category. Zend argument <code>TypeError</code>, result conversion/runtime errors, and caught Rust panics are runtime errors rather than statistical codes. Invalid data are checked before listwise deletion. Rust <code>StatsError::new(kind, message)</code> carries the explicit enum without classifying message text; <code>.0</code> remains the display message and <code>kind()</code> exposes its category.</p>
-<p>All binomial calls now limit trials to 1,000,000 per original row, and accepted success-count rounding is canonicalized with <code>round(y*trials)/trials</code>. For exact zero-variance OLS, the existing NaN/INF conventions remain; nonzero variance underflow instead throws 1003. JSON consumers must handle documented undefined OLS quantities explicitly; PHP’s JSON_THROW_ON_ERROR rejects NaN/INF. See the <a href="./v0.1.html">v0.1 assessment</a> for compatibility notes and tested stress ranges.</p>
+<p>Binomial calls limit trials to 1,000,000 per original row, and accepted success-count rounding is canonicalized with <code>round(y*trials)/trials</code>. For exact zero-variance OLS, the existing NaN/INF conventions remain; nonzero variance underflow instead throws 1003. JSON consumers must handle documented undefined OLS quantities explicitly; PHP’s JSON_THROW_ON_ERROR rejects NaN/INF. See the <a href="./v0.1.html">v0.1 assessment</a> for compatibility notes and tested stress ranges.</p>
 
 
 </section>

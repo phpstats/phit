@@ -370,7 +370,7 @@ It supports individual 0/1 outcomes only: no grouped trials, sample weights,
 penalties, Firth correction, or automatic threshold selection. The model assumes
 independent observations and linear log-odds in the supplied predictors.
 Missing-data deletion occurs before estimation and warns as in OLS; see the
-[contract](../contracts.qmd#binary-logistic-regression).
+[contract](../reference-models.qmd#binary-logistic-regression).
 
 Try predicting the result before changing the notebook: set all outcomes to 1;
 replace the outcome by `study_hours > 6`; duplicate a predictor; convert hours to
