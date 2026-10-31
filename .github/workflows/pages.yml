@@ -1,0 +1,30 @@
+name: GitHub Pages redirects
+# The docs are served at https://phit.phpstats.org/docs. This replaces the old
+# GitHub Pages copy with redirect stubs, one per rendered page.
+on:
+  push:
+    branches: [main]
+    paths: ['docs/**', 'scripts/pages-redirects.py', '.github/workflows/pages.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Write redirect stubs
+        run: python3 scripts/pages-redirects.py _pages
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _pages
+      - id: deployment
+        uses: actions/deploy-pages@v4

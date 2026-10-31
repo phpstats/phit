@@ -30,5 +30,11 @@ for source in site.rglob('*'):
     finally:
         temporary.unlink(missing_ok=True)
 (root/'.nojekyll').touch()
+# phit.phpstats.org serves each page at its path without .html, and the docs
+# index at /docs itself.
+import re
+sitemap=root/'sitemap.xml'
+text=re.sub(r'<loc>([^<]*)\.html</loc>', r'<loc>\1</loc>', sitemap.read_text())
+sitemap.write_text(text.replace('<loc>https://phit.phpstats.org/docs/index</loc>', '<loc>https://phit.phpstats.org/docs</loc>'))
 print('Published rendered documentation to docs/index.html')
 PY

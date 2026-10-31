@@ -66,7 +66,7 @@ project:
     - verifications/poisson.php
 
 website:
-  site-url: "https://phpstats.github.io/phit/"
+  site-url: "https://phit.phpstats.org/docs/"
   title: "phit"
   sidebar:
     style: docked

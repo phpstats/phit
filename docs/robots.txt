@@ -1,1 +1,1 @@
-Sitemap: https://phpstats.github.io/phit/sitemap.xml
+Sitemap: https://phpstats.org/sitemap.xml
