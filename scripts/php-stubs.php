@@ -19,6 +19,16 @@ $families=['normal'=>'Normal(mean, sd)','t'=>"Student's t with df degrees of fre
  'binomial'=>'Binomial: successes in size trials with success probability prob','poisson'=>'Poisson with mean lambda',
  'nbinom'=>'Negative binomial: failures before the size-th success, success probability prob',
  'nbinom_mu'=>'Negative binomial with mean mu and size (variance mu + mu^2/size)'];
+$samplers=[
+ 'Phit\dist_uniform_rng'=>['summary'=>"Uniform(min, max) samples as R's runif(): min + (max - min) * u; min == max gives min.",
+  'params'=>['int $n Sample count in [0, 1000000]','int $seed Nonnegative PHP integer; every call restarts its own stream'],'return'=>'list<float>'],
+ 'Phit\dist_categorical_rng'=>['summary'=>"0-based indices into prob drawn with those probabilities, as R's sample(x, n, replace = TRUE, prob = prob):\n * the first k with u * sum(prob) < prob[0] + ... + prob[k]. Weights are divided by their sum.",
+  'params'=>['int $n Sample count in [0, 1000000]','int $seed Nonnegative PHP integer; every call restarts its own stream','list<int|float> $prob Finite, nonnegative weights with a positive sum'],'return'=>'list<int>'],
+ 'Phit\dist_categorical_rows_rng'=>['summary'=>"One 0-based index per row of prob, drawn with that row's probabilities (e.g. ordered-logit outcomes).\n * Draw i uses the i-th uniform, so equal rows give dist_categorical_rng()'s result.",
+  'params'=>['int $seed Nonnegative PHP integer; every call restarts its own stream','list<list<int|float>> $prob At most 1000000 rows of finite, nonnegative weights with a positive sum'],'return'=>'list<int>'],
+ 'Phit\permutation_rng'=>['summary'=>"size distinct 0-based indices from 0..n-1 in random order, as R's sample(n, size) less one; size null gives all n.\n * Partial Fisher-Yates: step i swaps position i with i + floor(u * (n - i)).",
+  'params'=>['int $n Population size in [0, 1000000]','int $seed Nonnegative PHP integer; every call restarts its own stream','int|null $size Draws in [0, n]; null gives a permutation'],'return'=>'list<int>'],
+];
 $operations=['pdf'=>'density f(x); 0 outside the support','logpdf'=>'log density ln f(x); -INF outside the support',
  'pmf'=>'probability P(X = k); 0 for non-integer or out-of-support k','logpmf'=>'log probability ln P(X = k)',
  'cdf'=>'P(X <= x)','logcdf'=>'ln P(X <= x), accurate after P underflows','sf'=>'survival P(X > x), computed directly',
@@ -151,6 +161,10 @@ foreach ($functions as $name) {
   foreach ($r->getParameters() as $p) if ((string)$p->getType()==='array') $text.=' * @param array<int|float|null> $'.$p->getName()."\n";
   if ($name==='Phit\stat_quantile_array') $text.=" * @return list<float>\n";
   $text.=" * @throws \\Exception Input error (codes 1001–1003).\n */\n";
+ } elseif (isset($samplers[$name])) {
+  $text.="/**\n * {$samplers[$name]['summary']}\n * Local ChaCha20 stream restarted at the seed, one uniform per draw; same seed/arguments reproduce prefixes within the pinned version.\n";
+  foreach($samplers[$name]['params'] as $param=>$doc)$text.=" * @param $doc\n";
+  $text.=" * @return {$samplers[$name]['return']}\n * @throws \\Exception Invalid input (1001), nonfinite input (1003) or more than 1000000 draws (1007).\n */\n";
  } elseif (preg_match('/^Phit\\\\dist_(.+)_rng$/',$name,$m) && isset($families[$m[1]])) {
   $text.="/**\n * {$families[$m[1]]}: explicitly seeded batch samples.\n * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.\n * @param int \$n Sample count in [0, 1000000]; empty batches still validate parameters.\n * @param int \$seed Nonnegative PHP integer; every call restarts its own stream.\n * @return list<float> Finite samples; discrete counts are floats.\n * @throws \\Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).\n */\n";
  } elseif (preg_match('/^Phit\\\\dist_(.+)_(pdf|logpdf|pmf|logpmf|cdf|logcdf|sf|logsf|quantile)(_array)?$/',$name,$m) && isset($families[$m[1]])) {

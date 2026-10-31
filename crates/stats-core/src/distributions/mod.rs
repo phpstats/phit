@@ -22,7 +22,10 @@ pub use continuous::{
     Beta, ChiSquare, Exponential, FisherF, Gamma, LogNormal, Logistic, Normal, StudentT,
 };
 pub use discrete::{Binomial, MAX_BINOMIAL_SIZE, NegativeBinomial, Poisson};
-pub use rng::{MAX_RNG_DRAWS, sample_quantiles};
+pub use rng::{
+    MAX_RNG_DRAWS, sample_categorical, sample_categorical_rows, sample_permutation,
+    sample_quantiles, sample_uniform,
+};
 
 use crate::{ErrorKind, StatsError};
 

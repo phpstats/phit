@@ -310,7 +310,98 @@ distribution!(
     ]
 );
 
+fn draws(n: i64, seed: i64) -> PhpResult<(usize, u64)> {
+    let n =
+        usize::try_from(n).map_err(|_| error(ErrorKind::InvalidInput, "n must be nonnegative"))?;
+    let seed = u64::try_from(seed)
+        .map_err(|_| error(ErrorKind::InvalidInput, "seed must be nonnegative"))?;
+    Ok((n, seed))
+}
+
+/// A list of ints or floats; keys must be 0..n-1 in order, since draws are
+/// positions in it.
+fn weights(values: &ZendHashTable, name: &str) -> PhpResult<Vec<f64>> {
+    if !values.has_sequential_keys() {
+        return Err(error(
+            ErrorKind::InvalidInput,
+            &format!("{name} must be a list"),
+        ));
+    }
+    values.values().map(element).collect()
+}
+
+fn indices(draws: Vec<usize>) -> Vec<i64> {
+    draws.into_iter().map(|k| k as i64).collect()
+}
+
+/// Uniform(min, max) samples as R's runif(); min == max gives min.
+#[php_function]
+#[php(name = "Phit\\dist_uniform_rng", defaults(min = 0.0, max = 1.0))]
+pub fn dist_uniform_rng(n: i64, seed: i64, min: Real, max: Real) -> PhpResult<Vec<f64>> {
+    let (n, seed) = draws(n, seed)?;
+    dist::sample_uniform(n, seed, min.0, max.0).map_err(stats_exception)
+}
+
+/// n 0-based indices into prob, drawn with those probabilities, as R's
+/// sample(x, n, replace = TRUE, prob = prob).
+#[php_function]
+#[php(name = "Phit\\dist_categorical_rng")]
+pub fn dist_categorical_rng(n: i64, seed: i64, prob: &ZendHashTable) -> PhpResult<Vec<i64>> {
+    let (n, seed) = draws(n, seed)?;
+    let prob = weights(prob, "prob")?;
+    dist::sample_categorical(n, seed, &prob)
+        .map(indices)
+        .map_err(stats_exception)
+}
+
+/// One 0-based index per row of prob, drawn with that row's probabilities.
+#[php_function]
+#[php(name = "Phit\\dist_categorical_rows_rng")]
+pub fn dist_categorical_rows_rng(seed: i64, prob: &ZendHashTable) -> PhpResult<Vec<i64>> {
+    let (_, seed) = draws(0, seed)?;
+    if !prob.has_sequential_keys() {
+        return Err(error(
+            ErrorKind::InvalidInput,
+            "prob must be a list of rows",
+        ));
+    }
+    let rows = prob
+        .values()
+        .enumerate()
+        .map(|(i, row)| {
+            let row = row
+                .array()
+                .ok_or_else(|| error(ErrorKind::InvalidInput, "prob must be a list of rows"))?;
+            weights(row, &format!("prob row {i}"))
+        })
+        .collect::<PhpResult<Vec<_>>>()?;
+    dist::sample_categorical_rows(seed, &rows)
+        .map(indices)
+        .map_err(stats_exception)
+}
+
+/// size distinct 0-based indices from 0..n-1 in random order, as R's
+/// sample(n, size); size null gives a permutation of all n.
+#[php_function]
+#[php(name = "Phit\\permutation_rng", defaults(size = None))]
+pub fn permutation_rng(n: i64, seed: i64, size: Option<i64>) -> PhpResult<Vec<i64>> {
+    let (n, seed) = draws(n, seed)?;
+    let size = match size {
+        None => n,
+        Some(size) => usize::try_from(size)
+            .map_err(|_| error(ErrorKind::InvalidInput, "size must be nonnegative"))?,
+    };
+    dist::sample_permutation(n, seed, size)
+        .map(indices)
+        .map_err(stats_exception)
+}
+
 pub fn register(module: ModuleBuilder) -> ModuleBuilder {
+    let module = module
+        .function(wrap_function!(dist_uniform_rng))
+        .function(wrap_function!(dist_categorical_rng))
+        .function(wrap_function!(dist_categorical_rows_rng))
+        .function(wrap_function!(permutation_rng));
     let module = register_normal(module);
     let module = register_t(module);
     let module = register_chisquare(module);

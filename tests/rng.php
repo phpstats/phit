@@ -69,4 +69,44 @@ $normal = Phit\dist_normal_rng(50000,173,mean:3,sd:2);
 $poisson = Phit\dist_poisson_rng(50000,174,lambda:12);
 check(abs(Phit\stat_mean($normal)-3)<.06 && abs(Phit\stat_var($normal,'population')-4)<.15, 'normal moments');
 check(abs(Phit\stat_mean($poisson)-12)<.1 && abs(Phit\stat_var($poisson,'population')-12)<.4, 'Poisson moments');
-echo "PHP RNG tests passed ($compared independent R/ChaCha values, seed isolation, validation and moments)\n";
+// Uniform, categorical and permutation samplers consume the same uniforms;
+// the references below apply the documented maps to the Python uniforms.
+$uniform = [];
+foreach ($fixture['cases'] as $c) if ($c['distribution'] === 'uniform') $uniform[$c['seed']] = $c['expected'];
+foreach ($uniform as $seed => $u) {
+    check(Phit\dist_uniform_rng(96, $seed) === $u, "runif seed $seed");
+    check(Phit\dist_uniform_rng(96, $seed, min: -2, max: 3) === array_map(fn($u) => -2 + 5 * $u, $u), "runif(-2, 3) seed $seed");
+    $prob = [.2, 0, .5, .3];
+    $expected = array_map(fn($u) => $u < .2 ? 0 : ($u < .7 ? 2 : 3), $u);
+    $draws = Phit\dist_categorical_rng(96, $seed, $prob);
+    check($draws === $expected, "categorical seed $seed");
+    check(Phit\dist_categorical_rng(96, $seed, [2, 0, 5, 3]) === $draws, 'weights are normalized');
+    check(Phit\dist_categorical_rows_rng($seed, array_fill(0, 96, $prob)) === $draws, 'equal rows reproduce one vector');
+    $order = range(0, 49);
+    for ($i = 0; $i < 50; $i++) {
+        $j = $i + min((int) ($u[$i] * (50 - $i)), 49 - $i);
+        [$order[$i], $order[$j]] = [$order[$j], $order[$i]];
+    }
+    check(Phit\permutation_rng(50, $seed) === $order, "permutation seed $seed");
+    check(Phit\permutation_rng(50, $seed, size: 7) === array_slice($order, 0, 7), 'partial permutation prefix');
+    $compared += 5 * 96 + 57;
+}
+check(Phit\dist_uniform_rng(3, 1, min: 4, max: 4) === [4.0, 4.0, 4.0], 'degenerate uniform');
+check(Phit\dist_categorical_rows_rng(9, [[1, 0], [0, 1], [0, 0, 1]]) === [0, 1, 2], 'per-row probabilities');
+check(Phit\dist_categorical_rows_rng(9, []) === [] && Phit\permutation_rng(0, 9) === [], 'empty samplers');
+check(Phit\dist_categorical_rng(1000, 7, [0, 1, 0]) === array_fill(0, 1000, 1), 'zero weights never drawn');
+$sorted = Phit\permutation_rng(1000, 5); sort($sorted);
+check($sorted === range(0, 999), 'permutation of all indices');
+$counts = array_count_values(Phit\dist_categorical_rng(50000, 175, [.1, .6, .3]));
+check(abs($counts[0] / 50000 - .1) < .01 && abs($counts[1] / 50000 - .6) < .01, 'categorical frequencies');
+foreach ([fn() => Phit\dist_uniform_rng(0, 1, min: 1, max: 0), fn() => Phit\dist_categorical_rng(0, 1, []),
+    fn() => Phit\dist_categorical_rng(0, 1, [-1, 2]), fn() => Phit\dist_categorical_rng(0, 1, [0, 0]),
+    fn() => Phit\dist_categorical_rng(0, 1, ['a' => 1]), fn() => Phit\dist_categorical_rng(0, 1, ['1']),
+    fn() => Phit\dist_categorical_rows_rng(1, [[1], 1]), fn() => Phit\dist_categorical_rows_rng(1, [[1], []]),
+    fn() => Phit\dist_categorical_rows_rng(-1, [[1]]), fn() => Phit\permutation_rng(3, 1, size: 4),
+    fn() => Phit\permutation_rng(3, 1, size: -1), fn() => Phit\permutation_rng(-1, 1)] as $f) code($f, 1001);
+foreach ([fn() => Phit\dist_uniform_rng(0, 1, min: NAN), fn() => Phit\dist_uniform_rng(1, 1, min: -PHP_FLOAT_MAX, max: PHP_FLOAT_MAX),
+    fn() => Phit\dist_categorical_rng(0, 1, [INF]), fn() => Phit\dist_categorical_rng(0, 1, [PHP_FLOAT_MAX, PHP_FLOAT_MAX])] as $f) code($f, 1003);
+foreach ([fn() => Phit\dist_uniform_rng(1000001, 1), fn() => Phit\dist_categorical_rng(1000001, 1, [1]),
+    fn() => Phit\permutation_rng(1000001, 1, size: 0)] as $f) code($f, 1007);
+echo "PHP RNG tests passed ($compared independent R/ChaCha values, seed isolation, validation and moments; uniform, categorical and permutation samplers)\n";

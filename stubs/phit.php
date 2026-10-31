@@ -237,6 +237,29 @@ function dist_binomial_sf(float $k, int $size, float $prob): float {}
 function dist_binomial_sf_array(array $counts, int $size, float $prob): array {}
 
 /**
+ * 0-based indices into prob drawn with those probabilities, as R's sample(x, n, replace = TRUE, prob = prob):
+ * the first k with u * sum(prob) < prob[0] + ... + prob[k]. Weights are divided by their sum.
+ * Local ChaCha20 stream restarted at the seed, one uniform per draw; same seed/arguments reproduce prefixes within the pinned version.
+ * @param int $n Sample count in [0, 1000000]
+ * @param int $seed Nonnegative PHP integer; every call restarts its own stream
+ * @param list<int|float> $prob Finite, nonnegative weights with a positive sum
+ * @return list<int>
+ * @throws \Exception Invalid input (1001), nonfinite input (1003) or more than 1000000 draws (1007).
+ */
+function dist_categorical_rng(int $n, int $seed, array $prob): array {}
+
+/**
+ * One 0-based index per row of prob, drawn with that row's probabilities (e.g. ordered-logit outcomes).
+ * Draw i uses the i-th uniform, so equal rows give dist_categorical_rng()'s result.
+ * Local ChaCha20 stream restarted at the seed, one uniform per draw; same seed/arguments reproduce prefixes within the pinned version.
+ * @param int $seed Nonnegative PHP integer; every call restarts its own stream
+ * @param list<list<int|float>> $prob At most 1000000 rows of finite, nonnegative weights with a positive sum
+ * @return list<int>
+ * @throws \Exception Invalid input (1001), nonfinite input (1003) or more than 1000000 draws (1007).
+ */
+function dist_categorical_rows_rng(int $seed, array $prob): array {}
+
+/**
  * Chi-square with df degrees of freedom: P(X <= x).
  * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
  */
@@ -1502,6 +1525,16 @@ function dist_t_sf(float $x, float $df): float {}
 function dist_t_sf_array(array $values, float $df): array {}
 
 /**
+ * Uniform(min, max) samples as R's runif(): min + (max - min) * u; min == max gives min.
+ * Local ChaCha20 stream restarted at the seed, one uniform per draw; same seed/arguments reproduce prefixes within the pinned version.
+ * @param int $n Sample count in [0, 1000000]
+ * @param int $seed Nonnegative PHP integer; every call restarts its own stream
+ * @return list<float>
+ * @throws \Exception Invalid input (1001), nonfinite input (1003) or more than 1000000 draws (1007).
+ */
+function dist_uniform_rng(int $n, int $seed, float $min = 0.0, float $max = 1.0): array {}
+
+/**
  * Apply y = A*x + b to each draw: Y = X*A^T + b. Square invertible A; return log(abs(det(A))). Numerical rank tolerance in docs/draw-numerics.qmd.
  * Rows are draws; columns are parameters. Preserves iteration order; no row deletion or intercept insertion.
  * null/NAN/INF and nonnumeric elements are rejected.
@@ -2068,6 +2101,18 @@ function model_matrix(string $formula, mixed $data, string $missing = 'drop'): a
  * @throws \Exception Input error (code 1001).
  */
 function optimize(callable $f, float $lower, float $upper, ?float $tol = NULL, bool $maximum = false): array {}
+
+/**
+ * size distinct 0-based indices from 0..n-1 in random order, as R's sample(n, size) less one; size null gives all n.
+ * Partial Fisher-Yates: step i swaps position i with i + floor(u * (n - i)).
+ * Local ChaCha20 stream restarted at the seed, one uniform per draw; same seed/arguments reproduce prefixes within the pinned version.
+ * @param int $n Population size in [0, 1000000]
+ * @param int $seed Nonnegative PHP integer; every call restarts its own stream
+ * @param int|null $size Draws in [0, n]; null gives a permutation
+ * @return list<int>
+ * @throws \Exception Invalid input (1001), nonfinite input (1003) or more than 1000000 draws (1007).
+ */
+function permutation_rng(int $n, int $seed, ?int $size = NULL): array {}
 
 /**
  * Predictions for new data from a fit_lm, fit_glm, fit_lmer or fit_glmer result, like R's predict():

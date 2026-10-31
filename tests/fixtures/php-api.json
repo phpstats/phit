@@ -609,6 +609,41 @@
         ],
         "return_type": "array"
     },
+    "Phit\\dist_categorical_rng": {
+        "parameters": [
+            {
+                "name": "n",
+                "type": "int",
+                "optional": false
+            },
+            {
+                "name": "seed",
+                "type": "int",
+                "optional": false
+            },
+            {
+                "name": "prob",
+                "type": "array",
+                "optional": false
+            }
+        ],
+        "return_type": "array"
+    },
+    "Phit\\dist_categorical_rows_rng": {
+        "parameters": [
+            {
+                "name": "seed",
+                "type": "int",
+                "optional": false
+            },
+            {
+                "name": "prob",
+                "type": "array",
+                "optional": false
+            }
+        ],
+        "return_type": "array"
+    },
     "Phit\\dist_chisquare_cdf": {
         "parameters": [
             {
@@ -3784,6 +3819,33 @@
         ],
         "return_type": "array"
     },
+    "Phit\\dist_uniform_rng": {
+        "parameters": [
+            {
+                "name": "n",
+                "type": "int",
+                "optional": false
+            },
+            {
+                "name": "seed",
+                "type": "int",
+                "optional": false
+            },
+            {
+                "name": "min",
+                "type": "float",
+                "optional": true,
+                "default": 0.0
+            },
+            {
+                "name": "max",
+                "type": "float",
+                "optional": true,
+                "default": 1.0
+            }
+        ],
+        "return_type": "array"
+    },
     "Phit\\draws_affine": {
         "parameters": [
             {
@@ -4799,6 +4861,27 @@
                 "type": "bool",
                 "optional": true,
                 "default": false
+            }
+        ],
+        "return_type": "array"
+    },
+    "Phit\\permutation_rng": {
+        "parameters": [
+            {
+                "name": "n",
+                "type": "int",
+                "optional": false
+            },
+            {
+                "name": "seed",
+                "type": "int",
+                "optional": false
+            },
+            {
+                "name": "size",
+                "type": "?int",
+                "optional": true,
+                "default": null
             }
         ],
         "return_type": "array"

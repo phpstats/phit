@@ -54,6 +54,56 @@ seeds for separate batches when independent streams are intended. There is no
 implicit time-based seed, OS entropy lookup, retained RNG object or hidden global
 state. The runnable `examples/rng.php` verifies repeatability and prefix behavior.
 
+## Uniform, categorical and permutation sampling
+
+Four samplers have no probability API. They take the same `n` and `seed`
+arguments, have the same limits, and consume one uniform from the same stream
+per draw.
+
+| Function | R equivalent | Returns |
+| --- | --- | --- |
+| `dist_uniform_rng(n, seed, min = 0, max = 1)` | `runif(n, min, max)` | `list<float>` |
+| `dist_categorical_rng(n, seed, prob)` | `sample(length(prob), n, replace = TRUE, prob = prob) - 1` | `list<int>` |
+| `dist_categorical_rows_rng(seed, prob)` | one `sample(K, 1, prob = prob[i, ]) - 1` per row | `list<int>` |
+| `permutation_rng(n, seed, size = null)` | `sample(n, size) - 1` | `list<int>` |
+
+```php
+$x = Phit\dist_uniform_rng(n: 5, seed: 1, min: -1, max: 1);
+$categories = ['returns', 'sizing', 'quality'];
+$picked = array_map(fn ($k) => $categories[$k],
+    Phit\dist_categorical_rng(n: 5, seed: 2, prob: [.2, .5, .3]));
+// One rating per review, each from its own probabilities.
+$ratings = Phit\dist_categorical_rows_rng(seed: 3, prob: [[.1, .6, .3], [.7, .2, .1]]);
+$shuffled = Phit\permutation_rng(n: 10, seed: 4); // All of 0..9.
+$subset = Phit\permutation_rng(n: 10, seed: 4, size: 3); // Its first three.
+```
+
+Indices are 0-based positions, so they index PHP lists directly. Add one for
+R's 1-based categories.
+
+- **Uniform.** Each draw is `min + (max - min) * u`, as in R's `runif()`. `min`
+  must not exceed `max`, and `min == max` gives `min`.
+- **Categorical.** `prob` is a list of finite, nonnegative weights with a
+  positive sum. As in R's `sample()`, the weights are divided by their sum. The
+  draw for `u` is the first index `k` with `u * sum(prob) < prob[0] + ... +
+  prob[k]`. A zero weight is never drawn. If rounding puts `u * sum(prob)` at or
+  above the sum, the last positive weight is drawn.
+- **Rows.** `dist_categorical_rows_rng()` takes a list of up to one million
+  such vectors and returns one draw per row. Rows may have different lengths.
+  Draw `i` uses the `i`th uniform, so a list of equal rows gives
+  `dist_categorical_rng()`'s result for the same seed.
+- **Permutation.** `permutation_rng()` runs a partial Fisher–Yates shuffle of
+  `0..n-1`. Step `i` swaps position `i` with `i + floor(u * (n - i))`, capped at
+  `n - 1`. `size` is in `[0, n]` and defaults to `n`. A smaller `size` returns
+  the prefix of the full permutation.
+
+These samplers use the same ChaCha20 uniforms as the other families. Their
+results therefore differ from R's for the same seed, as the other families'
+results do. A non-list `prob`, a negative weight, a zero sum, `min > max`, or
+`size > n` raises 1001. A nonfinite weight, weight sum, bound, or uniform draw
+raises 1003. More than one million draws or rows, or `n` above one million for
+a permutation, raises 1007.
+
 ## Numerical method and reproducibility
 
 For every output, ChaCha20 provides a 64-bit word; rand's `Open01<f64>` maps its
@@ -105,7 +155,8 @@ families, three additional normal seed cases, and five point masses. Rust checks
 all values; PHP checks the 1,616 transformed references. Uniform/discrete values
 match exactly; continuous reference tolerance is `1e-15 + 1e-12*abs(reference)`.
 Both suites check repeatability, prefixes, state isolation, domains/limits and
-nonfinite samples. Deterministic normal/Poisson moment checks complement the
+nonfinite samples. The uniform, categorical and permutation samplers are checked
+against the documented maps applied to the fixture's Python uniforms. Deterministic normal/Poisson moment checks complement the
 reference vectors. PHP additionally verifies parameter names/defaults and strict
 seed/count types.
 
