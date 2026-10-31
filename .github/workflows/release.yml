@@ -80,7 +80,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" \
-            --notes "Prebuilt Linux x86_64 NTS extensions for PHP 8.3, 8.4 and 8.5 on Debian Bookworm, with the source archive. Each binary archive carries its own manifest.json recording the exact ABI it was built and tested against." \
+            --notes "Prebuilt Linux x86_64 and aarch64 NTS extensions for PHP 8.3, 8.4 and 8.5 on Debian Bookworm, with the source archive. Each binary archive carries its own manifest.json recording the exact ABI it was built and tested against." \
             artifacts/phit-source/* artifacts/linux-*-nts-bookworm/*
       - name: Verify the published source archive against its checksum
         env:
@@ -93,11 +93,14 @@ jobs:
           cd published-source && sha256sum -c SHA256SUMS
 
   verify-release:
+    name: verify-release (${{ matrix.php }}, ${{ matrix.arch }})
     needs: publish
     strategy:
       fail-fast: false
       matrix:
-        # packaging.yml builds amd64 only, so the published binaries are x86_64.
+        php: ['8.3', '8.4', '8.5']
+        arch: [amd64, arm64]
+        # The image digests are multi-platform indexes; each runner pulls its own.
         include:
           - php: '8.3'
             image: php:8.3-fpm-bookworm@sha256:f768bd9142444f6126a690697b028c23f30878c3b628a7c355dfce75e29cc045
@@ -105,7 +108,13 @@ jobs:
             image: php:8.4-fpm-bookworm@sha256:6bfef8e416977aa41f48e3e42a40c1e08050d24e4a938c6edb421400bff24601
           - php: '8.5'
             image: php:8.5-fpm-bookworm@sha256:dd198c828c224e479bdaa184cdcf04a28c73d186bf5a885493bf9cc78d7196ef
-    runs-on: ubuntu-24.04
+          - arch: amd64
+            runner: ubuntu-24.04
+            machine: x86_64
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            machine: aarch64
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
       - name: Install the published binary into a clean PHP ${{ matrix.php }} image
@@ -114,7 +123,7 @@ jobs:
         run: |
           mkdir -p release
           gh release download "$GITHUB_REF_NAME" --dir release \
-            --pattern "phit-*-php${{ matrix.php }}-x86_64-nts-bookworm.*"
+            --pattern "phit-*-php${{ matrix.php }}-${{ matrix.machine }}-nts-bookworm.*"
           cd release && sha256sum -c ./*.sha256 && tar -xzf ./*.tar.gz && cd ..
           docker run --rm --volume "$PWD:/src:ro" "${{ matrix.image }}" sh -euc '
             cp /src/release/phit-*-nts-bookworm/phit.so "$(php-config --extension-dir)/"
@@ -123,6 +132,7 @@ jobs:
             php /src/tests/deployment.php'
 
   verify-binaries:
+    name: verify-binaries (${{ matrix.php }}, ${{ matrix.arch }})
     # The same install path as verify-release, from the packaging artifacts
     # instead of release assets, so a workflow_dispatch run exercises the
     # checksum, the archive layout and the deployment test without a tag.
@@ -132,6 +142,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        php: ['8.3', '8.4', '8.5']
+        arch: [amd64, arm64]
+        # The image digests are multi-platform indexes; each runner pulls its own.
         include:
           - php: '8.3'
             image: php:8.3-fpm-bookworm@sha256:f768bd9142444f6126a690697b028c23f30878c3b628a7c355dfce75e29cc045
@@ -139,12 +152,18 @@ jobs:
             image: php:8.4-fpm-bookworm@sha256:6bfef8e416977aa41f48e3e42a40c1e08050d24e4a938c6edb421400bff24601
           - php: '8.5'
             image: php:8.5-fpm-bookworm@sha256:dd198c828c224e479bdaa184cdcf04a28c73d186bf5a885493bf9cc78d7196ef
-    runs-on: ubuntu-24.04
+          - arch: amd64
+            runner: ubuntu-24.04
+            machine: x86_64
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            machine: aarch64
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: linux-amd64-php-${{ matrix.php }}-nts-bookworm
+          name: linux-${{ matrix.arch }}-php-${{ matrix.php }}-nts-bookworm
           path: release
       - name: Install the packaged binary into a clean PHP ${{ matrix.php }} image
         run: |

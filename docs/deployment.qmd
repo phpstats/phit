@@ -22,7 +22,8 @@ in the `Phit` namespace (`Phit\fit_lm`, `Phit\dist_normal_cdf`).
 Package metadata targets **PHP 8.3, 8.4 and 8.5**, non-thread-safe PHP, Linux and
 macOS. Windows and ZTS are excluded. Container and binary builds use Debian
 Bookworm/glibc. Alpine/musl and older glibc builds are not covered by these binaries.
-The CI matrix targets Linux amd64 at all three PHP versions. Actual local evidence
+The CI matrix targets Linux amd64 and arm64 at all three PHP versions, and each
+release publishes x86_64 and aarch64 binaries. Actual local evidence
 and its architecture/version are recorded separately in the verification section;
 a configured CI job is not a passed job.
 
