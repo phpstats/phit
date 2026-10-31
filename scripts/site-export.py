@@ -199,8 +199,7 @@ def manifest(benchmarks, verifications):
                   'autoconf and make'],
         'platforms': ['Linux', 'macOS'],
         'verify': {'command': "php -r 'echo phpversion(\"phit\"), PHP_EOL;'", 'output': version(),
-                   'note': 'This checks the command line. PHP-FPM can read other configuration files: '
-                           "check extension_loaded('phit') in a web request and restart FPM after installing."},
+                   'note': 'PHP-FPM reads its own php.ini, so enable the extension there and restart FPM.'},
         'installation': 'installation',
         'quickstart': 'getting-started',
         'repository': 'https://github.com/phpstats/phit',
