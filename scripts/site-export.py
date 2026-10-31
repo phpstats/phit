@@ -216,6 +216,8 @@ def manifest(benchmarks, verifications):
             'root': 'docs',
             'format': 'quarto',
             'sidebar': 'docs/_quarto.yml',
+            # The site excludes data/ by default; phit's data/lmm page is in the nav.
+            'exclude': [],
             'nav': [
                 {'title': 'Overview', 'path': 'index.qmd'},
                 {'title': 'Installation', 'path': 'installation.qmd'},

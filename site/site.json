@@ -42,6 +42,7 @@
   "root": "docs",
   "format": "quarto",
   "sidebar": "docs/_quarto.yml",
+  "exclude": [],
   "nav": [
    {
     "title": "Overview",
