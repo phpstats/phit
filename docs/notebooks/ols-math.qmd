@@ -4,7 +4,7 @@ jupyter: python3
 ---
 
 
-This is an executable companion to [ols-math.qmd](../ols-math.qmd), for learning and reviewing the estimator. It uses Python to make the intermediate matrices visible; production estimation lives in `crates/stats-core/src/ols.rs`. NumPy and SciPy are notebook tools, not Rust dependencies. We use the same saved simulated housing observations as the PHP example and R fixtures. These are synthetic observations, not real housing records.
+This is an executable companion to [OLS mathematics and Rust notes](../ols-math.qmd), for learning and reviewing the estimator. It uses Python to make the intermediate matrices visible; production estimation lives in `crates/stats-core/src/ols.rs`. NumPy and SciPy are notebook tools, not Rust dependencies. We use the same saved simulated housing observations as the PHP example and R fixtures. These are synthetic observations, not real housing records.
 
 We model $y=X\beta+\epsilon$. Rows are observations, columns are coefficients, and the first column of the mathematical design is ones (automatically added by the default PHP call). Our unknowns are the intercept and slope. We assume full column rank and $n>p$. Run cells from top to bottom; see [notebook setup](index.qmd).
 

@@ -4,7 +4,8 @@ title: "Installation"
 
 phit is a PHP extension. It is installed into PHP itself, once per PHP
 installation, rather than into a project with Composer. Projects that cannot
-install extensions can use the [polyfill](extension-or-polyfill.qmd) instead.
+install extensions can use the [polyfill](extension-or-polyfill.qmd) instead. It provides every
+function except the CSV reader.
 
 ## Requirements
 

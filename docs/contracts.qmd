@@ -118,7 +118,7 @@ Missing values use listwise deletion by default, with one E_WARNING on a
 successful fit that omits rows. missing: 'raise' rejects missingness. Values are
 not coerced from strings, columns are not added, and aliased predictors are not
 removed. fitted and residuals follow retained_rows order. See
-[missing-data.qmd](missing-data.qmd) for validation order, warnings, accounting and
+[Missing data](missing-data.qmd) for validation order, warnings, accounting and
 application handling. Applications can promote PHP warnings to exceptions.
 
 Statistical and input failures use PHP Exception with stable numeric codes
@@ -149,7 +149,7 @@ scalars, and usize for residual degrees of freedom. StatsError implements
 Display and Error. The binding converts errors and values without implementing
 statistical formulas.
 
-See [design-philosophy.qmd](design-philosophy.qmd) for the boundary between this
+See [Design philosophy](design-philosophy.qmd) for the boundary between this
 raw API and optional convenience layers.
 
 ## Diagnostics and error codes {#v01-diagnostics-and-errors}

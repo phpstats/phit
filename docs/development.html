@@ -696,7 +696,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="changing-the-implementation" class="level2">
 <h2 class="anchored" data-anchor-id="changing-the-implementation">Changing the implementation</h2>
 <p>Keep statistical calculations in crates/stats-core and PHP conversion in crates/php-extension. Work in small increments with established numerical crates. Check APIs against the dependency versions in Cargo.lock. Explain important mathematical steps near the code, and update contracts and reference tests when behavior changes. Do not add abstractions for hypothetical models.</p>
-<p>Follow <a href="./verification.html">verification.qmd</a> for the checks appropriate to a change. The tested baseline is Apple Silicon, Rust 1.99 and Homebrew PHP 8.5.10. CI runs the checks on macOS and Ubuntu, and the packaging workflow tests Linux x86_64 and aarch64 at PHP 8.3, 8.4 and 8.5.</p>
+<p>Follow <a href="./verification.html">Verification</a> for the checks appropriate to a change. The tested baseline is Apple Silicon, Rust 1.99 and Homebrew PHP 8.5.10. CI runs the checks on macOS and Ubuntu, and the packaging workflow tests Linux x86_64 and aarch64 at PHP 8.3, 8.4 and 8.5.</p>
 <p>The general mixed fitter also uses pinned Rust-native <code>bobyqa</code> and <code>argmin</code> (Nelder–Mead). These add no C/Fortran, BLAS or LAPACK runtime requirements. See <a href="./r-compatibility.html">R compatibility</a> for reference regeneration and the remaining native optimizer backend work.</p>
 <p><code>./scripts/check</code> runs the complete offline gate: Rust tests and clippy, every PHP suite and example, the stub and signature checks, the reference manifest, and the site export. Run it before pushing.</p>
 

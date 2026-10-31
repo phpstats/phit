@@ -67,5 +67,5 @@ with R, lme4 and statsmodels, and record the tolerances.
 phit runs on PHP 8.3, 8.4 and 8.5 (non-thread-safe builds) on Linux and macOS.
 It installs with PIE, or from prebuilt Linux binaries. See
 [Installation](installation.qmd). The pure-PHP
-[polyfill](extension-or-polyfill.qmd) provides the same functions where the
-extension cannot be installed, at lower speed.
+[polyfill](extension-or-polyfill.qmd) provides the same functions, except the
+CSV reader, where the extension cannot be installed. It runs more slowly.

@@ -634,13 +634,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>phit has two implementations of the same <code>Phit\</code> functions:</p>
+<p>phit has two implementations of the <code>Phit\</code> functions. The polyfill provides every function except the CSV reader (<code>read_csv</code> and <code>CsvReader</code>).</p>
 <ul>
 <li><strong>The extension</strong>, <code>phpstats/phit</code>, is compiled Rust installed into PHP with PIE or a prebuilt binary. See <a href="./installation.html">Installation</a>.</li>
 <li><strong>The polyfill</strong>, <code>phpstats/phit-polyfill</code>, is plain PHP installed with Composer. It needs no PHP extension.</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">composer</span> require phpstats/phit-polyfill</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Code written against one runs unchanged on the other. Each polyfill release reproduces one phit release. Polyfill 0.3.0 reproduces phit v0.3.0, 0.2.0 reproduces v0.2.0, and 0.1.0 reproduces v0.1.1.</p>
+<p>Code written against one runs unchanged on the other, provided it does not read CSV files through phit. Each polyfill release reproduces one phit release. Polyfill 0.3.0 reproduces phit v0.3.0, 0.2.0 reproduces v0.2.0, and 0.1.0 reproduces v0.1.1.</p>
 <section id="how-they-coexist" class="level2">
 <h2 class="anchored" data-anchor-id="how-they-coexist">How they coexist</h2>
 <p>Composer loads the polyfill’s <code>bootstrap.php</code> through its <code>files</code> autoload. If <code>extension_loaded('phit')</code> is true, the bootstrap returns before defining anything, so every <code>Phit\</code> function is the extension’s. Installing both is therefore safe: the extension is used where it is loaded, and the polyfill everywhere else, such as a CI runner or a host where extensions cannot be installed.</p>

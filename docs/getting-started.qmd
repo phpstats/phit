@@ -3,7 +3,12 @@ title: "A first model"
 ---
 
 This page fits a linear model to a small table of flats, reads the estimates,
-and predicts rents for flats that are not in the table. It assumes the
+and predicts rents for flats that are not in the table. The data are simulated.
+The first eight rows are the teaching sample in
+[`docs/data/housing.csv`](https://github.com/phpstats/phit/blob/main/docs/data/housing.csv),
+and the last two rows and the `district` column were added for this page.
+`rent` is the monthly rent in an unnamed currency, and `area` is the floor area
+in square meters. It assumes the
 extension is [installed](installation.qmd).
 
 ## Data
@@ -55,8 +60,10 @@ districtnorth     203.64   151.14  0.2265  [ -166.19,   573.47]
 districtsouth     232.16   119.64  0.1004  [  -60.58,   524.90]
 ```
 
-Each additional square meter adds about 19 to the expected rent. The district
-coefficients are differences from `east`.
+Among flats in the same district, each additional square meter of floor area
+is associated with a monthly rent about 19.18 currency units higher. The district
+coefficients are differences in expected rent from `east` for flats of the same
+area.
 
 | Key | Contents |
 | --- | --- |

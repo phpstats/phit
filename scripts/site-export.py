@@ -193,14 +193,15 @@ def manifest(benchmarks, verifications):
                    'fit_lmer, fit_glmer, predict), and results are plain PHP arrays.',
         'install': ['pie install phpstats/phit'],
         'php': ['8.3', '8.4', '8.5'],
-        'requires': ['PIE', 'unzip or the PHP zip extension'],
+        'requires': ['PIE', 'unzip or the PHP zip extension', 'NTS (non-thread-safe) PHP'],
         'optional': [],
         'build': ['Rust toolchain', 'Clang and libclang', 'PHP development files (phpize and php-config)',
                   'autoconf and make'],
-        'platforms': ['Linux', 'macOS', 'NTS (non-thread-safe) PHP'],
+        'platforms': ['Linux', 'macOS'],
         'verify': {'command': "php -r 'echo phpversion(\"phit\"), PHP_EOL;'", 'output': version(),
                    'note': 'This checks the command line. PHP-FPM can read other configuration files: '
                            "check extension_loaded('phit') in a web request and restart FPM after installing."},
+        'installation': 'installation',
         'quickstart': 'getting-started',
         'repository': 'https://github.com/phpstats/phit',
         'example': {

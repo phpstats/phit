@@ -2,7 +2,8 @@
 title: "Extension or polyfill"
 ---
 
-phit has two implementations of the same `Phit\` functions:
+phit has two implementations of the `Phit\` functions. The polyfill provides
+every function except the CSV reader (`read_csv` and `CsvReader`).
 
 - **The extension**, `phpstats/phit`, is compiled Rust installed into PHP with
   PIE or a prebuilt binary. See [Installation](installation.qmd).
@@ -13,7 +14,8 @@ phit has two implementations of the same `Phit\` functions:
 composer require phpstats/phit-polyfill
 ```
 
-Code written against one runs unchanged on the other. Each polyfill release
+Code written against one runs unchanged on the other, provided it does not
+read CSV files through phit. Each polyfill release
 reproduces one phit release. Polyfill 0.3.0 reproduces phit v0.3.0, 0.2.0
 reproduces v0.2.0, and 0.1.0 reproduces v0.1.1.
 

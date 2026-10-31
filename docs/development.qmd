@@ -119,7 +119,7 @@ Check APIs against the dependency versions in Cargo.lock. Explain important
 mathematical steps near the code, and update contracts and reference tests when
 behavior changes. Do not add abstractions for hypothetical models.
 
-Follow [verification.qmd](verification.qmd) for the checks appropriate to a change.
+Follow [Verification](verification.qmd) for the checks appropriate to a change.
 The tested baseline is Apple Silicon, Rust 1.99 and Homebrew PHP 8.5.10. CI runs
 the checks on macOS and Ubuntu, and the packaging workflow tests Linux x86_64
 and aarch64 at PHP 8.3, 8.4 and 8.5.

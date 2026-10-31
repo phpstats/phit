@@ -43,8 +43,8 @@ covers both and how to check the install.
 
 [phit-polyfill](https://github.com/phpstats/phit-polyfill)
 (`composer require phpstats/phit-polyfill`) provides the same functions in
-plain PHP, except the CSV reader, for hosts where extensions cannot be
-installed.
+plain PHP, except the CSV reader (`read_csv` and `CsvReader`), for hosts where
+extensions cannot be installed.
 
 ## What it includes
 

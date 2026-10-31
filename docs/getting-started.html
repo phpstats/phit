@@ -635,7 +635,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This page fits a linear model to a small table of flats, reads the estimates, and predicts rents for flats that are not in the table. It assumes the extension is <a href="./installation.html">installed</a>.</p>
+<p>This page fits a linear model to a small table of flats, reads the estimates, and predicts rents for flats that are not in the table. The data are simulated. The first eight rows are the teaching sample in <a href="https://github.com/phpstats/phit/blob/main/docs/data/housing.csv"><code>docs/data/housing.csv</code></a>, and the last two rows and the <code>district</code> column were added for this page. <code>rent</code> is the monthly rent in an unnamed currency, and <code>area</code> is the floor area in square meters. It assumes the extension is <a href="./installation.html">installed</a>.</p>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
 <p>The formula functions take a data set as named columns: an associative array of <code>column =&gt; list of values</code>, with every column the same length. phibble’s <code>DataFrame</code> is also accepted, through its <code>toModelData()</code> method.</p>
@@ -664,7 +664,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 area               19.18     3.23  0.0010  [   11.27,    27.09]
 districtnorth     203.64   151.14  0.2265  [ -166.19,   573.47]
 districtsouth     232.16   119.64  0.1004  [  -60.58,   524.90]</code></pre>
-<p>Each additional square meter adds about 19 to the expected rent. The district coefficients are differences from <code>east</code>.</p>
+<p>Among flats in the same district, each additional square meter of floor area is associated with a monthly rent about 19.18 currency units higher. The district coefficients are differences in expected rent from <code>east</code> for flats of the same area.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">

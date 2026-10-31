@@ -13,7 +13,8 @@
  ],
  "requires": [
   "PIE",
-  "unzip or the PHP zip extension"
+  "unzip or the PHP zip extension",
+  "NTS (non-thread-safe) PHP"
  ],
  "optional": [],
  "build": [
@@ -24,14 +25,14 @@
  ],
  "platforms": [
   "Linux",
-  "macOS",
-  "NTS (non-thread-safe) PHP"
+  "macOS"
  ],
  "verify": {
   "command": "php -r 'echo phpversion(\"phit\"), PHP_EOL;'",
   "output": "0.3.1",
   "note": "This checks the command line. PHP-FPM can read other configuration files: check extension_loaded('phit') in a web request and restart FPM after installing."
  },
+ "installation": "installation",
  "quickstart": "getting-started",
  "repository": "https://github.com/phpstats/phit",
  "example": {

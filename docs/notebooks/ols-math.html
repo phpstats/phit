@@ -681,7 +681,7 @@ window.Quarto = {
 </header>
 
 
-<p>This is an executable companion to <a href="../ols-math.html">ols-math.qmd</a>, for learning and reviewing the estimator. It uses Python to make the intermediate matrices visible; production estimation lives in <code>crates/stats-core/src/ols.rs</code>. NumPy and SciPy are notebook tools, not Rust dependencies. We use the same saved simulated housing observations as the PHP example and R fixtures. These are synthetic observations, not real housing records.</p>
+<p>This is an executable companion to <a href="../ols-math.html">OLS mathematics and Rust notes</a>, for learning and reviewing the estimator. It uses Python to make the intermediate matrices visible; production estimation lives in <code>crates/stats-core/src/ols.rs</code>. NumPy and SciPy are notebook tools, not Rust dependencies. We use the same saved simulated housing observations as the PHP example and R fixtures. These are synthetic observations, not real housing records.</p>
 <p>We model <span class="math inline">\(y=X\beta+\epsilon\)</span>. Rows are observations, columns are coefficients, and the first column is explicitly supplied ones. Our unknowns are the intercept and slope. We assume full column rank and <span class="math inline">\(n&gt;p\)</span>. Run cells from top to bottom; see <a href="../notebooks/index.html">notebook setup</a>.</p>
 <div id="7f44574b" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>

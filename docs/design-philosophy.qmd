@@ -92,8 +92,8 @@ A numerical feature needs a concrete use case, an explicit contract and suitable
 verification before it expands the engine. Extra dependencies and abstractions
 must solve a demonstrated problem.
 
-Keep [contracts.qmd](contracts.qmd) aligned with implementation and
-[verification.qmd](verification.qmd) aligned with actual test evidence. Each implemented
+Keep the [API overview](contracts.qmd) aligned with implementation and
+[Verification](verification.qmd) aligned with actual test evidence. Each implemented
 estimator should have a math walkthrough notebook and a verification document
 showing equivalent fits in R, statsmodels and this extension where supported. This
 philosophy governs future work; it does not imply that helpers or additional
