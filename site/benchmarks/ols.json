@@ -4,10 +4,10 @@
  "measure": "median fit wall time",
  "unit": "ms",
  "environment": {
-  "cpu": "Apple M5 Ultra",
-  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
-  "php": "8.5.10",
-  "date": "2026-10-16T07:49:59.210984+00:00",
+  "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
+  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "php": "8.5.12",
+  "date": "2026-11-01T19:41:56.081313+00:00",
   "repeats": 5
  },
  "source": "docs/benchmarks/ols-results.json",
@@ -15,159 +15,158 @@
   {
    "case": "n = 1,000, p = 3",
    "implementation": "R",
-   "value": null,
+   "value": 1.0,
    "reps": [
     1.0,
-    0,
-    0,
     1.0,
-    0
+    1.0,
+    1.0,
+    1.0
    ],
-   "load_ms": 0,
-   "note": "below the 1 ms resolution of R's timer"
+   "load_ms": 1.0
   },
   {
    "case": "n = 1,000, p = 3",
    "implementation": "statsmodels",
-   "value": 0.212,
+   "value": 0.448,
    "reps": [
-    0.275,
-    0.23,
-    0.212,
-    0.211,
-    0.202
+    0.522,
+    0.448,
+    0.363,
+    0.465,
+    0.392
    ],
-   "load_ms": 0.437
+   "load_ms": 0.516
   },
   {
    "case": "n = 1,000, p = 3",
    "implementation": "phit",
-   "value": 0.13,
+   "value": 0.244,
    "reps": [
-    0.135,
-    0.132,
-    0.13,
-    0.128,
-    0.127
+    0.259,
+    0.244,
+    0.233,
+    0.229,
+    0.245
    ],
-   "load_ms": 0.876
+   "load_ms": 1.965
   },
   {
    "case": "n = 100,000, p = 3",
    "implementation": "phit",
-   "value": 10.627,
+   "value": 21.149,
    "reps": [
-    10.444,
-    10.329,
-    11.381,
-    10.627,
-    10.934
+    22.43,
+    21.231,
+    20.793,
+    21.149,
+    20.952
    ],
-   "load_ms": 82.46
+   "load_ms": 191.139
   },
   {
    "case": "n = 100,000, p = 3",
    "implementation": "statsmodels",
-   "value": 4.944,
+   "value": 8.103,
    "reps": [
-    5.226,
-    4.971,
-    4.864,
-    4.893,
-    4.944
+    8.215,
+    8.103,
+    8.061,
+    8.114,
+    8.064
    ],
-   "load_ms": 23.818
+   "load_ms": 33.716
   },
   {
    "case": "n = 100,000, p = 3",
    "implementation": "R",
-   "value": 15.0,
+   "value": 26.0,
    "reps": [
-    15.0,
-    15.0,
-    15.0,
-    15.0,
-    15.0
+    26.0,
+    26.0,
+    26.0,
+    26.0,
+    25.0
    ],
-   "load_ms": 61.0
+   "load_ms": 83.0
   },
   {
    "case": "n = 1,000,000, p = 3",
    "implementation": "R",
-   "value": 183.0,
+   "value": 339.0,
    "reps": [
-    183.0,
-    171.0,
-    169.0,
-    183.0,
-    200.0
+    320.0,
+    314.0,
+    339.0,
+    389.0,
+    402.0
    ],
-   "load_ms": 1549.0
+   "load_ms": 2627.0
   },
   {
    "case": "n = 1,000,000, p = 3",
    "implementation": "statsmodels",
-   "value": 90.1,
+   "value": 91.582,
    "reps": [
-    94.252,
-    90.414,
-    89.789,
-    90.1,
-    89.97
+    91.582,
+    91.531,
+    91.327,
+    91.977,
+    92.075
    ],
-   "load_ms": 247.228
+   "load_ms": 320.314
   },
   {
    "case": "n = 1,000,000, p = 3",
    "implementation": "phit",
-   "value": 113.402,
+   "value": 217.366,
    "reps": [
-    123.193,
-    116.671,
-    113.402,
-    112.95,
-    113.148
+    223.249,
+    215.994,
+    217.366,
+    217.013,
+    218.784
    ],
-   "load_ms": 809.957
+   "load_ms": 1938.57
   },
   {
    "case": "n = 100,000, p = 11",
    "implementation": "phit",
-   "value": 27.378,
+   "value": 47.273,
    "reps": [
-    28.644,
-    28.583,
-    25.713,
-    27.378,
-    27.113
+    49.298,
+    47.701,
+    45.74,
+    47.273,
+    45.697
    ],
-   "load_ms": 304.886
+   "load_ms": 738.242
   },
   {
    "case": "n = 100,000, p = 11",
    "implementation": "statsmodels",
-   "value": 11.21,
+   "value": 18.953,
    "reps": [
-    12.116,
-    11.116,
-    11.416,
-    11.11,
-    11.21
+    19.207,
+    18.85,
+    18.953,
+    18.965,
+    18.797
    ],
-   "load_ms": 119.881
+   "load_ms": 151.442
   },
   {
    "case": "n = 100,000, p = 11",
    "implementation": "R",
-   "value": 20.0,
+   "value": 34.0,
    "reps": [
-    20.0,
-    20.0,
-    20.0,
-    21.0,
-    22.0
+    36.0,
+    35.0,
+    34.0,
+    34.0,
+    34.0
    ],
-   "load_ms": 700.0
+   "load_ms": 1047.0
   }
  ]
 }

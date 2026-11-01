@@ -4,10 +4,10 @@
  "measure": "median fit wall time",
  "unit": "ms",
  "environment": {
-  "cpu": "Apple M5 Ultra",
-  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
-  "php": "8.5.10",
-  "date": "2026-10-11T22:59:04.029494+00:00",
+  "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
+  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "php": "8.5.12",
+  "date": "2026-11-01T19:53:05.031289+00:00",
   "repeats": 3
  },
  "source": "docs/benchmarks/logistic-mixed-results.json",
@@ -15,101 +15,101 @@
   {
    "case": "n = 1,000, p = 3",
    "implementation": "R",
-   "value": 88.0,
+   "value": 185.0,
    "reps": [
-    89.0,
-    87.0,
-    88.0
+    185.0,
+    184.0,
+    186.0
    ],
-   "load_ms": 0
+   "load_ms": 1.0
   },
   {
    "case": "n = 1,000, p = 3",
    "implementation": "SciPy",
-   "value": 409.742,
+   "value": 752.195,
    "reps": [
-    409.742,
-    404.24,
-    419.35
+    752.181,
+    752.195,
+    752.6
    ],
-   "load_ms": 0.413
+   "load_ms": 0.553
   },
   {
    "case": "n = 1,000, p = 3",
    "implementation": "phit",
-   "value": 6.289,
+   "value": 11.277,
    "reps": [
-    6.354,
-    6.289,
-    6.262
+    11.277,
+    11.252,
+    11.543
    ],
-   "load_ms": 0.952
+   "load_ms": 2.048
   },
   {
    "case": "n = 10,000, p = 3",
    "implementation": "R",
-   "value": 554.0,
+   "value": 1811.0,
    "reps": [
-    554.0,
-    567.0,
-    554.0
+    1811.0,
+    1827.0,
+    1810.0
    ],
-   "load_ms": 7.0
+   "load_ms": 8.0
   },
   {
    "case": "n = 10,000, p = 3",
    "implementation": "SciPy",
-   "value": 664.116,
+   "value": 1169.149,
    "reps": [
-    688.461,
-    664.116,
-    653.544
+    1169.149,
+    1167.967,
+    1171.964
    ],
-   "load_ms": 2.729
+   "load_ms": 3.695
   },
   {
    "case": "n = 10,000, p = 3",
    "implementation": "phit",
-   "value": 68.2,
+   "value": 117.468,
    "reps": [
-    68.481,
-    68.2,
-    67.866
+    118.028,
+    117.418,
+    117.468
    ],
-   "load_ms": 8.335
+   "load_ms": 19.976
   },
   {
    "case": "n = 100,000, p = 3",
    "implementation": "R",
-   "value": 7698.0,
+   "value": 17122.0,
    "reps": [
-    7698.0,
-    7672.0,
-    7762.0
+    17148.0,
+    17122.0,
+    16966.0
    ],
-   "load_ms": 68.0
+   "load_ms": 88.0
   },
   {
    "case": "n = 100,000, p = 3",
    "implementation": "SciPy",
-   "value": 2764.936,
+   "value": 4740.906,
    "reps": [
-    2728.239,
-    2884.724,
-    2764.936
+    4740.906,
+    4734.489,
+    4800.783
    ],
-   "load_ms": 26.616
+   "load_ms": 35.875
   },
   {
    "case": "n = 100,000, p = 3",
    "implementation": "phit",
-   "value": 785.687,
+   "value": 1202.226,
    "reps": [
-    782.356,
-    785.687,
-    792.288
+    1203.031,
+    1199.112,
+    1202.226
    ],
-   "load_ms": 82.69
+   "load_ms": 200.736
   }
  ]
 }

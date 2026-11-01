@@ -4,10 +4,10 @@
  "measure": "median wall time",
  "unit": "ms",
  "environment": {
-  "cpu": "Apple M5 Ultra",
-  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
-  "php": "8.5.10",
-  "date": "2026-10-12T15:02:37.232203+00:00",
+  "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
+  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "php": "8.5.12",
+  "date": "2026-11-01T19:50:01.797600+00:00",
   "repeats": 5
  },
  "source": "docs/benchmarks/draws-results.json",
@@ -15,385 +15,385 @@
   {
    "case": "n = 1,000 draws, p = 4, population",
    "implementation": "R",
-   "value": 0.037,
+   "value": 0.052,
    "reps": [
-    0.044,
-    0.037,
-    0.037,
-    0.038,
-    0.037
+    0.067,
+    0.052,
+    0.052,
+    0.051,
+    0.05
    ]
   },
   {
    "case": "n = 1,000 draws, p = 4, unbiased",
    "implementation": "R",
-   "value": 0.04,
+   "value": 0.054,
    "reps": [
-    0.04,
-    0.04,
-    0.038,
-    0.049,
-    0.04
+    0.056,
+    0.054,
+    0.053,
+    0.074,
+    0.052
    ]
   },
   {
    "case": "n = 1,000 draws, p = 4, covariance map",
    "implementation": "R",
-   "value": 0.01,
+   "value": 0.016,
    "reps": [
-    0.011,
-    0.01,
-    0.01,
-    0.009,
-    0.01
+    0.02,
+    0.017,
+    0.016,
+    0.016,
+    0.016
    ]
   },
   {
    "case": "n = 1,000 draws, p = 4, affine",
    "implementation": "R",
-   "value": 0.026,
+   "value": 0.035,
    "reps": [
-    0.026,
-    0.026,
-    0.026,
-    0.025,
-    0.026
+    0.039,
+    0.035,
+    0.035,
+    0.035,
+    0.035
    ]
   },
   {
    "case": "n = 1,000 draws, p = 4, population",
    "implementation": "phit",
-   "value": 0.0907,
+   "value": 0.1289,
    "reps": [
-    0.0938,
-    0.0935,
-    0.0907,
-    0.085,
-    0.0811
+    0.129,
+    0.1289,
+    0.1288,
+    0.1289,
+    0.1292
    ]
   },
   {
    "case": "n = 1,000 draws, p = 4, unbiased",
    "implementation": "phit",
-   "value": 0.0811,
+   "value": 0.1299,
    "reps": [
-    0.0819,
-    0.0811,
-    0.0811,
-    0.0808,
-    0.0809
+    0.1299,
+    0.1299,
+    0.1299,
+    0.13,
+    0.1302
    ]
   },
   {
    "case": "n = 1,000 draws, p = 4, covariance map",
    "implementation": "phit",
-   "value": 0.0011,
+   "value": 0.0016,
    "reps": [
-    0.0011,
-    0.0011,
-    0.0011,
-    0.0011,
-    0.0011
+    0.0016,
+    0.0016,
+    0.0016,
+    0.0016,
+    0.0016
    ]
   },
   {
    "case": "n = 1,000 draws, p = 4, affine",
    "implementation": "phit",
-   "value": 0.1187,
+   "value": 0.1909,
    "reps": [
-    0.1205,
-    0.12,
-    0.1186,
-    0.1187,
-    0.1186
+    0.1908,
+    0.191,
+    0.191,
+    0.1907,
+    0.1909
    ]
   },
   {
    "case": "n = 4,000 draws, p = 16, population",
    "implementation": "R",
-   "value": 0.4,
+   "value": 0.69,
    "reps": [
-    0.45,
-    0.4,
-    0.4,
-    0.39,
-    0.48
+    1.06,
+    0.69,
+    0.66,
+    0.65,
+    0.88
    ]
   },
   {
    "case": "n = 4,000 draws, p = 16, unbiased",
    "implementation": "R",
-   "value": 0.4,
+   "value": 0.66,
    "reps": [
-    0.41,
-    0.39,
-    0.4,
-    0.39,
-    0.41
+    0.66,
+    0.66,
+    0.68,
+    0.66,
+    0.68
    ]
   },
   {
    "case": "n = 4,000 draws, p = 16, covariance map",
    "implementation": "R",
-   "value": 0.015,
+   "value": 0.022,
    "reps": [
-    0.019,
-    0.015,
-    0.016,
-    0.014,
-    0.015
+    0.028,
+    0.022,
+    0.022,
+    0.023,
+    0.022
    ]
   },
   {
    "case": "n = 4,000 draws, p = 16, affine",
    "implementation": "R",
-   "value": 0.26,
+   "value": 0.49,
    "reps": [
-    0.31,
-    0.29,
-    0.25,
-    0.25,
-    0.26
+    0.52,
+    0.48,
+    0.49,
+    0.48,
+    0.49
    ]
   },
   {
    "case": "n = 4,000 draws, p = 16, population",
    "implementation": "phit",
-   "value": 1.4163,
+   "value": 2.048,
    "reps": [
-    1.454,
-    1.4163,
-    1.4119,
-    1.4145,
-    1.4247
+    2.053,
+    2.0458,
+    2.048,
+    2.0486,
+    2.0477
    ]
   },
   {
    "case": "n = 4,000 draws, p = 16, unbiased",
    "implementation": "phit",
-   "value": 1.4311,
+   "value": 2.0457,
    "reps": [
-    1.4345,
-    1.4185,
-    1.4273,
-    1.4311,
-    1.441
+    2.0457,
+    2.0451,
+    2.0458,
+    2.0432,
+    2.0469
    ]
   },
   {
    "case": "n = 4,000 draws, p = 16, covariance map",
    "implementation": "phit",
-   "value": 0.0115,
+   "value": 0.0176,
    "reps": [
-    0.0112,
-    0.0116,
-    0.0115,
-    0.0115,
-    0.0115
+    0.0178,
+    0.0174,
+    0.0176,
+    0.0176,
+    0.0175
    ]
   },
   {
    "case": "n = 4,000 draws, p = 16, affine",
    "implementation": "phit",
-   "value": 1.6158,
+   "value": 2.3628,
    "reps": [
-    1.5801,
-    1.6158,
-    1.8812,
-    1.8022,
-    1.6107
+    2.3674,
+    2.3603,
+    2.3607,
+    2.3706,
+    2.3628
    ]
   },
   {
    "case": "n = 10,000 draws, p = 32, population",
    "implementation": "R",
-   "value": 2.4,
+   "value": 4.7,
    "reps": [
-    2.6,
-    2.1,
-    2.2,
-    2.6,
-    2.4
+    6.5,
+    4.7,
+    4.4,
+    4.7,
+    4.7
    ]
   },
   {
    "case": "n = 10,000 draws, p = 32, unbiased",
    "implementation": "R",
-   "value": 2.1,
+   "value": 4.5,
    "reps": [
-    2.3,
-    2.4,
-    2.1,
-    2.1,
-    2.1
+    4.5,
+    5.2,
+    4.3,
+    4.4,
+    5.1
    ]
   },
   {
    "case": "n = 10,000 draws, p = 32, covariance map",
    "implementation": "R",
-   "value": 0.026,
+   "value": 0.038,
    "reps": [
-    0.031,
-    0.026,
-    0.026,
-    0.027,
-    0.025
+    0.044,
+    0.039,
+    0.038,
+    0.038,
+    0.037
    ]
   },
   {
    "case": "n = 10,000 draws, p = 32, affine",
    "implementation": "R",
-   "value": 1.6,
-   "reps": [
-    1.6,
-    1.6,
-    1.5,
-    3.0,
-    1.5
-   ]
-  },
-  {
-   "case": "n = 10,000 draws, p = 32, population",
-   "implementation": "phit",
-   "value": 8.8415,
-   "reps": [
-    9.2459,
-    8.922,
-    8.7566,
-    8.759,
-    8.8415
-   ]
-  },
-  {
-   "case": "n = 10,000 draws, p = 32, unbiased",
-   "implementation": "phit",
-   "value": 8.6715,
-   "reps": [
-    8.576,
-    8.6715,
-    8.7791,
-    8.882,
-    8.6542
-   ]
-  },
-  {
-   "case": "n = 10,000 draws, p = 32, covariance map",
-   "implementation": "phit",
-   "value": 0.0439,
-   "reps": [
-    0.0437,
-    0.0432,
-    0.0489,
-    0.0449,
-    0.0439
-   ]
-  },
-  {
-   "case": "n = 10,000 draws, p = 32, affine",
-   "implementation": "phit",
-   "value": 6.8535,
-   "reps": [
-    6.9611,
-    6.8535,
-    6.8861,
-    6.8295,
-    6.8066
-   ]
-  },
-  {
-   "case": "n = 100,000 draws, p = 8, population",
-   "implementation": "R",
-   "value": 6.0,
-   "reps": [
-    6.0,
-    7.9,
-    6.3,
-    5.2,
-    6.0
-   ]
-  },
-  {
-   "case": "n = 100,000 draws, p = 8, unbiased",
-   "implementation": "R",
-   "value": 5.6,
-   "reps": [
-    6.2,
-    5.2,
-    5.3,
-    6.2,
-    5.6
-   ]
-  },
-  {
-   "case": "n = 100,000 draws, p = 8, covariance map",
-   "implementation": "R",
-   "value": 0.011,
-   "reps": [
-    0.015,
-    0.011,
-    0.012,
-    0.01,
-    0.01
-   ]
-  },
-  {
-   "case": "n = 100,000 draws, p = 8, affine",
-   "implementation": "R",
-   "value": 3.7,
+   "value": 4.0,
    "reps": [
     4.0,
+    3.5,
     3.7,
-    3.7,
-    2.7,
-    3.7
+    6.9,
+    4.2
+   ]
+  },
+  {
+   "case": "n = 10,000 draws, p = 32, population",
+   "implementation": "phit",
+   "value": 11.9362,
+   "reps": [
+    11.989,
+    11.9321,
+    11.9362,
+    11.9239,
+    11.9423
+   ]
+  },
+  {
+   "case": "n = 10,000 draws, p = 32, unbiased",
+   "implementation": "phit",
+   "value": 11.9332,
+   "reps": [
+    11.9222,
+    11.9322,
+    11.943,
+    11.9411,
+    11.9332
+   ]
+  },
+  {
+   "case": "n = 10,000 draws, p = 32, covariance map",
+   "implementation": "phit",
+   "value": 0.0636,
+   "reps": [
+    0.0636,
+    0.0635,
+    0.0637,
+    0.0636,
+    0.0637
+   ]
+  },
+  {
+   "case": "n = 10,000 draws, p = 32, affine",
+   "implementation": "phit",
+   "value": 10.965,
+   "reps": [
+    10.965,
+    11.1951,
+    11.0465,
+    10.9017,
+    10.9119
+   ]
+  },
+  {
+   "case": "n = 100,000 draws, p = 8, population",
+   "implementation": "R",
+   "value": 9.1,
+   "reps": [
+    13.4,
+    15.4,
+    6.6,
+    9.1,
+    7.5
+   ]
+  },
+  {
+   "case": "n = 100,000 draws, p = 8, unbiased",
+   "implementation": "R",
+   "value": 7.3,
+   "reps": [
+    9.4,
+    7.0,
+    7.0,
+    9.8,
+    7.3
+   ]
+  },
+  {
+   "case": "n = 100,000 draws, p = 8, covariance map",
+   "implementation": "R",
+   "value": 0.019,
+   "reps": [
+    0.023,
+    0.018,
+    0.022,
+    0.018,
+    0.019
+   ]
+  },
+  {
+   "case": "n = 100,000 draws, p = 8, affine",
+   "implementation": "R",
+   "value": 6.5,
+   "reps": [
+    9.2,
+    4.2,
+    6.5,
+    5.0,
+    7.1
    ]
   },
   {
    "case": "n = 100,000 draws, p = 8, population",
    "implementation": "phit",
-   "value": 17.5784,
+   "value": 26.6778,
    "reps": [
-    17.4798,
-    18.9314,
-    18.2081,
-    17.2375,
-    17.5784
+    26.3582,
+    26.5108,
+    26.8883,
+    26.6778,
+    26.7016
    ]
   },
   {
    "case": "n = 100,000 draws, p = 8, unbiased",
    "implementation": "phit",
-   "value": 18.729,
+   "value": 26.716,
    "reps": [
-    18.729,
-    19.5171,
-    18.4698,
-    18.4801,
-    18.9616
+    26.6653,
+    26.7543,
+    26.7507,
+    26.669,
+    26.716
    ]
   },
   {
    "case": "n = 100,000 draws, p = 8, covariance map",
    "implementation": "phit",
-   "value": 0.004,
+   "value": 0.0052,
    "reps": [
-    0.004,
-    0.004,
-    0.004,
-    0.0039,
-    0.0039
+    0.0052,
+    0.0052,
+    0.0052,
+    0.0052,
+    0.0052
    ]
   },
   {
    "case": "n = 100,000 draws, p = 8, affine",
    "implementation": "phit",
-   "value": 21.6062,
+   "value": 36.2069,
    "reps": [
-    22.26,
-    21.6153,
-    21.4191,
-    21.4473,
-    21.6062
+    36.431,
+    36.1299,
+    36.0826,
+    36.2069,
+    36.5806
    ]
   }
  ]

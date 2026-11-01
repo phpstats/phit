@@ -1,7 +1,10 @@
 {
-  "recorded_at": "2026-10-12T15:50:48.801124+00:00",
-  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
-  "extension_sha256": "e967006e275460ff75930bbe8d25cd9ae908bf9907f0f4a0edc68dd929b680ac",
+  "recorded_at": "2026-11-01T19:50:24.399727+00:00",
+  "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
+  "cpu_count": 2,
+  "host_memory_bytes": 8327692288,
+  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "extension_sha256": "96e4b00ce4f1c9bb1dda91c5fd6f51731136101afed0246d070a3e1aafc56fb0",
   "seed": 42,
   "repeats": 5,
   "warmups": 1,
@@ -38,7 +41,7 @@
       "expected": [
         0.0352236443405761,
         -0.0990025478712569,
-        -0.447398050557711,
+        -0.447398050557712,
         0.34188435033034,
         -1.18214543013131,
         1.43032138778146,
@@ -54,9 +57,9 @@
         -1.98578475458735,
         0.22207481559948
       ],
-      "input_sha256": "d8ea1517a14b39780237e9f12119e08a1aaef626de93646ae531912e83f670ae",
+      "input_sha256": "d7e9383b21b24fbef2d815ff37b9c5c7543ec35154a1280a014237d79fe82164",
       "verification": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [],
         "result": {
           "n": 1000,
@@ -82,18 +85,19 @@
             0.22207481559947953
           ]
         },
-        "process_seconds": 0.05616445792838931,
-        "peak_rss_bytes": 28934144
+        "process_seconds": 0.008146439000483952,
+        "peak_rss_bytes": 20889600,
+        "peak_memory_bytes": 4063232
       },
       "agreement_passed": true,
       "timing": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [
-          9.6334e-05,
-          9.2458e-05,
-          9.1667e-05,
-          9.1125e-05,
-          9.1417e-05
+          0.000151896,
+          0.000128551,
+          0.000126446,
+          0.000126077,
+          0.000125706
         ],
         "result": {
           "n": 1000,
@@ -119,9 +123,10 @@
             0.22207481559947953
           ]
         },
-        "process_seconds": 0.043936582980677485,
-        "peak_rss_bytes": 28835840,
-        "median_seconds": 9.1667e-05
+        "process_seconds": 0.008337315999597195,
+        "peak_rss_bytes": 21020672,
+        "peak_memory_bytes": 4325376,
+        "median_seconds": 0.000126446
       }
     },
     {
@@ -168,11 +173,11 @@
         -0.0539524739400939,
         -0.415552629435459,
         -0.235028999752464,
-        -0.76558316145365
+        -0.765583161453649
       ],
-      "input_sha256": "6c0f22d0ba4477df0bdcb51e2e2d198f802bccfe12bc6352c1efd862c5a79fea",
+      "input_sha256": "6990185857da29c46a12f51ce2b3709590e7f0b89d4948f5b0640d8b344b903d",
       "verification": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [],
         "result": {
           "n": 100000,
@@ -198,18 +203,19 @@
             -0.7655831614536494
           ]
         },
-        "process_seconds": 0.06701754196546972,
-        "peak_rss_bytes": 32178176
+        "process_seconds": 0.023249931999089313,
+        "peak_rss_bytes": 23203840,
+        "peak_memory_bytes": 6688768
       },
       "agreement_passed": true,
       "timing": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [
-          0.009302708,
-          0.009271833,
-          0.00934925,
-          0.009474625,
-          0.009320583
+          0.01327355,
+          0.01304991,
+          0.013038028,
+          0.013040413,
+          0.013034651
         ],
         "result": {
           "n": 100000,
@@ -235,9 +241,10 @@
             -0.7655831614536494
           ]
         },
-        "process_seconds": 0.10543487500399351,
-        "peak_rss_bytes": 32636928,
-        "median_seconds": 0.009320583
+        "process_seconds": 0.08800719000100798,
+        "peak_rss_bytes": 24657920,
+        "peak_memory_bytes": 7213056,
+        "median_seconds": 0.013040413
       }
     },
     {
@@ -284,11 +291,11 @@
         1.00359193170368,
         -0.789756416832245,
         -0.290307521680389,
-        0.127002892100462
+        0.127002892100461
       ],
-      "input_sha256": "840dc6824e469db672d478c296243b00491af6958522f404d89d03c86d18fe5b",
+      "input_sha256": "08eb40a73b6fb68bc66b8963e3ff45ec1e5e2e31773231d61f996645fe097cac",
       "verification": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [],
         "result": {
           "n": 1000000,
@@ -314,18 +321,19 @@
             0.12700289210046153
           ]
         },
-        "process_seconds": 0.18896016688086092,
-        "peak_rss_bytes": 53641216
+        "process_seconds": 0.1722458350013767,
+        "peak_rss_bytes": 44687360,
+        "peak_memory_bytes": 28303360
       },
       "agreement_passed": true,
       "timing": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [
-          0.095218625,
-          0.092178583,
-          0.091379417,
-          0.092519666,
-          0.094046292
+          0.135052678,
+          0.132450292,
+          0.132551543,
+          0.132402443,
+          0.132378909
         ],
         "result": {
           "n": 1000000,
@@ -351,9 +359,10 @@
             0.12700289210046153
           ]
         },
-        "process_seconds": 0.6229022080078721,
-        "peak_rss_bytes": 68583424,
-        "median_seconds": 0.092519666
+        "process_seconds": 0.8370261560012295,
+        "peak_rss_bytes": 60547072,
+        "peak_memory_bytes": 44294144,
+        "median_seconds": 0.132450292
       }
     },
     {
@@ -391,7 +400,7 @@
         0.102176171097051,
         0.539853800710693,
         0.067623297296579,
-        0.190078155245319,
+        0.19007815524532,
         0.190160705123531,
         0.275668868608443,
         0.0216689750104883,
@@ -402,9 +411,9 @@
         0.0419011724564776,
         0.303740770066348
       ],
-      "input_sha256": "a2e6f10710a3e57fee00b1178ec359f8da3071d97523dfa20de30ff278172f3d",
+      "input_sha256": "09122ed5967cff18f1494ebb73bc53500d75896eee1ba0cbf412dcf7389c9b52",
       "verification": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [],
         "result": {
           "n": 1000,
@@ -430,18 +439,19 @@
             0.3037407700663485
           ]
         },
-        "process_seconds": 0.058533167000859976,
-        "peak_rss_bytes": 28966912
+        "process_seconds": 0.009428413000932778,
+        "peak_rss_bytes": 21016576,
+        "peak_memory_bytes": 4194304
       },
       "agreement_passed": true,
       "timing": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [
-          0.000988583,
-          0.001009833,
-          0.000981542,
-          0.00100975,
-          0.000993333
+          0.001602347,
+          0.001603138,
+          0.00161497,
+          0.001591335,
+          0.001615572
         ],
         "result": {
           "n": 1000,
@@ -467,9 +477,10 @@
             0.3037407700663485
           ]
         },
-        "process_seconds": 0.05298199993558228,
-        "peak_rss_bytes": 28917760,
-        "median_seconds": 0.000993333
+        "process_seconds": 0.017050727999958326,
+        "peak_rss_bytes": 21151744,
+        "peak_memory_bytes": 4325376,
+        "median_seconds": 0.001603138
       }
     },
     {
@@ -520,7 +531,7 @@
       ],
       "input_sha256": "06be55d31f345544b2a4876a8d13a050989b73b906af3226eb1370ffc518a48b",
       "verification": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [],
         "result": {
           "n": 100000,
@@ -546,18 +557,19 @@
             0.14933822267413618
           ]
         },
-        "process_seconds": 0.1412657918408513,
-        "peak_rss_bytes": 31211520
+        "process_seconds": 0.16675940999994054,
+        "peak_rss_bytes": 23339008,
+        "peak_memory_bytes": 6692864
       },
       "agreement_passed": true,
       "timing": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [
-          0.098438416,
-          0.10083275,
-          0.099219292,
-          0.097439792,
-          0.097130666
+          0.158241955,
+          0.157575635,
+          0.158486594,
+          0.157214217,
+          0.157305267
         ],
         "result": {
           "n": 100000,
@@ -583,9 +595,10 @@
             0.14933822267413618
           ]
         },
-        "process_seconds": 0.6406674580648541,
-        "peak_rss_bytes": 32718848,
-        "median_seconds": 0.098438416
+        "process_seconds": 0.9575056640005641,
+        "peak_rss_bytes": 24653824,
+        "peak_memory_bytes": 8007680,
+        "median_seconds": 0.157575635
       }
     },
     {
@@ -636,7 +649,7 @@
       ],
       "input_sha256": "931bea77c397939ad57f7290084e829b6b44a8ea93197c9b1157a79aa96e549d",
       "verification": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [],
         "result": {
           "n": 1000000,
@@ -662,18 +675,19 @@
             0.28665012238790444
           ]
         },
-        "process_seconds": 1.0104566670488566,
-        "peak_rss_bytes": 52756480
+        "process_seconds": 1.6147246790005738,
+        "peak_rss_bytes": 44810240,
+        "peak_memory_bytes": 28295168
       },
       "agreement_passed": true,
       "timing": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [
-          0.912437958,
-          0.970999583,
-          0.957867625,
-          0.96296325,
-          0.999862625
+          1.5731557,
+          1.567059568,
+          1.566710521,
+          1.567277312,
+          1.567635091
         ],
         "result": {
           "n": 1000000,
@@ -699,9 +713,10 @@
             0.28665012238790444
           ]
         },
-        "process_seconds": 5.7795621659606695,
-        "peak_rss_bytes": 68714496,
-        "median_seconds": 0.96296325
+        "process_seconds": 9.45624493700052,
+        "peak_rss_bytes": 60678144,
+        "peak_memory_bytes": 44294144,
+        "median_seconds": 1.567277312
       }
     },
     {
@@ -751,7 +766,7 @@
       ],
       "input_sha256": "276c022357db715e9df9cc2b9667ef256d2ccc78c42bbe59adb1eaea7d43adbd",
       "verification": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [],
         "result": {
           "n": 1000,
@@ -777,18 +792,19 @@
             13
           ]
         },
-        "process_seconds": 0.04429108300246298,
-        "peak_rss_bytes": 28852224
+        "process_seconds": 0.007210841000414803,
+        "peak_rss_bytes": 21016576,
+        "peak_memory_bytes": 4194304
       },
       "agreement_passed": true,
       "timing": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [
-          0.000173875,
-          0.000170083,
-          0.000168459,
-          0.000168083,
-          0.000167583
+          0.000236133,
+          0.00023987,
+          0.000230253,
+          0.000258165,
+          0.000229912
         ],
         "result": {
           "n": 1000,
@@ -814,9 +830,10 @@
             13
           ]
         },
-        "process_seconds": 0.04827041598036885,
-        "peak_rss_bytes": 28917760,
-        "median_seconds": 0.000168459
+        "process_seconds": 0.008466998999210773,
+        "peak_rss_bytes": 21151744,
+        "peak_memory_bytes": 4325376,
+        "median_seconds": 0.000236133
       }
     },
     {
@@ -866,7 +883,7 @@
       ],
       "input_sha256": "c6bf04c545917590261c9e3ab6345aa8a8c916b0c2103188eba3e4a9b9d5e610",
       "verification": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [],
         "result": {
           "n": 100000,
@@ -892,18 +909,19 @@
             9
           ]
         },
-        "process_seconds": 0.06723995809443295,
-        "peak_rss_bytes": 31162368
+        "process_seconds": 0.032931100999121554,
+        "peak_rss_bytes": 23339008,
+        "peak_memory_bytes": 6692864
       },
       "agreement_passed": true,
       "timing": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [
-          0.017319,
-          0.017601709,
-          0.020180166,
-          0.019108708,
-          0.019069958
+          0.024390853,
+          0.024089176,
+          0.024108943,
+          0.024127699,
+          0.02401538
         ],
         "result": {
           "n": 100000,
@@ -929,9 +947,10 @@
             9
           ]
         },
-        "process_seconds": 0.1626454999204725,
-        "peak_rss_bytes": 34275328,
-        "median_seconds": 0.019069958
+        "process_seconds": 0.15564766500028782,
+        "peak_rss_bytes": 24662016,
+        "peak_memory_bytes": 7753728,
+        "median_seconds": 0.024108943
       }
     },
     {
@@ -981,7 +1000,7 @@
       ],
       "input_sha256": "91740b205c95c4537f9a9d20f0ed7b15043dcb5bee495870ecbd2db5b96767e6",
       "verification": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [],
         "result": {
           "n": 1000000,
@@ -1007,18 +1026,19 @@
             12
           ]
         },
-        "process_seconds": 0.2373128749895841,
-        "peak_rss_bytes": 52822016
+        "process_seconds": 0.2857347959998151,
+        "peak_rss_bytes": 44826624,
+        "peak_memory_bytes": 28311552
       },
       "agreement_passed": true,
       "timing": {
-        "version": "8.5.10",
+        "version": "8.5.12",
         "seconds": [
-          0.172991,
-          0.173827167,
-          0.174226292,
-          0.174188333,
-          0.175014875
+          0.242796162,
+          0.240739832,
+          0.240415543,
+          0.240187937,
+          0.240058894
         ],
         "result": {
           "n": 1000000,
@@ -1044,12 +1064,13 @@
             12
           ]
         },
-        "process_seconds": 1.1388987498357892,
-        "peak_rss_bytes": 68845568,
-        "median_seconds": 0.174188333
+        "process_seconds": 1.490370408999297,
+        "peak_rss_bytes": 60813312,
+        "peak_memory_bytes": 44298240,
+        "median_seconds": 0.240415543
       }
     }
   ],
-  "reference": "R version 4.6.1 (2026-06-24)",
+  "reference": "R version 4.6.2 (2026-10-29)",
   "jsonlite": "2.0.0"
 }

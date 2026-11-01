@@ -1,0 +1,69 @@
+{
+  "recorded_at": "2026-11-01T19:50:56.336635+00:00",
+  "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
+  "cpu_count": 2,
+  "host_memory_bytes": 8327692288,
+  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "phit": "0.4.3",
+  "phibble": "v0.6.1-8-g55a829e",
+  "repeats": 5,
+  "warmups": 1,
+  "statistic": "median",
+  "data": {
+    "rows": 1000000,
+    "bytes": 45819208,
+    "sha256": "136e805ed48a594f67828cc7cd72367a3795dbd7276c0a4f11e53d93a18e83f7",
+    "columns": "id int, key int, g string, x float with ~2% NA, t datetime"
+  },
+  "timing": "One read of the whole file into PHP values, types guessed; process startup excluded. Memory covers the whole process.",
+  "implementations": {
+    "Phit\\read_csv()": {
+      "rows": 1000000,
+      "seconds": [
+        0.307419665,
+        0.306245432,
+        0.309711195,
+        0.315615797,
+        0.309865585
+      ],
+      "native": true,
+      "php": "8.5.12",
+      "peak_rss_bytes": 139747328,
+      "peak_memory_bytes": 122445824,
+      "process_seconds": 1.8737044219997188,
+      "median_seconds": 0.309711195
+    },
+    "phibble fromCsv(), extension": {
+      "rows": 1000000,
+      "seconds": [
+        0.315166953,
+        0.316842017,
+        0.314182766,
+        0.314138924,
+        0.314502326
+      ],
+      "native": true,
+      "php": "8.5.12",
+      "peak_rss_bytes": 145113088,
+      "peak_memory_bytes": 127549440,
+      "process_seconds": 1.9125604279997788,
+      "median_seconds": 0.314502326
+    },
+    "phibble fromCsv(), PHP reader": {
+      "rows": 1000000,
+      "seconds": [
+        1.597926399,
+        1.60494036,
+        1.608185206,
+        1.605667078,
+        1.603763824
+      ],
+      "native": false,
+      "php": "8.5.12",
+      "peak_rss_bytes": 159436800,
+      "peak_memory_bytes": 143314944,
+      "process_seconds": 9.644198514000891,
+      "median_seconds": 1.60494036
+    }
+  }
+}
