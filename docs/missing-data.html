@@ -645,13 +645,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-counts-as-missing" id="toc-what-counts-as-missing" class="nav-link active" data-scroll-target="#what-counts-as-missing">What counts as missing</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link active" data-scroll-target="#example">Example</a></li>
+  <li><a href="#behavior" id="toc-behavior" class="nav-link" data-scroll-target="#behavior">Behavior</a></li>
+  <li><a href="#interpreting-a-complete-case-fit" id="toc-interpreting-a-complete-case-fit" class="nav-link" data-scroll-target="#interpreting-a-complete-case-fit">Interpreting a complete-case fit</a></li>
+  <li><a href="#validation" id="toc-validation" class="nav-link" data-scroll-target="#validation">Validation</a></li>
   <li><a href="#warning-and-accounting" id="toc-warning-and-accounting" class="nav-link" data-scroll-target="#warning-and-accounting">Warning and accounting</a></li>
-  <li><a href="#statistical-interpretation-and-reference-behavior" id="toc-statistical-interpretation-and-reference-behavior" class="nav-link" data-scroll-target="#statistical-interpretation-and-reference-behavior">Statistical interpretation and reference behavior</a></li>
-  <li><a href="#logistic-outcomes" id="toc-logistic-outcomes" class="nav-link" data-scroll-target="#logistic-outcomes">Logistic outcomes</a></li>
-  <li><a href="#probit-and-poisson-outcomes" id="toc-probit-and-poisson-outcomes" class="nav-link" data-scroll-target="#probit-and-poisson-outcomes">Probit and Poisson outcomes</a></li>
-  <li><a href="#mixed-model-group-ids" id="toc-mixed-model-group-ids" class="nav-link" data-scroll-target="#mixed-model-group-ids">Mixed-model group IDs</a></li>
-  <li><a href="#expanded-inputs" id="toc-expanded-inputs" class="nav-link" data-scroll-target="#expanded-inputs">Expanded inputs</a></li>
+  <li><a href="#model-specific-rules" id="toc-model-specific-rules" class="nav-link" data-scroll-target="#model-specific-rules">Model-specific rules</a></li>
+  <li><a href="#implementation-and-history" id="toc-implementation-and-history" class="nav-link" data-scroll-target="#implementation-and-history">Implementation and history</a></li>
   </ul>
 </nav>
     </div>
@@ -677,18 +677,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Every model function defaults to listwise deletion: a row with a missing value in any variable the model uses is left out of the fit. For the formula functions these are the variables the formula references, including weights, offsets and grouping factors; other columns may contain missing values. For the matrix functions they are the supplied predictors, outcome, weights, offsets and groups. The <code>missing</code> argument selects the policy:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">$result</span> <span class="op">=</span> Phit\fit_ols_matrix(x<span class="ot">:</span> <span class="va">$x</span><span class="ot">,</span> y<span class="ot">:</span> <span class="va">$y</span>)<span class="ot">;</span> <span class="co">// missing: 'drop'</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">$result</span> <span class="op">=</span> Phit\fit_ols_matrix(x<span class="ot">:</span> <span class="va">$x</span><span class="ot">,</span> y<span class="ot">:</span> <span class="va">$y</span><span class="ot">,</span> missing<span class="ot">:</span> <span class="st">'raise'</span>)<span class="ot">;</span> <span class="co">// reject missing values</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="what-counts-as-missing" class="level2">
-<h2 class="anchored" data-anchor-id="what-counts-as-missing">What counts as missing</h2>
-<p>PHP null and floating-point NAN represent missing values. Positive and negative infinity are invalid numerical input, not missingness. Strings (including empty strings and ‘NA’), booleans, objects and absent/ragged matrix elements remain errors. Numeric zero is a valid value. No value is imputed or coerced from text.</p>
-<p>Validation inspects all original values and shapes before deletion. A missing value cannot hide an invalid value or ragged row. After deletion, the retained fixed design must still have n &gt; p (including the automatically added intercept) and full numerical rank. If no usable fit remains, the call throws. The Rust fit_ols() contract continues to require complete finite numeric vectors; the PHP binding implements the omission policy before calling it.</p>
+<p>phit fits each model to complete rows. A row with a missing value in any variable the model uses is left out, the fit warns once, and the result records which input rows it used.</p>
+<section id="example" class="level2">
+<h2 class="anchored" data-anchor-id="example">Example</h2>
+<p>Two of these six flats have a missing value: row 2 has no rent, and row 3 has no area. The <code>note</code> column is not in the formula, so its missing values do not matter.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\fit_ols<span class="ot">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$flats</span> <span class="op">=</span> [</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rent'</span> =&gt; [</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="fl">1879.25</span><span class="ot">,</span> <span class="fl">1805.03</span><span class="ot">,</span> <span class="kw">null</span><span class="ot">,</span> <span class="fl">1267.85</span><span class="ot">,</span> <span class="fl">1509.24</span><span class="ot">,</span> <span class="fl">2240.1</span><span class="ot">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'area'</span> =&gt; [<span class="fl">74.4</span><span class="ot">,</span> <span class="fl">57.4</span><span class="ot">,</span> <span class="fl">66.4</span><span class="ot">,</span> <span class="cn">NAN</span><span class="ot">,</span> <span class="fl">45.7</span><span class="ot">,</span> <span class="fl">92.4</span>]<span class="ot">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'note'</span> =&gt; [<span class="kw">null</span><span class="ot">,</span> <span class="st">'corner'</span><span class="ot">,</span> <span class="kw">null</span><span class="ot">,</span> <span class="kw">null</span><span class="ot">,</span> <span class="st">'garden'</span><span class="ot">,</span> <span class="kw">null</span>]<span class="ot">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_ols(<span class="st">'rent ~ area'</span><span class="ot">,</span> <span class="va">$flats</span>)<span class="ot">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"%d of %d rows used, %d dropped</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'n_observations'</span>]<span class="ot">,</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'n_input'</span>]<span class="ot">,</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'n_dropped'</span>]<span class="ot">,</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"retained: %s</span><span class="sc">\n</span><span class="st">dropped:  %s</span><span class="sc">\n</span><span class="st">%d residuals</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">implode</span>(<span class="st">', '</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'retained_rows'</span>])<span class="ot">,</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">implode</span>(<span class="st">', '</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'dropped_rows'</span>])<span class="ot">,</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="va">$fit</span>[<span class="st">'residuals'</span>])<span class="ot">,</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>4 of 6 rows used, 2 dropped
+retained: 0, 1, 4, 5
+dropped:  2, 3
+4 residuals</code></pre>
+<p>The call also raises one PHP warning with this message:</p>
+<pre><code>Phit\fit_ols(): Phit\fit_ols dropped 2 of 6 observations with missing values (listwise deletion)</code></pre>
+</section>
+<section id="behavior" class="level2">
+<h2 class="anchored" data-anchor-id="behavior">Behavior</h2>
+<ul>
+<li><code>missing: 'drop'</code>, the default, removes incomplete rows. <code>missing: 'raise'</code> throws instead, without fitting.</li>
+<li>Only PHP <code>null</code> and <code>NAN</code> are missing. Infinities are errors, and strings such as <code>''</code> or <code>'NA'</code> are not treated as missing.</li>
+<li>Formula fits check only the columns the formula uses, including weights, offsets, and grouping factors.</li>
+<li><code>fitted</code> and <code>residuals</code> hold one value per retained row, in <code>retained_rows</code> order. They are not padded with <code>null</code>.</li>
+<li>Row positions count inputs in iteration order, from zero. They are not PHP array keys.</li>
+<li>Every statistic, including <code>df_residual</code>, uses the retained rows.</li>
+<li>phit does not impute values.</li>
+</ul>
+</section>
+<section id="interpreting-a-complete-case-fit" class="level2">
+<h2 class="anchored" data-anchor-id="interpreting-a-complete-case-fit">Interpreting a complete-case fit</h2>
+<p>Dropping incomplete rows changes the sample the model describes. Estimates can be biased when missingness is related to the outcome or the predictors. Report how many rows were dropped and why values are missing. phit offers no imputation or missing-data model.</p>
+<p>R’s explicit <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html"><code>na.action = na.omit</code></a> and statsmodels’ explicit <a href="https://www.statsmodels.org/stable/missing.html"><code>missing='drop'</code></a> fit the same complete-case sample. They do not all warn by default. The warning and the row accounting are phit’s own contract. The <a href="./verifications/ols.html">three-implementation verification</a> checks that phit, R, and statsmodels retain the same rows and give the same results.</p>
+</section>
+<section id="validation" class="level2">
+<h2 class="anchored" data-anchor-id="validation">Validation</h2>
+<p>Validation inspects every original value and shape before any row is dropped, so a missing value cannot hide an invalid value or a ragged row. After deletion, the retained fixed design must still have more rows than columns (counting the intercept) and full numerical rank. If no usable fit remains, the call throws.</p>
+<p>For the matrix functions, the variables checked are the supplied predictors, outcome, weights, offsets, and groups. Strings, booleans, objects, and absent or ragged matrix elements are errors there. Numeric zero is a valid value.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// missing: 'drop'</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">$result</span> <span class="op">=</span> Phit\fit_ols_matrix(x<span class="ot">:</span> <span class="va">$x</span><span class="ot">,</span> y<span class="ot">:</span> <span class="va">$y</span>)<span class="ot">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Reject missing values.</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="va">$result</span> <span class="op">=</span> Phit\fit_ols_matrix(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    x<span class="ot">:</span> <span class="va">$x</span><span class="ot">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    y<span class="ot">:</span> <span class="va">$y</span><span class="ot">,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    missing<span class="ot">:</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="warning-and-accounting" class="level2">
 <h2 class="anchored" data-anchor-id="warning-and-accounting">Warning and accounting</h2>
-<p>Every successful fit that omits observations emits one native PHP E_WARNING including the number dropped and original sample size. Complete data emits no warning. missing: ‘raise’ throws when missing values are found, without fitting. An unsuccessful fit throws rather than returning deletion metadata. Warning text is descriptive and is not a stable machine-readable interface.</p>
-<p>Every successful result also includes:</p>
+<p>A successful fit that drops rows emits one <code>E_WARNING</code> with the number dropped and the original sample size. In the polyfill it is an <code>E_USER_WARNING</code>. Complete data emits no warning. A failed fit throws and returns no accounting. The warning text is descriptive and is not a stable machine-readable interface.</p>
+<p>Every successful result includes:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -702,55 +759,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>n_input</td>
+<td><code>n_input</code></td>
 <td>int: original observations</td>
 </tr>
 <tr class="even">
-<td>n_observations</td>
+<td><code>n_observations</code></td>
 <td>int: retained observations used in estimation</td>
 </tr>
 <tr class="odd">
-<td>n_dropped</td>
+<td><code>n_dropped</code></td>
 <td>int: omitted observations</td>
 </tr>
 <tr class="even">
-<td>retained_rows</td>
-<td>list<int>: original zero-based iteration positions retained</int></td>
+<td><code>retained_rows</code></td>
+<td>list<int>: original zero-based positions retained, ascending</int></td>
 </tr>
 <tr class="odd">
-<td>dropped_rows</td>
-<td>list<int>: original zero-based iteration positions omitted</int></td>
+<td><code>dropped_rows</code></td>
+<td>list<int>: original zero-based positions omitted, ascending</int></td>
 </tr>
 </tbody>
 </table>
-<p>These positions refer to input iteration order, not PHP array keys. Each list is in ascending original order. fitted and residuals contain retained observations only, in retained_rows order; they are not padded with null. All statistics use the retained sample, including df_residual = n_observations - p.&nbsp;Metadata remains available even if warning display is disabled by PHP configuration.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$result</span>[<span class="st">'retained_rows'</span>] <span class="kw">as</span> <span class="va">$outputPosition</span> =&gt; <span class="va">$inputPosition</span>) {</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">$residualForOriginalPosition</span>[<span class="va">$inputPosition</span>] <span class="op">=</span> <span class="va">$result</span>[<span class="st">'residuals'</span>][<span class="va">$outputPosition</span>]<span class="ot">;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Applications should use their normal warning handling to log or display the message and use the structured counts for reporting. PHP error handlers that promote warnings to exceptions can abort this call; use missing: ‘raise’ when omission should be prohibited explicitly. Warnings may be suppressed by PHP settings, so user-facing applications should also inspect n_dropped rather than rely only on display_errors. Do not suppress deletion without recording it.</p>
+<p>To place residuals back at their original positions:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$result</span>[<span class="st">'retained_rows'</span>] <span class="kw">as</span> <span class="va">$out</span> =&gt; <span class="va">$in</span>) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">$residualAt</span>[<span class="va">$in</span>] <span class="op">=</span> <span class="va">$result</span>[<span class="st">'residuals'</span>][<span class="va">$out</span>]<span class="ot">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Log or display the warning with your normal warning handling, and use the counts for reporting. PHP settings can hide warnings, so applications should also check <code>n_dropped</code>. An error handler that turns warnings into exceptions aborts the call. Use <code>missing: 'raise'</code> to prohibit omission explicitly. Do not suppress the warning without recording the deletion.</p>
 </section>
-<section id="statistical-interpretation-and-reference-behavior" class="level2">
-<h2 class="anchored" data-anchor-id="statistical-interpretation-and-reference-behavior">Statistical interpretation and reference behavior</h2>
-<p>Listwise deletion is simple and preserves aligned observations, but changes the estimation sample. It does not guarantee unbiased results for arbitrary missingness. Report the excluded count and investigate why values are missing; this policy implements neither imputation nor a missing-data model.</p>
-<p>R’s explicit <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html">na.action = na.omit</a> and statsmodels’ explicit <a href="https://www.statsmodels.org/stable/missing.html">missing=‘drop’</a> provide comparable complete-case fits. Do not assume that every reference library warns on omission by default: warnings and metadata are our explicit contract. The <a href="./verifications/ols.html">three implementation verification</a> checks identical retained samples and numerical results, with the PHP warning captured as evidence.</p>
-<p>This changes the initial API, which rejected null and NAN. Existing callers that need that strict behavior should pass missing: ‘raise’. Other invalid inputs continue to be rejected. Helpers can still perform their own explicit preparation; when they omit data before the call, they must report it themselves because the extension can account only for rows it actually receives.</p>
+<section id="model-specific-rules" class="level2">
+<h2 class="anchored" data-anchor-id="model-specific-rules">Model-specific rules</h2>
+<p><strong>Logistic.</strong> <code>fit_logistic_matrix()</code> follows the same deletion, warning, and row-accounting policy as <code>fit_ols_matrix()</code>. With default unit trial weights, numeric outcomes must be exactly 0 or 1, including rows with missing predictors. After deletion both classes must remain and n must exceed p.&nbsp;Residuals are response residuals, y minus the probability. Residuals and fitted probabilities follow <code>retained_rows</code> order.</p>
+<p><strong>Probit and Poisson.</strong> Probit follows the binary rules above. Poisson validates nonnegative integer counts before deletion, and at least one positive count must remain after it. Zero counts are observed values, not missing ones. Every estimator warns once on a successful fit that dropped rows, exposes original row positions, and supports <code>missing: 'raise'</code>.</p>
+<p><strong>Mixed-model group IDs.</strong> <code>fit_mixed_gaussian_intercept_matrix()</code> drops a row if x, y, or the group ID is missing. A missing group ID is <code>null</code>. <code>NAN</code> and float group IDs are invalid labels and are rejected. Group labels and sizes describe the retained sample, and a group removed entirely is absent from the results. If deletion leaves one group, only singleton groups, or too few observations for the fixed design, fitting fails. Use <code>retained_rows</code> to align conditional and population fitted values and both residual definitions with the original data.</p>
+<p><strong>Weights, offsets, and random terms.</strong> Optional weights and offsets, and every random term’s <code>z</code> and <code>groups</code>, share one listwise deletion mask. Their original lengths, types, and values are validated before deletion. Grouped-binomial proportions with positive integer trial weights are allowed. Invalid success or trial counts are errors, even in rows that would otherwise be dropped. General mixed fits warn once and return original row positions like the other functions. <code>tests/r-compatibility.php</code> and <code>tests/lmm-expanded.php</code> cover these cases.</p>
+<p><strong>Mixed logistic.</strong> <code>fit_mixed_logistic_matrix()</code> applies the same policy across x, proportions, groups, trial counts, and offsets. Trial counts above 1,000,000 are rejected before rows are dropped. Near-integer success encodings within tolerance are canonicalized only after validation and deletion. A sample with no successes or no failures then fails, since an unpenalized fit would not be finite.</p>
 </section>
-<section id="logistic-outcomes" class="level2">
-<h2 class="anchored" data-anchor-id="logistic-outcomes">Logistic outcomes</h2>
-<p><code>fit_logistic_matrix()</code> follows the same deletion, warning and row-accounting policy as <code>fit_ols_matrix()</code>. With default unit trial weights, numeric outcomes must be exactly 0 or 1, including rows with missing predictors. After deletion both classes must remain and n must exceed p; otherwise fitting fails. Its residuals are response residuals y - probability, and both residuals and fitted probabilities follow retained_rows order.</p>
-</section>
-<section id="probit-and-poisson-outcomes" class="level2">
-<h2 class="anchored" data-anchor-id="probit-and-poisson-outcomes">Probit and Poisson outcomes</h2>
-<p>Probit follows the binary rules above. Poisson validates nonnegative integer counts before deletion; after deletion at least one positive count must remain. All estimators warn once on a successful fit that dropped rows, expose original row positions, and support missing: ‘raise’. Zero Poisson counts are observed values, not missingness. Returned mean counts and residuals follow retained_rows.</p>
-</section>
-<section id="mixed-model-group-ids" class="level2">
-<h2 class="anchored" data-anchor-id="mixed-model-group-ids">Mixed-model group IDs</h2>
-<p>fit_mixed_gaussian_intercept_matrix() deletes a row if x, y or the group ID is missing. Group missingness means null; NAN/float group IDs are invalid categorical labels and are rejected. Validation still covers every original value before deletion. Group labels and sizes describe the retained sample, and groups completely removed by deletion are absent from results. If deletion leaves only one group, all singletons or insufficient fixed-design observations, fitting fails. Inspect retained_rows to align conditional/population fits and both residual definitions with original data.</p>
-</section>
-<section id="expanded-inputs" class="level2">
-<h2 class="anchored" data-anchor-id="expanded-inputs">Expanded inputs</h2>
-<p>Optional weights/offsets and every random term’s z/groups participate in the same listwise deletion mask. Validate original lengths, types and values before deletion; preserve aligned rows across all vectors and terms. The fixed-model contracts now permit grouped-binomial proportions with positive integer trial weights. Invalid success/trial counts remain errors, even in rows that would otherwise be dropped. General mixed fits return one warning and original row positions just like the existing functions. These cases are tested in <code>tests/r-compatibility.php</code> and <code>tests/lmm-expanded.php</code>.</p>
-<p><code>fit_mixed_logistic_matrix</code> applies the same policy across x, proportions, groups, trial counts and offsets. Trial counts above 1,000,000 are rejected before deleting rows. Near-integer success encodings within tolerance are canonicalized only after original validation and deletion; zero-success/zero-failure samples then fail as required for a finite unpenalized fit.</p>
+<section id="implementation-and-history" class="level2">
+<h2 class="anchored" data-anchor-id="implementation-and-history">Implementation and history</h2>
+<p>The PHP binding applies the omission policy before calling the Rust core. The Rust <code>fit_ols()</code> contract still requires complete, finite numeric vectors.</p>
+<p>The first API rejected <code>null</code> and <code>NAN</code>. Callers that need that behavior should pass <code>missing: 'raise'</code>. Code that drops rows itself before calling phit must report that deletion itself, because phit can account only for the rows it receives.</p>
 
 
 </section>

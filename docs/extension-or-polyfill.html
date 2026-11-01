@@ -681,7 +681,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>The polyfill</strong>, <code>phpstats/phit-polyfill</code>, is plain PHP installed with Composer. It needs no PHP extension.</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">composer</span> require phpstats/phit-polyfill</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Code written against one runs unchanged on the other, provided it does not read CSV files through phit. Each polyfill release reproduces one phit release. Polyfill 0.3.0 reproduces phit v0.3.0, 0.2.0 reproduces v0.2.0, and 0.1.0 reproduces v0.1.1.</p>
+<p>Code written against one runs unchanged on the other, provided it does not read CSV files through phit. Each polyfill release reproduces one phit release. Polyfill 0.4.1 reproduces phit v0.4.3, 0.4.0 reproduces v0.4.0, 0.3.0 reproduces v0.3.0, 0.2.0 reproduces v0.2.0, and 0.1.0 reproduces v0.1.1. phit v0.4.1 and v0.4.2 change only the CSV reader, which the polyfill does not provide.</p>
 <section id="how-they-coexist" class="level2">
 <h2 class="anchored" data-anchor-id="how-they-coexist">How they coexist</h2>
 <p>Composer loads the polyfill’s <code>bootstrap.php</code> through its <code>files</code> autoload. If <code>extension_loaded('phit')</code> is true, the bootstrap returns before defining anything, so every <code>Phit\</code> function is the extension’s. Installing both is therefore safe: the extension is used where it is loaded, and the polyfill everywhere else, such as a CI runner or a host where extensions cannot be installed.</p>
@@ -690,7 +690,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="what-the-polyfill-covers" class="level2">
 <h2 class="anchored" data-anchor-id="what-the-polyfill-covers">What the polyfill covers</h2>
-<p>The polyfill provides 232 of phit 0.3.0’s 233 functions. It does not provide <code>Phit\read_csv()</code> or the <code>Phit\CsvReader</code> class. Without the extension, <code>function_exists('Phit\read_csv')</code> and <code>class_exists('Phit\CsvReader')</code> return false, and <code>Phit\Polyfill::supports('Phit\read_csv')</code> returns false.</p>
+<p>The polyfill provides 242 of phit 0.4.3’s 243 functions, including the ten deprecated 0.3 model names. It does not provide <code>Phit\read_csv()</code> or the <code>Phit\CsvReader</code> class. Without the extension, <code>function_exists('Phit\read_csv')</code> and <code>class_exists('Phit\CsvReader')</code> return false, and <code>Phit\Polyfill::supports('Phit\read_csv')</code> returns false.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">

@@ -677,34 +677,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The example runs with the phit extension or the plain-PHP polyfill (<a href="../extension-or-polyfill.html">Extension or polyfill</a>).</p>
 <section id="code" class="level2">
 <h2 class="anchored" data-anchor-id="code">Code</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{dist_normal_cdf<span class="ot">,</span> dist_normal_pdf<span class="ot">,</span> dist_normal_quantile<span class="ot">,</span> dist_normal_rng<span class="ot">,</span> dist_normal_sf}<span class="ot">;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{dist_t_quantile<span class="ot">,</span> dist_t_sf}<span class="ot">;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"density at 115      %.5f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> dist_normal_pdf(<span class="dv">115</span><span class="ot">,</span> <span class="dv">100</span><span class="ot">,</span> <span class="dv">15</span>))<span class="ot">;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"P(X &lt;= 130)         %.5f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> dist_normal_cdf(<span class="dv">130</span><span class="ot">,</span> <span class="dv">100</span><span class="ot">,</span> <span class="dv">15</span>))<span class="ot">;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"95th percentile     %.3f</span><span class="sc">\n\n</span><span class="st">"</span><span class="ot">,</span> dist_normal_quantile(<span class="fl">0.95</span><span class="ot">,</span> <span class="dv">100</span><span class="ot">,</span> <span class="dv">15</span>))<span class="ot">;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Two-sided 95% critical values and the probability beyond ±1.96.</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> ([<span class="dv">3</span><span class="ot">,</span> <span class="dv">10</span><span class="ot">,</span> <span class="dv">30</span>] <span class="kw">as</span> <span class="va">$df</span>) {</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"t, df %2d: critical value %.3f, P(|T| &gt; 1.96) %.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$df</span><span class="ot">,</span> dist_t_quantile(<span class="fl">0.975</span><span class="ot">,</span> <span class="va">$df</span>)<span class="ot">,</span> <span class="dv">2</span> <span class="op">*</span> dist_t_sf(<span class="fl">1.96</span><span class="ot">,</span> <span class="va">$df</span>))<span class="ot">;</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"normal:   critical value %.3f, P(|Z| &gt; 1.96) %.4f</span><span class="sc">\n\n</span><span class="st">"</span><span class="ot">,</span> dist_normal_quantile(<span class="fl">0.975</span>)<span class="ot">,</span> <span class="dv">2</span> <span class="op">*</span> dist_normal_sf(<span class="fl">1.96</span>))<span class="ot">;</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="va">$draws</span> <span class="op">=</span> dist_normal_rng(<span class="dv">5</span><span class="ot">,</span> <span class="dv">42</span><span class="ot">,</span> <span class="dv">100</span><span class="ot">,</span> <span class="dv">15</span>)<span class="ot">;</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="fu">implode</span>(<span class="st">', '</span><span class="ot">,</span> <span class="fu">array_map</span>(<span class="kw">fn</span> (<span class="va">$x</span>) =&gt; <span class="fu">sprintf</span>(<span class="st">'%.2f'</span><span class="ot">,</span> <span class="va">$x</span>)<span class="ot">,</span> <span class="va">$draws</span>))<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="va">$many</span> <span class="op">=</span> dist_normal_rng(<span class="dv">100000</span><span class="ot">,</span> <span class="dv">7</span><span class="ot">,</span> <span class="dv">100</span><span class="ot">,</span> <span class="dv">15</span>)<span class="ot">;</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"mean of 100000 draws %.2f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="fu">array_sum</span>(<span class="va">$many</span>) <span class="op">/</span> <span class="fu">count</span>(<span class="va">$many</span>))<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{dist_normal_cdf<span class="ot">,</span> dist_normal_pdf}<span class="ot">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{dist_normal_quantile<span class="ot">,</span> dist_normal_rng}<span class="ot">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\dist_normal_sf<span class="ot">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{dist_t_quantile<span class="ot">,</span> dist_t_sf}<span class="ot">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Normal with mean 100 and SD 15.</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="va">$normal</span> <span class="op">=</span> [</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'density at 115'</span> =&gt; dist_normal_pdf(<span class="dv">115</span><span class="ot">,</span> <span class="dv">100</span><span class="ot">,</span> <span class="dv">15</span>)<span class="ot">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'P(X &lt;= 130)'</span> =&gt; dist_normal_cdf(<span class="dv">130</span><span class="ot">,</span> <span class="dv">100</span><span class="ot">,</span> <span class="dv">15</span>)<span class="ot">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'quantile 0.95'</span> =&gt; dist_normal_quantile(<span class="op">.</span><span class="dv">95</span><span class="ot">,</span> <span class="dv">100</span><span class="ot">,</span> <span class="dv">15</span>)<span class="ot">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$normal</span> <span class="kw">as</span> <span class="va">$label</span> =&gt; <span class="va">$value</span>) {</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%-16s %.5f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$label</span><span class="ot">,</span> <span class="va">$value</span>)<span class="ot">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">// Two-sided 95% critical value, and P(|T| &gt; 1.96).</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> ([<span class="dv">3</span><span class="ot">,</span> <span class="dv">10</span><span class="ot">,</span> <span class="dv">30</span>] <span class="kw">as</span> <span class="va">$df</span>) {</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"t, df %2d: critical %.3f, tail %.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">$df</span><span class="ot">,</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        dist_t_quantile(<span class="fl">0.975</span><span class="ot">,</span> <span class="va">$df</span>)<span class="ot">,</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="dv">2</span> <span class="op">*</span> dist_t_sf(<span class="fl">1.96</span><span class="ot">,</span> <span class="va">$df</span>)<span class="ot">,</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"normal:   critical %.3f, tail %.4f</span><span class="sc">\n\n</span><span class="st">"</span><span class="ot">,</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    dist_normal_quantile(<span class="fl">0.975</span>)<span class="ot">,</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span> <span class="op">*</span> dist_normal_sf(<span class="fl">1.96</span>)<span class="ot">,</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="va">$draws</span> <span class="op">=</span> dist_normal_rng(<span class="dv">5</span><span class="ot">,</span> <span class="dv">42</span><span class="ot">,</span> <span class="dv">100</span><span class="ot">,</span> <span class="dv">15</span>)<span class="ot">;</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">vprintf</span>(<span class="st">"%.2f, %.2f, %.2f, %.2f, %.2f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$draws</span>)<span class="ot">;</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="va">$many</span> <span class="op">=</span> dist_normal_rng(<span class="dv">100000</span><span class="ot">,</span> <span class="dv">7</span><span class="ot">,</span> <span class="dv">100</span><span class="ot">,</span> <span class="dv">15</span>)<span class="ot">;</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="va">$mean</span> <span class="op">=</span> <span class="fu">array_sum</span>(<span class="va">$many</span>) <span class="op">/</span> <span class="fu">count</span>(<span class="va">$many</span>)<span class="ot">;</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"mean of 100000 draws %.2f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$mean</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="output" class="level2">
 <h2 class="anchored" data-anchor-id="output">Output</h2>
-<pre><code>density at 115      0.01613
-P(X &lt;= 130)         0.97725
-95th percentile     124.673
+<pre><code>density at 115   0.01613
+P(X &lt;= 130)      0.97725
+quantile 0.95    124.67280
 
-t, df  3: critical value 3.182, P(|T| &gt; 1.96) 0.1449
-t, df 10: critical value 2.228, P(|T| &gt; 1.96) 0.0784
-t, df 30: critical value 2.042, P(|T| &gt; 1.96) 0.0593
-normal:   critical value 1.960, P(|Z| &gt; 1.96) 0.0500
+t, df  3: critical 3.182, tail 0.1449
+t, df 10: critical 2.228, tail 0.0784
+t, df 30: critical 2.042, tail 0.0593
+normal:   critical 1.960, tail 0.0500
 
 100.53, 96.59, 80.59, 85.53, 85.28
 mean of 100000 draws 100.00</code></pre>
@@ -712,9 +732,10 @@ mean of 100000 draws 100.00</code></pre>
 <section id="notes" class="level2">
 <h2 class="anchored" data-anchor-id="notes">Notes</h2>
 <ul>
-<li>The <code>dist_*</code> functions follow R: <code>_pdf</code> is <code>dnorm()</code>, <code>_cdf</code> is <code>pnorm()</code>, <code>_quantile</code> is <code>qnorm()</code>, and <code>_sf</code> is the upper tail, <code>pnorm(lower.tail = FALSE)</code>. The survival function keeps precision far into the tail, where <code>1 - cdf</code> loses it.</li>
-<li>Student’s t has heavier tails than the normal. Its critical values and tail probabilities approach the normal’s as the degrees of freedom grow.</li>
-<li><code>dist_normal_rng($n, $seed, $mean, $sd)</code> returns <code>$n</code> draws. Every call starts its own stream from the seed, so the same seed and parameters give the same draws.</li>
+<li><code>_pdf</code>, <code>_cdf</code>, <code>_quantile</code>, and <code>_sf</code> correspond to R’s <code>dnorm()</code>, <code>pnorm()</code>, <code>qnorm()</code>, and <code>pnorm(lower.tail = FALSE)</code>.</li>
+<li><code>_sf</code> keeps precision far into the upper tail, where <code>1 - cdf</code> loses it.</li>
+<li>Student’s t has heavier tails than the normal. Its values approach the normal’s as the degrees of freedom grow.</li>
+<li>Each <code>dist_normal_rng($n, $seed, $mean, $sd)</code> call starts its own stream from the seed, so the same seed and parameters give the same draws.</li>
 </ul>
 <p><strong>See also:</strong> <a href="../distributions.html">Probability distributions</a> for every family and its parameters · <a href="../rng.html">Seeded sampling</a> for the generator</p>
 

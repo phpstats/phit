@@ -248,18 +248,15 @@ def manifest(benchmarks, verifications):
         'verifications': verifications,
         'examples': [
             {'path': 'examples/linear-model', 'title': 'Fit a linear model and predict',
-             'description': 'Fits monthly rent on floor area and district with fit_ols, then predicts new flats with 95% prediction intervals.'},
+             'description': 'Estimate rents from floor area and district and predict new flats with intervals.'},
             {'path': 'examples/glm', 'title': 'Fit logistic and Poisson models',
-             'description': ('Models lease renewals with odds ratios and support tickets as monthly rate ratios with an exposure offset, '
-                            'using fit_generalized_linear.')},
+             'description': 'Read renewal odds ratios and monthly ticket rates, with an offset for observation time.'},
             {'path': 'examples/mixed-model', 'title': 'Fit a mixed model',
-             'description': ('Fits test scores with a random intercept per school using fit_mixed_gaussian, then reads the fixed effects, '
-                            'variance components, and shrunken school effects.')},
+             'description': 'Give each school its own intercept and read how much schools vary.'},
             {'path': 'examples/distributions', 'title': 'Densities, quantiles, and random draws',
-             'description': ("Evaluates the normal distribution, compares Student's t critical values with the normal's, and draws "
-                            'reproducible samples from a seed.')},
+             'description': "Evaluate the normal and Student's t distributions and draw reproducible samples."},
             {'path': 'examples/polars-mixed-model', 'title': 'Fit a mixed model to a Polars table and chart it',
-             'description': "Reads a CSV file with phpolars, fits a random intercept per school with fit_mixed_gaussian, and charts each school's fitted line with phiz.",
+             'description': 'Read a CSV file with Polars, fit school intercepts, and chart one fitted line per school.',
              'also': ['phpolars', 'phiz']},
         ],
     }

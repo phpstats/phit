@@ -9,36 +9,56 @@ The example runs with the phit extension or the plain-PHP polyfill ([Extension o
 ## Code
 
 ```php
-use function Phit\{dist_normal_cdf, dist_normal_pdf, dist_normal_quantile, dist_normal_rng, dist_normal_sf};
+use function Phit\{dist_normal_cdf, dist_normal_pdf};
+use function Phit\{dist_normal_quantile, dist_normal_rng};
+use function Phit\dist_normal_sf;
 use function Phit\{dist_t_quantile, dist_t_sf};
 
-printf("density at 115      %.5f\n", dist_normal_pdf(115, 100, 15));
-printf("P(X <= 130)         %.5f\n", dist_normal_cdf(130, 100, 15));
-printf("95th percentile     %.3f\n\n", dist_normal_quantile(0.95, 100, 15));
-
-// Two-sided 95% critical values and the probability beyond ±1.96.
-foreach ([3, 10, 30] as $df) {
-    printf("t, df %2d: critical value %.3f, P(|T| > 1.96) %.4f\n", $df, dist_t_quantile(0.975, $df), 2 * dist_t_sf(1.96, $df));
+// Normal with mean 100 and SD 15.
+$normal = [
+    'density at 115' => dist_normal_pdf(115, 100, 15),
+    'P(X <= 130)' => dist_normal_cdf(130, 100, 15),
+    'quantile 0.95' => dist_normal_quantile(.95, 100, 15),
+];
+foreach ($normal as $label => $value) {
+    printf("%-16s %.5f\n", $label, $value);
 }
-printf("normal:   critical value %.3f, P(|Z| > 1.96) %.4f\n\n", dist_normal_quantile(0.975), 2 * dist_normal_sf(1.96));
+echo "\n";
+
+// Two-sided 95% critical value, and P(|T| > 1.96).
+foreach ([3, 10, 30] as $df) {
+    printf(
+        "t, df %2d: critical %.3f, tail %.4f\n",
+        $df,
+        dist_t_quantile(0.975, $df),
+        2 * dist_t_sf(1.96, $df),
+    );
+}
+printf(
+    "normal:   critical %.3f, tail %.4f\n\n",
+    dist_normal_quantile(0.975),
+    2 * dist_normal_sf(1.96),
+);
 
 $draws = dist_normal_rng(5, 42, 100, 15);
-echo implode(', ', array_map(fn ($x) => sprintf('%.2f', $x), $draws)), "\n";
+vprintf("%.2f, %.2f, %.2f, %.2f, %.2f\n", $draws);
+
 $many = dist_normal_rng(100000, 7, 100, 15);
-printf("mean of 100000 draws %.2f\n", array_sum($many) / count($many));
+$mean = array_sum($many) / count($many);
+printf("mean of 100000 draws %.2f\n", $mean);
 ```
 
 ## Output
 
 ```
-density at 115      0.01613
-P(X <= 130)         0.97725
-95th percentile     124.673
+density at 115   0.01613
+P(X <= 130)      0.97725
+quantile 0.95    124.67280
 
-t, df  3: critical value 3.182, P(|T| > 1.96) 0.1449
-t, df 10: critical value 2.228, P(|T| > 1.96) 0.0784
-t, df 30: critical value 2.042, P(|T| > 1.96) 0.0593
-normal:   critical value 1.960, P(|Z| > 1.96) 0.0500
+t, df  3: critical 3.182, tail 0.1449
+t, df 10: critical 2.228, tail 0.0784
+t, df 30: critical 2.042, tail 0.0593
+normal:   critical 1.960, tail 0.0500
 
 100.53, 96.59, 80.59, 85.53, 85.28
 mean of 100000 draws 100.00
@@ -46,8 +66,9 @@ mean of 100000 draws 100.00
 
 ## Notes
 
-- The `dist_*` functions follow R: `_pdf` is `dnorm()`, `_cdf` is `pnorm()`, `_quantile` is `qnorm()`, and `_sf` is the upper tail, `pnorm(lower.tail = FALSE)`. The survival function keeps precision far into the tail, where `1 - cdf` loses it.
-- Student's t has heavier tails than the normal. Its critical values and tail probabilities approach the normal's as the degrees of freedom grow.
-- `dist_normal_rng($n, $seed, $mean, $sd)` returns `$n` draws. Every call starts its own stream from the seed, so the same seed and parameters give the same draws.
+- `_pdf`, `_cdf`, `_quantile`, and `_sf` correspond to R's `dnorm()`, `pnorm()`, `qnorm()`, and `pnorm(lower.tail = FALSE)`.
+- `_sf` keeps precision far into the upper tail, where `1 - cdf` loses it.
+- Student's t has heavier tails than the normal. Its values approach the normal's as the degrees of freedom grow.
+- Each `dist_normal_rng($n, $seed, $mean, $sd)` call starts its own stream from the seed, so the same seed and parameters give the same draws.
 
 **See also:** [Probability distributions](../distributions.qmd) for every family and its parameters · [Seeded sampling](../rng.qmd) for the generator

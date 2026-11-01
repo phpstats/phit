@@ -2,127 +2,123 @@
 title: "Missing values and sample accounting"
 ---
 
-Every model function defaults to listwise deletion: a row with a missing value
-in any variable the model uses is left out of the fit. For the formula
-functions these are the variables the formula references, including weights,
-offsets and grouping factors; other columns may contain missing values. For the
-matrix functions they are the supplied predictors, outcome, weights, offsets
-and groups. The `missing` argument selects the policy:
+phit fits each model to complete rows. A row with a missing value in any variable the model uses is left out, the fit warns once, and the result records which input rows it used.
+
+## Example
+
+Two of these six flats have a missing value: row 2 has no rent, and row 3 has no area. The `note` column is not in the formula, so its missing values do not matter.
 
 ```php
-$result = Phit\fit_ols_matrix(x: $x, y: $y); // missing: 'drop'
-$result = Phit\fit_ols_matrix(x: $x, y: $y, missing: 'raise'); // reject missing values
+use function Phit\fit_ols;
+
+$flats = [
+    'rent' => [
+        1879.25, 1805.03, null, 1267.85, 1509.24, 2240.1,
+    ],
+    'area' => [74.4, 57.4, 66.4, NAN, 45.7, 92.4],
+    'note' => [null, 'corner', null, null, 'garden', null],
+];
+
+$fit = fit_ols('rent ~ area', $flats);
+
+printf(
+    "%d of %d rows used, %d dropped\n",
+    $fit['n_observations'],
+    $fit['n_input'],
+    $fit['n_dropped'],
+);
+printf(
+    "retained: %s\ndropped:  %s\n%d residuals\n",
+    implode(', ', $fit['retained_rows']),
+    implode(', ', $fit['dropped_rows']),
+    count($fit['residuals']),
+);
 ```
 
-## What counts as missing
+```
+4 of 6 rows used, 2 dropped
+retained: 0, 1, 4, 5
+dropped:  2, 3
+4 residuals
+```
 
-PHP null and floating-point NAN represent missing values. Positive and negative
-infinity are invalid numerical input, not missingness. Strings (including empty
-strings and 'NA'), booleans, objects and absent/ragged matrix elements remain
-errors. Numeric zero is a valid value. No value is imputed or coerced from text.
+The call also raises one PHP warning with this message:
 
-Validation inspects all original values and shapes before deletion. A missing
-value cannot hide an invalid value or ragged row. After deletion, the retained
-fixed design must still have n > p (including the automatically added intercept) and full numerical rank. If no usable fit remains,
-the call throws. The Rust fit_ols() contract continues to require complete finite
-numeric vectors; the PHP binding implements the omission policy before calling it.
+```
+Phit\fit_ols(): Phit\fit_ols dropped 2 of 6 observations with missing values (listwise deletion)
+```
+
+## Behavior
+
+- `missing: 'drop'`, the default, removes incomplete rows. `missing: 'raise'` throws instead, without fitting.
+- Only PHP `null` and `NAN` are missing. Infinities are errors, and strings such as `''` or `'NA'` are not treated as missing.
+- Formula fits check only the columns the formula uses, including weights, offsets, and grouping factors.
+- `fitted` and `residuals` hold one value per retained row, in `retained_rows` order. They are not padded with `null`.
+- Row positions count inputs in iteration order, from zero. They are not PHP array keys.
+- Every statistic, including `df_residual`, uses the retained rows.
+- phit does not impute values.
+
+## Interpreting a complete-case fit
+
+Dropping incomplete rows changes the sample the model describes. Estimates can be biased when missingness is related to the outcome or the predictors. Report how many rows were dropped and why values are missing. phit offers no imputation or missing-data model.
+
+R's explicit [`na.action = na.omit`](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html) and statsmodels' explicit [`missing='drop'`](https://www.statsmodels.org/stable/missing.html) fit the same complete-case sample. They do not all warn by default. The warning and the row accounting are phit's own contract. The [three-implementation verification](verifications/ols.qmd) checks that phit, R, and statsmodels retain the same rows and give the same results.
+
+## Validation
+
+Validation inspects every original value and shape before any row is dropped, so a missing value cannot hide an invalid value or a ragged row. After deletion, the retained fixed design must still have more rows than columns (counting the intercept) and full numerical rank. If no usable fit remains, the call throws.
+
+For the matrix functions, the variables checked are the supplied predictors, outcome, weights, offsets, and groups. Strings, booleans, objects, and absent or ragged matrix elements are errors there. Numeric zero is a valid value.
+
+```php
+// missing: 'drop'
+$result = Phit\fit_ols_matrix(x: $x, y: $y);
+// Reject missing values.
+$result = Phit\fit_ols_matrix(
+    x: $x,
+    y: $y,
+    missing: 'raise',
+);
+```
 
 ## Warning and accounting
 
-Every successful fit that omits observations emits one native PHP E_WARNING
-including the number dropped and original sample size. Complete data emits no
-warning. missing: 'raise' throws when missing values are found, without fitting.
-An unsuccessful fit throws rather than returning deletion metadata. Warning text
-is descriptive and is not a stable machine-readable interface.
+A successful fit that drops rows emits one `E_WARNING` with the number dropped and the original sample size. In the polyfill it is an `E_USER_WARNING`. Complete data emits no warning. A failed fit throws and returns no accounting. The warning text is descriptive and is not a stable machine-readable interface.
 
-Every successful result also includes:
+Every successful result includes:
 
 | Key | Meaning |
 | --- | --- |
-| n_input | int: original observations |
-| n_observations | int: retained observations used in estimation |
-| n_dropped | int: omitted observations |
-| retained_rows | list<int>: original zero-based iteration positions retained |
-| dropped_rows | list<int>: original zero-based iteration positions omitted |
+| `n_input` | int: original observations |
+| `n_observations` | int: retained observations used in estimation |
+| `n_dropped` | int: omitted observations |
+| `retained_rows` | list<int>: original zero-based positions retained, ascending |
+| `dropped_rows` | list<int>: original zero-based positions omitted, ascending |
 
-These positions refer to input iteration order, not PHP array keys. Each list is
-in ascending original order. fitted and residuals contain retained observations
-only, in retained_rows order; they are not padded with null. All statistics use
-the retained sample, including df_residual = n_observations - p. Metadata remains
-available even if warning display is disabled by PHP configuration.
+To place residuals back at their original positions:
 
 ```php
-foreach ($result['retained_rows'] as $outputPosition => $inputPosition) {
-    $residualForOriginalPosition[$inputPosition] = $result['residuals'][$outputPosition];
+foreach ($result['retained_rows'] as $out => $in) {
+    $residualAt[$in] = $result['residuals'][$out];
 }
 ```
 
-Applications should use their normal warning handling to log or display the
-message and use the structured counts for reporting. PHP error handlers that
-promote warnings to exceptions can abort this call; use missing: 'raise' when
-omission should be prohibited explicitly. Warnings may be suppressed by PHP
-settings, so user-facing applications should also inspect n_dropped rather than
-rely only on display_errors. Do not suppress deletion without recording it.
+Log or display the warning with your normal warning handling, and use the counts for reporting. PHP settings can hide warnings, so applications should also check `n_dropped`. An error handler that turns warnings into exceptions aborts the call. Use `missing: 'raise'` to prohibit omission explicitly. Do not suppress the warning without recording the deletion.
 
-## Statistical interpretation and reference behavior
+## Model-specific rules
 
-Listwise deletion is simple and preserves aligned observations, but changes the
-estimation sample. It does not guarantee unbiased results for arbitrary missingness.
-Report the excluded count and investigate why values are missing; this policy
-implements neither imputation nor a missing-data model.
+**Logistic.** `fit_logistic_matrix()` follows the same deletion, warning, and row-accounting policy as `fit_ols_matrix()`. With default unit trial weights, numeric outcomes must be exactly 0 or 1, including rows with missing predictors. After deletion both classes must remain and n must exceed p. Residuals are response residuals, y minus the probability. Residuals and fitted probabilities follow `retained_rows` order.
 
-R's explicit [na.action = na.omit](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html)
-and statsmodels' explicit [missing='drop'](https://www.statsmodels.org/stable/missing.html)
-provide comparable complete-case fits. Do not assume that every reference library
-warns on omission by default: warnings and metadata are our explicit contract.
-The [three implementation verification](verifications/ols.qmd) checks identical
-retained samples and numerical results, with the PHP warning captured as evidence.
+**Probit and Poisson.** Probit follows the binary rules above. Poisson validates nonnegative integer counts before deletion, and at least one positive count must remain after it. Zero counts are observed values, not missing ones. Every estimator warns once on a successful fit that dropped rows, exposes original row positions, and supports `missing: 'raise'`.
 
-This changes the initial API, which rejected null and NAN. Existing callers that
-need that strict behavior should pass missing: 'raise'. Other invalid inputs
-continue to be rejected. Helpers can still perform their own explicit preparation;
-when they omit data before the call, they must report it themselves because the
-extension can account only for rows it actually receives.
+**Mixed-model group IDs.** `fit_mixed_gaussian_intercept_matrix()` drops a row if x, y, or the group ID is missing. A missing group ID is `null`. `NAN` and float group IDs are invalid labels and are rejected. Group labels and sizes describe the retained sample, and a group removed entirely is absent from the results. If deletion leaves one group, only singleton groups, or too few observations for the fixed design, fitting fails. Use `retained_rows` to align conditional and population fitted values and both residual definitions with the original data.
 
-## Logistic outcomes
+**Weights, offsets, and random terms.** Optional weights and offsets, and every random term's `z` and `groups`, share one listwise deletion mask. Their original lengths, types, and values are validated before deletion. Grouped-binomial proportions with positive integer trial weights are allowed. Invalid success or trial counts are errors, even in rows that would otherwise be dropped. General mixed fits warn once and return original row positions like the other functions. `tests/r-compatibility.php` and `tests/lmm-expanded.php` cover these cases.
 
-`fit_logistic_matrix()` follows the same deletion, warning and row-accounting policy
-as `fit_ols_matrix()`. With default unit trial weights, numeric outcomes must be exactly 0 or 1, including rows with
-missing predictors. After deletion both classes must remain and n must exceed p;
-otherwise fitting fails. Its residuals are response residuals y - probability,
-and both residuals and fitted probabilities follow retained_rows order.
+**Mixed logistic.** `fit_mixed_logistic_matrix()` applies the same policy across x, proportions, groups, trial counts, and offsets. Trial counts above 1,000,000 are rejected before rows are dropped. Near-integer success encodings within tolerance are canonicalized only after validation and deletion. A sample with no successes or no failures then fails, since an unpenalized fit would not be finite.
 
-## Probit and Poisson outcomes
+## Implementation and history
 
-Probit follows the binary rules above. Poisson validates nonnegative integer
-counts before deletion; after deletion at least one positive count must remain.
-All estimators warn once on a successful fit that dropped rows, expose original
-row positions, and support missing: 'raise'. Zero Poisson counts are observed
-values, not missingness. Returned mean counts and residuals follow retained_rows.
+The PHP binding applies the omission policy before calling the Rust core. The Rust `fit_ols()` contract still requires complete, finite numeric vectors.
 
-## Mixed-model group IDs
-
-fit_mixed_gaussian_intercept_matrix() deletes a row if x, y or the group ID is missing. Group missingness
-means null; NAN/float group IDs are invalid categorical labels and are rejected.
-Validation still covers every original value before deletion. Group labels and
-sizes describe the retained sample, and groups completely removed by deletion
-are absent from results. If deletion leaves only one group, all singletons or
-insufficient fixed-design observations, fitting fails. Inspect retained_rows to
-align conditional/population fits and both residual definitions with original data.
-
-## Expanded inputs
-
-Optional weights/offsets and every random term's z/groups participate in the same
-listwise deletion mask. Validate original lengths, types and values before
-deletion; preserve aligned rows across all vectors and terms. The fixed-model
-contracts now permit grouped-binomial proportions with positive integer trial
-weights. Invalid success/trial counts remain errors, even in rows that would
-otherwise be dropped. General mixed fits return one warning and original row
-positions just like the existing functions. These cases are tested in
-`tests/r-compatibility.php` and `tests/lmm-expanded.php`.
-
-`fit_mixed_logistic_matrix` applies the same policy across x, proportions, groups,
-trial counts and offsets. Trial counts above 1,000,000 are rejected before
-deleting rows. Near-integer success encodings within tolerance are canonicalized
-only after original validation and deletion; zero-success/zero-failure samples
-then fail as required for a finite unpenalized fit.
+The first API rejected `null` and `NAN`. Callers that need that behavior should pass `missing: 'raise'`. Code that drops rows itself before calling phit must report that deletion itself, because phit can account only for the rows it receives.

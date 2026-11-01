@@ -16,8 +16,10 @@ composer require phpstats/phit-polyfill
 
 Code written against one runs unchanged on the other, provided it does not
 read CSV files through phit. Each polyfill release
-reproduces one phit release. Polyfill 0.3.0 reproduces phit v0.3.0, 0.2.0
-reproduces v0.2.0, and 0.1.0 reproduces v0.1.1.
+reproduces one phit release. Polyfill 0.4.1 reproduces phit v0.4.3, 0.4.0
+reproduces v0.4.0, 0.3.0 reproduces v0.3.0, 0.2.0 reproduces v0.2.0, and 0.1.0
+reproduces v0.1.1. phit v0.4.1 and v0.4.2 change only the CSV reader, which the
+polyfill does not provide.
 
 ## How they coexist
 
@@ -38,7 +40,8 @@ that uses the functions the polyfill lacks.
 
 ## What the polyfill covers
 
-The polyfill provides 232 of phit 0.3.0's 233 functions. It does not provide
+The polyfill provides 242 of phit 0.4.3's 243 functions, including the ten
+deprecated 0.3 model names. It does not provide
 `Phit\read_csv()` or the `Phit\CsvReader` class. Without the extension,
 `function_exists('Phit\read_csv')` and `class_exists('Phit\CsvReader')` return
 false, and `Phit\Polyfill::supports('Phit\read_csv')` returns false.

@@ -14,34 +14,62 @@ The examples run with the phit extension or the plain-PHP polyfill ([Extension o
 use function Phit\{fit_generalized_linear, predict};
 
 $leases = [
-    'renewed' => [1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0],
-    'increase' => [2.0, 3.5, 8.0, 1.0, 6.5, 4.0, 2.5, 9.0, 5.0, 4.5, 3.0, 7.0, 10.0, 6.0, 5.5, 7.5],
-    'tenure' => [4, 2, 1, 6, 3, 1, 5, 2, 3, 1, 2, 6, 4, 3, 1, 2],
+    'renewed' => [
+        1, 1, 0, 1, 1, 0, 1, 0,
+        1, 0, 1, 1, 0, 0, 1, 0,
+    ],
+    'increase' => [
+        2.0, 3.5, 8.0, 1.0, 6.5, 4.0, 2.5, 9.0,
+        5.0, 4.5, 3.0, 7.0, 10.0, 6.0, 5.5, 7.5,
+    ],
+    'tenure' => [
+        4, 2, 1, 6, 3, 1, 5, 2,
+        3, 1, 2, 6, 4, 3, 1, 2,
+    ],
 ];
 
-$logit = fit_generalized_linear('renewed ~ increase + tenure', $leases, family: 'binomial');
+$logit = fit_generalized_linear(
+    'renewed ~ increase + tenure',
+    $leases,
+    family: 'binomial',
+);
 
+echo "            log odds   odds ratio, 95% CI\n";
 foreach ($logit['columns'] as $i => $name) {
-    [$low, $high] = array_map('exp', $logit['conf_int'][$i]);
-    printf("%-12s log odds %6.3f  odds ratio %6.3f  95%% CI [%.3f, %.3f]\n",
-        $name, $logit['coefficients'][$i], exp($logit['coefficients'][$i]), $low, $high);
+    $b = $logit['coefficients'][$i];
+    $ci = array_map('exp', $logit['conf_int'][$i]);
+    printf(
+        "%-11s %8.3f   %6.3f [%.3f, %.3f]\n",
+        $name,
+        $b,
+        exp($b),
+        ...$ci,
+    );
 }
 
-$p = predict($logit, ['increase' => [3.0, 8.0], 'tenure' => [2, 2]], type: 'response');
-printf("P(renew), 2 years' tenure: %.3f at a 3%% increase, %.3f at 8%%\n", ...$p['fit']);
+$p = predict(
+    $logit,
+    ['increase' => [3.0, 8.0], 'tenure' => [2, 2]],
+    type: 'response',
+);
+printf(
+    "P(renew), 2 years' tenure: %.3f at 3%%, %.3f at 8%%\n",
+    ...$p['fit'],
+);
 ```
 
 ```
-(Intercept)  log odds  2.791  odds ratio 16.293  95% CI [0.092, 2900.806]
-increase     log odds -1.031  odds ratio  0.357  95% CI [0.117, 1.089]
-tenure       log odds  1.323  odds ratio  3.756  95% CI [0.692, 20.382]
-P(renew), 2 years' tenure: 0.913 at a 3% increase, 0.057 at 8%
+            log odds   odds ratio, 95% CI
+(Intercept)    2.791   16.293 [0.092, 2900.806]
+increase      -1.031    0.357 [0.117, 1.089]
+tenure         1.323    3.756 [0.692, 20.382]
+P(renew), 2 years' tenure: 0.913 at 3%, 0.057 at 8%
 ```
 
-- The coefficients are on the log-odds scale, and `exp()` turns them into odds ratios. The `increase` odds ratio compares tenants of equal tenure whose increases differ by one percentage point. The `tenure` odds ratio compares tenants with the same increase.
-- An odds ratio is not a ratio of probabilities. `predict()` with `type: 'response'` returns probabilities, which depend on every predictor's value.
-- The exponentiated intercept is the odds of renewal at a 0% increase and zero tenure, outside the range of the data.
-- With 16 leases the intervals are wide, and each includes an odds ratio of 1.
+- `exp()` turns a log-odds coefficient into an odds ratio for a one-unit difference, with the other predictor held fixed.
+- An odds ratio is not a ratio of probabilities. `type: 'response'` returns predicted probabilities.
+- The exponentiated intercept is the odds at a 0% increase and zero tenure, outside the data.
+- With 16 leases every interval includes an odds ratio of 1, so the direction of each association is uncertain.
 
 ## Poisson regression with an exposure offset
 
@@ -53,27 +81,47 @@ use function Phit\fit_generalized_linear;
 $accounts = [
     'tickets' => [3, 7, 1, 12, 4, 0, 9, 2, 5, 15],
     'months' => [6, 12, 3, 12, 8, 2, 12, 5, 7, 12],
-    'plan' => ['basic', 'pro', 'basic', 'pro', 'basic', 'basic', 'pro', 'basic', 'pro', 'pro'],
+    'plan' => [
+        'basic', 'pro', 'basic', 'pro', 'basic',
+        'basic', 'pro', 'basic', 'pro', 'pro',
+    ],
 ];
 
-$poisson = fit_generalized_linear('tickets ~ plan + offset(log(months))', $accounts, family: 'poisson');
+$poisson = fit_generalized_linear(
+    'tickets ~ plan + offset(log(months))',
+    $accounts,
+    family: 'poisson',
+);
 
+echo "            log rate   exp, 95% CI\n";
 foreach ($poisson['columns'] as $i => $name) {
-    [$low, $high] = array_map('exp', $poisson['conf_int'][$i]);
-    printf("%-12s log rate %6.3f  ratio %.3f  95%% CI [%.3f, %.3f]\n",
-        $name, $poisson['coefficients'][$i], exp($poisson['coefficients'][$i]), $low, $high);
+    $b = $poisson['coefficients'][$i];
+    $ci = array_map('exp', $poisson['conf_int'][$i]);
+    printf(
+        "%-11s %8.3f   %.3f [%.3f, %.3f]\n",
+        $name,
+        $b,
+        exp($b),
+        ...$ci,
+    );
 }
-printf("residual deviance %.3f on %d df\n", $poisson['deviance'], $poisson['df_residual']);
+printf(
+    "residual deviance %.3f on %d df\n",
+    $poisson['deviance'],
+    $poisson['df_residual'],
+);
 ```
 
 ```
-(Intercept)  log rate -0.875  ratio 0.417  95% CI [0.224, 0.774]
-planpro      log rate  0.739  ratio 2.095  95% CI [1.060, 4.140]
+            log rate   exp, 95% CI
+(Intercept)   -0.875   0.417 [0.224, 0.774]
+planpro        0.739   2.095 [1.060, 4.140]
 residual deviance 5.617 on 8 df
 ```
 
-- `offset(log(months))` makes the model describe tickets per month, so accounts observed for different lengths of time are comparable.
-- `basic` is the reference plan. The exponentiated intercept is the estimated monthly ticket rate on the basic plan, and the `planpro` ratio is the pro rate divided by the basic rate. It is an association, since pro accounts may differ from basic accounts in other ways.
-- The Poisson model assumes the variance equals the mean. A residual deviance far above its degrees of freedom would suggest overdispersion, which makes the standard errors too small. With ten accounts this comparison is a weak check in either direction.
+- `offset(log(months))` puts the model on tickets per month, so accounts observed for different lengths of time are comparable.
+- `basic` is the reference plan. The exponentiated intercept is its monthly ticket rate, and the exponentiated `planpro` is the pro-to-basic rate ratio.
+- The rate ratio is an association, since pro accounts may differ from basic accounts in other ways.
+- Poisson regression assumes the variance equals the mean. A deviance far above its degrees of freedom would suggest overdispersion and standard errors that are too small. With ten accounts this check is weak.
 
 **See also:** [Linear and generalized linear models](../models.qmd) for links, weights, result keys, and the differences from R's `glm()`

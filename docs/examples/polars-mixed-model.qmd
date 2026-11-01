@@ -5,7 +5,7 @@ include-in-header: _phiz-scripts.html
 
 Read a CSV file with Polars, fit test scores with a random intercept for each school, and chart each school's fitted line with phiz.
 
-The example needs the phpolars extension ([phpolars installation](https://phpolars.phpstats.org/docs/deployment)) and phiz (`composer require phpstats/phiz`). phit can be the extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)). The [complete script](https://github.com/phpstats/phit/blob/main/docs/examples/scripts/polars-mixed-model.php) includes the Composer bootstrap.
+The example needs the phpolars extension ([phpolars installation](https://phpolars.phpstats.org/docs/deployment)) and phiz (`composer require phpstats/phiz`). phit can be the extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)). [Runnable script](https://github.com/phpstats/phit/blob/main/docs/examples/scripts/polars-mixed-model.php)
 
 ## Data
 
@@ -20,10 +20,9 @@ curl -O \
 
 ## Interpretation
 
-- `scan_csv()` starts a lazy query, `select()` keeps three of the file's four columns, and `collect()` runs it. `toColumns()` copies the result into PHP arrays, one per column. `fit_mixed_gaussian()` and `Plot::of()` both accept an object with `toColumns()` and would each call it themselves, so the script converts once and passes the arrays to both.
-- `fit_mixed_gaussian()` fits by REML, as `lme4::lmer()` does by default. The `study_hours` coefficient is the difference in score associated with one more study hour within a school. The school SD measures how much school intercepts vary around the average intercept.
-- `fitted` holds the conditional fitted values, which include each school's predicted random intercept. Fixed-effects-only predictions are in `fixed_fitted`.
-- The model gives every school the same slope, so the twelve fitted lines are parallel and differ only in their intercepts.
-- The script saves the chart as a standalone page, `schools.html`.
+- `toColumns()` converts the Polars result to PHP arrays once for use by phit and phiz.
+- The `study_hours` coefficient is an association within schools.
+- `fitted` holds conditional fitted values, which include each school's predicted intercept. `fixed_fitted` leaves them out.
+- The model gives every school the same slope, so the fitted lines are parallel.
 
 **See also:** [Fit a mixed model](mixed-model.qmd) for reading the variance components and school effects · [Mixed models](../mixed-models.qmd) for the supported structures · phpolars' [Getting started](https://phpolars.phpstats.org/docs/getting-started) · phiz's [Get started](https://phiz.phpstats.org/docs/get-started)
