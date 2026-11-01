@@ -93,7 +93,7 @@ def manifest(benchmarks, verifications):
                 {'title': 'Fit a mixed model', 'path': 'examples/mixed-model.qmd'},
                 {'title': 'Densities, quantiles, and random draws', 'path': 'examples/distributions.qmd'},
                 {'title': 'Fit a mixed model to a Polars table and chart it', 'path': 'examples/polars-mixed-model.qmd'},
-                {'title': 'Functions', 'path': 'functions/index.qmd'},
+                {'title': 'Functions and methods', 'path': 'functions/index.qmd'},
                 {'title': 'API conventions', 'path': 'contracts.qmd'},
                 {'title': 'R compatibility', 'path': 'r-compatibility.qmd'},
                 {'title': 'Development', 'path': 'development.qmd'},

@@ -304,7 +304,7 @@ def csv_page(functions, classes):
 
 
 def index_page(functions, classes):
-    out = ['---', 'title: "Functions"', '---', '', GENERATED,
+    out = ['---', 'title: "Functions and methods"', '---', '', GENERATED,
            f'phit provides {len(functions)} functions in the `Phit` namespace and one class, `CsvReader`. '
            f"{sum(1 for f in functions.values() if f['deprecated'])} of the functions are deprecated aliases. "
            'Each name links to its reference entry. Import functions with `use function Phit\\{...};`.', '']

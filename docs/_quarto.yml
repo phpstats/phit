@@ -64,10 +64,10 @@ website:
     style: docked
     search: true
     contents:
-      - href: index.qmd
-        text: Overview
       - section: "Getting started"
         contents:
+          - href: index.qmd
+            text: Overview
           - installation.qmd
           - extension-or-polyfill.qmd
           - getting-started.qmd
@@ -85,7 +85,7 @@ website:
           - io.qmd
           - deployment.qmd
           - r-compatibility.qmd
-      - section: "Functions"
+      - section: "Functions and methods"
         contents:
           - href: functions/index.qmd
             text: "All functions"
