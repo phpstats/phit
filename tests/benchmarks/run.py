@@ -133,6 +133,10 @@ def main():
               'rust': subprocess.check_output(['rustc', '--version'], text=True).strip(),
               'tolerance': {'absolute': 1e-7 if args.model=='lmm' else 1e-9, 'relative': 1e-6 if args.model=='lmm' else 1e-7}, 'cases': []}
     if args.model == 'lmm':
+        # statsmodels' BFGS stops slightly short of R's optimum on a million rows (random effects differed by
+        # 6e-6 relative on Linux), so it is checked as a peer at this looser tolerance; phit is checked against R
+        # at the tolerance above.
+        report['tolerance']['peer'] = {'absolute': 1e-6, 'relative': 1e-5}
         report['tolerance']['quantity_relative'] = {
             key:1e-5 for key in ['covariance','std_errors','z_statistics','residual_variance',
                                  'random_intercept_variance','sigma','icc']}
@@ -164,7 +168,11 @@ def main():
                 errors[name] = {}
                 for key, expected in reference.items():
                     actual = results[name]['result'][key]
-                    np.testing.assert_allclose(actual, expected, atol=report["tolerance"]["absolute"], rtol=report["tolerance"].get("quantity_relative",{}).get(key,report["tolerance"]["relative"]),
+                    tolerance = report['tolerance']
+                    if name == 'statsmodels' and 'peer' in tolerance:
+                        tolerance = tolerance['peer']
+                    rtol = tolerance.get('quantity_relative', {}).get(key, tolerance['relative'])
+                    np.testing.assert_allclose(actual, expected, atol=tolerance['absolute'], rtol=rtol,
                                                err_msg=f'n={n},p={p}/{name}/{key}')
                     errors[name][key] = float(np.max(np.abs(np.asarray(actual) - expected)))
                 assert results[name]['result']['df_residual'] == n - p
