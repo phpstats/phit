@@ -1,0 +1,17 @@
+/* Keep every page within the viewport: wide content scrolls inside its own box, and long identifiers wrap. */
+main table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+main :not(pre) > code:not(.sourceCode) {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+main pre,
+main .cell-output,
+mjx-container[display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
