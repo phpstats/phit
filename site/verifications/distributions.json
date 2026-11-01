@@ -1,6092 +1,6706 @@
 {
  "title": "Distributions: accuracy against 60-digit references",
- "description": "Relative error vs the rounded mpmath reference; for log values and quantiles the denominator is max(|reference|, 1) and max(|reference|, 1e-300). R and SciPy errors are shown for comparison.",
- "reference": "mpmath (60 digits); R R version 4.6.1 (2026-06-24); SciPy 1.18.1",
- "tolerance": "1e-12 relative",
- "source": "docs/verifications/distributions-results.json",
+ "label": "Distributions",
+ "kind": "reference",
+ "checked": "Densities, masses, CDFs, survival functions, their logs, and quantiles of every family at saved points, against mpmath at 60 digits, with R and SciPy as peers.",
+ "reference": "mpmath 1.4.1 at 60 digits, each value rounded once",
+ "versions": {
+  "mpmath": "1.4.1",
+  "R": "R version 4.6.1 (2026-06-24)",
+  "SciPy": "1.18.1",
+  "NumPy": "2.5.4",
+  "PHP": "8.5.10"
+ },
+ "inputs": "tests/fixtures/distributions-r.json: the cases and points; references in tests/fixtures/distributions-mpmath.json.",
+ "comparison": [
+  {
+   "id": "probability",
+   "kind": "tolerance",
+   "rtol": 1e-12,
+   "rel_floor": 1e-300,
+   "applies_to": "densities, masses, CDFs, and survival functions"
+  },
+  {
+   "id": "log-and-quantile",
+   "kind": "tolerance",
+   "rtol": 1e-12,
+   "rel_floor": 1,
+   "applies_to": "log values and quantiles"
+  }
+ ],
  "cases": [
   {
    "name": "normal(mean=0, sd=1)",
    "quantity": "pdf",
    "n_compared": 28,
+   "rule": "probability",
    "max_rel_error": 1.576728720815538e-16,
    "peers": {
     "r": 1.576728720815538e-16,
     "scipy": 2.374668644748583e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=0, sd=1)",
    "quantity": "logpdf",
    "n_compared": 28,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 1.6390265625966988e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=0, sd=1)",
    "quantity": "cdf",
    "n_compared": 28,
+   "rule": "probability",
    "max_rel_error": 2.7757912667303906e-16,
    "peers": {
     "r": 2.7757912667303906e-16,
     "scipy": 1.1419645790431312e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=0, sd=1)",
    "quantity": "logcdf",
    "n_compared": 28,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.5245750140984627e-16,
    "peers": {
     "r": 1.1102230246251565e-16,
     "scipy": 3.0491500281969253e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=0, sd=1)",
    "quantity": "sf",
    "n_compared": 28,
+   "rule": "probability",
    "max_rel_error": 2.7757912667303906e-16,
    "peers": {
     "r": 2.7757912667303906e-16,
     "scipy": 1.1419645790431312e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=0, sd=1)",
    "quantity": "logsf",
    "n_compared": 28,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.5245750140984627e-16,
    "peers": {
     "r": 6.938893903907228e-18,
     "scipy": 3.0491500281969253e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=0, sd=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.680088249177139e-16,
    "peers": {
     "r": 2.2658029094053857e-16,
     "scipy": 2.1860457058776032e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=3, sd=2)",
    "quantity": "pdf",
    "n_compared": 28,
+   "rule": "probability",
    "max_rel_error": 1.8217077380159084e-14,
    "peers": {
     "r": 2.220446049250313e-16,
     "scipy": 2.374668644748583e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=3, sd=2)",
    "quantity": "logpdf",
    "n_compared": 28,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.4531511194287054e-16,
    "peers": {
     "r": 1.4531511194287054e-16,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=3, sd=2)",
    "quantity": "cdf",
    "n_compared": 28,
+   "rule": "probability",
    "max_rel_error": 2.7757912667303906e-16,
    "peers": {
     "r": 2.7757912667303906e-16,
     "scipy": 1.1419645790431312e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=3, sd=2)",
    "quantity": "logcdf",
    "n_compared": 28,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.5245750140984627e-16,
    "peers": {
     "r": 1.1102230246251565e-16,
     "scipy": 3.0491500281969253e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=3, sd=2)",
    "quantity": "sf",
    "n_compared": 28,
+   "rule": "probability",
    "max_rel_error": 2.7757912667303906e-16,
    "peers": {
     "r": 2.7757912667303906e-16,
     "scipy": 1.1419645790431312e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=3, sd=2)",
    "quantity": "logsf",
    "n_compared": 28,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.5245750140984627e-16,
    "peers": {
     "r": 6.938893903907228e-18,
     "scipy": 3.0491500281969253e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=3, sd=2)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.2705779139513926e-15,
    "peers": {
     "r": 8.448010532984827e-16,
     "scipy": 6.0342932378463045e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=1000000, sd=1000)",
    "quantity": "pdf",
    "n_compared": 28,
+   "rule": "probability",
    "max_rel_error": 8.292340590169574e-15,
    "peers": {
     "r": 2.3190123483872883e-16,
     "scipy": 3.478518522580932e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=1000000, sd=1000)",
    "quantity": "logpdf",
    "n_compared": 28,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.8223728823293626e-16,
    "peers": {
     "r": 1.8223728823293626e-16,
     "scipy": 1.8223728823293626e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=1000000, sd=1000)",
    "quantity": "cdf",
    "n_compared": 28,
+   "rule": "probability",
    "max_rel_error": 2.7757912667303906e-16,
    "peers": {
     "r": 2.7757912667303906e-16,
     "scipy": 1.1419645790431312e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=1000000, sd=1000)",
    "quantity": "logcdf",
    "n_compared": 28,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.5245750140984627e-16,
    "peers": {
     "r": 1.2038318936589227e-16,
     "scipy": 3.0491500281969253e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=1000000, sd=1000)",
    "quantity": "sf",
    "n_compared": 28,
+   "rule": "probability",
    "max_rel_error": 2.7757912667303906e-16,
    "peers": {
     "r": 2.7757912667303906e-16,
     "scipy": 1.1419645790431312e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=1000000, sd=1000)",
    "quantity": "logsf",
    "n_compared": 28,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.5245750140984627e-16,
    "peers": {
     "r": 1.2038318936589227e-16,
     "scipy": 3.0491500281969253e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=1000000, sd=1000)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=-2, sd=1e-08)",
    "quantity": "pdf",
    "n_compared": 28,
+   "rule": "probability",
    "max_rel_error": 2.8077823441209743e-14,
    "peers": {
     "r": 4.213337678748985e-09,
     "scipy": 4.3005621286340556e-10
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=-2, sd=1e-08)",
    "quantity": "logpdf",
    "n_compared": 28,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.5514762445810625e-16,
    "peers": {
     "r": 3.5514762445810625e-16,
     "scipy": 3.5514762445810625e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=-2, sd=1e-08)",
    "quantity": "cdf",
    "n_compared": 28,
+   "rule": "probability",
    "max_rel_error": 2.860702044142732e-14,
    "peers": {
     "r": 2.860702044142732e-14,
     "scipy": 1.425718306210406e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=-2, sd=1e-08)",
    "quantity": "logcdf",
    "n_compared": 28,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.6499534290436625e-16,
    "peers": {
     "r": 1.6499534290436625e-16,
     "scipy": 3.299906858087325e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=-2, sd=1e-08)",
    "quantity": "sf",
    "n_compared": 28,
+   "rule": "probability",
    "max_rel_error": 2.860702044142732e-14,
    "peers": {
     "r": 2.860702044142732e-14,
     "scipy": 1.425718306210406e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=-2, sd=1e-08)",
    "quantity": "logsf",
    "n_compared": 28,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.6499534290436625e-16,
    "peers": {
     "r": 1.6499534290436625e-16,
     "scipy": 3.299906858087325e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "normal(mean=-2, sd=1e-08)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=0.5)",
    "quantity": "pdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 1.1832985226950261e-15,
    "peers": {
     "r": 1.0761633811322873e-15,
     "scipy": 5.071279382978683e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=0.5)",
    "quantity": "logpdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.0328668000787259e-16,
    "peers": {
     "r": 1.9536952355504214e-16,
     "scipy": 1.6943077166153117e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=0.5)",
    "quantity": "cdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 2.768839463704317e-16,
    "peers": {
     "r": 2.768839463704317e-16,
     "scipy": 2.1636809603633042e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=0.5)",
    "quantity": "logcdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.9398580547748083e-16,
    "peers": {
     "r": 1.9398580547748083e-16,
     "scipy": 1.9398580547748083e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=0.5)",
    "quantity": "sf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 2.370373440243085e-16,
    "peers": {
     "r": 2.370373440243085e-16,
     "scipy": 3.8242297006042366e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=0.5)",
    "quantity": "logsf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.8500000533356534e-16,
    "peers": {
     "r": 1.4565285527185502e-16,
     "scipy": 1.8500000533356534e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=0.5)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 9.171698457973327e-14,
    "peers": {
     "r": 2.5730454951430586e+284,
     "scipy": 1.0
    },
-   "passed": true
+   "status": "pass",
+   "note": "1 points have no mpmath reference and are not compared"
   },
   {
    "name": "t(df=1)",
    "quantity": "pdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 1.4903272091069964e-15,
    "peers": {
     "r": 2.0302066686315335e-15,
     "scipy": 1.4903272091069964e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=1)",
    "quantity": "logpdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.9397117841496045e-16,
    "peers": {
     "r": 1.7154298732224943e-16,
     "scipy": 1.9397117841496045e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=1)",
    "quantity": "cdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 8.881784197001252e-16,
    "peers": {
     "r": 8.881784197001252e-16,
     "scipy": 3.1201760976134e-09
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=1)",
    "quantity": "logcdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.406853007629835e-16,
    "peers": {
     "r": 8.008566259537295e-16,
     "scipy": 3.1201760064547557e-09
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=1)",
    "quantity": "sf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 8.881784197001252e-16,
    "peers": {
     "r": 8.881784197001252e-16,
     "scipy": 3.120176137340716e-09
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=1)",
    "quantity": "logsf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.406853007629835e-16,
    "peers": {
     "r": 8.008566259537295e-16,
     "scipy": 3.120176117477058e-09
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 8.391727190238936e-15,
    "peers": {
     "r": 1.7857945460128555e-16,
     "scipy": 1.4980281131695713e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=2)",
    "quantity": "pdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 4.141519753652768e-15,
    "peers": {
     "r": 6.354653023826605e-16,
     "scipy": 4.141519753652768e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=2)",
    "quantity": "logpdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.1356176692099448e-16,
    "peers": {
     "r": 2.1356176692099453e-16,
     "scipy": 2.1356176692099448e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=2)",
    "quantity": "cdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 3.521402776728383e-16,
    "peers": {
     "r": 1.7607013883641914e-16,
     "scipy": 2.1414402623615905e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=2)",
    "quantity": "logcdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.7755575615628914e-17,
    "peers": {
     "r": 2.9956692624426214e-16,
     "scipy": 1.6229199821429645e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=2)",
    "quantity": "sf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 2.710912000252857e-16,
    "peers": {
     "r": 1.6274169981750782e-16,
     "scipy": 1.9548159153251568e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=2)",
    "quantity": "logsf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
    "peers": {
     "r": 2.9956692624426214e-16,
     "scipy": 1.4285287388465165e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=2)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.961850053029474e-14,
    "peers": {
     "r": 2.0579516728925277e-16,
     "scipy": 2.0579516728925277e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=3.5)",
    "quantity": "pdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 3.596443060408965e-15,
    "peers": {
     "r": 2.525025194235223e-15,
     "scipy": 3.596443060408965e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=3.5)",
    "quantity": "logpdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.4280028958616388e-16,
    "peers": {
     "r": 1.8802590012131127e-16,
     "scipy": 1.4280028958616388e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=3.5)",
    "quantity": "cdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 7.058240489416521e-15,
    "peers": {
     "r": 7.058240489416521e-15,
     "scipy": 2.737589573191682e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=3.5)",
    "quantity": "logcdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.67972668973103e-16,
    "peers": {
     "r": 2.712661903806287e-16,
     "scipy": 1.1102230246251565e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=3.5)",
    "quantity": "sf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 7.058240489416521e-15,
    "peers": {
     "r": 7.058240489416521e-15,
     "scipy": 4.246465288924062e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=3.5)",
    "quantity": "logsf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.67972668973103e-16,
    "peers": {
     "r": 1.7760460727320081e-16,
     "scipy": 1.1102230246251565e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=3.5)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.2205764791935798e-14,
    "peers": {
     "r": 4.384754494528232e-08,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=12)",
    "quantity": "pdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 3.88537427019511e-14,
    "peers": {
     "r": 7.895412955476694e-15,
     "scipy": 3.88537427019511e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=12)",
    "quantity": "logpdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-16,
    "peers": {
     "r": 2.986331323620481e-16,
     "scipy": 7.771561172376096e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=12)",
    "quantity": "cdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 5.592614151476679e-15,
    "peers": {
     "r": 5.592614151476679e-15,
     "scipy": 1.007420708743429e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=12)",
    "quantity": "logcdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.493938913157278e-16,
    "peers": {
     "r": 2.0792036811280654e-16,
     "scipy": 1.246969456578639e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=12)",
    "quantity": "sf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 5.592614151476679e-15,
    "peers": {
     "r": 5.592614151476679e-15,
     "scipy": 1.0515643787871765e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=12)",
    "quantity": "logsf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.493938913157278e-16,
    "peers": {
     "r": 2.5030841249917304e-16,
     "scipy": 2.0244975131017563e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=12)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.3793904742492057e-15,
    "peers": {
     "r": 3.5824697827914606e-12,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=30)",
    "quantity": "pdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 1.2298971532735455e-13,
    "peers": {
     "r": 5.181294898338059e-14,
     "scipy": 1.2298971532735455e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=30)",
    "quantity": "logpdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.7208799245250504e-16,
    "peers": {
     "r": 3.451004460784788e-16,
     "scipy": 2.220446049250313e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=30)",
    "quantity": "cdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 3.84788109949276e-14,
    "peers": {
     "r": 2.7381197593871773e-14,
     "scipy": 3.287950055905091e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=30)",
    "quantity": "logcdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.9139348272890313e-16,
    "peers": {
     "r": 2.9000653473542787e-16,
     "scipy": 1.222626310376515e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=30)",
    "quantity": "sf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 3.84788109949276e-14,
    "peers": {
     "r": 2.7381197593871773e-14,
     "scipy": 3.287950055905091e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=30)",
    "quantity": "logsf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.9139348272890313e-16,
    "peers": {
     "r": 2.3304324129209233e-16,
     "scipy": 1.5636466872608017e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=30)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.2572561165843695e-15,
    "peers": {
     "r": 3.7017002106510936e-15,
     "scipy": 1.6944601566874655e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=100)",
    "quantity": "pdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 1.0728969413889567e-14,
    "peers": {
     "r": 1.1364643324747872e-14,
     "scipy": 3.097209171815268e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=100)",
    "quantity": "logpdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.11875687422096e-16,
    "peers": {
     "r": 1.9778299118693657e-16,
     "scipy": 3.0531133177191805e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=100)",
    "quantity": "cdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 2.707297619033512e-14,
    "peers": {
     "r": 2.4896664929096515e-15,
     "scipy": 9.958665971638606e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=100)",
    "quantity": "logcdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.844317541245963e-16,
    "peers": {
     "r": 6.055396926557453e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=100)",
    "quantity": "sf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 2.707297619033512e-14,
    "peers": {
     "r": 5.311301609636352e-15,
     "scipy": 4.42608467469696e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=100)",
    "quantity": "logsf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.844317541245963e-16,
    "peers": {
     "r": 6.055396926557453e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=100)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.635771930584596e-16,
    "peers": {
     "r": 2.925999637250191e-15,
     "scipy": 1.8785906435281987e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=10000)",
    "quantity": "pdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 1.5741331866790323e-14,
    "peers": {
     "r": 2.808525397815827e-14,
     "scipy": 2.0874818007233526e-12
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=10000)",
    "quantity": "logpdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
    "peers": {
     "r": 1.5648090161374454e-16,
     "scipy": 2.0754509222342676e-12
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=10000)",
    "quantity": "cdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 8.746467132926009e-16,
    "peers": {
     "r": 9.879206964690212e-15,
     "scipy": 4.490548620313733e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=10000)",
    "quantity": "logcdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.824577757975806e-16,
    "peers": {
     "r": 6.030722197469758e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=10000)",
    "quantity": "sf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 1.8019989798426725e-13,
    "peers": {
     "r": 7.839865691523315e-14,
     "scipy": 1.0277634874210914e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=10000)",
    "quantity": "logsf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.824577757975806e-16,
    "peers": {
     "r": 6.030722197469758e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=10000)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.547150108490845e-16,
    "peers": {
     "r": 4.953364232511667e-16,
     "scipy": 2.1823833694969485e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=1000000)",
    "quantity": "pdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 1.1727714833975385e-14,
    "peers": {
     "r": 2.6486187434034294e-14,
     "scipy": 1.1727714833975385e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=1000000)",
    "quantity": "logpdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
    "peers": {
     "r": 1.8277298487481942e-16,
     "scipy": 3.3306690738754696e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=1000000)",
    "quantity": "cdf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 8.847784160200941e-15,
    "peers": {
     "r": 3.6545195444308236e-15,
     "scipy": 5.000921481852706e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=1000000)",
    "quantity": "logcdf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.669771236920106e-16,
    "peers": {
     "r": 3.4956400238192303e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=1000000)",
    "quantity": "sf",
    "n_compared": 19,
+   "rule": "probability",
    "max_rel_error": 4.806564720610372e-14,
    "peers": {
     "r": 8.772907330677028e-15,
     "scipy": 5.6097182086300996e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=1000000)",
    "quantity": "logsf",
    "n_compared": 19,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.5374249669178424e-16,
    "peers": {
     "r": 1.1791416556392808e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "t(df=1000000)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.4652442276003907e-16,
    "peers": {
     "r": 4.3720181465117365e-16,
     "scipy": 1.9177856560944883e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=0.5)",
    "quantity": "pdf",
    "n_compared": 22,
+   "rule": "probability",
    "max_rel_error": 1.3660919971289116e-13,
    "peers": {
     "r": 4.1516779365222947e-16,
     "scipy": 3.507540892877902e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=0.5)",
    "quantity": "logpdf",
    "n_compared": 22,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.2005877366147595e-16,
    "peers": {
     "r": 2.2005877366147595e-16,
     "scipy": 1.8636518822644826e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=0.5)",
    "quantity": "cdf",
    "n_compared": 22,
+   "rule": "probability",
    "max_rel_error": 8.598708942067252e-15,
    "peers": {
     "r": 1.6825665343417614e-16,
     "scipy": 9.657011581090916e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=0.5)",
    "quantity": "logcdf",
    "n_compared": 22,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.3877787807814457e-16,
    "peers": {
     "r": 5.551115123125783e-17,
     "scipy": 3.885780586188048e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=0.5)",
    "quantity": "sf",
    "n_compared": 22,
+   "rule": "probability",
    "max_rel_error": 2.2033115941567355e-14,
    "peers": {
     "r": 1.4071138227602046e-15,
     "scipy": 2.3092400361835016e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=0.5)",
    "quantity": "logsf",
    "n_compared": 22,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.819594009826188e-16,
    "peers": {
     "r": 2.2469953770669627e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=0.5)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.3594809427783696e-14,
    "peers": {
     "r": 1.1652693795243168e-14,
     "scipy": 7.854884713669122e-15
    },
-   "passed": true
+   "status": "pass",
+   "note": "2 points have no mpmath reference and are not compared"
   },
   {
    "name": "chisquare(df=1)",
    "quantity": "pdf",
    "n_compared": 22,
+   "rule": "probability",
    "max_rel_error": 7.943101657113667e-14,
    "peers": {
     "r": 2.817521829536891e-16,
     "scipy": 3.4291804510887194e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1)",
    "quantity": "logpdf",
    "n_compared": 22,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.885780586188048e-16,
    "peers": {
     "r": 2.1203175591255952e-16,
     "scipy": 1.676759515421257e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1)",
    "quantity": "cdf",
    "n_compared": 22,
+   "rule": "probability",
    "max_rel_error": 6.398981471176793e-16,
    "peers": {
     "r": 1.3174581463713006e-15,
     "scipy": 2.4654734488699265e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1)",
    "quantity": "logcdf",
    "n_compared": 22,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
    "peers": {
     "r": 1.304512053934559e-15,
     "scipy": 4.829470157119431e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1)",
    "quantity": "sf",
    "n_compared": 22,
+   "rule": "probability",
    "max_rel_error": 5.744355718203801e-14,
    "peers": {
     "r": 7.234484023031334e-15,
     "scipy": 2.593827198501478e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1)",
    "quantity": "logsf",
    "n_compared": 22,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
    "peers": {
     "r": 3.8415907172862144e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.0526356715474086e-14,
    "peers": {
     "r": 8.679627467145298e-15,
     "scipy": 1.9021311257786505e-14
    },
-   "passed": true
+   "status": "pass",
+   "note": "1 points have no mpmath reference and are not compared"
   },
   {
    "name": "chisquare(df=2)",
    "quantity": "pdf",
    "n_compared": 23,
+   "rule": "probability",
    "max_rel_error": 1.84844061586631e-15,
    "peers": {
     "r": 0.0,
     "scipy": 1.84844061586631e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=2)",
    "quantity": "logpdf",
    "n_compared": 23,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
    "peers": {
     "r": 1.1102230246251565e-16,
     "scipy": 1.1102230246251565e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=2)",
    "quantity": "cdf",
    "n_compared": 23,
+   "rule": "probability",
    "max_rel_error": 3.431665068201653e-14,
    "peers": {
     "r": 3.431665068201653e-14,
     "scipy": 3.431665068201653e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=2)",
    "quantity": "logcdf",
    "n_compared": 23,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.4717693951859316e-16,
    "peers": {
     "r": 1.4717693951859316e-16,
     "scipy": 2.220446049250313e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=2)",
    "quantity": "sf",
    "n_compared": 23,
+   "rule": "probability",
    "max_rel_error": 2.641593055744183e-14,
    "peers": {
     "r": 1.2269861993937067e-16,
     "scipy": 2.641593055744183e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=2)",
    "quantity": "logsf",
    "n_compared": 23,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
    "peers": {
     "r": 1.3877787807814457e-17,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=2)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.4369795411866816e-14,
    "peers": {
     "r": 3.0669470416294974e-14,
     "scipy": 3.933809847839257e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=4)",
    "quantity": "pdf",
    "n_compared": 24,
+   "rule": "probability",
    "max_rel_error": 2.4446177960153225e-14,
    "peers": {
     "r": 3.7885077042959683e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=4)",
    "quantity": "logpdf",
    "n_compared": 24,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.141595284223774e-16,
    "peers": {
     "r": 2.1170892019649794e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=4)",
    "quantity": "cdf",
    "n_compared": 24,
+   "rule": "probability",
    "max_rel_error": 2.5382310798771143e-14,
    "peers": {
     "r": 2.1182883318710043e-16,
     "scipy": 2.5382310798771143e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=4)",
    "quantity": "logcdf",
    "n_compared": 24,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
    "peers": {
     "r": 2.1961590126310027e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=4)",
    "quantity": "sf",
    "n_compared": 24,
+   "rule": "probability",
    "max_rel_error": 4.0421699966002335e-15,
    "peers": {
     "r": 4.342025830346745e-16,
     "scipy": 4.0421699966002335e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=4)",
    "quantity": "logsf",
    "n_compared": 24,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1511812580810426e-16,
    "peers": {
     "r": 2.101740296416651e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=4)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.5348904147486612e-14,
    "peers": {
     "r": 1.3430291129050786e-14,
     "scipy": 1.5348904147486612e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=5)",
    "quantity": "pdf",
    "n_compared": 23,
+   "rule": "probability",
    "max_rel_error": 3.632447711708161e-14,
    "peers": {
     "r": 2.8379545332624446e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=5)",
    "quantity": "logpdf",
    "n_compared": 23,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.190116269711235e-16,
    "peers": {
     "r": 1.9830024045152416e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=5)",
    "quantity": "cdf",
    "n_compared": 23,
+   "rule": "probability",
    "max_rel_error": 9.237469191329563e-14,
    "peers": {
     "r": 2.4836656404068416e-16,
     "scipy": 9.000611006936497e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=5)",
    "quantity": "logcdf",
    "n_compared": 23,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.6675196586971336e-15,
    "peers": {
     "r": 1.9649281890801044e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=5)",
    "quantity": "sf",
    "n_compared": 23,
+   "rule": "probability",
    "max_rel_error": 7.496855429251891e-15,
    "peers": {
     "r": 3.699155359672184e-16,
     "scipy": 7.544941961249627e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=5)",
    "quantity": "logsf",
    "n_compared": 23,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-15,
    "peers": {
     "r": 2.0007086827650991e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=5)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.6381821634446705e-14,
    "peers": {
     "r": 1.8296580007304112e-14,
     "scipy": 1.6381821634446705e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=30)",
    "quantity": "pdf",
    "n_compared": 24,
+   "rule": "probability",
    "max_rel_error": 2.2479917769229052e-14,
    "peers": {
     "r": 1.1653918476882838e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=30)",
    "quantity": "logpdf",
    "n_compared": 24,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.148138097197201e-16,
    "peers": {
     "r": 1.9688935140498353e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=30)",
    "quantity": "cdf",
    "n_compared": 24,
+   "rule": "probability",
    "max_rel_error": 1.9846196414015684e-14,
    "peers": {
     "r": 7.404644745799085e-16,
     "scipy": 2.694564878976113e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=30)",
    "quantity": "logcdf",
    "n_compared": 24,
+   "rule": "log-and-quantile",
    "max_rel_error": 7.093139598404445e-16,
    "peers": {
     "r": 2.220446049250313e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=30)",
    "quantity": "sf",
    "n_compared": 24,
+   "rule": "probability",
    "max_rel_error": 6.547116976794505e-15,
    "peers": {
     "r": 1.3033654182370575e-15,
     "scipy": 1.003392911863524e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=30)",
    "quantity": "logsf",
    "n_compared": 24,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.8613477204852066e-16,
    "peers": {
     "r": 2.220446049250313e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=30)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.5301721755825018e-15,
    "peers": {
     "r": 5.049568179422256e-15,
     "scipy": 1.836206610699002e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000)",
    "quantity": "pdf",
    "n_compared": 22,
+   "rule": "probability",
    "max_rel_error": 1.4706348220267424e-13,
    "peers": {
     "r": 2.6987321862919782e-14,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000)",
    "quantity": "logpdf",
    "n_compared": 22,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.0342272285979863e-15,
    "peers": {
     "r": 1.2945082363805367e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000)",
    "quantity": "cdf",
    "n_compared": 22,
+   "rule": "probability",
    "max_rel_error": 3.13880361815151e-14,
    "peers": {
     "r": 8.237517476745043e-14,
     "scipy": 3.038090921746747e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000)",
    "quantity": "logcdf",
    "n_compared": 22,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.160074302136189e-16,
    "peers": {
     "r": 1.6426864805696504e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000)",
    "quantity": "sf",
    "n_compared": 22,
+   "rule": "probability",
    "max_rel_error": 1.76230173498244e-14,
    "peers": {
     "r": 2.0041844988564532e-14,
     "scipy": 2.650991085415131e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000)",
    "quantity": "logsf",
    "n_compared": 22,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1864479799149572e-15,
    "peers": {
     "r": 1.4501030865627254e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 7.101274246878072e-16,
    "peers": {
     "r": 5.201856644693744e-16,
     "scipy": 1.7602180040152852e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000000)",
    "quantity": "pdf",
    "n_compared": 24,
+   "rule": "probability",
    "max_rel_error": 2.6941107112793085e-15,
    "peers": {
     "r": 1.500693344837577e-11,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000000)",
    "quantity": "logpdf",
    "n_compared": 24,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.026818782622407e-16,
    "peers": {
     "r": 7.278845134279926e-13,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000000)",
    "quantity": "cdf",
    "n_compared": 24,
+   "rule": "probability",
    "max_rel_error": 1.085315674476275e-13,
    "peers": {
     "r": 2.350864276843917e-15,
     "scipy": 8.161341528308894e-09
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000000)",
    "quantity": "logcdf",
    "n_compared": 24,
+   "rule": "log-and-quantile",
    "max_rel_error": 7.382905994364004e-15,
    "peers": {
     "r": 1.5067155090538785e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000000)",
    "quantity": "sf",
    "n_compared": 24,
+   "rule": "probability",
    "max_rel_error": 4.151540062361633e-13,
    "peers": {
     "r": 1.487877120251984e-14,
     "scipy": 2.782209249251677e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000000)",
    "quantity": "logsf",
    "n_compared": 24,
+   "rule": "log-and-quantile",
    "max_rel_error": 8.344073970739281e-13,
    "peers": {
     "r": 2.6932370363311545e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "chisquare(df=1000000)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.3009796865803157e-14,
    "peers": {
     "r": 1.179537282709958e-16,
     "scipy": 4.146656369057211e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=4, df2=40)",
    "quantity": "pdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 2.9324917903488175e-14,
    "peers": {
     "r": 2.3068549134121256e-14,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=4, df2=40)",
    "quantity": "logpdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.06133182919152e-16,
    "peers": {
     "r": 2.0438420584461351e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=4, df2=40)",
    "quantity": "cdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 1.7185409371566202e-15,
    "peers": {
     "r": 1.2896852308056064e-15,
     "scipy": 1.050678340838039e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=4, df2=40)",
    "quantity": "logcdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.00412491512197e-16,
    "peers": {
     "r": 5.00412491512197e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=4, df2=40)",
    "quantity": "sf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 2.430641411951405e-14,
    "peers": {
     "r": 2.430641411951405e-14,
     "scipy": 1.0008523460976375e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=4, df2=40)",
    "quantity": "logsf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
    "peers": {
     "r": 2.220446049250313e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=4, df2=40)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.0836303157793139e-14,
    "peers": {
     "r": 1.0,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=1, df2=1)",
    "quantity": "pdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 3.966998308112951e-15,
    "peers": {
     "r": "Inf",
     "scipy": 2.4412297280695084e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=1, df2=1)",
    "quantity": "logpdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.498001805406602e-16,
    "peers": {
     "r": "Inf",
     "scipy": 2.2032509163651832e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=1, df2=1)",
    "quantity": "cdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 8.881784197001252e-16,
    "peers": {
     "r": 8.881784197001252e-16,
     "scipy": 6.366196459289873e-11
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=1, df2=1)",
    "quantity": "logcdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 8.881784197001252e-16,
    "peers": {
     "r": 9.992007221626409e-16,
     "scipy": 2.220446049250313e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=1, df2=1)",
    "quantity": "sf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 8.881784197001252e-16,
    "peers": {
     "r": 8.881784197001252e-16,
     "scipy": 2.63679646985243e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=1, df2=1)",
    "quantity": "logsf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 8.881784197001252e-16,
    "peers": {
     "r": 9.992007221626409e-16,
     "scipy": 2.220446049250313e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=1, df2=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.9391608842390674e-14,
    "peers": {
     "r": 1.0,
     "scipy": 1.7824412834184917e-16
    },
-   "passed": true
+   "status": "pass",
+   "note": "4 points have no mpmath reference and are not compared"
   },
   {
    "name": "f(df1=0.5, df2=3)",
    "quantity": "pdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 3.852729714175505e-14,
    "peers": {
     "r": "Inf",
     "scipy": 1.8393677345095958e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=0.5, df2=3)",
    "quantity": "logpdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.0860049798621105e-16,
    "peers": {
     "r": "Inf",
     "scipy": 2.675259242820165e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=0.5, df2=3)",
    "quantity": "cdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 2.59782391416868e-15,
    "peers": {
     "r": 2.59782391416868e-15,
     "scipy": 5.246774876686777e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=0.5, df2=3)",
    "quantity": "logcdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
    "peers": {
     "r": 2.220446049250313e-16,
     "scipy": 2.220446049250313e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=0.5, df2=3)",
    "quantity": "sf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 4.250058540793762e-15,
    "peers": {
     "r": 4.250058540793762e-15,
     "scipy": 6.476922508554987e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=0.5, df2=3)",
    "quantity": "logsf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.740919880509126e-16,
    "peers": {
     "r": 3.3306690738754696e-16,
     "scipy": 3.034603276728848e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=0.5, df2=3)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.5189539458994297e-14,
    "peers": {
     "r": 1.0,
     "scipy": 9.937263071560826e-16
    },
-   "passed": true
+   "status": "pass",
+   "note": "3 points have no mpmath reference and are not compared"
   },
   {
    "name": "f(df1=10, df2=1000000)",
    "quantity": "pdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 3.195287234660121e-14,
    "peers": {
     "r": 3.312010056017568e-14,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=10, df2=1000000)",
    "quantity": "logpdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.855190917495076e-16,
    "peers": {
     "r": 4.1131145504970455e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=10, df2=1000000)",
    "quantity": "cdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 1.1310465083755418e-14,
    "peers": {
     "r": 9.921184952617092e-15,
     "scipy": 2.1482938636715445e-11
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=10, df2=1000000)",
    "quantity": "logcdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1324274851176597e-14,
    "peers": {
     "r": 3.603909489097117e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=10, df2=1000000)",
    "quantity": "sf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 3.1810691120334446e-14,
    "peers": {
     "r": 8.079192574312213e-14,
     "scipy": 2.728727441435649e-11
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=10, df2=1000000)",
    "quantity": "logsf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.4432899320127035e-14,
    "peers": {
     "r": 2.9976021664879227e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=10, df2=1000000)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.942217604886512e-15,
    "peers": {
     "r": 4.447314905724349e-05,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=100, df2=100)",
    "quantity": "pdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 2.3806954066297235e-14,
    "peers": {
     "r": 2.5605798695816566e-14,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=100, df2=100)",
    "quantity": "logpdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.5761799447276987e-15,
    "peers": {
     "r": 1.7732024378186612e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=100, df2=100)",
    "quantity": "cdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 6.831863661648149e-15,
    "peers": {
     "r": 6.831863661648149e-15,
     "scipy": 7.365102120201186e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=100, df2=100)",
    "quantity": "logcdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.3959835775603657e-16,
    "peers": {
     "r": 6.661338147750939e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=100, df2=100)",
    "quantity": "sf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 3.5347872295571774e-14,
    "peers": {
     "r": 3.5347872295571774e-14,
     "scipy": 1.5601819495976508e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=100, df2=100)",
    "quantity": "logsf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.3959835775603657e-16,
    "peers": {
     "r": 6.661338147750939e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=100, df2=100)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.293478800553926e-16,
    "peers": {
     "r": 4.346337032242325e-10,
     "scipy": 3.4333989120767697e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=5, df2=0.5)",
    "quantity": "pdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 1.5845461875065218e-13,
    "peers": {
     "r": 1.4518303900757726e-13,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=5, df2=0.5)",
    "quantity": "logpdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.3306690738754696e-16,
    "peers": {
     "r": 1.65696100385577e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=5, df2=0.5)",
    "quantity": "cdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 2.0886034280282846e-15,
    "peers": {
     "r": 4.8734079987326634e-15,
     "scipy": 6.962011426760948e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=5, df2=0.5)",
    "quantity": "logcdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.440892098500626e-16,
    "peers": {
     "r": 4.440892098500626e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=5, df2=0.5)",
    "quantity": "sf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 3.287718743294548e-16,
    "peers": {
     "r": 3.287718743294548e-16,
     "scipy": 2.297230538028199e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=5, df2=0.5)",
    "quantity": "logsf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.7755575615628914e-16,
    "peers": {
     "r": 3.3306690738754696e-16,
     "scipy": 2.220446049250313e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=5, df2=0.5)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.594627246961672e-14,
    "peers": {
     "r": 1.0,
     "scipy": 1.2797862621234802e-15
    },
-   "passed": true
+   "status": "pass",
+   "note": "4 points have no mpmath reference and are not compared"
   },
   {
    "name": "f(df1=2, df2=2)",
    "quantity": "pdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 1.4274103523746774e-15,
    "peers": {
     "r": 1.3824932951905788e-16,
     "scipy": 1.4274103523746774e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=2, df2=2)",
    "quantity": "logpdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
    "peers": {
     "r": 2.7755575615628914e-17,
     "scipy": 2.498001805406602e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=2, df2=2)",
    "quantity": "cdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 2.1611224622953715e-14,
    "peers": {
     "r": 2.1611224622953715e-14,
     "scipy": 1.6653345369377348e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=2, df2=2)",
    "quantity": "logcdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
    "peers": {
     "r": 5.551115123125783e-17,
     "scipy": 5.551115123125783e-17
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=2, df2=2)",
    "quantity": "sf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 7.52316384526264e-16,
    "peers": {
     "r": 7.52316384526264e-16,
     "scipy": 1.6653345369377348e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=2, df2=2)",
    "quantity": "logsf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
    "peers": {
     "r": 5.551115123125783e-17,
     "scipy": 5.551115123125783e-17
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "f(df1=2, df2=2)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1928326635383554e-14,
    "peers": {
     "r": 1.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass",
+   "note": "1 points have no mpmath reference and are not compared"
   },
   {
    "name": "beta(alpha=2, beta=5)",
    "quantity": "pdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 6.914169618895183e-14,
    "peers": {
     "r": 6.914169618895183e-14,
     "scipy": 1.5808868642691287e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=2, beta=5)",
    "quantity": "logpdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.0708047840169875e-15,
    "peers": {
     "r": 7.13869856011325e-16,
     "scipy": 7.13869856011325e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=2, beta=5)",
    "quantity": "cdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 3.341762518878212e-14,
    "peers": {
     "r": 3.341762518878212e-14,
     "scipy": 6.4427984251692e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=2, beta=5)",
    "quantity": "logcdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.0944316005169936e-16,
    "peers": {
     "r": 3.3306690738754696e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=2, beta=5)",
    "quantity": "sf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 1.216442077283859e-15,
    "peers": {
     "r": 2.432884154567718e-15,
     "scipy": 5.284574401738116e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=2, beta=5)",
    "quantity": "logsf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.3306690738754696e-16,
    "peers": {
     "r": 3.3306690738754696e-16,
     "scipy": 5.551115123125783e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=2, beta=5)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.7831234655533586e-14,
    "peers": {
     "r": 2.2462295576723065e-14,
     "scipy": 1.6036838395237628e+100
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.5, beta=0.5)",
    "quantity": "pdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 2.7115745459525902e-14,
    "peers": {
     "r": 2.7115745459525902e-14,
     "scipy": 2.0927210988051793e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.5, beta=0.5)",
    "quantity": "logpdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.728309025201289e-16,
    "peers": {
     "r": 5.728309025201289e-16,
     "scipy": 3.3306690738754696e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.5, beta=0.5)",
    "quantity": "cdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 8.881784197001252e-16,
    "peers": {
     "r": 8.881784197001252e-16,
     "scipy": 2.220446049250313e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.5, beta=0.5)",
    "quantity": "logcdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 8.881784197001252e-16,
    "peers": {
     "r": 9.992007221626409e-16,
     "scipy": 2.220446049250313e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.5, beta=0.5)",
    "quantity": "sf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 8.881784197001252e-16,
    "peers": {
     "r": 8.881784197001252e-16,
     "scipy": 2.633465779574723e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.5, beta=0.5)",
    "quantity": "logsf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 8.881784197001252e-16,
    "peers": {
     "r": 9.992007221626409e-16,
     "scipy": 2.220446049250313e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.5, beta=0.5)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.467524544043383e-15,
    "peers": {
     "r": 3.6588281545788093e-16,
     "scipy": 1.7164490277195466e-16
    },
-   "passed": true
+   "status": "pass",
+   "note": "4 points have no mpmath reference and are not compared"
   },
   {
    "name": "beta(alpha=1, beta=1)",
    "quantity": "pdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 1.2656542480726785e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=1, beta=1)",
    "quantity": "logpdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=1, beta=1)",
    "quantity": "cdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 2.4369795411866816e-14,
    "peers": {
     "r": 2.4369795411866816e-14,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=1, beta=1)",
    "quantity": "logcdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.469446951953614e-18,
    "peers": {
     "r": 3.469446951953614e-18,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=1, beta=1)",
    "quantity": "sf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 5.169878400698766e-16,
    "peers": {
     "r": 5.169878400698766e-16,
     "scipy": 1.586032892321652e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=1, beta=1)",
    "quantity": "logsf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.3877787807814457e-17,
    "peers": {
     "r": 1.3877787807814457e-17,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=1, beta=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.43697954118668e-14,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.1, beta=10)",
    "quantity": "pdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 6.155625869182043e-14,
    "peers": {
     "r": 6.155625869182043e-14,
     "scipy": 1.6595891881279496e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.1, beta=10)",
    "quantity": "logpdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.440892098500626e-16,
    "peers": {
     "r": 4.440892098500626e-16,
     "scipy": 1.3322676295501878e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.1, beta=10)",
    "quantity": "cdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 5.31889456869137e-15,
    "peers": {
     "r": 5.31889456869137e-15,
     "scipy": 4.214062433189949e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.1, beta=10)",
    "quantity": "logcdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.5616132192766846e-16,
    "peers": {
     "r": 5.551115123125783e-17,
     "scipy": 2.190854837593902e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.1, beta=10)",
    "quantity": "sf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 7.827001391846992e-15,
    "peers": {
     "r": 7.827001391846992e-15,
     "scipy": 2.2511122664178268e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.1, beta=10)",
    "quantity": "logsf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.5495457959454294e-16,
    "peers": {
     "r": 1.6599932910721543e-16,
     "scipy": 4.979979873216463e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=0.1, beta=10)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.0356248552366792e-14,
    "peers": {
     "r": 1.0730570789199327e-14,
     "scipy": 2.618626257728525e-15
    },
-   "passed": true
+   "status": "pass",
+   "note": "2 points have no mpmath reference and are not compared"
   },
   {
    "name": "beta(alpha=50, beta=200)",
    "quantity": "pdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 3.365953460162258e-14,
    "peers": {
     "r": 3.365953460162258e-14,
     "scipy": 1.280700278351276e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=50, beta=200)",
    "quantity": "logpdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.646485158470068e-16,
    "peers": {
     "r": 4.646485158470068e-16,
     "scipy": 8.539146342139296e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=50, beta=200)",
    "quantity": "cdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 9.401694755593362e-15,
    "peers": {
     "r": 9.401694755593362e-15,
     "scipy": 4.764684756978254e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=50, beta=200)",
    "quantity": "logcdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.6653345369377348e-15,
    "peers": {
     "r": 8.881784197001252e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=50, beta=200)",
    "quantity": "sf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 1.829923397736891e-14,
    "peers": {
     "r": 3.847969761596266e-14,
     "scipy": 1.2381570187813331e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=50, beta=200)",
    "quantity": "logsf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.7763568394002505e-15,
    "peers": {
     "r": 8.881784197001252e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=50, beta=200)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.212339889059507e-16,
    "peers": {
     "r": 7.609295395673604e-16,
     "scipy": 3.812874381631626e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=1000, beta=1000)",
    "quantity": "pdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 1.4933982257626902e-13,
    "peers": {
     "r": 1.4933982257626902e-13,
     "scipy": 1.2240343277862874e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=1000, beta=1000)",
    "quantity": "logpdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 8.329706900142112e-16,
    "peers": {
     "r": 8.329706900142112e-16,
     "scipy": 5.441577172983632e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=1000, beta=1000)",
    "quantity": "cdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 1.230516145232089e-13,
    "peers": {
     "r": 1.230516145232089e-13,
     "scipy": 1.2241732785040885e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=1000, beta=1000)",
    "quantity": "logcdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.647394850698921e-16,
    "peers": {
     "r": 2.220446049250313e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=1000, beta=1000)",
    "quantity": "sf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 4.101800975978386e-14,
    "peers": {
     "r": 4.1244628598235706e-14,
     "scipy": 3.3652897510098915e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=1000, beta=1000)",
    "quantity": "logsf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.2189241006902286e-16,
    "peers": {
     "r": 2.220446049250313e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=1000, beta=1000)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 7.78049485093919e-16,
    "peers": {
     "r": 2.127250032454656e-16,
     "scipy": 8.000817080548116e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=3, beta=1)",
    "quantity": "pdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 2.3980240297505688e-14,
    "peers": {
     "r": 2.3980240297505688e-14,
     "scipy": 9.063045098980872e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=3, beta=1)",
    "quantity": "logpdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.2664533792226117e-16,
    "peers": {
     "r": 1.2664533792226117e-16,
     "scipy": 1.2664533792226117e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=3, beta=1)",
    "quantity": "cdf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 8.935591651017832e-14,
    "peers": {
     "r": 3.481399344552402e-14,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=3, beta=1)",
    "quantity": "logcdf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.0751350653063426e-16,
    "peers": {
     "r": 2.1943807238901467e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=3, beta=1)",
    "quantity": "sf",
    "n_compared": 16,
+   "rule": "probability",
    "max_rel_error": 6.893171201621005e-16,
    "peers": {
     "r": 6.893171201621005e-16,
     "scipy": 1.7232928004052513e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=3, beta=1)",
    "quantity": "logsf",
    "n_compared": 16,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.7006618002054164e-16,
    "peers": {
     "r": 1.7006618002054164e-16,
     "scipy": 1.7006618002054164e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "beta(alpha=3, beta=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.7638695769343766e-14,
    "peers": {
     "r": 8.62900224687321e-15,
     "scipy": 1.2816606278444032e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=2, scale=3)",
    "quantity": "pdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 3.0213572883079775e-14,
    "peers": {
     "r": 2.841380778221976e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=2, scale=3)",
    "quantity": "logpdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.9625129680108003e-16,
    "peers": {
     "r": 1.9625129680108003e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=2, scale=3)",
    "quantity": "cdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 1.065935571672573e-14,
    "peers": {
     "r": 2.100776431898469e-16,
     "scipy": 1.065935571672573e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=2, scale=3)",
    "quantity": "logcdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
    "peers": {
     "r": 1.6683877680489333e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=2, scale=3)",
    "quantity": "sf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 6.731446585193827e-16,
    "peers": {
     "r": 3.030806163436774e-16,
     "scipy": 1.2230681707534619e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=2, scale=3)",
    "quantity": "logsf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
    "peers": {
     "r": 1.1102230246251565e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=2, scale=3)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.5348904147486612e-14,
    "peers": {
     "r": 1.3430291129050786e-14,
     "scipy": 1.5348904147486612e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.5, scale=1)",
    "quantity": "pdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 1.9485357449958136e-14,
    "peers": {
     "r": 1.90148605434998e-16,
     "scipy": 1.9485357449958136e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.5, scale=1)",
    "quantity": "logpdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.7755575615628914e-16,
    "peers": {
     "r": 1.6485174103198588e-16,
     "scipy": 1.4550994321011218e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.5, scale=1)",
    "quantity": "cdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 6.398981471176793e-16,
    "peers": {
     "r": 1.3174581463713006e-15,
     "scipy": 4.809249640086372e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.5, scale=1)",
    "quantity": "logcdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
    "peers": {
     "r": 1.304512053934559e-15,
     "scipy": 4.829470157119431e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.5, scale=1)",
    "quantity": "sf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 2.706839986017422e-15,
    "peers": {
     "r": 7.234484023031334e-15,
     "scipy": 2.593827198501478e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.5, scale=1)",
    "quantity": "logsf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
    "peers": {
     "r": 3.8415907172862144e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.5, scale=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.0526356715474086e-14,
    "peers": {
     "r": 8.679627467145298e-15,
     "scipy": 1.9021311257786505e-14
    },
-   "passed": true
+   "status": "pass",
+   "note": "1 points have no mpmath reference and are not compared"
   },
   {
    "name": "gamma(shape=1, scale=1)",
    "quantity": "pdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=1, scale=1)",
    "quantity": "logpdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=1, scale=1)",
    "quantity": "cdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 2.4369795411866816e-14,
    "peers": {
     "r": 2.4369795411866816e-14,
     "scipy": 2.4369795411866816e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=1, scale=1)",
    "quantity": "logcdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.9286549325830718e-16,
    "peers": {
     "r": 1.9286549325830718e-16,
     "scipy": 2.220446049250313e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=1, scale=1)",
    "quantity": "sf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 1.109064369519786e-15,
    "peers": {
     "r": 1.2269861993937067e-16,
     "scipy": 1.109064369519786e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=1, scale=1)",
    "quantity": "logsf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
    "peers": {
     "r": 1.3877787807814457e-17,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=1, scale=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.43697954118668e-14,
    "peers": {
     "r": 3.066947041629495e-14,
     "scipy": 3.933809847839257e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.01, scale=1)",
    "quantity": "pdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 4.8958087105874364e-14,
    "peers": {
     "r": 6.768399139060971e-16,
     "scipy": 4.8958087105874364e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.01, scale=1)",
    "quantity": "logpdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
    "peers": {
     "r": 5.551115123125783e-16,
     "scipy": 4.440892098500626e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.01, scale=1)",
    "quantity": "cdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 4.3122009920813178e-16,
    "peers": {
     "r": 1.3272079073829373e-16,
     "scipy": 6.981824954068311e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.01, scale=1)",
    "quantity": "logcdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.9382347332516614e-16,
    "peers": {
     "r": 2.7755575615628914e-17,
     "scipy": 5.814704199754985e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.01, scale=1)",
    "quantity": "sf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 1.42117170597378e-15,
    "peers": {
     "r": 1.5654691590822163e-15,
     "scipy": 8.882323162336124e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.01, scale=1)",
    "quantity": "logsf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.90433993611296e-16,
    "peers": {
     "r": 2.90636884615819e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=0.01, scale=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.05748738609783e-14,
    "peers": {
     "r": 4.236823845151878e-14,
     "scipy": 4.6482075305449625e-14
    },
-   "passed": true
+   "status": "pass",
+   "note": "4 points have no mpmath reference and are not compared"
   },
   {
    "name": "gamma(shape=100, scale=0.01)",
    "quantity": "pdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 1.4531249060303106e-13,
    "peers": {
     "r": 1.8818622093861003e-14,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=100, scale=0.01)",
    "quantity": "logpdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 8.382856420803958e-16,
    "peers": {
     "r": 2.1169099064646854e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=100, scale=0.01)",
    "quantity": "cdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 1.0510903183330237e-13,
    "peers": {
     "r": 1.1547250295599175e-14,
     "scipy": 2.428493876600239e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=100, scale=0.01)",
    "quantity": "logcdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.117018522596653e-16,
    "peers": {
     "r": 2.220446049250313e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=100, scale=0.01)",
    "quantity": "sf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 7.442008291008493e-14,
    "peers": {
     "r": 3.9283666056252264e-14,
     "scipy": 4.6766401017263473e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=100, scale=0.01)",
    "quantity": "logsf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
    "peers": {
     "r": 3.3306690738754696e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=100, scale=0.01)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 9.211256261017934e-16,
    "peers": {
     "r": 2.8526389576792114e-15,
     "scipy": 3.40677004454839e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=10000, scale=2)",
    "quantity": "pdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 1.8815066315526378e-13,
    "peers": {
     "r": 1.56384405270418e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=10000, scale=2)",
    "quantity": "logpdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.5425765392548994e-16,
    "peers": {
     "r": 2.1724896100930586e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=10000, scale=2)",
    "quantity": "cdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 2.472941634447821e-14,
    "peers": {
     "r": 4.6900617205044884e-15,
     "scipy": 1.7054769892743592e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=10000, scale=2)",
    "quantity": "logcdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.6048447506610779e-15,
    "peers": {
     "r": 2.292635358087254e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=10000, scale=2)",
    "quantity": "sf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 7.496608311410525e-13,
    "peers": {
     "r": 4.952398347686942e-16,
     "scipy": 1.937451253992025e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=10000, scale=2)",
    "quantity": "logsf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.473443254644788e-15,
    "peers": {
     "r": 2.1725155084867926e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=10000, scale=2)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.1046822961574567e-15,
    "peers": {
     "r": 2.26793526733569e-16,
     "scipy": 1.6789022450776279e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=3, scale=100000)",
    "quantity": "pdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 2.1492885127413724e-14,
    "peers": {
     "r": 3.8726567027230255e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=3, scale=100000)",
    "quantity": "logpdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.9403395551340534e-16,
    "peers": {
     "r": 1.87439176999213e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=3, scale=100000)",
    "quantity": "cdf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 4.436292181894658e-14,
    "peers": {
     "r": 3.50527206032836e-16,
     "scipy": 4.619441859128841e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=3, scale=100000)",
    "quantity": "logcdf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.0244937305580219e-16,
    "peers": {
     "r": 1.7608834214453338e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=3, scale=100000)",
    "quantity": "sf",
    "n_compared": 17,
+   "rule": "probability",
    "max_rel_error": 2.674458564953035e-15,
    "peers": {
     "r": 3.90882405646982e-15,
     "scipy": 4.731734384147677e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=3, scale=100000)",
    "quantity": "logsf",
    "n_compared": 17,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.2071218483592656e-16,
    "peers": {
     "r": 2.443324042757026e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "gamma(shape=3, scale=100000)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.739127596276149e-14,
    "peers": {
     "r": 1.9221936590420595e-14,
     "scipy": 1.739127596276149e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1)",
    "quantity": "pdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1)",
    "quantity": "logpdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
    "peers": {
     "r": 5.551115123125783e-17,
     "scipy": 5.551115123125783e-17
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=0.5)",
    "quantity": "pdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=0.5)",
    "quantity": "logpdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
    "peers": {
     "r": 1.1102230246251565e-16,
     "scipy": 1.1102230246251565e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=0.5)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=0.5)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
    "peers": {
     "r": 5.551115123125783e-17,
     "scipy": 5.551115123125783e-17
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=0.5)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=0.5)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=0.5)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1e-05)",
    "quantity": "pdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 6.126047622876845e-15,
    "peers": {
     "r": 6.126047622876845e-15,
     "scipy": 6.126047622876845e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1e-05)",
    "quantity": "logpdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.651432151608311e-16,
    "peers": {
     "r": 1.651432151608311e-16,
     "scipy": 1.651432151608311e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1e-05)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.4108126236904708e-16,
    "peers": {
     "r": 1.6578092116916203e-16,
     "scipy": 1.6578092116916203e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1e-05)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
    "peers": {
     "r": 1.1102230246251565e-16,
     "scipy": 1.1102230246251565e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1e-05)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 5.644359031512377e-14,
    "peers": {
     "r": 5.644359031512377e-14,
     "scipy": 5.644359031512377e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1e-05)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 1.1102230246251565e-16,
     "scipy": 1.1102230246251565e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=1e-05)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.022341282404177e-16,
    "peers": {
     "r": 2.0993975935401446e-16,
     "scipy": 2.0993975935401446e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=100000)",
    "quantity": "pdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.452732402066595e-14,
    "peers": {
     "r": 1.439281176121534e-14,
     "scipy": 1.439281176121534e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=100000)",
    "quantity": "logpdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.40295196424764e-16,
    "peers": {
     "r": 4.40295196424764e-16,
     "scipy": 4.40295196424764e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=100000)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 1.6940743648521904e-16,
     "scipy": 1.6940743648521904e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=100000)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
    "peers": {
     "r": 1.1102230246251565e-16,
     "scipy": 1.1102230246251565e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=100000)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.4572708772267695e-14,
    "peers": {
     "r": 1.4572708772267695e-14,
     "scipy": 1.4572708772267695e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=100000)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 1.4551915228366853e-16,
     "scipy": 1.4551915228366853e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "exponential(rate=100000)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.961929253241551e-16,
    "peers": {
     "r": 2.091000896927714e-16,
     "scipy": 2.091000896927714e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=0, sdlog=1)",
    "quantity": "pdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.7045155006364488e-15,
    "peers": {
     "r": 8.215224702609581e-16,
     "scipy": 1.7045155006364488e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=0, sdlog=1)",
    "quantity": "logpdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.8056302466570561e-16,
    "peers": {
     "r": 1.8056302466570561e-16,
     "scipy": 1.8056302466570561e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=0, sdlog=1)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 3.856683150892501e-16,
    "peers": {
     "r": 3.856683150892501e-16,
     "scipy": 7.327697986695752e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=0, sdlog=1)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.2198113986416659e-16,
    "peers": {
     "r": 1.2198113986416659e-16,
     "scipy": 1.888276077995105e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=0, sdlog=1)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 7.713366301785011e-16,
    "peers": {
     "r": 7.713366301785011e-16,
     "scipy": 6.170693041428009e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=0, sdlog=1)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1738503088424644e-16,
    "peers": {
     "r": 1.1738503088424644e-16,
     "scipy": 1.888276077995105e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=0, sdlog=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.2905842146426917e-14,
    "peers": {
     "r": 2.6901140777633418e-15,
     "scipy": 2.3302214986604155e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=2, sdlog=0.5)",
    "quantity": "pdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.3088382525637978e-15,
    "peers": {
     "r": 1.6360478157047473e-15,
     "scipy": 1.3088382525637978e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=2, sdlog=0.5)",
    "quantity": "logpdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.995196941179538e-16,
    "peers": {
     "r": 2.1139139272017186e-16,
     "scipy": 1.6996055903583404e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=2, sdlog=0.5)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 5.785024726338751e-16,
    "peers": {
     "r": 5.785024726338751e-16,
     "scipy": 7.520532144240376e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=2, sdlog=0.5)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.2128061284186698e-16,
    "peers": {
     "r": 1.6653345369377348e-16,
     "scipy": 2.347700617684929e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=2, sdlog=0.5)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.7355074179016232e-15,
    "peers": {
     "r": 1.7355074179016232e-15,
     "scipy": 8.677537089508116e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=2, sdlog=0.5)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.8882760779951048e-16,
    "peers": {
     "r": 1.8882760779951048e-16,
     "scipy": 1.8882760779951048e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=2, sdlog=0.5)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.4147886883296885e-15,
    "peers": {
     "r": 1.3230507059830593e-15,
     "scipy": 1.069131448054948e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=-5, sdlog=3)",
    "quantity": "pdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 9.132771920978326e-14,
    "peers": {
     "r": 1.0,
     "scipy": 2.2463672870148302e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=-5, sdlog=3)",
    "quantity": "logpdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.860230923527725e-16,
    "peers": {
     "r": 2.0382989758284553e-16,
     "scipy": 1.7701433452917493e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=-5, sdlog=3)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.9283415754462518e-16,
    "peers": {
     "r": 1.9283415754462518e-16,
     "scipy": 6.749195514061881e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=-5, sdlog=3)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.3920766520350614e-16,
    "peers": {
     "r": 1.1738503088424644e-16,
     "scipy": 2.784153304070123e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=-5, sdlog=3)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 3.856683150892504e-16,
    "peers": {
     "r": 3.856683150892504e-16,
     "scipy": 6.556361356517258e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=-5, sdlog=3)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1738503088424644e-16,
    "peers": {
     "r": 1.1738503088424644e-16,
     "scipy": 1.888276077995105e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "lognormal(meanlog=-5, sdlog=3)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.4943246527918936e-14,
    "peers": {
     "r": 9.614204935918323e-15,
     "scipy": 6.501069121473291e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1)",
    "quantity": "pdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.492706907529673e-16,
    "peers": {
     "r": 1.492706907529673e-16,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1)",
    "quantity": "logpdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
    "peers": {
     "r": 5.551115123125783e-17,
     "scipy": 5.551115123125783e-17
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
    "peers": {
     "r": 5.551115123125783e-17,
     "scipy": 5.551115123125783e-17
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.5429239464919602e-16,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=5, scale=2)",
    "quantity": "pdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.492706907529673e-16,
    "peers": {
     "r": 1.492706907529673e-16,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=5, scale=2)",
    "quantity": "logpdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=5, scale=2)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=5, scale=2)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
    "peers": {
     "r": 5.551115123125783e-17,
     "scipy": 5.551115123125783e-17
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=5, scale=2)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=5, scale=2)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
    "peers": {
     "r": 5.551115123125783e-17,
     "scipy": 5.551115123125783e-17
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=5, scale=2)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 7.333640325608676e-16,
    "peers": {
     "r": 7.333640325608676e-16,
     "scipy": 7.333640325608676e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1e-05)",
    "quantity": "pdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.426070282286649e-15,
    "peers": {
     "r": 1.426070282286649e-15,
     "scipy": 1.426070282286649e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1e-05)",
    "quantity": "logpdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.441835147249016e-16,
    "peers": {
     "r": 1.7967677454763e-16,
     "scipy": 1.441835147249016e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1e-05)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.450673708380787e-15,
    "peers": {
     "r": 1.450673708380787e-15,
     "scipy": 1.450673708380787e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1e-05)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.7763487749723497e-16,
    "peers": {
     "r": 1.7763487749723497e-16,
     "scipy": 1.7763487749723497e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1e-05)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.450673708380787e-15,
    "peers": {
     "r": 1.450673708380787e-15,
     "scipy": 1.450673708380787e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1e-05)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.7763487749723497e-16,
    "peers": {
     "r": 1.7763487749723497e-16,
     "scipy": 1.7763487749723497e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "logistic(location=0, scale=1e-05)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.9622134548579745e-16,
    "peers": {
     "r": 1.8496382025380017e-16,
     "scipy": 1.8496382025380017e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=10, prob=0.5)",
    "quantity": "pmf",
    "n_compared": 11,
+   "rule": "probability",
    "max_rel_error": 1.1842378929335002e-15,
    "peers": {
     "r": 7.105427357601002e-16,
     "scipy": 8.881784197001252e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=10, prob=0.5)",
    "quantity": "logpmf",
    "n_compared": 11,
+   "rule": "log-and-quantile",
    "max_rel_error": 6.213992623604218e-16,
    "peers": {
     "r": 2.0713308745347396e-16,
     "scipy": 6.33488843272434e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=10, prob=0.5)",
    "quantity": "cdf",
    "n_compared": 11,
+   "rule": "probability",
    "max_rel_error": 6.459479416000911e-16,
    "peers": {
     "r": 6.459479416000911e-16,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=10, prob=0.5)",
    "quantity": "logcdf",
    "n_compared": 11,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.9591120019128954e-16,
    "peers": {
     "r": 1.9591120019128954e-16,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=10, prob=0.5)",
    "quantity": "sf",
    "n_compared": 11,
+   "rule": "probability",
    "max_rel_error": 5.075305255429287e-16,
    "peers": {
     "r": 5.075305255429287e-16,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=10, prob=0.5)",
    "quantity": "logsf",
    "n_compared": 11,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
    "peers": {
     "r": 2.220446049250313e-16,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=10, prob=0.5)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1, prob=0.3)",
    "quantity": "pmf",
    "n_compared": 9,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 3.1720657846433045e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1, prob=0.3)",
    "quantity": "logpmf",
    "n_compared": 9,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
    "peers": {
     "r": 0.0,
     "scipy": 1.1102230246251565e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1, prob=0.3)",
    "quantity": "cdf",
    "n_compared": 9,
+   "rule": "probability",
    "max_rel_error": 1.586032892321652e-16,
    "peers": {
     "r": 1.586032892321652e-16,
     "scipy": 1.586032892321652e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1, prob=0.3)",
    "quantity": "logcdf",
    "n_compared": 9,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 1.1102230246251565e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1, prob=0.3)",
    "quantity": "sf",
    "n_compared": 9,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1, prob=0.3)",
    "quantity": "logsf",
    "n_compared": 9,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1, prob=0.3)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=100, prob=0.01)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 3.2779441374412937e-14,
    "peers": {
     "r": 2.4723791834394073e-14,
     "scipy": 5.520846720301589e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=100, prob=0.01)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.7332721943882903e-16,
    "peers": {
     "r": 1.7332721943882903e-16,
     "scipy": 1.8762769116165146e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=100, prob=0.01)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 1.508943186015611e-16,
    "peers": {
     "r": 3.0331282223950164e-16,
     "scipy": 1.2059425462534402e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=100, prob=0.01)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
    "peers": {
     "r": 2.220446049250313e-16,
     "scipy": 1.5265566588595902e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=100, prob=0.01)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 2.2651851704918994e-14,
    "peers": {
     "r": 7.049030313258711e-14,
     "scipy": 2.2311421808521565e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=100, prob=0.01)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.3367461552447537e-16,
    "peers": {
     "r": 5.258409129383961e-16,
     "scipy": 8.764015215639934e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=100, prob=0.01)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.058823529411764705,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000, prob=0.999)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 1.5081949990150043e-16,
    "peers": {
     "r": 6.032779996060017e-16,
     "scipy": 1.5081949990150043e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000, prob=0.999)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
    "peers": {
     "r": 6.661338147750939e-16,
     "scipy": 9.946488077616777e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000, prob=0.999)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000, prob=0.999)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.6447096360183542e-16,
    "peers": {
     "r": 1.3242291754556765e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000, prob=0.999)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000, prob=0.999)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000, prob=0.999)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000000, prob=0.3)",
    "quantity": "pmf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 3.7362097168170987e-16,
    "peers": {
     "r": 6.227016194695164e-16,
     "scipy": 8.010309092531965e-12
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000000, prob=0.3)",
    "quantity": "logpmf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.007321555794743e-16,
    "peers": {
     "r": 3.264454877469334e-16,
     "scipy": 1.320639055928363e-11
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000000, prob=0.3)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 6.654772295635248e-16,
    "peers": {
     "r": 2.218257431878416e-16,
     "scipy": 3.5804893207949513e-12
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000000, prob=0.3)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 7.771561172376096e-16,
    "peers": {
     "r": 2.220446049250313e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000000, prob=0.3)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 7.779236463719615e-16,
    "peers": {
     "r": 2.2226389896341757e-16,
     "scipy": 3.5875615931685227e-12
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000000, prob=0.3)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 7.771561172376096e-16,
    "peers": {
     "r": 2.220446049250313e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=1000000, prob=0.3)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.00041813728072485906,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=0)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=0)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=0)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=0)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=0)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=0)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=0)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 4.999999999999999e+301,
     "scipy": 4.999999999999999e+301
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=1)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=1)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=1)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=1)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=1)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=1)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=50, prob=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=0, prob=0.4)",
    "quantity": "pmf",
    "n_compared": 8,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=0, prob=0.4)",
    "quantity": "logpmf",
    "n_compared": 8,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=0, prob=0.4)",
    "quantity": "cdf",
    "n_compared": 8,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=0, prob=0.4)",
    "quantity": "logcdf",
    "n_compared": 8,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=0, prob=0.4)",
    "quantity": "sf",
    "n_compared": 8,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=0, prob=0.4)",
    "quantity": "logsf",
    "n_compared": 8,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "binomial(size=0, prob=0.4)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=3.2)",
    "quantity": "pmf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.1025772346556616e-14,
    "peers": {
     "r": 6.954717941674173e-15,
     "scipy": 4.5968989321797585e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=3.2)",
    "quantity": "logpmf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.0897131465494507e-16,
    "peers": {
     "r": 1.4780241258335855e-16,
     "scipy": 3.4513359869341263e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=3.2)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.8426334934022233e-16,
    "peers": {
     "r": 1.8426334934022233e-16,
     "scipy": 2.9223798151440696e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=3.2)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
    "peers": {
     "r": 1.2581033375631264e-16,
     "scipy": 3.3306690738754696e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=3.2)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 3.253341363712436e-15,
    "peers": {
     "r": 6.902614578464517e-15,
     "scipy": 3.641724243120935e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=3.2)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.94760746987552e-16,
    "peers": {
     "r": 1.6936728010706438e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=3.2)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.038461538461538464,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1e-10)",
    "quantity": "pmf",
    "n_compared": 10,
+   "rule": "probability",
    "max_rel_error": 4.630779163516337e-14,
    "peers": {
     "r": 4.840535710992686e-16,
     "scipy": 4.630779163516337e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1e-10)",
    "quantity": "logpmf",
    "n_compared": 10,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.7055214256568494e-16,
    "peers": {
     "r": 1.7055214256568494e-16,
     "scipy": 1.5227804204368404e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1e-10)",
    "quantity": "cdf",
    "n_compared": 10,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 1.1102230246251565e-16,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1e-10)",
    "quantity": "logcdf",
    "n_compared": 10,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.2924697071141057e-25,
    "peers": {
     "r": 1.2924697071141057e-25,
     "scipy": 8.279037092875971e-18
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1e-10)",
    "quantity": "sf",
    "n_compared": 10,
+   "rule": "probability",
    "max_rel_error": 1.6905299948046395e-14,
    "peers": {
     "r": 5.635125226066695e-16,
     "scipy": 2.8175626130333473e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1e-10)",
    "quantity": "logsf",
    "n_compared": 10,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.6880222148917274e-16,
    "peers": {
     "r": 2.0052197858562337e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1e-10)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0.5)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 1.461627852897005e-14,
    "peers": {
     "r": 2.252309451230337e-16,
     "scipy": 4.510362002000051e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0.5)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.0293735194889784e-16,
    "peers": {
     "r": 2.0293735194889784e-16,
     "scipy": 2.077705188799772e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0.5)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 1.1102387510874785e-16,
    "peers": {
     "r": 1.1102387510874785e-16,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0.5)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
    "peers": {
     "r": 1.3877787807814457e-17,
     "scipy": 2.843828417111588e-17
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0.5)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 5.177935489803764e-14,
    "peers": {
     "r": 3.587871635343986e-16,
     "scipy": 2.6866646409359153e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0.5)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.0776825580413936e-16,
    "peers": {
     "r": 2.0776825580413936e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0.5)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.07142857142857142,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=12)",
    "quantity": "pmf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 5.1512323298153764e-14,
    "peers": {
     "r": 2.986221640472682e-16,
     "scipy": 1.0839984554915836e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=12)",
    "quantity": "logpmf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.3269388761097634e-16,
    "peers": {
     "r": 2.0480657816226884e-16,
     "scipy": 8.114693750164686e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=12)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 2.5058628720889107e-15,
    "peers": {
     "r": 1.9275868246837776e-16,
     "scipy": 6.227968180196795e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=12)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.55351295663786e-15,
    "peers": {
     "r": 1.8827210437975229e-16,
     "scipy": 5.551115123125783e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=12)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 3.731781841277152e-14,
    "peers": {
     "r": 4.3264631209849323e-16,
     "scipy": 1.0664731593227858e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=12)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.4416913763379853e-15,
    "peers": {
     "r": 4.773696902635986e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=12)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.04,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=85)",
    "quantity": "pmf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 1.905632896529471e-14,
    "peers": {
     "r": 1.8521544660811143e-16,
     "scipy": 1.05263381532214e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=85)",
    "quantity": "logpmf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.9850889830795905e-16,
    "peers": {
     "r": 1.917503872732409e-16,
     "scipy": 1.4094131779865093e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=85)",
    "quantity": "cdf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 5.494544548570887e-15,
    "peers": {
     "r": 1.2596982825859764e-15,
     "scipy": 5.870563500428949e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=85)",
    "quantity": "logcdf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.8507496320131375e-16,
    "peers": {
     "r": 1.3322676295501878e-15,
     "scipy": 1.8507496320131375e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=85)",
    "quantity": "sf",
    "n_compared": 13,
+   "rule": "probability",
    "max_rel_error": 3.7219359680297804e-14,
    "peers": {
     "r": 1.4137093238404358e-15,
     "scipy": 9.663749717391864e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=85)",
    "quantity": "logsf",
    "n_compared": 13,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.4295778035678873e-16,
    "peers": {
     "r": 1.4432899320127035e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=85)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.01764705882352941,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=10000)",
    "quantity": "pmf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 3.4785150696543914e-15,
    "peers": {
     "r": 1.637693603196949e-16,
     "scipy": 1.096714415901977e-11
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=10000)",
    "quantity": "logpmf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.2219846264011316e-15,
    "peers": {
     "r": 1.9263434983582497e-16,
     "scipy": 2.0322374781531885e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=10000)",
    "quantity": "cdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 5.247232488555214e-14,
    "peers": {
     "r": 1.0045079826957085e-14,
     "scipy": 1.3613726607586577e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=10000)",
    "quantity": "logcdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.2212453270876722e-15,
    "peers": {
     "r": 2.5869430843308655e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=10000)",
    "quantity": "sf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 3.16030889331053e-14,
    "peers": {
     "r": 0.0,
     "scipy": 8.273059930132277e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=10000)",
    "quantity": "logsf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.1624339404696584e-14,
    "peers": {
     "r": 2.0748822751614115e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=10000)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0025870830638455144,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1000000)",
    "quantity": "pmf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 2.79444369774728e-15,
    "peers": {
     "r": 5.265262397515353e-16,
     "scipy": 2.416382520737874e-09
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1000000)",
    "quantity": "logpmf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.0280616977256527e-16,
    "peers": {
     "r": 1.1653393142348202e-16,
     "scipy": 8.740473653604009e-11
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1000000)",
    "quantity": "cdf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 8.812455341727993e-14,
    "peers": {
     "r": 2.2116200664568323e-14,
     "scipy": 1.9280790322956998e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1000000)",
    "quantity": "logcdf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.985700658404312e-14,
    "peers": {
     "r": 3.992286520628357e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1000000)",
    "quantity": "sf",
    "n_compared": 14,
+   "rule": "probability",
    "max_rel_error": 3.1082421355182517e-13,
    "peers": {
     "r": 7.881438061535979e-15,
     "scipy": 2.595887908766689e-10
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1000000)",
    "quantity": "logsf",
    "n_compared": 14,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.714789455977021e-13,
    "peers": {
     "r": 4.2945542843664987e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=1000000)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0002727803859991251,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0)",
    "quantity": "pmf",
    "n_compared": 10,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0)",
    "quantity": "logpmf",
    "n_compared": 10,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0)",
    "quantity": "cdf",
    "n_compared": 10,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0)",
    "quantity": "logcdf",
    "n_compared": 10,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0)",
    "quantity": "sf",
    "n_compared": 10,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0)",
    "quantity": "logsf",
    "n_compared": 10,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "poisson(lambda=0)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=3, prob=0.4)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 6.838062285201664e-14,
    "peers": {
     "r": 4.311295620923913e-14,
     "scipy": 2.33725916445692e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=3, prob=0.4)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.3067732065556764e-16,
    "peers": {
     "r": 2.849797573809599e-16,
     "scipy": 4.550635698435159e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=3, prob=0.4)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 3.497426362856465e-16,
    "peers": {
     "r": 1.7487131814282326e-16,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=3, prob=0.4)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.870171611198221e-16,
    "peers": {
     "r": 1.9350858055991106e-16,
     "scipy": 1.9350858055991106e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=3, prob=0.4)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 2.4600293354349962e-14,
    "peers": {
     "r": 2.4600293354349962e-14,
     "scipy": 1.8256945512102744e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=3, prob=0.4)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
    "peers": {
     "r": 1.5587567264274724e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=3, prob=0.4)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.060240963855421686,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=0.5, prob=0.1)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 1.7416238558408624e-15,
    "peers": {
     "r": 2.177029819801078e-15,
     "scipy": 1.3062178918806467e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=0.5, prob=0.1)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.1451682476420594e-16,
    "peers": {
     "r": 2.1451682476420594e-16,
     "scipy": 1.0772122764273806e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=0.5, prob=0.1)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 2.0019007661164368e-16,
    "peers": {
     "r": 3.249320301281927e-16,
     "scipy": 2.0019007661164368e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=0.5, prob=0.1)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.9286549331065744e-16,
    "peers": {
     "r": 1.6653345369377348e-16,
     "scipy": 2.220446049250313e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=0.5, prob=0.1)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 2.4218106333736004e-15,
    "peers": {
     "r": 1.3483549606620703e-14,
     "scipy": 1.614540422249067e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=0.5, prob=0.1)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.89782297179169e-16,
    "peers": {
     "r": 3.861710478412336e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=0.5, prob=0.1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.065625,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100, prob=0.99)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 5.626366309906667e-15,
    "peers": {
     "r": 9.846141042336668e-15,
     "scipy": 1.3925256617019001e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100, prob=0.99)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.0708782263673122e-16,
    "peers": {
     "r": 4.418650444356505e-16,
     "scipy": 1.966299447738645e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100, prob=0.99)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 4.549692333592527e-16,
    "peers": {
     "r": 4.549692333592527e-16,
     "scipy": 1.5165641111975094e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100, prob=0.99)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-16,
    "peers": {
     "r": 6.106226635438361e-16,
     "scipy": 5.551115123125783e-17
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100, prob=0.99)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 2.1186373797930053e-14,
    "peers": {
     "r": 2.1186373797930053e-14,
     "scipy": 1.4220990631487298e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100, prob=0.99)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1801828472655354e-15,
    "peers": {
     "r": 1.3487803968748977e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100, prob=0.99)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.05555555555555555,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100000, prob=0.5)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 9.72312199962419e-16,
    "peers": {
     "r": 8.507731749671166e-16,
     "scipy": 1.2153902499530238e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100000, prob=0.5)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.1113540130280628e-16,
    "peers": {
     "r": 2.187767278866548e-16,
     "scipy": 1.0141357398549844e-10
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100000, prob=0.5)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 2.2164915581512831e-16,
    "peers": {
     "r": 2.2164915581512831e-16,
     "scipy": 2.2164915581512831e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100000, prob=0.5)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.1022210084024564e-16,
    "peers": {
     "r": 1.9984014443252818e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100000, prob=0.5)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100000, prob=0.5)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.722191120154925e-16,
    "peers": {
     "r": 2.1094237467877974e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=100000, prob=0.5)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0012154301754656737,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=2, prob=1)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=2, prob=1)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=2, prob=1)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=2, prob=1)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=2, prob=1)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=2, prob=1)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom(size=2, prob=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=4.5, size=2)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 6.446059107046654e-15,
    "peers": {
     "r": 8.594745476062204e-15,
     "scipy": 9.131917068316093e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=4.5, size=2)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.958269896055165e-16,
    "peers": {
     "r": 3.1659261409918223e-16,
     "scipy": 1.945084507996091e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=4.5, size=2)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 2.45883063014261e-16,
    "peers": {
     "r": 2.45883063014261e-16,
     "scipy": 1.5339144643149717e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=4.5, size=2)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.1845985267517495e-16,
    "peers": {
     "r": 2.1845985267517495e-16,
     "scipy": 1.5881867761018131e-22
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=4.5, size=2)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 4.1589799598317424e-14,
    "peers": {
     "r": 4.1589799598317424e-14,
     "scipy": 1.2176481251218409e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=4.5, size=2)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.9583572135201226e-16,
    "peers": {
     "r": 3.4601603802353387e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=4.5, size=2)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.056074766355140186,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=10, size=0.5)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 1.1286339861986026e-14,
    "peers": {
     "r": 3.173260772790274e-14,
     "scipy": 2.6171222868373394e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=10, size=0.5)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.982000771090898e-16,
    "peers": {
     "r": 2.982000771090898e-16,
     "scipy": 2.3259606014509006e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=10, size=0.5)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 2.2012838922651274e-16,
    "peers": {
     "r": 2.2012838922651274e-16,
     "scipy": 1.72324680679322e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=10, size=0.5)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
    "peers": {
     "r": 1.1102230246251565e-16,
     "scipy": 4.440892098500626e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=10, size=0.5)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 5.0956367647235744e-14,
    "peers": {
     "r": 2.3578781944736334e-14,
     "scipy": 3.183135562539405e-14
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=10, size=0.5)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.669051526978574e-16,
    "peers": {
     "r": 1.8733071709733113e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=10, size=0.5)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.06521739130434782,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=3, size=1000000)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 1.1510296956320338e-14,
    "peers": {
     "r": 2.4938710988971206e-11,
     "scipy": 5.689756449922438e-10
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=3, size=1000000)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.495489483904295e-16,
    "peers": {
     "r": 1.3116071637030425e-11,
     "scipy": 7.221043324582898e-11
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=3, size=1000000)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 4.493931424667773e-15,
    "peers": {
     "r": 1.3617974014144767e-15,
     "scipy": 3.63182141108799e-11
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=3, size=1000000)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 4.524158825347513e-15,
    "peers": {
     "r": 1.3877787807814457e-15,
     "scipy": 1.922717540736585e-11
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=3, size=1000000)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 1.9982415036292465e-14,
    "peers": {
     "r": 6.310236327250252e-15,
     "scipy": 5.818216451130937e-10
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=3, size=1000000)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.1833108460075389e-14,
    "peers": {
     "r": 3.6814115209123434e-15,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=3, size=1000000)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.038461538461538464,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0.001, size=10)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 1.5365142350247842e-14,
    "peers": {
     "r": 5.346476945965342e-14,
     "scipy": 4.720919193746554e-11
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0.001, size=10)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 2.5281484216935854e-16,
    "peers": {
     "r": 2.5281484216935854e-16,
     "scipy": 1.3639847308280623e-13
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0.001, size=10)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 1.0002003726450537e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0.001, size=10)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 8.673617379884035e-19,
    "peers": {
     "r": 1.0842021724855044e-18,
     "scipy": 9.443400922348744e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0.001, size=10)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 2.1992739747528347e-14,
    "peers": {
     "r": 6.78935024789674e-14,
     "scipy": 4.8156571518991724e-11
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0.001, size=10)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 3.1832858777318923e-16,
    "peers": {
     "r": 1.9896214754922883e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0.001, size=10)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=100000, size=1)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 2.391261691040977e-15,
    "peers": {
     "r": 1.8636774761821025e-15,
     "scipy": 6.779720336573938e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=100000, size=1)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.816906695066161e-16,
    "peers": {
     "r": 1.816906695066161e-16,
     "scipy": 1.816906695066161e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=100000, size=1)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 1.0842346987675184e-15,
    "peers": {
     "r": 1.0842346987675184e-15,
     "scipy": 2.4642436947728417e-16
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=100000, size=1)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 1.8880716711485392e-16,
    "peers": {
     "r": 1.8880716711485392e-16,
     "scipy": 3.1760705176964166e-12
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=100000, size=1)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 1.194009342354754e-15,
    "peers": {
     "r": 1.6417628457377867e-15,
     "scipy": 1.0447581745604098e-15
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=100000, size=1)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 5.456995489976152e-16,
    "peers": {
     "r": 2.2204349471125846e-16,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=100000, size=1)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.062092735427949804,
     "scipy": 9.999999999999999e+299
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0, size=3)",
    "quantity": "pmf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0, size=3)",
    "quantity": "logpmf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0, size=3)",
    "quantity": "cdf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0, size=3)",
    "quantity": "logcdf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0, size=3)",
    "quantity": "sf",
    "n_compared": 12,
+   "rule": "probability",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0, size=3)",
    "quantity": "logsf",
    "n_compared": 12,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": 0.0
    },
-   "passed": true
+   "status": "pass"
   },
   {
    "name": "nbinom_mu(mu=0, size=3)",
    "quantity": "quantile",
    "n_compared": 15,
+   "rule": "log-and-quantile",
    "max_rel_error": 0.0,
    "peers": {
     "r": 0.0,
     "scipy": "Inf"
    },
-   "passed": true
+   "status": "pass"
   }
- ]
+ ],
+ "exclusions": [
+  "Points where mpmath has no reference are counted per case and not compared.",
+  "Documented boundary conventions are asserted separately in tests/distributions.php."
+ ],
+ "known_differences": [
+  "For a point mass, the discrete quantile at p = 1 is the mass location; R and SciPy may return the upper support bound.",
+  "R's F density at +INF is NAN; phit returns 0.",
+  "R F quantiles can round to zero for tiny probabilities and small numerator df.",
+  "R's Student-t quantile at df = 0.5 has a small nonzero center and some far-tail inaccuracy.",
+  "R's discrete-quantile adjustment near 1 \u2212 2^-52 can shift the count; phit uses a relative 64\u00b7EPSILON allowance on the smaller tail.",
+  "R's mean-form negative binomial mass differs from the high-precision value when size is much larger than the count.",
+  "SciPy's large-df chi-square CDF has about 8e-9 relative error at the saved lower-tail point."
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  ".context/notebooks-venv/bin/python docs/verifications/compare_distributions.py"
+ ],
+ "source": "docs/verifications/distributions-results.json",
+ "environment": {
+  "date": "2026-11-01",
+  "commit": "066e2e1",
+  "php": "8.5.10",
+  "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "phit": "0.4.4"
+ },
+ "group": "Numerics"
 }

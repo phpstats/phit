@@ -1,29 +1,69 @@
 {
  "title": "Gaussian random intercept: fit time",
- "description": "Median wall time to fit gaussian random intercept models on the same simulated data in R, Python and phit. Data loading is timed separately and excluded.",
- "measure": "median fit wall time",
+ "label": "Gaussian random intercept",
+ "description": "Fit the same simulated data and return every result: phit fit_mixed_gaussian_intercept_matrix(), R lme4 lmer(REML = FALSE, bobyqa), and statsmodels MixedLM (ML). All three read the same CSV and agree within the tolerance before timings are kept.",
+ "workload": "1,000, 100,000, and 1,000,000 rows with 3 coefficients; 100,000 rows with 11 (counts include the intercept); min(100, n/20) groups",
+ "dataset": {
+  "seed": 20261011,
+  "sha256": {
+   "n=1000,p=3": "eb5b2a78cdd704d0cf6620ad5fcec9ca7ab0b36f6fe4e361772eac04dd811b16",
+   "n=100000,p=3": "8bca045afb90cf1be493d79a7196b3340d63baa8c120ca63978fa0074ac00cde",
+   "n=1000000,p=3": "baab98e3a7aa4bea29135921910aba7b434e3d0df3053ba9161828487f44b595",
+   "n=100000,p=11": "b53538680e377597d16d50bc41639507b0d9a2a0aeed94ff5cf02926aee40c62"
+  }
+ },
+ "implementations": {
+  "phit": "phit fit_mixed_gaussian_intercept_matrix(), PHP 8.5.12",
+  "R": "lme4 lmer(REML = FALSE, bobyqa)",
+  "statsmodels": "statsmodels MixedLM (ML)"
+ },
+ "measure": "Elapsed time",
  "unit": "ms",
+ "statistic": "median",
+ "method": "In-process wall-clock time of one complete fit with every output materialized, after one untimed warm-up; five timed fits per worker. Process startup, CSV parsing, data generation, and JSON serialization are excluded. Workers run in separate processes and alternate order between cases.",
+ "time_spent_in": "the measured process",
+ "memory_measure": "peak anonymous memory",
+ "memory_method": "Peak of the process's anonymous resident memory (RssAnon in /proc), sampled every millisecond by bench/peakmem.c; the peak resident set size, file pages included, from getrusage.",
+ "check": {
+  "max_abs_difference_vs_R_statsmodels": 0.00020813091737181821,
+  "max_abs_difference_vs_R_phit": 0.00020791333567160564,
+  "tolerance": "1e-07 + 1e-06\u00b7|R|; variance-sensitive quantities and random effects rtol 1e-5; statsmodels as a peer at 1e-6 + 1e-5\u00b7|R|"
+ },
  "environment": {
   "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
-  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "cores": 2,
+  "memory_gb": 7.8,
+  "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
   "php": "8.5.12",
-  "date": "2026-11-01T19:57:30.084341+00:00",
-  "repeats": 5
+  "versions": {
+   "R": "4.6.2",
+   "statsmodels": "0.15.0",
+   "Python": "3.14.10",
+   "Rust": "1.99.1",
+   "R BLAS": "/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.0",
+   "lme4": "2.1.0"
+  },
+  "threads": 1,
+  "cache": "warm",
+  "repeats": 5,
+  "warmups": 1,
+  "date": "2026-11-01",
+  "commit": null
  },
- "source": "docs/benchmarks/lmm-results.json",
  "rows": [
   {
    "case": "n = 1,000, p = 3",
-   "implementation": "R",
-   "value": 14.0,
+   "implementation": "phit",
+   "value": 0.578,
    "reps": [
-    14.0,
-    14.0,
-    14.0,
-    13.0,
-    13.0
+    0.581,
+    0.549,
+    0.579,
+    0.578,
+    0.543
    ],
-   "load_ms": 1.0
+   "peak_memory_mib": 4.8,
+   "peak_rss_mib": 20.9
   },
   {
    "case": "n = 1,000, p = 3",
@@ -36,20 +76,22 @@
     23.05,
     23.004
    ],
-   "load_ms": 0.648
+   "peak_memory_mib": 121.4,
+   "peak_rss_mib": 173.6
   },
   {
    "case": "n = 1,000, p = 3",
-   "implementation": "phit",
-   "value": 0.578,
+   "implementation": "R",
+   "value": 14.0,
    "reps": [
-    0.581,
-    0.549,
-    0.579,
-    0.578,
-    0.543
+    14.0,
+    14.0,
+    14.0,
+    13.0,
+    13.0
    ],
-   "load_ms": 2.663
+   "peak_memory_mib": 211.2,
+   "peak_rss_mib": 230.5
   },
   {
    "case": "n = 100,000, p = 3",
@@ -62,7 +104,8 @@
     28.019,
     28.291
    ],
-   "load_ms": 258.312
+   "peak_memory_mib": 65.4,
+   "peak_rss_mib": 81.9
   },
   {
    "case": "n = 100,000, p = 3",
@@ -75,7 +118,8 @@
     166.237,
     165.502
    ],
-   "load_ms": 47.149
+   "peak_memory_mib": 160.1,
+   "peak_rss_mib": 211.9
   },
   {
    "case": "n = 100,000, p = 3",
@@ -88,33 +132,8 @@
     296.0,
     301.0
    ],
-   "load_ms": 135.0
-  },
-  {
-   "case": "n = 1,000,000, p = 3",
-   "implementation": "R",
-   "value": 4102.0,
-   "reps": [
-    4482.0,
-    4300.0,
-    3810.0,
-    4065.0,
-    4102.0
-   ],
-   "load_ms": 4399.0
-  },
-  {
-   "case": "n = 1,000,000, p = 3",
-   "implementation": "statsmodels",
-   "value": 1606.735,
-   "reps": [
-    1590.334,
-    1605.448,
-    1627.939,
-    1638.229,
-    1606.735
-   ],
-   "load_ms": 462.858
+   "peak_memory_mib": 308.2,
+   "peak_rss_mib": 327.1
   },
   {
    "case": "n = 1,000,000, p = 3",
@@ -127,7 +146,36 @@
     290.106,
     288.476
    ],
-   "load_ms": 2613.131
+   "peak_memory_mib": 610.1,
+   "peak_rss_mib": 626.2
+  },
+  {
+   "case": "n = 1,000,000, p = 3",
+   "implementation": "statsmodels",
+   "value": 1606.735,
+   "reps": [
+    1590.334,
+    1605.448,
+    1627.939,
+    1638.229,
+    1606.735
+   ],
+   "peak_memory_mib": 504.8,
+   "peak_rss_mib": 557.4
+  },
+  {
+   "case": "n = 1,000,000, p = 3",
+   "implementation": "R",
+   "value": 4102.0,
+   "reps": [
+    4482.0,
+    4300.0,
+    3810.0,
+    4065.0,
+    4102.0
+   ],
+   "peak_memory_mib": 1234.3,
+   "peak_rss_mib": 1251.9
   },
   {
    "case": "n = 100,000, p = 11",
@@ -140,7 +188,8 @@
     55.845,
     56.062
    ],
-   "load_ms": 798.608
+   "peak_memory_mib": 98.3,
+   "peak_rss_mib": 114.4
   },
   {
    "case": "n = 100,000, p = 11",
@@ -153,7 +202,8 @@
     258.558,
     270.233
    ],
-   "load_ms": 168.037
+   "peak_memory_mib": 211.4,
+   "peak_rss_mib": 263.0
   },
   {
    "case": "n = 100,000, p = 11",
@@ -166,7 +216,14 @@
     591.0,
     590.0
    ],
-   "load_ms": 1376.0
+   "peak_memory_mib": 377.8,
+   "peak_rss_mib": 395.7
   }
- ]
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  "PHP=$(command -v php) .context/bench-venv/bin/python tests/benchmarks/run.py --model lmm"
+ ],
+ "source": "docs/benchmarks/lmm-results.json",
+ "group": "Models"
 }

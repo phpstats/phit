@@ -1,29 +1,69 @@
 {
  "title": "OLS: fit time",
- "description": "Median wall time to fit ols models on the same simulated data in R, Python and phit. Data loading is timed separately and excluded.",
- "measure": "median fit wall time",
+ "label": "OLS",
+ "description": "Fit the same simulated data and return every result: phit fit_ols_matrix(), R lm.fit() with the full summary, and statsmodels OLS. All three read the same CSV and agree within the tolerance before timings are kept.",
+ "workload": "1,000, 100,000, and 1,000,000 rows with 3 coefficients; 100,000 rows with 11 (counts include the intercept)",
+ "dataset": {
+  "seed": 20261011,
+  "sha256": {
+   "n=1000,p=3": "d2dfa3288320360feb68596a5c8d8195bd510c5db1f2814881f2bbdc39293d8f",
+   "n=100000,p=3": "461a276ddc5ea4b5a6a05f271840413c9b08ab2da3c01df57d1eb67084938d41",
+   "n=1000000,p=3": "c028b7dac7a0bc3c279070d57608877ebdd66595e032a5f5c6f2ea1242710b59",
+   "n=100000,p=11": "215c36b2885df5a3d73e1fd287c03f6873bce58cee7a411942c770d15a7b37c8"
+  }
+ },
+ "implementations": {
+  "phit": "phit fit_ols_matrix(), PHP 8.5.12",
+  "R": "lm.fit() with the full summary",
+  "statsmodels": "statsmodels OLS"
+ },
+ "measure": "Elapsed time",
  "unit": "ms",
+ "statistic": "median",
+ "method": "In-process wall-clock time of one complete fit with every output materialized, after one untimed warm-up; five timed fits per worker. Process startup, CSV parsing, data generation, and JSON serialization are excluded. Workers run in separate processes and alternate order between cases.",
+ "time_spent_in": "the measured process",
+ "memory_measure": "peak anonymous memory",
+ "memory_method": "Peak of the process's anonymous resident memory (RssAnon in /proc), sampled every millisecond by bench/peakmem.c; the peak resident set size, file pages included, from getrusage.",
+ "check": {
+  "max_abs_difference_vs_R_statsmodels": 2.6702880859375e-05,
+  "max_abs_difference_vs_R_phit": 6.103515625e-05,
+  "tolerance": "1e-09 + 1e-07\u00b7|R|"
+ },
  "environment": {
   "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
-  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "cores": 2,
+  "memory_gb": 7.8,
+  "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
   "php": "8.5.12",
-  "date": "2026-11-01T19:41:56.081313+00:00",
-  "repeats": 5
+  "versions": {
+   "R": "4.6.2",
+   "statsmodels": "0.15.0",
+   "NumPy": "2.5.4",
+   "Python": "3.14.10",
+   "Rust": "1.99.1",
+   "R BLAS": "/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.0"
+  },
+  "threads": 1,
+  "cache": "warm",
+  "repeats": 5,
+  "warmups": 1,
+  "date": "2026-11-01",
+  "commit": null
  },
- "source": "docs/benchmarks/ols-results.json",
  "rows": [
   {
    "case": "n = 1,000, p = 3",
-   "implementation": "R",
-   "value": 1.0,
+   "implementation": "phit",
+   "value": 0.244,
    "reps": [
-    1.0,
-    1.0,
-    1.0,
-    1.0,
-    1.0
+    0.259,
+    0.244,
+    0.233,
+    0.229,
+    0.245
    ],
-   "load_ms": 1.0
+   "peak_memory_mib": 4.6,
+   "peak_rss_mib": 20.7
   },
   {
    "case": "n = 1,000, p = 3",
@@ -36,20 +76,23 @@
     0.465,
     0.392
    ],
-   "load_ms": 0.516
+   "peak_memory_mib": 133.3,
+   "peak_rss_mib": 185.1
   },
   {
    "case": "n = 1,000, p = 3",
-   "implementation": "phit",
-   "value": 0.244,
+   "implementation": "R",
+   "value": null,
    "reps": [
-    0.259,
-    0.244,
-    0.233,
-    0.229,
-    0.245
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
    ],
-   "load_ms": 1.965
+   "peak_memory_mib": 59.6,
+   "peak_rss_mib": 74.6,
+   "note": "below the 1 ms resolution of R's timer (proc.time() counts whole milliseconds)"
   },
   {
    "case": "n = 100,000, p = 3",
@@ -62,7 +105,8 @@
     21.149,
     20.952
    ],
-   "load_ms": 191.139
+   "peak_memory_mib": 56.1,
+   "peak_rss_mib": 72.1
   },
   {
    "case": "n = 100,000, p = 3",
@@ -75,7 +119,8 @@
     8.114,
     8.064
    ],
-   "load_ms": 33.716
+   "peak_memory_mib": 131.5,
+   "peak_rss_mib": 184.0
   },
   {
    "case": "n = 100,000, p = 3",
@@ -88,33 +133,8 @@
     26.0,
     25.0
    ],
-   "load_ms": 83.0
-  },
-  {
-   "case": "n = 1,000,000, p = 3",
-   "implementation": "R",
-   "value": 339.0,
-   "reps": [
-    320.0,
-    314.0,
-    339.0,
-    389.0,
-    402.0
-   ],
-   "load_ms": 2627.0
-  },
-  {
-   "case": "n = 1,000,000, p = 3",
-   "implementation": "statsmodels",
-   "value": 91.582,
-   "reps": [
-    91.582,
-    91.531,
-    91.327,
-    91.977,
-    92.075
-   ],
-   "load_ms": 320.314
+   "peak_memory_mib": 93.7,
+   "peak_rss_mib": 108.0
   },
   {
    "case": "n = 1,000,000, p = 3",
@@ -127,7 +147,36 @@
     217.013,
     218.784
    ],
-   "load_ms": 1938.57
+   "peak_memory_mib": 492.5,
+   "peak_rss_mib": 508.9
+  },
+  {
+   "case": "n = 1,000,000, p = 3",
+   "implementation": "statsmodels",
+   "value": 91.582,
+   "reps": [
+    91.582,
+    91.531,
+    91.327,
+    91.977,
+    92.075
+   ],
+   "peak_memory_mib": 235.3,
+   "peak_rss_mib": 287.5
+  },
+  {
+   "case": "n = 1,000,000, p = 3",
+   "implementation": "R",
+   "value": 339.0,
+   "reps": [
+    320.0,
+    314.0,
+    339.0,
+    389.0,
+    402.0
+   ],
+   "peak_memory_mib": 402.5,
+   "peak_rss_mib": 417.0
   },
   {
    "case": "n = 100,000, p = 11",
@@ -140,7 +189,8 @@
     47.273,
     45.697
    ],
-   "load_ms": 738.242
+   "peak_memory_mib": 83.7,
+   "peak_rss_mib": 100.5
   },
   {
    "case": "n = 100,000, p = 11",
@@ -153,7 +203,8 @@
     18.965,
     18.797
    ],
-   "load_ms": 151.442
+   "peak_memory_mib": 156.7,
+   "peak_rss_mib": 209.2
   },
   {
    "case": "n = 100,000, p = 11",
@@ -166,7 +217,14 @@
     34.0,
     34.0
    ],
-   "load_ms": 1047.0
+   "peak_memory_mib": 186.0,
+   "peak_rss_mib": 199.6
   }
- ]
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  "PHP=$(command -v php) .context/bench-venv/bin/python tests/benchmarks/run.py --model ols"
+ ],
+ "source": "docs/benchmarks/ols-results.json",
+ "group": "Models"
 }

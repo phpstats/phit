@@ -1,177 +1,5277 @@
 {
  "title": "Binomial random intercept: agreement with lme4",
- "description": "Largest coefficient difference from lme4::glmer for Laplace and adaptive quadrature fits.",
- "reference": "R version 4.6.1 (2026-06-24), lme4 2.0.6, PHP 8.5.10, python 3.14.7, numpy 2.5.4, scipy 1.18.1, statsmodels 0.15.0",
- "tolerance": "2e-05 + 0.0002*|reference|",
- "source": "docs/verifications/logistic-mixed-results.json",
+ "label": "Binomial mixed",
+ "kind": "reference",
+ "checked": "fit_mixed_logistic_matrix() against lme4 glmer() at the Laplace approximation and 9, 25, and 61 adaptive quadrature points, with an independent SciPy evaluation of the same likelihood.",
+ "reference": "R lme4 glmer(family = binomial), bobyqa, tolPwrss 1e-12",
+ "versions": {
+  "R": "4.6.1",
+  "lme4": "2.0.6",
+  "PHP": "8.5.10",
+  "python": "3.14.7",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "statsmodels": "0.15.0"
+ },
+ "inputs": "Seven data sets (tests/fixtures/logistic-mixed-r.json), including lme4's cbpp, rare events, grouped outcomes with offsets, large group variation, and a zero-variance boundary.",
+ "comparison": [
+  {
+   "id": "estimates",
+   "applies_to": "coefficients, random effects, variance components, fitted values",
+   "kind": "tolerance",
+   "atol": 2e-05,
+   "rtol": 0.0002
+  },
+  {
+   "id": "inference",
+   "applies_to": "covariance, standard errors, z, p, intervals",
+   "kind": "tolerance",
+   "atol": 2e-05,
+   "rtol": 0.002
+  },
+  {
+   "id": "likelihood",
+   "applies_to": "log likelihood, deviance, AIC, BIC",
+   "kind": "tolerance",
+   "atol": 1e-06,
+   "rtol": 1e-08
+  },
+  {
+   "id": "independent",
+   "kind": "tolerance",
+   "atol": 2e-08,
+   "applies_to": "phit's log likelihood against SciPy's evaluation of the same approximation"
+  }
+ ],
  "cases": [
   {
    "name": "binary_1",
    "quantity": "coefficients",
-   "max_abs_error": 3.475685441678422e-07,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 3.475685441678422e-07
+  },
+  {
+   "name": "binary_1",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 9,
+   "max_abs_error": 3.3079025698601328e-06
+  },
+  {
+   "name": "binary_1",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 3.017077517708522e-06
+  },
+  {
+   "name": "binary_1",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 2.12559144001645e-05
+  },
+  {
+   "name": "binary_1",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 1.1744509875732945e-07
+  },
+  {
+   "name": "binary_1",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 6,
+   "max_abs_error": 6.260931817880788e-06
+  },
+  {
+   "name": "binary_1",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 7.054777159676284e-08
+  },
+  {
+   "name": "binary_1",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 7.270621893429308e-08
+  },
+  {
+   "name": "binary_1",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 5.885149687578917e-07
+  },
+  {
+   "name": "binary_1",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 7.270621893429308e-08
+  },
+  {
+   "name": "binary_1",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 3.5770030626380844e-07
+  },
+  {
+   "name": "binary_1",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 1.2697372214764968e-07
+  },
+  {
+   "name": "binary_1",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.778080587795273e-07,
+   "actual": 1.024953238198778,
+   "expected": 1.0249529603907193
+  },
+  {
+   "name": "binary_1",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 5.694804616762639e-07,
+   "actual": 1.050529140494161,
+   "expected": 1.0505285710136993
+  },
+  {
+   "name": "binary_1",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.0270085226693482e-08,
+   "actual": -106.51608226533448,
+   "expected": -106.51608227560456
+  },
+  {
+   "name": "binary_1",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.0540170453386963e-08,
+   "actual": 213.03216453066895,
+   "expected": 213.03216455120912
+  },
+  {
+   "name": "binary_1",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.0540170453386963e-08,
+   "actual": 221.03216453066895,
+   "expected": 221.03216455120912
+  },
+  {
+   "name": "binary_1",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.0540170453386963e-08,
+   "actual": 233.91358783098224,
+   "expected": 233.9135878515224
+  },
+  {
+   "name": "binary_1",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 4,
+   "expected": 4
+  },
+  {
+   "name": "binary_1",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 181,
+   "expected": 181
+  },
+  {
+   "name": "binary_1",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -106.51608226533448,
+   "expected": -106.51608226533443,
+   "max_abs_error": 4.263256414560601e-14,
+   "n_compared": 1
   },
   {
    "name": "binary_9",
    "quantity": "coefficients",
-   "max_abs_error": 4.9403206414666556e-08,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 4.9403206414666556e-08
+  },
+  {
+   "name": "binary_9",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 9,
+   "max_abs_error": 6.341497771900073e-07
+  },
+  {
+   "name": "binary_9",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 5.765110955291419e-07
+  },
+  {
+   "name": "binary_9",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 4.242916599839219e-06
+  },
+  {
+   "name": "binary_9",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 3.5843721102324366e-08
+  },
+  {
+   "name": "binary_9",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 6,
+   "max_abs_error": 1.1793441905272317e-06
+  },
+  {
+   "name": "binary_9",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.4924497859780672e-08
+  },
+  {
+   "name": "binary_9",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.6081494025321774e-08
+  },
+  {
+   "name": "binary_9",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.1965773483169073e-07
+  },
+  {
+   "name": "binary_9",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.6081494025321774e-08
+  },
+  {
+   "name": "binary_9",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 6.011926023674619e-08
+  },
+  {
+   "name": "binary_9",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 2.0831247171670952e-08
+  },
+  {
+   "name": "binary_9",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 5.999362429065513e-08,
+   "actual": 1.0361721737841632,
+   "expected": 1.0361722337777874
+  },
+  {
+   "name": "binary_9",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.2432745188917238e-07,
+   "actual": 1.073652773724598,
+   "expected": 1.0736528980520499
+  },
+  {
+   "name": "binary_9",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.1316282072803006e-13,
+   "actual": -106.42373049039438,
+   "expected": -106.42373049039459
+  },
+  {
+   "name": "binary_9",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.263256414560601e-13,
+   "actual": 212.84746098078875,
+   "expected": 212.84746098078918
+  },
+  {
+   "name": "binary_9",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.263256414560601e-13,
+   "actual": 220.84746098078875,
+   "expected": 220.84746098078918
+  },
+  {
+   "name": "binary_9",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.263256414560601e-13,
+   "actual": 233.72888428110204,
+   "expected": 233.72888428110247
+  },
+  {
+   "name": "binary_9",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 4,
+   "expected": 4
+  },
+  {
+   "name": "binary_9",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 181,
+   "expected": 181
+  },
+  {
+   "name": "binary_9",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -106.42373049039438,
+   "expected": -106.42373049039438,
+   "max_abs_error": 0.0,
+   "n_compared": 1
   },
   {
    "name": "binary_25",
    "quantity": "coefficients",
-   "max_abs_error": 1.6638913180599957e-07,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 1.6638913180599957e-07
+  },
+  {
+   "name": "binary_25",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 9,
+   "max_abs_error": 3.8406090657749914e-07
+  },
+  {
+   "name": "binary_25",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 3.491528911547803e-07
+  },
+  {
+   "name": "binary_25",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 2.2127050933740122e-06
+  },
+  {
+   "name": "binary_25",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 1.3745830418354643e-07
+  },
+  {
+   "name": "binary_25",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 6,
+   "max_abs_error": 8.507162236881527e-07
+  },
+  {
+   "name": "binary_25",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 3.793115188610585e-08
+  },
+  {
+   "name": "binary_25",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 4.2977696068646765e-08
+  },
+  {
+   "name": "binary_25",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.821462511930605e-07
+  },
+  {
+   "name": "binary_25",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 4.2977696068646765e-08
+  },
+  {
+   "name": "binary_25",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 1.0800478000838609e-07
+  },
+  {
+   "name": "binary_25",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 1.7402148777545534e-08
+  },
+  {
+   "name": "binary_25",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 6.168995847488645e-08,
+   "actual": 1.0361735528058462,
+   "expected": 1.0361736144958047
+  },
+  {
+   "name": "binary_25",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.2784301062218617e-07,
+   "actual": 1.0736556315342898,
+   "expected": 1.0736557593773004
+  },
+  {
+   "name": "binary_25",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 5.684341886080802e-14,
+   "actual": -106.4237285255641,
+   "expected": -106.42372852556416
+  },
+  {
+   "name": "binary_25",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.1368683772161603e-13,
+   "actual": 212.8474570511282,
+   "expected": 212.84745705112832
+  },
+  {
+   "name": "binary_25",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.1368683772161603e-13,
+   "actual": 220.8474570511282,
+   "expected": 220.84745705112832
+  },
+  {
+   "name": "binary_25",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.1368683772161603e-13,
+   "actual": 233.7288803514415,
+   "expected": 233.7288803514416
+  },
+  {
+   "name": "binary_25",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 4,
+   "expected": 4
+  },
+  {
+   "name": "binary_25",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 181,
+   "expected": 181
+  },
+  {
+   "name": "binary_25",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -106.4237285255641,
+   "expected": -106.4237285255641,
+   "max_abs_error": 0.0,
+   "n_compared": 1
   },
   {
    "name": "binary_61",
    "quantity": "coefficients",
-   "max_abs_error": 5.054155094441626e-08,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 5.054155094441626e-08
+  },
+  {
+   "name": "binary_61",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 9,
+   "max_abs_error": 4.066117965106919e-07
+  },
+  {
+   "name": "binary_61",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 3.6965384897502673e-07
+  },
+  {
+   "name": "binary_61",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 2.571023097530656e-06
+  },
+  {
+   "name": "binary_61",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 1.3335703397121534e-07
+  },
+  {
+   "name": "binary_61",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 6,
+   "max_abs_error": 7.750497812430979e-07
+  },
+  {
+   "name": "binary_61",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 2.5775688028417676e-08
+  },
+  {
+   "name": "binary_61",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.9328656952755097e-08
+  },
+  {
+   "name": "binary_61",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.1720664661041269e-07
+  },
+  {
+   "name": "binary_61",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.9328656952755097e-08
+  },
+  {
+   "name": "binary_61",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 1.578413399982992e-08
+  },
+  {
+   "name": "binary_61",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 4.041831591639067e-09
+  },
+  {
+   "name": "binary_61",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 5.986621420817073e-09,
+   "actual": 1.036173544567051,
+   "expected": 1.0361735505536724
+  },
+  {
+   "name": "binary_61",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.240635749688579e-08,
+   "actual": 1.0736556144606464,
+   "expected": 1.0736556268670039
+  },
+  {
+   "name": "binary_61",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.4210854715202004e-14,
+   "actual": -106.423728525564,
+   "expected": -106.42372852556402
+  },
+  {
+   "name": "binary_61",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.842170943040401e-14,
+   "actual": 212.847457051128,
+   "expected": 212.84745705112803
+  },
+  {
+   "name": "binary_61",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.842170943040401e-14,
+   "actual": 220.847457051128,
+   "expected": 220.84745705112803
+  },
+  {
+   "name": "binary_61",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.842170943040401e-14,
+   "actual": 233.7288803514413,
+   "expected": 233.72888035144132
+  },
+  {
+   "name": "binary_61",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 4,
+   "expected": 4
+  },
+  {
+   "name": "binary_61",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 181,
+   "expected": 181
+  },
+  {
+   "name": "binary_61",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -106.423728525564,
+   "expected": -106.42372852556402,
+   "max_abs_error": 1.4210854715202004e-14,
+   "n_compared": 1
   },
   {
    "name": "no_intercept_1",
    "quantity": "coefficients",
-   "max_abs_error": 2.957112771317938e-08,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 2.957112771317938e-08
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 3.9686859920791406e-08
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 2.3134643192812554e-07
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 4.107281057708079e-06
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 8.391910469029984e-07
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 4.830018023316285e-07
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 5.06650087439553e-08
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 5.3897754204168535e-08
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 3.724696213680545e-07
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 5.3897754204168535e-08
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 4.1282036766787655e-07
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 9.18557211404547e-08
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 3.703454276582363e-07,
+   "actual": 1.8227566047423795,
+   "expected": 1.822756234396952
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.350099011698802e-06,
+   "actual": 3.3224416401319674,
+   "expected": 3.3224402900329557
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 8.335518941748887e-09,
+   "actual": -113.82207297440826,
+   "expected": -113.82207298274378
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.6671037883497775e-08,
+   "actual": 227.64414594881652,
+   "expected": 227.64414596548755
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.6671037883497775e-08,
+   "actual": 233.64414594881652,
+   "expected": 233.64414596548755
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.6671037883497775e-08,
+   "actual": 243.3052134240515,
+   "expected": 243.30521344072253
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 3,
+   "expected": 3
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 182,
+   "expected": 182
+  },
+  {
+   "name": "no_intercept_1",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -113.82207297440826,
+   "expected": -113.82207297440772,
+   "max_abs_error": 5.400124791776761e-13,
+   "n_compared": 1
   },
   {
    "name": "no_intercept_9",
    "quantity": "coefficients",
-   "max_abs_error": 8.684913704870567e-09,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 8.684913704870567e-09
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 4.854038312789022e-09
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 2.8351048925179256e-08
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 4.515048832587354e-07
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 8.93863614237489e-08
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 6.425194853942884e-08
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.2779702407428317e-08
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.0798285488000658e-08
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 9.493026942308802e-08
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.0798285488000658e-08
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 1.0313145049067884e-07
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 3.263628578498157e-08
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.1964199697622746e-07,
+   "actual": 1.8432662985091604,
+   "expected": 1.8432661788671634
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.4106410745925473e-07,
+   "actual": 3.397630647219661,
+   "expected": 3.3976302061555534
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 7.30437932361383e-12,
+   "actual": -113.63306063063571,
+   "expected": -113.63306063064302
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.460875864722766e-11,
+   "actual": 227.26612126127142,
+   "expected": 227.26612126128603
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.460875864722766e-11,
+   "actual": 233.26612126127142,
+   "expected": 233.26612126128603
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.460875864722766e-11,
+   "actual": 242.9271887365064,
+   "expected": 242.927188736521
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 3,
+   "expected": 3
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 182,
+   "expected": 182
+  },
+  {
+   "name": "no_intercept_9",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -113.63306063063571,
+   "expected": -113.63306063063571,
+   "max_abs_error": 0.0,
+   "n_compared": 1
   },
   {
    "name": "no_intercept_25",
    "quantity": "coefficients",
-   "max_abs_error": 2.6616900544729205e-08,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 2.6616900544729205e-08
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 3.7559239659396004e-10
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 2.1936816807510695e-09
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 3.5370225415221057e-07
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 7.001294770325739e-08
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 3.091643757668905e-08
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 3.9933172879536016e-08
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 2.94944820788956e-08
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 2.5260677682936716e-07
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 2.94944820788956e-08
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 2.8471809043750795e-07
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 6.773927163639115e-08
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.68553149718187e-07,
+   "actual": 1.8433428733733586,
+   "expected": 1.8433426048202088
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 9.900709971866206e-07,
+   "actual": 3.3979129488163498,
+   "expected": 3.3979119587453526
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 7.105427357601002e-14,
+   "actual": -113.63296667469004,
+   "expected": -113.63296667469011
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.4210854715202004e-13,
+   "actual": 227.26593334938008,
+   "expected": 227.26593334938022
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.4210854715202004e-13,
+   "actual": 233.26593334938008,
+   "expected": 233.26593334938022
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.4210854715202004e-13,
+   "actual": 242.92700082461505,
+   "expected": 242.9270008246152
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 3,
+   "expected": 3
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 182,
+   "expected": 182
+  },
+  {
+   "name": "no_intercept_25",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -113.63296667469004,
+   "expected": -113.63296667469004,
+   "max_abs_error": 0.0,
+   "n_compared": 1
   },
   {
    "name": "no_intercept_61",
    "quantity": "coefficients",
-   "max_abs_error": 1.8147438135551752e-08,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 1.8147438135551752e-08
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 3.170521345463584e-09
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 1.8517721675492815e-08
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 1.4918460955470891e-07
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 2.9535747042563898e-08
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 5.4441505692448544e-08
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 2.7447923822698783e-08
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 2.191678044605183e-08
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.7493695159132017e-07
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 2.191678044605183e-08
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 1.9884113466872577e-07
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 4.7061505470402665e-08
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.819217101406423e-07,
+   "actual": 1.843342840859227,
+   "expected": 1.8433426589375168
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 6.706881308105039e-07,
+   "actual": 3.397912828946965,
+   "expected": 3.3979121582588343
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 7.105427357601002e-14,
+   "actual": -113.63296667297082,
+   "expected": -113.6329666729709
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.4210854715202004e-13,
+   "actual": 227.26593334594165,
+   "expected": 227.2659333459418
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.4210854715202004e-13,
+   "actual": 233.26593334594165,
+   "expected": 233.2659333459418
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.4210854715202004e-13,
+   "actual": 242.92700082117662,
+   "expected": 242.92700082117676
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 3,
+   "expected": 3
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 182,
+   "expected": 182
+  },
+  {
+   "name": "no_intercept_61",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -113.63296667297082,
+   "expected": -113.63296667297085,
+   "max_abs_error": 2.842170943040401e-14,
+   "n_compared": 1
   },
   {
    "name": "grouped_offset_1",
    "quantity": "coefficients",
-   "max_abs_error": 1.5979946841326864e-06,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 1.5979946841326864e-06
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 9,
+   "max_abs_error": 2.2872665982887064e-06
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 2.6711616761265766e-06
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 3.488302194476489e-05
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 1.9963429374880715e-08
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 6,
+   "max_abs_error": 6.833375366444017e-06
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 3.875706092726361e-07
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 3.271829496220846e-08
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 3.6666059433088094e-07
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 3.271829496220846e-08
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 1.573431243517831e-06
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 4.571897463390151e-08
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 8.282918475543966e-07,
+   "actual": 1.4281174594994748,
+   "expected": 1.4281182877913223
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.3657967842538596e-06,
+   "actual": 2.039519478127234,
+   "expected": 2.0395218439240184
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.0463630789890885e-11,
+   "actual": -350.43160563351773,
+   "expected": -350.4316056335382
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.092726157978177e-11,
+   "actual": 700.8632112670355,
+   "expected": 700.8632112670764
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.092726157978177e-11,
+   "actual": 708.8632112670355,
+   "expected": 708.8632112670764
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.092726157978177e-11,
+   "actual": 721.7446345673487,
+   "expected": 721.7446345673897
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 4,
+   "expected": 4
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 181,
+   "expected": 181
+  },
+  {
+   "name": "grouped_offset_1",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -350.43160563351773,
+   "expected": -350.43160563351773,
+   "max_abs_error": 0.0,
+   "n_compared": 1
   },
   {
    "name": "grouped_offset_9",
    "quantity": "coefficients",
-   "max_abs_error": 1.181231713776043e-06,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 1.181231713776043e-06
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 9,
+   "max_abs_error": 9.960887215054726e-08
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 1.1628680324227147e-07
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 4.113228049718032e-06
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 2.2918831693585773e-09
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 6,
+   "max_abs_error": 1.4091496602919307e-06
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 2.805137033767835e-07
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.1851386427785826e-08
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.5795328067724768e-07
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.1851386427785826e-08
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 1.1332676268516195e-06
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 1.2771531499033983e-08
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.0307422804167743e-07,
+   "actual": 1.4286419345979817,
+   "expected": 1.4286420376722098
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.945123398490068e-07,
+   "actual": 2.041017777291864,
+   "expected": 2.0410180718042037
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.0231815394945443e-12,
+   "actual": -350.41000631406337,
+   "expected": -350.4100063140644
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.0463630789890885e-12,
+   "actual": 700.8200126281267,
+   "expected": 700.8200126281288
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.0463630789890885e-12,
+   "actual": 708.8200126281267,
+   "expected": 708.8200126281288
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.0463630789890885e-12,
+   "actual": 721.70143592844,
+   "expected": 721.701435928442
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 4,
+   "expected": 4
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 181,
+   "expected": 181
+  },
+  {
+   "name": "grouped_offset_9",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -350.41000631406337,
+   "expected": -350.41000631406337,
+   "max_abs_error": 0.0,
+   "n_compared": 1
   },
   {
    "name": "grouped_offset_25",
    "quantity": "coefficients",
-   "max_abs_error": 6.920719335390402e-07,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 6.920719335390402e-07
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 9,
+   "max_abs_error": 3.8012654224317544e-07
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 4.437725955597216e-07
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 3.555829243495623e-06
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 1.941628379603655e-08
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 6,
+   "max_abs_error": 1.561850238473994e-06
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.7293137621887666e-07
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.1469063726510242e-08
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.2419500450278065e-07
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 1.1469063726510242e-08
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 6.890705601669822e-07
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 1.5017973226116865e-08
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.4073600246588e-07,
+   "actual": 1.4286429451861462,
+   "expected": 1.4286427044501437
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 6.878515255159812e-07,
+   "actual": 2.041020664830146,
+   "expected": 2.0410199769786206
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.8189894035458565e-12,
+   "actual": -350.410001302001,
+   "expected": -350.4100013020028
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 3.637978807091713e-12,
+   "actual": 700.820002604002,
+   "expected": 700.8200026040056
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 3.637978807091713e-12,
+   "actual": 708.820002604002,
+   "expected": 708.8200026040056
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 3.637978807091713e-12,
+   "actual": 721.7014259043152,
+   "expected": 721.7014259043189
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 4,
+   "expected": 4
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 181,
+   "expected": 181
+  },
+  {
+   "name": "grouped_offset_25",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -350.410001302001,
+   "expected": -350.4100013020009,
+   "max_abs_error": 5.684341886080802e-14,
+   "n_compared": 1
   },
   {
    "name": "grouped_offset_61",
    "quantity": "coefficients",
-   "max_abs_error": 1.72595855829627e-07,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 1.72595855829627e-07
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 9,
+   "max_abs_error": 9.332402872708201e-08
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 1.0894959601159826e-07
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 8.667096134118424e-07
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 3,
+   "max_abs_error": 1.6879145713077914e-08
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 6,
+   "max_abs_error": 3.861331405730084e-07
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 4.1247514404041397e-08
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 4.156452126924393e-09
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 3.24218634162321e-08
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 185,
+   "max_abs_error": 4.156452126924393e-09
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 1.6347928677440393e-07
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 1.5283085075257219e-09
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 6.44155329077023e-09,
+   "actual": 1.4286428452251105,
+   "expected": 1.4286428387835572
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.8405357682382828e-08,
+   "actual": 2.041020379212899,
+   "expected": 2.0410203608075412
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.1368683772161603e-13,
+   "actual": -350.41000130198097,
+   "expected": -350.4100013019811
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.2737367544323206e-13,
+   "actual": 700.8200026039619,
+   "expected": 700.8200026039622
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.2737367544323206e-13,
+   "actual": 708.8200026039619,
+   "expected": 708.8200026039622
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.2737367544323206e-13,
+   "actual": 721.7014259042752,
+   "expected": 721.7014259042754
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 4,
+   "expected": 4
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 181,
+   "expected": 181
+  },
+  {
+   "name": "grouped_offset_61",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -350.41000130198097,
+   "expected": -350.4100013019811,
+   "max_abs_error": 1.1368683772161603e-13,
+   "n_compared": 1
   },
   {
    "name": "rare_events_1",
    "quantity": "coefficients",
-   "max_abs_error": 1.2090648304763363e-06,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 1.2090648304763363e-06
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 0.0002925826783037877
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 3.723724841098175e-05
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 2.6997967112585286e-05
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 4.3413702970063195e-07
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 7.419273060094156e-05
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 2.2520025093862583e-09
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 3.6225316080162884e-08
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 1.7106436978053807e-06
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 3.6225316080162884e-08
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 16,
+   "max_abs_error": 1.1529084265049505e-06
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 16,
+   "max_abs_error": 1.9918573777033544e-05
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.344989553508924e-06,
+   "actual": 7.298560318904644,
+   "expected": 7.298561663894198
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.9632976581362982e-05,
+   "actual": 53.26898272868946,
+   "expected": 53.26900236166604
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.86288165291171e-09,
+   "actual": -14.309215406442668,
+   "expected": -14.30921541130555
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 9.72576330582342e-09,
+   "actual": 28.618430812885336,
+   "expected": 28.6184308226111
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 9.7257668585371e-09,
+   "actual": 34.618430812885336,
+   "expected": 34.6184308226111
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 9.725759753109742e-09,
+   "actual": 42.311475387288844,
+   "expected": 42.311475397014604
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 3,
+   "expected": 3
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 93,
+   "expected": 93
+  },
+  {
+   "name": "rare_events_1",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -14.309215406442668,
+   "expected": -14.309215406441316,
+   "max_abs_error": 1.3518075547835906e-12,
+   "n_compared": 1
   },
   {
    "name": "rare_events_9",
    "quantity": "coefficients",
-   "max_abs_error": 1.272382741390743e-07,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 1.272382741390743e-07
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 7.069234670709079e-05
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 1.1162123897179299e-05
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 8.482685319943783e-06
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 3.8443903540089086e-07
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 2.200459910461916e-05
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 4.0954776896195977e-10
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 7.403292257013305e-09
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 2.5647109858084605e-07
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 7.403292257013305e-09
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 16,
+   "max_abs_error": 8.815513297122379e-08
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 16,
+   "max_abs_error": 1.0224885826914942e-07
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 6.110424610739074e-09,
+   "actual": 3.499107409214831,
+   "expected": 3.4991074153252555
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.276206411191197e-08,
+   "actual": 12.243752661222127,
+   "expected": 12.24375270398419
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.6715517858756357e-12,
+   "actual": -15.663747861361715,
+   "expected": -15.663747861360044
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 3.3431035717512714e-12,
+   "actual": 31.32749572272343,
+   "expected": 31.327495722720087
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 3.339550858072471e-12,
+   "actual": 37.32749572272343,
+   "expected": 37.32749572272009
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 3.346656285430072e-12,
+   "actual": 45.02054029712694,
+   "expected": 45.020540297123596
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 3,
+   "expected": 3
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 93,
+   "expected": 93
+  },
+  {
+   "name": "rare_events_9",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -15.663747861361715,
+   "expected": -15.663747861361559,
+   "max_abs_error": 1.5631940186722204e-13,
+   "n_compared": 1
   },
   {
    "name": "rare_events_25",
    "quantity": "coefficients",
-   "max_abs_error": 2.9311360449923995e-08,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 2.9311360449923995e-08
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 2.0229946876781923e-05
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 3.3108893604527623e-06
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 2.634325222850009e-06
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 1.1191541001397132e-07
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 6.518535261790248e-06
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 8.311726099052841e-10
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 1.5876053249819222e-09
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 3.8909970356826307e-08
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 1.5876053249819222e-09
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 16,
+   "max_abs_error": 2.2262949705975643e-08
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 16,
+   "max_abs_error": 2.2049654546663078e-08
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 6.87784629249677e-09,
+   "actual": 3.3560566426525407,
+   "expected": 3.356056649530387
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.616488347153336e-08,
+   "actual": 11.263116188692242,
+   "expected": 11.263116234857126
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.3092638912203256e-14,
+   "actual": -15.70761449251552,
+   "expected": -15.707614492515496
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.618527782440651e-14,
+   "actual": 31.41522898503104,
+   "expected": 31.415228985030993
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.263256414560601e-14,
+   "actual": 37.415228985031035,
+   "expected": 37.41522898503099
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.973799150320701e-14,
+   "actual": 45.10827355943455,
+   "expected": 45.1082735594345
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 3,
+   "expected": 3
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 93,
+   "expected": 93
+  },
+  {
+   "name": "rare_events_25",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -15.70761449251552,
+   "expected": -15.707614492515512,
+   "max_abs_error": 7.105427357601002e-15,
+   "n_compared": 1
   },
   {
    "name": "rare_events_61",
    "quantity": "coefficients",
-   "max_abs_error": 1.0418941176482122e-07,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 1.0418941176482122e-07
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 1.455737460176465e-05
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 2.3741402199739525e-06
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 1.9028957933819868e-06
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 8.252371215891618e-08
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 4.7574187389543e-06
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 1.7664710943998685e-09
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 5.810144809714757e-09
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 1.7135901231313255e-07
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 96,
+   "max_abs_error": 5.810144809714757e-09
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 16,
+   "max_abs_error": 9.610175144558752e-08
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 16,
+   "max_abs_error": 4.2331185134969473e-07
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 6.382661732473593e-08,
+   "actual": 3.356286953630701,
+   "expected": 3.3562870174573183
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.284408898769243e-07,
+   "actual": 11.264662115111651,
+   "expected": 11.264662543552541
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.5987211554602254e-14,
+   "actual": -15.707906364448199,
+   "expected": -15.707906364448215
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 3.197442310920451e-14,
+   "actual": 31.415812728896398,
+   "expected": 31.41581272889643
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.842170943040401e-14,
+   "actual": 37.4158127288964,
+   "expected": 37.41581272889643
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 3.552713678800501e-14,
+   "actual": 45.10885730329991,
+   "expected": 45.10885730329994
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 3,
+   "expected": 3
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 93,
+   "expected": 93
+  },
+  {
+   "name": "rare_events_61",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -15.707906364448199,
+   "expected": -15.707906364448219,
+   "max_abs_error": 1.9539925233402755e-14,
+   "n_compared": 1
   },
   {
    "name": "large_group_variation_1",
    "quantity": "coefficients",
-   "max_abs_error": 1.5336179221003832e-06,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 1.5336179221003832e-06
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 9.182145109004614e-06
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 1.007344848186209e-05
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 4.077441421745931e-05
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 4.429129988096914e-06
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 2.127721414679762e-05
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 3.285411999121024e-07
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 2.9599943152103236e-07
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 1.7479883172022426e-06
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 2.9599943152103236e-07
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 14,
+   "max_abs_error": 7.399557799825374e-07
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 14,
+   "max_abs_error": 7.835085211738146e-07
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 6.636407088311813e-07,
+   "actual": 1.7710345450631044,
+   "expected": 1.7710338814223956
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.3506608015644304e-06,
+   "actual": 3.1365633598068774,
+   "expected": 3.136561009146076
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.9081765145756435e-07,
+   "actual": -60.96051285238716,
+   "expected": -60.96051304320481
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 3.816353029151287e-07,
+   "actual": 121.92102570477432,
+   "expected": 121.92102608640963
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 3.816353029151287e-07,
+   "actual": 127.92102570477432,
+   "expected": 127.92102608640963
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 3.81635288704274e-07,
+   "actual": 136.0765223186596,
+   "expected": 136.0765227002949
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 3,
+   "expected": 3
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 109,
+   "expected": 109
+  },
+  {
+   "name": "large_group_variation_1",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -60.96051285238716,
+   "expected": -60.96051285238633,
+   "max_abs_error": 8.313350008393172e-13,
+   "n_compared": 1
   },
   {
    "name": "large_group_variation_9",
    "quantity": "coefficients",
-   "max_abs_error": 5.421603410660225e-08,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 5.421603410660225e-08
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 3.4296086703911044e-07
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 3.051910389961776e-07
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 4.703151031959507e-07
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 2.942237284919713e-07
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 6.495450108889855e-07
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 2.473675825287458e-08
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 1.3424173661569228e-08
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 6.523495299504134e-08
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 1.3424173661569228e-08
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 14,
+   "max_abs_error": 4.6091478855814216e-08
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 14,
+   "max_abs_error": 5.094892041590526e-07
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.538727811833951e-09,
+   "actual": 1.830570189654227,
+   "expected": 1.8305701911929548
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 5.633498556534278e-09,
+   "actual": 3.3509872192507126,
+   "expected": 3.350987224884211
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 8.231282322412881e-10,
+   "actual": -60.65815085416169,
+   "expected": -60.65815085498482
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.6462564644825761e-09,
+   "actual": 121.31630170832338,
+   "expected": 121.31630170996964
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.6462564644825761e-09,
+   "actual": 127.31630170832338,
+   "expected": 127.31630170996964
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.6462706753372913e-09,
+   "actual": 135.47179832220866,
+   "expected": 135.47179832385493
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 3,
+   "expected": 3
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 109,
+   "expected": 109
+  },
+  {
+   "name": "large_group_variation_9",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -60.65815085416169,
+   "expected": -60.65815085416169,
+   "max_abs_error": 0.0,
+   "n_compared": 1
   },
   {
    "name": "large_group_variation_25",
    "quantity": "coefficients",
-   "max_abs_error": 1.4704646833507695e-08,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 1.4704646833507695e-08
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 2.567424761679149e-07
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 2.284801732255204e-07
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 3.4882618038523105e-07
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 1.6912007783087546e-07
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 4.5529156778023605e-07
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 3.7231857596964346e-09
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 3.174758345103612e-09
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 4.029846278896798e-08
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 3.174758345103612e-09
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 14,
+   "max_abs_error": 3.309810647778022e-08
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 14,
+   "max_abs_error": 5.547519652537858e-07
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 3.481097698987412e-08,
+   "actual": 1.8305239289147412,
+   "expected": 1.8305238941037643
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.2744465172076502e-07,
+   "actual": 3.3508178543294607,
+   "expected": 3.350817726884809
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.0658141036401503e-13,
+   "actual": -60.658180870015016,
+   "expected": -60.65818087001512
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.1316282072803006e-13,
+   "actual": 121.31636174003003,
+   "expected": 121.31636174003025
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.1316282072803006e-13,
+   "actual": 127.31636174003003,
+   "expected": 127.31636174003025
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.2737367544323206e-13,
+   "actual": 135.4718583539153,
+   "expected": 135.47185835391554
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 3,
+   "expected": 3
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 109,
+   "expected": 109
+  },
+  {
+   "name": "large_group_variation_25",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -60.658180870015016,
+   "expected": -60.658180870015016,
+   "max_abs_error": 0.0,
+   "n_compared": 1
   },
   {
    "name": "large_group_variation_61",
    "quantity": "coefficients",
-   "max_abs_error": 3.2627663681950025e-08,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 3.2627663681950025e-08
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 3.4722293179578756e-07
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 3.0900053038518394e-07
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 8.867992222771903e-07
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 2.5619044780045286e-07
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 6.201858611110111e-07
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 1.1048884362985234e-08
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 7.601823615033254e-09
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 3.94065038378244e-08
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 112,
+   "max_abs_error": 7.601823615033254e-09
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 14,
+   "max_abs_error": 2.2425749701682207e-08
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 14,
+   "max_abs_error": 5.073800888322211e-07
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.096162050018279e-08,
+   "actual": 1.8305239168212086,
+   "expected": 1.8305239277828291
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.0131017176037176e-08,
+   "actual": 3.3508178100544592,
+   "expected": 3.3508178501854764
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": -60.65818087653061,
+   "expected": -60.65818087653061
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 121.31636175306122,
+   "expected": 121.31636175306122
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 127.31636175306122,
+   "expected": 127.31636175306122
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 135.4718583669465,
+   "expected": 135.4718583669465
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 3,
+   "expected": 3
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 109,
+   "expected": 109
+  },
+  {
+   "name": "large_group_variation_61",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -60.65818087653061,
+   "expected": -60.65818087653062,
+   "max_abs_error": 1.4210854715202004e-14,
+   "n_compared": 1
   },
   {
    "name": "boundary_1",
    "quantity": "coefficients",
-   "max_abs_error": 8.247377961557697e-09,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 8.247377961557697e-09
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.3877787807814457e-17
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.8569755317283532e-08
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.279536670535265e-08
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 8.247378113779291e-09
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 2.0618444729336716e-09
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 2.0618444729336716e-09
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 8.247377961557697e-09
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 2.0618444729336716e-09
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 0
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 0
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0,
+   "expected": 0
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0,
+   "expected": 0
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 7.105427357601002e-15,
+   "actual": -33.27106466687737,
+   "expected": -33.271064666877365
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.4210854715202004e-14,
+   "actual": 66.54212933375474,
+   "expected": 66.54212933375473
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.4210854715202004e-14,
+   "actual": 70.54212933375474,
+   "expected": 70.54212933375473
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.4210854715202004e-14,
+   "actual": 74.28453135557052,
+   "expected": 74.28453135557051
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 2,
+   "expected": 2
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 46,
+   "expected": 46
+  },
+  {
+   "name": "boundary_1",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -33.27106466687737,
+   "expected": -33.27106466687737,
+   "max_abs_error": 0.0,
+   "n_compared": 1
   },
   {
    "name": "boundary_9",
    "quantity": "coefficients",
-   "max_abs_error": 4.832884528451808e-09,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.832884528451808e-09
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.3877787807814457e-17
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.6741603100784173e-08
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.3357866590624212e-08
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 4.832884648031666e-09
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 1.208221189763492e-09
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 1.208221189763492e-09
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 4.832884528451808e-09
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 1.208221189763492e-09
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 0
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 0
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0,
+   "expected": 0
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0,
+   "expected": 0
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": -33.27106466687737,
+   "expected": -33.27106466687737
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 66.54212933375474,
+   "expected": 66.54212933375474
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 70.54212933375474,
+   "expected": 70.54212933375474
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 74.28453135557052,
+   "expected": 74.28453135557052
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 2,
+   "expected": 2
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 46,
+   "expected": 46
+  },
+  {
+   "name": "boundary_9",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -33.27106466687737,
+   "expected": -33.27106466687737,
+   "max_abs_error": 0.0,
+   "n_compared": 1
   },
   {
    "name": "boundary_25",
    "quantity": "coefficients",
-   "max_abs_error": 4.836543457161901e-09,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.836543457161901e-09
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.3877787807814457e-17
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 5.551115123125783e-17
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.675427800163848e-08
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.3367979723177825e-08
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 4.836543721076225e-09
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 1.2091359025134807e-09
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 1.2091359025134807e-09
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 4.836543457161901e-09
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 1.2091359025134807e-09
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 0
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 0
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0,
+   "expected": 0
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0,
+   "expected": 0
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": -33.27106466687737,
+   "expected": -33.27106466687737
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 66.54212933375474,
+   "expected": 66.54212933375474
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 70.54212933375474,
+   "expected": 70.54212933375474
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 74.28453135557052,
+   "expected": 74.28453135557052
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 2,
+   "expected": 2
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 46,
+   "expected": 46
+  },
+  {
+   "name": "boundary_25",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -33.27106466687737,
+   "expected": -33.27106466687738,
+   "max_abs_error": 7.105427357601002e-15,
+   "n_compared": 1
   },
   {
    "name": "boundary_61",
    "quantity": "coefficients",
-   "max_abs_error": 4.842138162981714e-09,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.842138162981714e-09
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.3877787807814457e-17
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 5.551115123125783e-17
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.6773658631105117e-08
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.3383443242531712e-08
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 2,
+   "max_abs_error": 4.842138467964219e-09
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 1.2105345614799035e-09
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 1.2105345614799035e-09
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 4.842138162981714e-09
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 48,
+   "max_abs_error": 1.2105345614799035e-09
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 0
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 12,
+   "max_abs_error": 0
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0,
+   "expected": 0
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0,
+   "expected": 0
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": -33.27106466687737,
+   "expected": -33.27106466687737
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 66.54212933375474,
+   "expected": 66.54212933375474
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 70.54212933375474,
+   "expected": 70.54212933375474
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 74.28453135557052,
+   "expected": 74.28453135557052
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 2,
+   "expected": 2
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 46,
+   "expected": 46
+  },
+  {
+   "name": "boundary_61",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -33.27106466687737,
+   "expected": -33.27106466687737,
+   "max_abs_error": 0.0,
+   "n_compared": 1
   },
   {
    "name": "cbpp_1",
    "quantity": "coefficients",
-   "max_abs_error": 4.7151640147902185e-08,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 4.7151640147902185e-08
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 16,
+   "max_abs_error": 5.526236098729598e-07
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 6.464397830363566e-07
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 5.588367247622017e-06
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 1.571049674793483e-08
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 8,
+   "max_abs_error": 1.2683397714319256e-06
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 3.0151932894906253e-09
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 1.0575061049067358e-08
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 7.550662362021399e-08
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 1.0575061049067358e-08
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 15,
+   "max_abs_error": 4.1130638450681545e-08
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 15,
+   "max_abs_error": 1.703090571347765e-08
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.411178533558768e-08,
+   "actual": 0.642261461439236,
+   "expected": 0.6422614173274507
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 5.666259744740998e-08,
+   "actual": 0.4124997848500632,
+   "expected": 0.4124997281874658
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 6.738872571077081e-09,
+   "actual": -92.02628186475832,
+   "expected": -92.02628187149719
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.3477745142154163e-08,
+   "actual": 184.05256372951663,
+   "expected": 184.05256374299438
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.3477745142154163e-08,
+   "actual": 194.05256372951663,
+   "expected": 194.05256374299438
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.3477745142154163e-08,
+   "actual": 204.17932218319237,
+   "expected": 204.1793221966701
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 5,
+   "expected": 5
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 51,
+   "expected": 51
+  },
+  {
+   "name": "cbpp_1",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -92.02628186475832,
+   "expected": -92.02628186475712,
+   "max_abs_error": 1.1937117960769683e-12,
+   "n_compared": 1
   },
   {
    "name": "cbpp_9",
    "quantity": "coefficients",
-   "max_abs_error": 7.600768836546479e-08,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 7.600768836546479e-08
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 16,
+   "max_abs_error": 8.58179968754591e-08
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 1.0034976077877289e-07
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 1.0446463778457371e-06
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 2.675031532221872e-09
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 8,
+   "max_abs_error": 2.726896055627037e-07
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 3.128840374289066e-09
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 8.646539650936091e-09
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 8.252741556802334e-08
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 8.646539650936091e-09
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 15,
+   "max_abs_error": 1.4590523789159704e-08
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 15,
+   "max_abs_error": 5.169358857637363e-09
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.4135987824737128e-08,
+   "actual": 0.6475177227783004,
+   "expected": 0.6475177086423126
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.830660506518811e-08,
+   "actual": 0.4192792013119959,
+   "expected": 0.41927918300539085
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 8.668621376273222e-13,
+   "actual": -91.98337179633378,
+   "expected": -91.98337179633465
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.7337242752546445e-12,
+   "actual": 183.96674359266757,
+   "expected": 183.9667435926693
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.7337242752546445e-12,
+   "actual": 193.96674359266757,
+   "expected": 193.9667435926693
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.7621459846850485e-12,
+   "actual": 204.0935020463433,
+   "expected": 204.09350204634507
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 5,
+   "expected": 5
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 51,
+   "expected": 51
+  },
+  {
+   "name": "cbpp_9",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -91.98337179633378,
+   "expected": -91.98337179633452,
+   "max_abs_error": 7.389644451905042e-13,
+   "n_compared": 1
   },
   {
    "name": "cbpp_25",
    "quantity": "coefficients",
-   "max_abs_error": 6.064641533409798e-08,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 6.064641533409798e-08
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 16,
+   "max_abs_error": 1.1943762823207749e-07
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 1.3966228257222824e-07
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 1.1807971680433127e-06
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 2.351979346091465e-09
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 8,
+   "max_abs_error": 2.847226232560729e-07
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 5.109404524472616e-09
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 9.37434510572821e-09
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 7.615158326146343e-08
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 9.37434510572821e-09
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 15,
+   "max_abs_error": 2.3503376800348974e-08
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 15,
+   "max_abs_error": 7.93735413506802e-09
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.182813940709849e-08,
+   "actual": 0.6475184559782656,
+   "expected": 0.647518477806405
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 2.826824674340145e-08,
+   "actual": 0.4192801508324771,
+   "expected": 0.41928017910072385
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 6.821210263296962e-13,
+   "actual": -91.98336903730988,
+   "expected": -91.98336903731057
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.3642420526593924e-12,
+   "actual": 183.96673807461977,
+   "expected": 183.96673807462113
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.3642420526593924e-12,
+   "actual": 193.96673807461977,
+   "expected": 193.96673807462113
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.3642420526593924e-12,
+   "actual": 204.09349652829553,
+   "expected": 204.0934965282969
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 5,
+   "expected": 5
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 51,
+   "expected": 51
+  },
+  {
+   "name": "cbpp_25",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -91.98336903730988,
+   "expected": -91.98336903731061,
+   "max_abs_error": 7.247535904753022e-13,
+   "n_compared": 1
   },
   {
    "name": "cbpp_61",
    "quantity": "coefficients",
-   "max_abs_error": 5.577975148440828e-08,
-   "passed": true
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 5.577975148440828e-08
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "covariance",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 16,
+   "max_abs_error": 5.7599031350052954e-08
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "std errors",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 8.686480712505329e-08
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "z statistics",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 8.5885701084365e-07
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "p values",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 4,
+   "max_abs_error": 3.697539858061455e-09
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "conf int",
+   "rule": "inference",
+   "status": "pass",
+   "n_compared": 8,
+   "max_abs_error": 1.8778803978491965e-07
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "fixed fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 7.097091914154419e-09
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "fitted",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 7.930975293168885e-09
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "linear predictor",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 5.915808376499854e-08
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "residuals",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 56,
+   "max_abs_error": 7.930975293168885e-09
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "random effects",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 15,
+   "max_abs_error": 3.476890642062358e-08
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "random effects cond var",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 15,
+   "max_abs_error": 4.628711858245538e-10
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "random intercept sd",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 4.5407675397513e-09,
+   "actual": 0.6475184776941911,
+   "expected": 0.6475184731534236
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "random intercept variance",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 5.880461784180113e-09,
+   "actual": 0.4192801789554027,
+   "expected": 0.4192801730749409
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 7.958078640513122e-13,
+   "actual": -91.98336903730979,
+   "expected": -91.98336903731058
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "neg2 log likelihood",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.5916157281026244e-12,
+   "actual": 183.96673807461957,
+   "expected": 183.96673807462116
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "aic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.5916157281026244e-12,
+   "actual": 193.96673807461957,
+   "expected": 193.96673807462116
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "bic",
+   "rule": "likelihood",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 1.5916157281026244e-12,
+   "actual": 204.0934965282953,
+   "expected": 204.0934965282969
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "n parameters",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 5,
+   "expected": 5
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "df residual",
+   "rule": "estimates",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 51,
+   "expected": 51
+  },
+  {
+   "name": "cbpp_61",
+   "quantity": "log likelihood vs independent SciPy evaluation",
+   "rule": "independent",
+   "status": "pass",
+   "actual": -91.98336903730979,
+   "expected": -91.98336903731055,
+   "max_abs_error": 7.673861546209082e-13,
+   "n_compared": 1
   }
- ]
+ ],
+ "exclusions": [
+  "statsmodels' Bayesian binomial mixed estimator has a different objective and is not compared."
+ ],
+ "known_differences": [
+  "lme4's default tolPwrss (1e-7) leaves its conditional modes slightly short of convergence; the references use tolPwrss 1e-12, where lme4 and phit agree.",
+  "Agreement with lme4 is not integration accuracy: integration error is measured separately with QUADPACK and reported in the source results."
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  ".context/notebooks-venv/bin/python docs/verifications/compare_logistic_mixed.py"
+ ],
+ "source": "docs/verifications/logistic-mixed-results.json",
+ "data": "tests/fixtures/logistic-mixed-r.json",
+ "environment": {
+  "date": "2026-11-01",
+  "commit": "066e2e1",
+  "php": "8.5.10",
+  "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "phit": "0.4.4"
+ },
+ "group": "Models"
 }

@@ -1,729 +1,983 @@
 {
- "title": "Mixed models on published data sets: agreement with R",
- "description": "The same inputs fitted by phit, R, and nlme and statsmodels: the largest absolute difference from R for every reported quantity. Each case must agree with R within the tolerance.",
- "reference": "R version 4.6.1 (2026-06-24), lme4 2.0.6, statsmodels 0.15.0, PHP 8.5.10, Python 3.14.7, nlme 3.1.169",
- "tolerance": "1e-9 + 1e-7*|reference| (fixed models), 1e-7 + 1e-6*|reference| (mixed models)",
- "source": "docs/verifications/lmm-public-results.json",
+ "title": "Mixed models on published data: agreement with lme4",
+ "label": "Published data",
+ "kind": "reference",
+ "checked": "ML fits of sleepstudy, Orthodont, Machines, and Hsb82 against lme4 and nlme, with statsmodels.",
+ "reference": "R lme4 lmer(REML = FALSE, bobyqa rhoend = 1e-10) and nlme lme()",
+ "versions": {
+  "R": "4.6.1",
+  "lme4": "2.0.6",
+  "statsmodels": "0.15.0",
+  "PHP": "8.5.10",
+  "Python": "3.14.7",
+  "nlme": "3.1.169"
+ },
+ "inputs": "Four published data sets, with provenance and licenses in docs/data/lmm (tests/fixtures/lmm-public-r.json).",
+ "comparison": [
+  {
+   "id": "atol 1e-07, rtol 1e-06",
+   "applies_to": "quantities this tolerance names in the cases",
+   "kind": "tolerance",
+   "atol": 1e-07,
+   "rtol": 1e-06
+  },
+  {
+   "id": "atol 1e-06, rtol 1e-06",
+   "applies_to": "quantities this tolerance names in the cases",
+   "kind": "tolerance",
+   "atol": 1e-06,
+   "rtol": 1e-06
+  },
+  {
+   "id": "atol 1e-07, rtol 1e-10",
+   "applies_to": "quantities this tolerance names in the cases",
+   "kind": "tolerance",
+   "atol": 1e-07,
+   "rtol": 1e-10
+  }
+ ],
  "cases": [
   {
    "name": "sleepstudy",
    "quantity": "coefficients",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 1.3073986337985843e-12,
    "peers": {
     "nlme": 1.1937117960769683e-12,
-    "Python": 4.831690603168681e-13
-   },
-   "passed": true
+    "statsmodels": 4.831690603168681e-13
+   }
   },
   {
    "name": "sleepstudy",
    "quantity": "covariance",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 8.316756066051312e-07,
    "peers": {
     "nlme": 6.258358382638107e-07,
-    "Python": 8.358512388895178e-07
-   },
-   "passed": true
+    "statsmodels": 8.358512388895178e-07
+   }
   },
   {
    "name": "sleepstudy",
-   "quantity": "std_errors",
+   "quantity": "std errors",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 4.3743920485894705e-08,
    "peers": {
     "nlme": 3.291729733234661e-08,
-    "Python": 4.396354746916131e-08
-   },
-   "passed": true
+    "statsmodels": 4.396354746916131e-08
+   }
   },
   {
    "name": "sleepstudy",
-   "quantity": "z_statistics",
+   "quantity": "z statistics",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 1.2169696361752358e-07,
    "peers": {
     "nlme": 9.1576978888952e-08,
-    "Python": 1.2230788470901643e-07
-   },
-   "passed": true
+    "statsmodels": 1.2230788470901643e-07
+   }
   },
   {
    "name": "sleepstudy",
-   "quantity": "p_values",
+   "quantity": "p values",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 6.145232092929231e-46,
    "peers": {
     "nlme": 4.625400160051962e-46,
-    "Python": 6.177558542617958e-46
-   },
-   "passed": true
+    "statsmodels": 6.177558542617958e-46
+   }
   },
   {
    "name": "sleepstudy",
-   "quantity": "conf_int",
+   "quantity": "conf int",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 8.57378381624585e-08,
    "peers": {
     "nlme": 6.4517934106334e-08,
-    "Python": 8.616746072220849e-08
-   },
-   "passed": true
+    "statsmodels": 8.616746072220849e-08
+   }
   },
   {
    "name": "sleepstudy",
-   "quantity": "fixed_fitted",
+   "quantity": "fixed fitted",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 180,
    "max_abs_error": 1.3073986337985843e-12,
    "peers": {
     "nlme": 1.1937117960769683e-12,
-    "Python": 4.831690603168681e-13
-   },
-   "passed": true
+    "statsmodels": 4.831690603168681e-13
+   }
   },
   {
    "name": "sleepstudy",
    "quantity": "fitted",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 180,
    "max_abs_error": 6.95034145792306e-08,
    "peers": {
     "nlme": 5.230137389844458e-08,
-    "Python": 6.985231948419823e-08
-   },
-   "passed": true
+    "statsmodels": 6.985231948419823e-08
+   }
   },
   {
    "name": "sleepstudy",
    "quantity": "residuals",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 180,
    "max_abs_error": 6.95034145792306e-08,
    "peers": {
     "nlme": 5.230137389844458e-08,
-    "Python": 6.985231948419823e-08
-   },
-   "passed": true
+    "statsmodels": 6.985231948419823e-08
+   }
   },
   {
    "name": "sleepstudy",
-   "quantity": "marginal_residuals",
+   "quantity": "marginal residuals",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 180,
    "max_abs_error": 1.3073986337985843e-12,
    "peers": {
     "nlme": 1.1937117960769683e-12,
-    "Python": 4.831690603168681e-13
-   },
-   "passed": true
+    "statsmodels": 4.831690603168681e-13
+   }
   },
   {
    "name": "sleepstudy",
-   "quantity": "random_effects",
+   "quantity": "random effects",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 18,
    "max_abs_error": 6.95021071805968e-08,
    "peers": {
     "nlme": 5.2300180186648504e-08,
-    "Python": 6.98518221042832e-08
-   },
-   "passed": true
+    "statsmodels": 6.98518221042832e-08
+   }
   },
   {
    "name": "sleepstudy",
-   "quantity": "residual_variance",
+   "quantity": "residual variance",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.1620634268183494e-06,
+   "actual": 954.5278346143587,
+   "expected": 954.5278334522952,
    "peers": {
     "nlme": 8.744530077819945e-07,
-    "Python": 1.1678978353302227e-06
-   },
-   "passed": true
+    "statsmodels": 1.1678978353302227e-06
+   }
   },
   {
    "name": "sleepstudy",
-   "quantity": "random_intercept_variance",
+   "quantity": "random intercept variance",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.5371609606518177e-05,
+   "actual": 1296.8700402774277,
+   "expected": 1296.8700556490373,
    "peers": {
     "nlme": 1.1567136425583158e-05,
-    "Python": 1.5448784324689768e-05
-   },
-   "passed": true
+    "statsmodels": 1.5448784324689768e-05
+   }
   },
   {
    "name": "sleepstudy",
    "quantity": "sigma",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.8806392887427137e-08,
+   "actual": 30.895433879691,
+   "expected": 30.89543386088461,
    "peers": {
     "nlme": 1.4151815719287697e-08,
-    "Python": 1.8900816911582297e-08
-   },
-   "passed": true
+    "statsmodels": 1.8900816911582297e-08
+   }
   },
   {
    "name": "sleepstudy",
    "quantity": "icc",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 3.1920175391775274e-09,
+   "actual": 0.5760288106960045,
+   "expected": 0.5760288138880221,
    "peers": {
     "nlme": 2.401993381973e-09,
-    "Python": 3.208043497515689e-09
-   },
-   "passed": true
+    "statsmodels": 3.208043497515689e-09
+   }
   },
   {
    "name": "sleepstudy",
-   "quantity": "log_likelihood",
+   "quantity": "log likelihood",
+   "rule": "atol 1e-07, rtol 1e-10",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.1368683772161603e-13,
+   "actual": -897.0393215026129,
+   "expected": -897.0393215026128,
    "peers": {
     "nlme": 2.2737367544323206e-13,
-    "Python": 1.1368683772161603e-13
-   },
-   "passed": true
+    "statsmodels": 1.1368683772161603e-13
+   }
   },
   {
    "name": "sleepstudy",
    "quantity": "aic",
+   "rule": "atol 1e-07, rtol 1e-10",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 2.2737367544323206e-13,
+   "actual": 1802.0786430052258,
+   "expected": 1802.0786430052256,
    "peers": {
     "nlme": 4.547473508864641e-13,
-    "Python": 2.2737367544323206e-13
-   },
-   "passed": true
+    "statsmodels": 2.2737367544323206e-13
+   }
   },
   {
    "name": "sleepstudy",
-   "quantity": "df_residual",
-   "max_abs_error": 0.0,
+   "quantity": "df residual",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 178,
+   "expected": 178,
    "peers": {
     "nlme": 0.0,
-    "Python": 0.0
-   },
-   "passed": true
+    "statsmodels": 0.0
+   }
   },
   {
    "name": "Orthodont",
    "quantity": "coefficients",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 1.2212453270876722e-13,
    "peers": {
     "nlme": 1.2612133559741778e-13,
-    "Python": 1.8407497748285095e-13
-   },
-   "passed": true
+    "statsmodels": 1.8407497748285095e-13
+   }
   },
   {
    "name": "Orthodont",
    "quantity": "covariance",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 16,
    "max_abs_error": 8.307760035464185e-10,
    "peers": {
     "nlme": 5.147866161125947e-09,
-    "Python": 8.307750043456963e-10
-   },
-   "passed": true
+    "statsmodels": 8.307750043456963e-10
+   }
   },
   {
    "name": "Orthodont",
-   "quantity": "std_errors",
+   "quantity": "std errors",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 3.149174948591238e-10,
    "peers": {
     "nlme": 1.9513721610797674e-09,
-    "Python": 3.149170091365505e-10
-   },
-   "passed": true
+    "statsmodels": 3.149170091365505e-10
+   }
   },
   {
    "name": "Orthodont",
-   "quantity": "z_statistics",
+   "quantity": "z statistics",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 2.6913939521477914e-08,
    "peers": {
     "nlme": 1.6677097924855389e-07,
-    "Python": 2.69139253106232e-08
-   },
-   "passed": true
+    "statsmodels": 2.69139253106232e-08
+   }
   },
   {
    "name": "Orthodont",
-   "quantity": "p_values",
+   "quantity": "p values",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 2.1094391164377946e-10,
    "peers": {
     "nlme": 1.3042009416874834e-09,
-    "Python": 2.1047744623581277e-10
-   },
-   "passed": true
+    "statsmodels": 2.1047744623581277e-10
+   }
   },
   {
    "name": "Orthodont",
-   "quantity": "conf_int",
+   "quantity": "conf int",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 8,
    "max_abs_error": 6.172338751220252e-10,
    "peers": {
     "nlme": 3.824625866011289e-09,
-    "Python": 6.172362343459525e-10
-   },
-   "passed": true
+    "statsmodels": 6.172362343459525e-10
+   }
   },
   {
    "name": "Orthodont",
-   "quantity": "fixed_fitted",
+   "quantity": "fixed fitted",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 108,
    "max_abs_error": 3.552713678800501e-14,
    "peers": {
     "nlme": 4.263256414560601e-14,
-    "Python": 6.394884621840902e-14
-   },
-   "passed": true
+    "statsmodels": 6.394884621840902e-14
+   }
   },
   {
    "name": "Orthodont",
    "quantity": "fitted",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 108,
    "max_abs_error": 1.2750223987723075e-08,
    "peers": {
     "nlme": 7.900623089085457e-08,
-    "Python": 1.2750206224154681e-08
-   },
-   "passed": true
+    "statsmodels": 1.2750206224154681e-08
+   }
   },
   {
    "name": "Orthodont",
    "quantity": "residuals",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 108,
    "max_abs_error": 1.2750223987723075e-08,
    "peers": {
     "nlme": 7.900623089085457e-08,
-    "Python": 1.2750206224154681e-08
-   },
-   "passed": true
+    "statsmodels": 1.2750206224154681e-08
+   }
   },
   {
    "name": "Orthodont",
-   "quantity": "marginal_residuals",
+   "quantity": "marginal residuals",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 108,
    "max_abs_error": 3.552713678800501e-14,
    "peers": {
     "nlme": 4.263256414560601e-14,
-    "Python": 6.394884621840902e-14
-   },
-   "passed": true
+    "statsmodels": 6.394884621840902e-14
+   }
   },
   {
    "name": "Orthodont",
-   "quantity": "random_effects",
+   "quantity": "random effects",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 27,
    "max_abs_error": 1.2750248412629617e-08,
    "peers": {
     "nlme": 7.9006259312564e-08,
-    "Python": 1.2750247968540407e-08
-   },
-   "passed": true
+    "statsmodels": 1.2750247968540407e-08
+   }
   },
   {
    "name": "Orthodont",
-   "quantity": "residual_variance",
+   "quantity": "residual variance",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 9.846226722842744e-09,
+   "actual": 1.8745966610550422,
+   "expected": 1.874596670901269,
    "peers": {
     "nlme": 6.101174276906818e-08,
-    "Python": 9.846210291541979e-09
-   },
-   "passed": true
+    "statsmodels": 9.846210291541979e-09
+   }
   },
   {
    "name": "Orthodont",
-   "quantity": "random_intercept_variance",
+   "quantity": "random intercept variance",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 5.759985510778165e-08,
+   "actual": 3.0305616933218285,
+   "expected": 3.0305616357219733,
    "peers": {
     "nlme": 3.5691519784109005e-07,
-    "Python": 5.759975874042311e-08
-   },
-   "passed": true
+    "statsmodels": 5.759975874042311e-08
+   }
   },
   {
    "name": "Orthodont",
    "quantity": "sigma",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 3.5957203881054056e-09,
+   "actual": 1.369159107282657,
+   "expected": 1.3691591108783774,
    "peers": {
     "nlme": 2.2280735256785533e-08,
-    "Python": 3.5957143929010726e-09
-   },
-   "passed": true
+    "statsmodels": 3.5957143929010726e-09
+   }
   },
   {
    "name": "Orthodont",
    "quantity": "icc",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 5.727879615058384e-09,
+   "actual": 0.6178315712514479,
+   "expected": 0.6178315655235683,
    "peers": {
     "nlme": 3.5492573657869286e-08,
-    "Python": 5.72786995611807e-09
-   },
-   "passed": true
+    "statsmodels": 5.72786995611807e-09
+   }
   },
   {
    "name": "Orthodont",
-   "quantity": "log_likelihood",
+   "quantity": "log likelihood",
+   "rule": "atol 1e-07, rtol 1e-10",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 8.526512829121202e-14,
+   "actual": -214.319529009755,
+   "expected": -214.31952900975492,
    "peers": {
     "nlme": 1.7053025658242404e-13,
-    "Python": 1.1368683772161603e-13
-   },
-   "passed": true
+    "statsmodels": 1.1368683772161603e-13
+   }
   },
   {
    "name": "Orthodont",
    "quantity": "aic",
+   "rule": "atol 1e-07, rtol 1e-10",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.7053025658242404e-13,
+   "actual": 440.63905801951,
+   "expected": 440.63905801950983,
    "peers": {
     "nlme": 3.410605131648481e-13,
-    "Python": 2.2737367544323206e-13
-   },
-   "passed": true
+    "statsmodels": 2.2737367544323206e-13
+   }
   },
   {
    "name": "Orthodont",
-   "quantity": "df_residual",
-   "max_abs_error": 0.0,
+   "quantity": "df residual",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 104,
+   "expected": 104,
    "peers": {
     "nlme": 0.0,
-    "Python": 0.0
-   },
-   "passed": true
+    "statsmodels": 0.0
+   }
   },
   {
    "name": "Machines",
    "quantity": "coefficients",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 7.815970093361102e-14,
    "peers": {
     "nlme": 8.881784197001252e-15,
-    "Python": 7.105427357601002e-14
-   },
-   "passed": true
+    "statsmodels": 7.105427357601002e-14
+   }
   },
   {
    "name": "Machines",
    "quantity": "covariance",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 9,
    "max_abs_error": 5.9563236121107366e-08,
    "peers": {
     "nlme": 1.5977116518683943e-07,
-    "Python": 5.9296673349251705e-08
-   },
-   "passed": true
+    "statsmodels": 5.9296673349251705e-08
+   }
   },
   {
    "name": "Machines",
-   "quantity": "std_errors",
+   "quantity": "std errors",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 1.4553083182988757e-08,
    "peers": {
     "nlme": 3.903688217121726e-08,
-    "Python": 1.4487953947650567e-08
-   },
-   "passed": true
+    "statsmodels": 1.4487953947650567e-08
+   }
   },
   {
    "name": "Machines",
-   "quantity": "z_statistics",
+   "quantity": "z statistics",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 1.8194131001791902e-07,
    "peers": {
     "nlme": 4.880354111946872e-07,
-    "Python": 1.8112699962102852e-07
-   },
-   "passed": true
+    "statsmodels": 1.8112699962102852e-07
+   }
   },
   {
    "name": "Machines",
-   "quantity": "p_values",
+   "quantity": "p values",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 6.816110841934176e-22,
    "peers": {
     "nlme": 1.8299580101822614e-21,
-    "Python": 6.79161232476043e-22
-   },
-   "passed": true
+    "statsmodels": 6.79161232476043e-22
+   }
   },
   {
    "name": "Machines",
-   "quantity": "conf_int",
+   "quantity": "conf int",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 6,
    "max_abs_error": 2.8523601258712006e-08,
    "peers": {
     "nlme": 7.651089362070707e-08,
-    "Python": 2.8395945150805346e-08
-   },
-   "passed": true
+    "statsmodels": 2.8395945150805346e-08
+   }
   },
   {
    "name": "Machines",
-   "quantity": "fixed_fitted",
+   "quantity": "fixed fitted",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 54,
    "max_abs_error": 8.526512829121202e-14,
    "peers": {
     "nlme": 1.4210854715202004e-14,
-    "Python": 7.105427357601002e-14
-   },
-   "passed": true
+    "statsmodels": 7.105427357601002e-14
+   }
   },
   {
    "name": "Machines",
    "quantity": "fitted",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 54,
    "max_abs_error": 7.426244508224045e-09,
    "peers": {
     "nlme": 1.9919994542760833e-08,
-    "Python": 7.393012424472545e-09
-   },
-   "passed": true
+    "statsmodels": 7.393012424472545e-09
+   }
   },
   {
    "name": "Machines",
    "quantity": "residuals",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 54,
    "max_abs_error": 7.426244508224045e-09,
    "peers": {
     "nlme": 1.9919994542760833e-08,
-    "Python": 7.393012424472545e-09
-   },
-   "passed": true
+    "statsmodels": 7.393012424472545e-09
+   }
   },
   {
    "name": "Machines",
-   "quantity": "marginal_residuals",
+   "quantity": "marginal residuals",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 54,
    "max_abs_error": 8.526512829121202e-14,
    "peers": {
     "nlme": 1.4210854715202004e-14,
-    "Python": 7.105427357601002e-14
-   },
-   "passed": true
+    "statsmodels": 7.105427357601002e-14
+   }
   },
   {
    "name": "Machines",
-   "quantity": "random_effects",
+   "quantity": "random effects",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 6,
    "max_abs_error": 7.4261592430957535e-09,
    "peers": {
     "nlme": 1.991997677919244e-08,
-    "Python": 7.3930639388208874e-09
-   },
-   "passed": true
+    "statsmodels": 7.3930639388208874e-09
+   }
   },
   {
    "name": "Machines",
-   "quantity": "residual_variance",
+   "quantity": "residual variance",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.8825494052521208e-08,
+   "actual": 9.579513888889178,
+   "expected": 9.579513907714672,
    "peers": {
     "nlme": 5.04970945058858e-08,
-    "Python": 1.8741241447628454e-08
-   },
-   "passed": true
+    "statsmodels": 1.8741241447628454e-08
+   }
   },
   {
    "name": "Machines",
-   "quantity": "random_intercept_variance",
+   "quantity": "random intercept variance",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 3.6365471700605667e-07,
+   "actual": 21.933665123451224,
+   "expected": 21.933664759796507,
    "peers": {
     "nlme": 9.754594678668127e-07,
-    "Python": 3.6202723663336656e-07
-   },
-   "passed": true
+    "statsmodels": 3.6202723663336656e-07
+   }
   },
   {
    "name": "Machines",
    "quantity": "sigma",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 3.0411975160404836e-09,
+   "actual": 3.095078979426725,
+   "expected": 3.0950789824679226,
    "peers": {
     "nlme": 8.157642117367914e-09,
-    "Python": 3.027586625847789e-09
-   },
-   "passed": true
+    "statsmodels": 3.027586625847789e-09
+   }
   },
   {
    "name": "Machines",
    "quantity": "icc",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 3.9236977000811635e-09,
+   "actual": 0.6960156293613574,
+   "expected": 0.6960156254376597,
    "peers": {
     "nlme": 1.0524840887704556e-08,
-    "Python": 3.906137746589877e-09
-   },
-   "passed": true
+    "statsmodels": 3.906137746589877e-09
+   }
   },
   {
    "name": "Machines",
-   "quantity": "log_likelihood",
+   "quantity": "log likelihood",
+   "rule": "atol 1e-07, rtol 1e-10",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 2.842170943040401e-14,
+   "actual": -146.85162790073457,
+   "expected": -146.85162790073454,
    "peers": {
     "nlme": 0.0,
-    "Python": 2.842170943040401e-14
-   },
-   "passed": true
+    "statsmodels": 2.842170943040401e-14
+   }
   },
   {
    "name": "Machines",
    "quantity": "aic",
+   "rule": "atol 1e-07, rtol 1e-10",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 5.684341886080802e-14,
+   "actual": 303.70325580146914,
+   "expected": 303.7032558014691,
    "peers": {
     "nlme": 0.0,
-    "Python": 5.684341886080802e-14
-   },
-   "passed": true
+    "statsmodels": 5.684341886080802e-14
+   }
   },
   {
    "name": "Machines",
-   "quantity": "df_residual",
-   "max_abs_error": 0.0,
+   "quantity": "df residual",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 51,
+   "expected": 51,
    "peers": {
     "nlme": 0.0,
-    "Python": 0.0
-   },
-   "passed": true
+    "statsmodels": 0.0
+   }
   },
   {
    "name": "Hsb82",
    "quantity": "coefficients",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 5.3982764924853655e-09,
    "peers": {
     "nlme": 9.837123560174632e-09,
-    "Python": 5.3982764924853655e-09
-   },
-   "passed": true
+    "statsmodels": 5.3982764924853655e-09
+   }
   },
   {
    "name": "Hsb82",
    "quantity": "covariance",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 16,
    "max_abs_error": 1.2020245437893706e-08,
    "peers": {
     "nlme": 2.1903945324197593e-08,
-    "Python": 1.2020223288944365e-08
-   },
-   "passed": true
+    "statsmodels": 1.2020223288944365e-08
+   }
   },
   {
    "name": "Hsb82",
-   "quantity": "std_errors",
+   "quantity": "std errors",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 1.5768523931036782e-08,
    "peers": {
     "nlme": 2.8734262857987858e-08,
-    "Python": 1.5768494898704688e-08
-   },
-   "passed": true
+    "statsmodels": 1.5768494898704688e-08
+   }
   },
   {
    "name": "Hsb82",
-   "quantity": "z_statistics",
+   "quantity": "z statistics",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 2.691587830838671e-06,
    "peers": {
     "nlme": 4.9047571266669365e-06,
-    "Python": 2.691582388081315e-06
-   },
-   "passed": true
+    "statsmodels": 2.691582388081315e-06
+   }
   },
   {
    "name": "Hsb82",
-   "quantity": "p_values",
+   "quantity": "p values",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 4.2397672612298765e-11,
    "peers": {
     "nlme": 7.726727589728918e-11,
-    "Python": 4.240186659768127e-11
-   },
-   "passed": true
+    "statsmodels": 4.240186659768127e-11
+   }
   },
   {
    "name": "Hsb82",
-   "quantity": "conf_int",
+   "quantity": "conf int",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 8,
    "max_abs_error": 3.630401490539725e-08,
    "peers": {
     "nlme": 6.615524350550572e-08,
-    "Python": 3.630395806197839e-08
-   },
-   "passed": true
+    "statsmodels": 3.630395806197839e-08
+   }
   },
   {
    "name": "Hsb82",
-   "quantity": "fixed_fitted",
+   "quantity": "fixed fitted",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 7185,
    "max_abs_error": 6.4914496000767485e-09,
    "peers": {
     "nlme": 1.1828964918692009e-08,
-    "Python": 6.4914260633486265e-09
-   },
-   "passed": true
+    "statsmodels": 6.4914260633486265e-09
+   }
   },
   {
    "name": "Hsb82",
    "quantity": "fitted",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 7185,
    "max_abs_error": 2.4236585094428165e-07,
    "peers": {
     "nlme": 4.416521397487827e-07,
-    "Python": 2.4236539086786024e-07
-   },
-   "passed": true
+    "statsmodels": 2.4236539086786024e-07
+   }
   },
   {
    "name": "Hsb82",
    "quantity": "residuals",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 7185,
    "max_abs_error": 2.4236585094428165e-07,
    "peers": {
     "nlme": 4.416521397487827e-07,
-    "Python": 2.4236539086786024e-07
-   },
-   "passed": true
+    "statsmodels": 2.4236539086786024e-07
+   }
   },
   {
    "name": "Hsb82",
-   "quantity": "marginal_residuals",
+   "quantity": "marginal residuals",
+   "rule": "atol 1e-06, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 7185,
    "max_abs_error": 6.4914496000767485e-09,
    "peers": {
     "nlme": 1.1828964918692009e-08,
-    "Python": 6.4914260633486265e-09
-   },
-   "passed": true
+    "statsmodels": 6.4914260633486265e-09
+   }
   },
   {
    "name": "Hsb82",
-   "quantity": "random_effects",
+   "quantity": "random effects",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 160,
    "max_abs_error": 2.4245769747466284e-07,
    "peers": {
     "nlme": 4.4181973235524197e-07,
-    "Python": 2.424572582704343e-07
-   },
-   "passed": true
+    "statsmodels": 2.424572582704343e-07
+   }
   },
   {
    "name": "Hsb82",
-   "quantity": "residual_variance",
+   "quantity": "residual variance",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 7.549559910557946e-08,
+   "actual": 37.018217180207735,
+   "expected": 37.018217104712136,
    "peers": {
     "nlme": 1.3757207995013232e-07,
-    "Python": 7.549547831331438e-08
-   },
-   "passed": true
+    "statsmodels": 7.549547831331438e-08
+   }
   },
   {
    "name": "Hsb82",
-   "quantity": "random_intercept_variance",
+   "quantity": "random intercept variance",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 2.866059052308856e-07,
+   "actual": 2.306016959224472,
+   "expected": 2.306017245830377,
    "peers": {
     "nlme": 5.222688765904593e-07,
-    "Python": 2.86605374988369e-07
-   },
-   "passed": true
+    "statsmodels": 2.86605374988369e-07
+   }
   },
   {
    "name": "Hsb82",
    "quantity": "sigma",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 6.204173175206051e-09,
+   "actual": 6.084259789013593,
+   "expected": 6.08425978280942,
    "peers": {
     "nlme": 1.1305572478192971e-08,
-    "Python": 6.204163405243435e-09
-   },
-   "passed": true
+    "statsmodels": 6.204163405243435e-09
+   }
   },
   {
    "name": "Hsb82",
    "quantity": "icc",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 6.973464736215185e-09,
+   "actual": 0.058641115578958555,
+   "expected": 0.05864112255242329,
    "peers": {
     "nlme": 1.2707426798319599e-08,
-    "Python": 6.973451864566993e-09
-   },
-   "passed": true
+    "statsmodels": 6.973451864566993e-09
+   }
   },
   {
    "name": "Hsb82",
-   "quantity": "log_likelihood",
+   "quantity": "log likelihood",
+   "rule": "atol 1e-07, rtol 1e-10",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 7.275957614183426e-12,
+   "actual": -23274.15969829005,
+   "expected": -23274.15969829004,
    "peers": {
     "nlme": 3.637978807091713e-12,
-    "Python": 7.275957614183426e-12
-   },
-   "passed": true
+    "statsmodels": 7.275957614183426e-12
+   }
   },
   {
    "name": "Hsb82",
    "quantity": "aic",
+   "rule": "atol 1e-07, rtol 1e-10",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.4551915228366852e-11,
+   "actual": 46560.3193965801,
+   "expected": 46560.31939658008,
    "peers": {
     "nlme": 7.275957614183426e-12,
-    "Python": 1.4551915228366852e-11
-   },
-   "passed": true
+    "statsmodels": 1.4551915228366852e-11
+   }
   },
   {
    "name": "Hsb82",
-   "quantity": "df_residual",
-   "max_abs_error": 0.0,
+   "quantity": "df residual",
+   "rule": "atol 1e-07, rtol 1e-06",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 7181,
+   "expected": 7181,
    "peers": {
     "nlme": 0.0,
-    "Python": 0.0
-   },
-   "passed": true
+    "statsmodels": 0.0
+   }
   }
- ]
+ ],
+ "exclusions": [
+  "REML, random slopes, and several grouping terms are covered by the R compatibility record."
+ ],
+ "known_differences": [
+  "statsmodels estimates are combined with plug-in GLS covariance to match lme4; statsmodels' own joint-Hessian covariance is a different convention.",
+  "The profile search uses a finite log-ratio range and grid; agreement does not prove a global optimum.",
+  "nlme is a second reference for the same ML fits."
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  ".context/notebooks-venv/bin/python docs/verifications/compare_lmm.py --public"
+ ],
+ "source": "docs/verifications/lmm-public-results.json",
+ "data": "docs/data/lmm",
+ "environment": {
+  "date": "2026-11-01",
+  "commit": "066e2e1",
+  "php": "8.5.10",
+  "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "phit": "0.4.4"
+ },
+ "group": "Models"
 }

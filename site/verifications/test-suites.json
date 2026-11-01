@@ -1,0 +1,283 @@
+{
+ "title": "Test suites: saved references and contracts",
+ "label": "Test suites",
+ "kind": "reference",
+ "checked": "Every PHP test suite that scripts/check runs, against saved references from R, lme4, mpmath, Python, and phibble, and against phit's own contracts. Each row is one suite and its own summary.",
+ "reference": "Saved fixtures under tests/fixtures; each lists its generator and versions",
+ "inputs": [
+  {
+   "name": "Fixture provenance",
+   "detail": "generators, versions, hashes, and tolerance policies",
+   "url": "https://github.com/phpstats/phit/blob/main/docs/verifications/reference-manifest.json"
+  }
+ ],
+ "comparison": [
+  {
+   "id": "exact",
+   "kind": "exact",
+   "applies_to": "results, row accounting, parsed values, types, and errors that must be identical"
+  },
+  {
+   "id": "model",
+   "kind": "tolerance",
+   "applies_to": "saved R fixtures for OLS and GLMs",
+   "atol": 1e-09,
+   "rtol": 1e-07
+  },
+  {
+   "id": "formula",
+   "kind": "tolerance",
+   "applies_to": "model.matrix values (columns, terms, and rows exact); lm/glm fits use atol 1e-9, rtol 1e-7",
+   "atol": 1e-12,
+   "rtol": 1e-12
+  },
+  {
+   "id": "mixed",
+   "kind": "tolerance",
+   "applies_to": "lme4 estimates with bobyqa; likelihood 5e-6 + 1e-9\u00b7|r|, glmer as in the binomial record",
+   "atol": 1e-05,
+   "rtol": 1e-05
+  },
+  {
+   "id": "predict",
+   "kind": "tolerance",
+   "applies_to": "fits, intervals, and standard errors; mixed models as their fits",
+   "atol": 1e-07,
+   "rtol": 1e-06
+  },
+  {
+   "id": "r-compat",
+   "kind": "tolerance",
+   "applies_to": "weighted and offset GLMs",
+   "atol": 1e-07,
+   "rtol": 1e-06
+  },
+  {
+   "id": "intercept",
+   "kind": "tolerance",
+   "applies_to": "the exposure intercept and its SE (likelihood and counts at 1e-9); identical results with and without automatic intercepts",
+   "atol": 1e-10
+  },
+  {
+   "id": "distributions",
+   "kind": "tolerance",
+   "applies_to": "densities, CDFs, and survival functions (logs relative to max(1, |r|), quantiles 1e-15 + 1e-12\u00b7|r|)",
+   "atol": 1e-300,
+   "rtol": 1e-12
+  },
+  {
+   "id": "relative",
+   "kind": "tolerance",
+   "applies_to": "descriptive statistics and smoothing; exact zeros, ECDF counts, and type-7 identities exact",
+   "rtol": 1e-12
+  },
+  {
+   "id": "rng",
+   "kind": "tolerance",
+   "applies_to": "R inverse-CDF values; ChaCha uniforms and discrete samples exact",
+   "atol": 1e-15,
+   "rtol": 1e-12
+  },
+  {
+   "id": "draws",
+   "kind": "tolerance",
+   "applies_to": "moments, covariance maps, affine draws, and log determinants",
+   "atol": 1e-11,
+   "rtol": 1e-11
+  },
+  {
+   "id": "stress",
+   "kind": "tolerance",
+   "applies_to": "per-case tolerances stored in tests/fixtures/stress-r.json, scaled with the response"
+  }
+ ],
+ "cases": [
+  {
+   "name": "OLS against saved R lm() fixtures",
+   "quantity": "PHP OLS integration tests passed",
+   "rule": "model",
+   "status": "pass",
+   "note": "tests/fixtures/ols-r.json"
+  },
+  {
+   "name": "Logistic regression against saved R glm() fixtures",
+   "quantity": "PHP logistic integration tests passed",
+   "rule": "model",
+   "status": "pass",
+   "note": "tests/fixtures/logistic-r.json"
+  },
+  {
+   "name": "Probit regression against saved R glm() fixtures",
+   "quantity": "PHP probit integration tests passed",
+   "rule": "model",
+   "status": "pass",
+   "note": "tests/fixtures/probit-r.json"
+  },
+  {
+   "name": "Poisson regression against saved R glm() fixtures",
+   "quantity": "PHP poisson integration tests passed",
+   "rule": "model",
+   "status": "pass",
+   "note": "tests/fixtures/poisson-r.json"
+  },
+  {
+   "name": "Deprecated aliases return their replacement's result",
+   "quantity": "PHP 0.4 names: 10 deprecated aliases and fit_ols dispatch passed",
+   "rule": "exact",
+   "status": "pass"
+  },
+  {
+   "name": "Formula designs against R model.matrix(), and lm()/glm() fits",
+   "quantity": "PHP formula tests passed (33 model.matrix, 14 lm, 15 glm fits; 30007 R comparisons)",
+   "rule": "formula",
+   "status": "pass",
+   "n_compared": 30007,
+   "note": "tests/fixtures/formula-r.json"
+  },
+  {
+   "name": "Formula mixed models against lme4 lmer() and glmer()",
+   "quantity": "PHP formula mixed-model tests passed (7 lmer and 3 glmer lme4 fits; 782 comparisons)",
+   "rule": "mixed",
+   "status": "pass",
+   "n_compared": 782,
+   "note": "tests/fixtures/formula-lme4-r.json"
+  },
+  {
+   "name": "predict() against R predict()",
+   "quantity": "PHP predict tests passed (25 R predict() cases; 877 comparisons)",
+   "rule": "predict",
+   "status": "pass",
+   "n_compared": 877,
+   "note": "tests/fixtures/predict-r.json"
+  },
+  {
+   "name": "Random intercept against saved lme4 fixtures",
+   "quantity": "PHP mixed-model integration tests passed",
+   "rule": "mixed",
+   "status": "pass",
+   "note": "tests/fixtures/lmm-r.json"
+  },
+  {
+   "name": "Weighted and offset GLMs against base R",
+   "quantity": "PHP base-R compatibility tests passed",
+   "rule": "r-compat",
+   "status": "pass",
+   "note": "tests/fixtures/r-compatibility.json"
+  },
+  {
+   "name": "Mixed-model structures against four lme4 optimizers",
+   "quantity": "PHP expanded mixed-model tests passed (15 models, four lme4 optimizers)",
+   "rule": "mixed",
+   "status": "pass",
+   "note": "tests/fixtures/lmm-expanded-r.json"
+  },
+  {
+   "name": "Binomial random intercept against lme4 glmer()",
+   "quantity": "PHP binomial random-intercept integration tests passed (28 lme4 fits)",
+   "rule": "mixed",
+   "status": "pass",
+   "note": "tests/fixtures/logistic-mixed-r.json"
+  },
+  {
+   "name": "Result contracts and exception categories",
+   "quantity": "PHP stability, result contracts and exception categories passed",
+   "rule": "exact",
+   "status": "pass"
+  },
+  {
+   "name": "Automatic intercepts and Poisson exposure offsets",
+   "quantity": "PHP automatic intercepts and Poisson exposure offsets passed",
+   "rule": "intercept",
+   "status": "pass"
+  },
+  {
+   "name": "Distribution functions against R and mpmath",
+   "quantity": "PHP distribution tests passed (8618 comparisons, 25 independently adjudicated references, 43 documented boundary differences)",
+   "rule": "distributions",
+   "status": "pass",
+   "n_compared": 8618,
+   "note": "tests/fixtures/distributions-r.json"
+  },
+  {
+   "name": "Descriptive statistics against R",
+   "quantity": "PHP descriptive tests passed (145 R comparisons, missing policies and validation)",
+   "rule": "relative",
+   "status": "pass",
+   "n_compared": 145,
+   "note": "tests/fixtures/descriptive-r.json"
+  },
+  {
+   "name": "Kernel densities, bandwidths, interpolation, and ECDF against R",
+   "quantity": "PHP smoothing tests passed (15639 R comparisons, missing policies and validation)",
+   "rule": "relative",
+   "status": "pass",
+   "n_compared": 15639,
+   "note": "tests/fixtures/smoothing-r.json"
+  },
+  {
+   "name": "optimize() and uniroot() against R",
+   "quantity": "PHP optimize/uniroot tests passed (91 bit-for-bit R comparisons, evaluation counts and validation)",
+   "rule": "exact",
+   "status": "pass",
+   "n_compared": 91,
+   "note": "tests/fixtures/optimize-r.json"
+  },
+  {
+   "name": "Seeded sampling against independent ChaCha streams and R quantiles",
+   "quantity": "PHP RNG tests passed (3764 independent R/ChaCha values, seed isolation, validation and moments; uniform, categorical and permutation samplers)",
+   "rule": "rng",
+   "status": "pass",
+   "n_compared": 3764,
+   "note": "tests/fixtures/rng-python-r.json"
+  },
+  {
+   "name": "Posterior-draw kernels against 80-digit Python references",
+   "quantity": "25 independent draw fixtures, identities and strict input contracts passed",
+   "rule": "draws",
+   "status": "pass",
+   "note": "tests/fixtures/draws-python.json"
+  },
+  {
+   "name": "CSV reader: parsing rules, options, types, and errors",
+   "quantity": "csv: 190 checks passed",
+   "rule": "exact",
+   "status": "pass",
+   "n_compared": 190
+  },
+  {
+   "name": "CSV reader against phibble's reader on a fixed corpus",
+   "quantity": "csv-conformance: 120 cases matched phibble's reader, at every block size and in chunks",
+   "rule": "exact",
+   "status": "pass",
+   "n_compared": 120,
+   "note": "tests/fixtures/csv-conformance.json"
+  },
+  {
+   "name": "CSV reader against phibble's PHP reader on generated files",
+   "quantity": "csv-phibble: 6278 comparisons against phibble's PHP reader passed",
+   "rule": "exact",
+   "status": "pass",
+   "n_compared": 6278
+  },
+  {
+   "name": "Extreme but identified inputs against base R",
+   "quantity": "PHP extreme-input checks passed",
+   "rule": "stress",
+   "status": "pass",
+   "note": "tests/fixtures/stress-r.json"
+  }
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  "PHP=$(command -v php) python3 docs/verifications/run_test_suites.py"
+ ],
+ "source": "docs/verifications/test-suites-results.json",
+ "environment": {
+  "date": "2026-11-01",
+  "commit": "066e2e1",
+  "php": "8.5.10",
+  "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "phit": "0.4.4"
+ },
+ "group": "Test suites"
+}

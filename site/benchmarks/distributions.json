@@ -1,20 +1,49 @@
 {
  "title": "Distributions: evaluation time",
- "description": "Median wall time to evaluate a distribution function over a batch of inputs in phit (scalar calls and one batch call), the Rust core, R and SciPy.",
- "measure": "median wall time",
+ "label": "Distributions",
+ "description": "Evaluate one distribution function over a batch of inputs: phit with one call per value and with one batch call, the Rust core, R, and SciPy. Outputs are compared before timing.",
+ "workload": "9 operations at 1,000, 100,000, and 1,000,000 inputs",
+ "implementations": {
+  "phit (scalar calls)": "one phit call per value",
+  "phit (one batch call)": "the _array form",
+  "Rust core": "the stats-core function in a Rust worker",
+  "R": "base R, vectorized",
+  "SciPy": "scipy.stats, vectorized"
+ },
+ "measure": "Elapsed time",
  "unit": "ms",
+ "statistic": "median",
+ "method": "Preloaded numeric inputs; complete output vector allocated and filled each call, including PHP input/output conversion and validation. Startup, JSON parsing and summaries excluded. Peak RSS and process time cover the entire timed worker. Small cases batch calls to stay above timer resolution; per-call times divide by the batch count.",
+ "time_spent_in": "the measured process",
+ "memory_measure": "peak anonymous memory",
+ "memory_method": "Peak of the process's anonymous resident memory (RssAnon in /proc), sampled every millisecond by bench/peakmem.c; the peak resident set size, file pages included, from getrusage.",
+ "check": {
+  "agreement": "17 evenly spaced outputs plus min/max at fixture tolerances; all outputs consumed by sum and sum_squares at 1e-9 + 1e-10*abs(reference). Quantiles 1e-15 + 1e-12 relative; others 1e-300 + 1e-12 relative. Native agreement with R is required; SciPy discrepancies are explicitly recorded without relaxing the native gate. Independent mpmath fixtures separately adjudicate R disagreements."
+ },
  "environment": {
   "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
-  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "cores": 2,
+  "memory_gb": 7.8,
+  "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
   "php": "8.5.12",
-  "date": "2026-11-01T19:46:57.108634+00:00",
-  "repeats": 5
+  "versions": {
+   "R": "4.6.2",
+   "SciPy": "1.18.1",
+   "NumPy": "2.5.4",
+   "Python": "3.14.10",
+   "Rust": "1.99.1"
+  },
+  "threads": 1,
+  "cache": "warm",
+  "repeats": 5,
+  "warmups": 1,
+  "date": "2026-11-01",
+  "commit": null
  },
- "source": "docs/benchmarks/distributions-results.json",
  "rows": [
   {
    "case": "normal_cdf, n = 1,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 0.0749,
    "reps": [
     0.0745,
@@ -22,11 +51,13 @@
     0.0749,
     0.0749,
     0.0752
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.8
   },
   {
    "case": "normal_cdf, n = 1,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 0.037,
    "reps": [
     0.0374,
@@ -34,7 +65,9 @@
     0.037,
     0.0368,
     0.0369
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.8
   },
   {
    "case": "normal_cdf, n = 1,000",
@@ -46,7 +79,9 @@
     0.0182,
     0.0182,
     0.0181
-   ]
+   ],
+   "peak_memory_mib": 0.1,
+   "peak_rss_mib": 2.9
   },
   {
    "case": "normal_cdf, n = 1,000",
@@ -58,7 +93,9 @@
     0.03,
     0.03,
     0.03
-   ]
+   ],
+   "peak_memory_mib": 60.8,
+   "peak_rss_mib": 75.2
   },
   {
    "case": "normal_cdf, n = 1,000",
@@ -70,7 +107,9 @@
     0.0294,
     0.0293,
     0.0292
-   ]
+   ],
+   "peak_memory_mib": 57.5,
+   "peak_rss_mib": 97.1
   },
   {
    "case": "normal_cdf, n = 100,000",
@@ -82,7 +121,9 @@
     1.7121,
     1.7075,
     1.8021
-   ]
+   ],
+   "peak_memory_mib": 67.4,
+   "peak_rss_mib": 106.9
   },
   {
    "case": "normal_cdf, n = 100,000",
@@ -94,7 +135,9 @@
     4.0,
     3.0,
     3.0
-   ]
+   ],
+   "peak_memory_mib": 74.9,
+   "peak_rss_mib": 89.1
   },
   {
    "case": "normal_cdf, n = 100,000",
@@ -106,11 +149,13 @@
     2.3197,
     2.3056,
     2.3097
-   ]
+   ],
+   "peak_memory_mib": 6.6,
+   "peak_rss_mib": 9.4
   },
   {
    "case": "normal_cdf, n = 100,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 3.9265,
    "reps": [
     3.998,
@@ -118,11 +163,13 @@
     3.9265,
     3.9156,
     3.8976
-   ]
+   ],
+   "peak_memory_mib": 11.5,
+   "peak_rss_mib": 27.0
   },
   {
    "case": "normal_cdf, n = 100,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 7.6387,
    "reps": [
     7.6485,
@@ -130,11 +177,13 @@
     7.6126,
     7.6506,
     7.592
-   ]
+   ],
+   "peak_memory_mib": 11.5,
+   "peak_rss_mib": 27.0
   },
   {
    "case": "normal_cdf, n = 1,000,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 79.4135,
    "reps": [
     79.6899,
@@ -142,11 +191,13 @@
     79.4135,
     79.0812,
     79.6241
-   ]
+   ],
+   "peak_memory_mib": 51.3,
+   "peak_rss_mib": 67.2
   },
   {
    "case": "normal_cdf, n = 1,000,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 39.9951,
    "reps": [
     40.1649,
@@ -154,7 +205,9 @@
     39.9951,
     39.9106,
     40.0053
-   ]
+   ],
+   "peak_memory_mib": 50.8,
+   "peak_rss_mib": 66.4
   },
   {
    "case": "normal_cdf, n = 1,000,000",
@@ -166,7 +219,9 @@
     23.123,
     23.1272,
     23.2208
-   ]
+   ],
+   "peak_memory_mib": 68.2,
+   "peak_rss_mib": 71.2
   },
   {
    "case": "normal_cdf, n = 1,000,000",
@@ -178,7 +233,9 @@
     33.0,
     46.0,
     32.0
-   ]
+   ],
+   "peak_memory_mib": 220.9,
+   "peak_rss_mib": 234.7
   },
   {
    "case": "normal_cdf, n = 1,000,000",
@@ -190,7 +247,9 @@
     18.1956,
     18.2275,
     18.2227
-   ]
+   ],
+   "peak_memory_mib": 156.8,
+   "peak_rss_mib": 196.4
   },
   {
    "case": "normal_sf, n = 1,000",
@@ -202,7 +261,9 @@
     0.0302,
     0.0303,
     0.0303
-   ]
+   ],
+   "peak_memory_mib": 57.5,
+   "peak_rss_mib": 96.8
   },
   {
    "case": "normal_sf, n = 1,000",
@@ -214,7 +275,9 @@
     0.03,
     0.03,
     0.03
-   ]
+   ],
+   "peak_memory_mib": 60.8,
+   "peak_rss_mib": 75.2
   },
   {
    "case": "normal_sf, n = 1,000",
@@ -226,11 +289,13 @@
     0.0199,
     0.0197,
     0.0195
-   ]
+   ],
+   "peak_memory_mib": 0.1,
+   "peak_rss_mib": 3.0
   },
   {
    "case": "normal_sf, n = 1,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 0.0346,
    "reps": [
     0.0349,
@@ -238,11 +303,13 @@
     0.0347,
     0.0344,
     0.0346
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.8
   },
   {
    "case": "normal_sf, n = 1,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 0.0728,
    "reps": [
     0.0738,
@@ -250,11 +317,13 @@
     0.0724,
     0.0725,
     0.0728
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.8
   },
   {
    "case": "normal_sf, n = 100,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 7.5905,
    "reps": [
     7.6436,
@@ -262,11 +331,13 @@
     7.5871,
     7.5843,
     7.5905
-   ]
+   ],
+   "peak_memory_mib": 11.4,
+   "peak_rss_mib": 26.9
   },
   {
    "case": "normal_sf, n = 100,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 3.716,
    "reps": [
     3.869,
@@ -274,7 +345,9 @@
     3.716,
     3.7001,
     3.6991
-   ]
+   ],
+   "peak_memory_mib": 11.3,
+   "peak_rss_mib": 27.0
   },
   {
    "case": "normal_sf, n = 100,000",
@@ -286,7 +359,9 @@
     2.0724,
     2.0625,
     2.0668
-   ]
+   ],
+   "peak_memory_mib": 6.5,
+   "peak_rss_mib": 9.5
   },
   {
    "case": "normal_sf, n = 100,000",
@@ -298,7 +373,9 @@
     3.0,
     3.0,
     3.0
-   ]
+   ],
+   "peak_memory_mib": 74.8,
+   "peak_rss_mib": 89.2
   },
   {
    "case": "normal_sf, n = 100,000",
@@ -310,7 +387,9 @@
     1.3961,
     1.3711,
     1.4093
-   ]
+   ],
+   "peak_memory_mib": 68.1,
+   "peak_rss_mib": 107.9
   },
   {
    "case": "normal_sf, n = 1,000,000",
@@ -322,7 +401,9 @@
     15.4737,
     14.838,
     14.8695
-   ]
+   ],
+   "peak_memory_mib": 164.3,
+   "peak_rss_mib": 204.1
   },
   {
    "case": "normal_sf, n = 1,000,000",
@@ -334,7 +415,9 @@
     31.0,
     46.0,
     32.0
-   ]
+   ],
+   "peak_memory_mib": 220.9,
+   "peak_rss_mib": 234.3
   },
   {
    "case": "normal_sf, n = 1,000,000",
@@ -346,11 +429,13 @@
     20.5457,
     20.5986,
     20.591
-   ]
+   ],
+   "peak_memory_mib": 68.2,
+   "peak_rss_mib": 71.2
   },
   {
    "case": "normal_sf, n = 1,000,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 37.9787,
    "reps": [
     37.9026,
@@ -358,11 +443,13 @@
     37.9963,
     37.7589,
     38.0668
-   ]
+   ],
+   "peak_memory_mib": 50.9,
+   "peak_rss_mib": 66.3
   },
   {
    "case": "normal_sf, n = 1,000,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 78.7125,
    "reps": [
     78.7125,
@@ -370,11 +457,13 @@
     78.642,
     78.942,
     79.5436
-   ]
+   ],
+   "peak_memory_mib": 51.0,
+   "peak_rss_mib": 67.1
   },
   {
    "case": "t_quantile, n = 1,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 1.191,
    "reps": [
     1.1927,
@@ -382,11 +471,13 @@
     1.191,
     1.2013,
     1.1906
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 20.0
   },
   {
    "case": "t_quantile, n = 1,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 1.1449,
    "reps": [
     1.1463,
@@ -394,7 +485,9 @@
     1.1447,
     1.1449,
     1.1448
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 20.0
   },
   {
    "case": "t_quantile, n = 1,000",
@@ -406,7 +499,9 @@
     1.1267,
     1.1227,
     1.1247
-   ]
+   ],
+   "peak_memory_mib": 0.1,
+   "peak_rss_mib": 2.9
   },
   {
    "case": "t_quantile, n = 1,000",
@@ -418,7 +513,9 @@
     0.37,
     0.37,
     0.37
-   ]
+   ],
+   "peak_memory_mib": 60.8,
+   "peak_rss_mib": 75.1
   },
   {
    "case": "t_quantile, n = 1,000",
@@ -430,7 +527,9 @@
     0.2529,
     0.2547,
     0.262
-   ]
+   ],
+   "peak_memory_mib": 57.5,
+   "peak_rss_mib": 97.1
   },
   {
    "case": "t_quantile, n = 100,000",
@@ -442,7 +541,9 @@
     21.1879,
     21.2751,
     21.4839
-   ]
+   ],
+   "peak_memory_mib": 67.7,
+   "peak_rss_mib": 107.5
   },
   {
    "case": "t_quantile, n = 100,000",
@@ -454,7 +555,9 @@
     37.0,
     37.0,
     36.0
-   ]
+   ],
+   "peak_memory_mib": 74.9,
+   "peak_rss_mib": 89.2
   },
   {
    "case": "t_quantile, n = 100,000",
@@ -466,11 +569,13 @@
     112.3859,
     112.3515,
     112.6041
-   ]
+   ],
+   "peak_memory_mib": 6.5,
+   "peak_rss_mib": 9.5
   },
   {
    "case": "t_quantile, n = 100,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 116.5976,
    "reps": [
     116.0765,
@@ -478,11 +583,13 @@
     117.0126,
     119.8234,
     116.5976
-   ]
+   ],
+   "peak_memory_mib": 11.6,
+   "peak_rss_mib": 27.1
   },
   {
    "case": "t_quantile, n = 100,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 120.263,
    "reps": [
     120.263,
@@ -490,11 +597,13 @@
     122.6945,
     120.483,
     119.6676
-   ]
+   ],
+   "peak_memory_mib": 11.6,
+   "peak_rss_mib": 27.3
   },
   {
    "case": "t_quantile, n = 1,000,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 1201.4765,
    "reps": [
     1201.4765,
@@ -502,11 +611,13 @@
     1201.7076,
     1197.6056,
     1198.7831
-   ]
+   ],
+   "peak_memory_mib": 51.6,
+   "peak_rss_mib": 67.2
   },
   {
    "case": "t_quantile, n = 1,000,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 1157.6594,
    "reps": [
     1157.6594,
@@ -514,7 +625,9 @@
     1157.4282,
     1157.0978,
     1157.9078
-   ]
+   ],
+   "peak_memory_mib": 50.9,
+   "peak_rss_mib": 66.4
   },
   {
    "case": "t_quantile, n = 1,000,000",
@@ -526,7 +639,9 @@
     1122.8434,
     1123.8257,
     1123.8457
-   ]
+   ],
+   "peak_memory_mib": 68.5,
+   "peak_rss_mib": 71.2
   },
   {
    "case": "t_quantile, n = 1,000,000",
@@ -538,7 +653,9 @@
     370.0,
     385.0,
     371.0
-   ]
+   ],
+   "peak_memory_mib": 220.9,
+   "peak_rss_mib": 234.6
   },
   {
    "case": "t_quantile, n = 1,000,000",
@@ -550,7 +667,9 @@
     208.1045,
     208.2182,
     207.972
-   ]
+   ],
+   "peak_memory_mib": 160.5,
+   "peak_rss_mib": 200.4
   },
   {
    "case": "binomial_logpmf, n = 1,000",
@@ -562,7 +681,9 @@
     0.0582,
     0.0587,
     0.0586
-   ]
+   ],
+   "peak_memory_mib": 57.5,
+   "peak_rss_mib": 96.9
   },
   {
    "case": "binomial_logpmf, n = 1,000",
@@ -574,7 +695,9 @@
     0.04,
     0.05,
     0.05
-   ]
+   ],
+   "peak_memory_mib": 62.4,
+   "peak_rss_mib": 76.7
   },
   {
    "case": "binomial_logpmf, n = 1,000",
@@ -586,11 +709,13 @@
     0.0325,
     0.0325,
     0.0325
-   ]
+   ],
+   "peak_memory_mib": 0.1,
+   "peak_rss_mib": 3.0
   },
   {
    "case": "binomial_logpmf, n = 1,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 0.0535,
    "reps": [
     0.0541,
@@ -598,11 +723,13 @@
     0.0537,
     0.0534,
     0.0535
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.9
   },
   {
    "case": "binomial_logpmf, n = 1,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 0.1061,
    "reps": [
     0.1068,
@@ -610,11 +737,13 @@
     0.1058,
     0.1061,
     0.1063
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.8
   },
   {
    "case": "binomial_logpmf, n = 100,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 10.8558,
    "reps": [
     10.9912,
@@ -622,11 +751,13 @@
     10.9137,
     10.7929,
     10.8529
-   ]
+   ],
+   "peak_memory_mib": 9.9,
+   "peak_rss_mib": 25.5
   },
   {
    "case": "binomial_logpmf, n = 100,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 5.3548,
    "reps": [
     5.4223,
@@ -634,7 +765,9 @@
     5.3297,
     5.3565,
     5.3548
-   ]
+   ],
+   "peak_memory_mib": 10.0,
+   "peak_rss_mib": 25.5
   },
   {
    "case": "binomial_logpmf, n = 100,000",
@@ -646,7 +779,9 @@
     3.6288,
     3.6095,
     3.6707
-   ]
+   ],
+   "peak_memory_mib": 6.0,
+   "peak_rss_mib": 9.4
   },
   {
    "case": "binomial_logpmf, n = 100,000",
@@ -658,7 +793,9 @@
     5.0,
     6.0,
     5.0
-   ]
+   ],
+   "peak_memory_mib": 70.9,
+   "peak_rss_mib": 85.3
   },
   {
    "case": "binomial_logpmf, n = 100,000",
@@ -670,7 +807,9 @@
     4.13,
     3.876,
     4.1279
-   ]
+   ],
+   "peak_memory_mib": 67.8,
+   "peak_rss_mib": 107.3
   },
   {
    "case": "binomial_logpmf, n = 1,000,000",
@@ -682,7 +821,9 @@
     42.1199,
     42.4269,
     42.318
-   ]
+   ],
+   "peak_memory_mib": 158.3,
+   "peak_rss_mib": 197.8
   },
   {
    "case": "binomial_logpmf, n = 1,000,000",
@@ -694,7 +835,9 @@
     51.0,
     72.0,
     51.0
-   ]
+   ],
+   "peak_memory_mib": 221.9,
+   "peak_rss_mib": 235.8
   },
   {
    "case": "binomial_logpmf, n = 1,000,000",
@@ -706,11 +849,13 @@
     35.9266,
     35.899,
     35.9192
-   ]
+   ],
+   "peak_memory_mib": 68.2,
+   "peak_rss_mib": 71.2
   },
   {
    "case": "binomial_logpmf, n = 1,000,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 54.2917,
    "reps": [
     54.3744,
@@ -718,11 +863,13 @@
     54.2645,
     54.2917,
     54.2669
-   ]
+   ],
+   "peak_memory_mib": 50.9,
+   "peak_rss_mib": 66.6
   },
   {
    "case": "binomial_logpmf, n = 1,000,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 112.6231,
    "reps": [
     113.3123,
@@ -730,11 +877,13 @@
     112.613,
     111.9718,
     112.6231
-   ]
+   ],
+   "peak_memory_mib": 51.0,
+   "peak_rss_mib": 67.1
   },
   {
    "case": "poisson_logpmf, n = 1,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 0.0722,
    "reps": [
     0.0722,
@@ -742,11 +891,13 @@
     0.0722,
     0.0722,
     0.072
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.9
   },
   {
    "case": "poisson_logpmf, n = 1,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 0.0379,
    "reps": [
     0.0381,
@@ -754,7 +905,9 @@
     0.0378,
     0.0379,
     0.0379
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.8
   },
   {
    "case": "poisson_logpmf, n = 1,000",
@@ -766,7 +919,9 @@
     0.0179,
     0.0178,
     0.0177
-   ]
+   ],
+   "peak_memory_mib": 0.1,
+   "peak_rss_mib": 3.0
   },
   {
    "case": "poisson_logpmf, n = 1,000",
@@ -778,7 +933,9 @@
     0.07,
     0.06,
     0.07
-   ]
+   ],
+   "peak_memory_mib": 62.4,
+   "peak_rss_mib": 76.9
   },
   {
    "case": "poisson_logpmf, n = 1,000",
@@ -790,7 +947,9 @@
     0.0312,
     0.0308,
     0.0307
-   ]
+   ],
+   "peak_memory_mib": 57.4,
+   "peak_rss_mib": 96.9
   },
   {
    "case": "poisson_logpmf, n = 100,000",
@@ -802,7 +961,9 @@
     2.1842,
     2.1925,
     2.1996
-   ]
+   ],
+   "peak_memory_mib": 64.8,
+   "peak_rss_mib": 104.2
   },
   {
    "case": "poisson_logpmf, n = 100,000",
@@ -814,7 +975,9 @@
     6.0,
     7.0,
     7.0
-   ]
+   ],
+   "peak_memory_mib": 70.9,
+   "peak_rss_mib": 85.5
   },
   {
    "case": "poisson_logpmf, n = 100,000",
@@ -826,11 +989,13 @@
     2.1093,
     2.1111,
     2.113
-   ]
+   ],
+   "peak_memory_mib": 6.8,
+   "peak_rss_mib": 9.5
   },
   {
    "case": "poisson_logpmf, n = 100,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 4.0082,
    "reps": [
     4.0694,
@@ -838,11 +1003,13 @@
     4.0082,
     3.9803,
     3.986
-   ]
+   ],
+   "peak_memory_mib": 9.9,
+   "peak_rss_mib": 25.5
   },
   {
    "case": "poisson_logpmf, n = 100,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 7.4187,
    "reps": [
     7.4275,
@@ -850,11 +1017,13 @@
     7.4238,
     7.4187,
     7.3951
-   ]
+   ],
+   "peak_memory_mib": 10.0,
+   "peak_rss_mib": 25.5
   },
   {
    "case": "poisson_logpmf, n = 1,000,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 77.3101,
    "reps": [
     78.022,
@@ -862,11 +1031,13 @@
     77.3101,
     77.2213,
     77.252
-   ]
+   ],
+   "peak_memory_mib": 51.7,
+   "peak_rss_mib": 67.2
   },
   {
    "case": "poisson_logpmf, n = 1,000,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 40.6586,
    "reps": [
     40.8035,
@@ -874,7 +1045,9 @@
     40.5322,
     40.6586,
     40.5166
-   ]
+   ],
+   "peak_memory_mib": 50.9,
+   "peak_rss_mib": 66.4
   },
   {
    "case": "poisson_logpmf, n = 1,000,000",
@@ -886,7 +1059,9 @@
     21.0413,
     20.999,
     20.9549
-   ]
+   ],
+   "peak_memory_mib": 68.3,
+   "peak_rss_mib": 71.2
   },
   {
    "case": "poisson_logpmf, n = 1,000,000",
@@ -898,7 +1073,9 @@
     67.0,
     86.0,
     66.0
-   ]
+   ],
+   "peak_memory_mib": 221.9,
+   "peak_rss_mib": 235.5
   },
   {
    "case": "poisson_logpmf, n = 1,000,000",
@@ -910,7 +1087,9 @@
     22.9026,
     22.693,
     22.8703
-   ]
+   ],
+   "peak_memory_mib": 127.9,
+   "peak_rss_mib": 167.5
   },
   {
    "case": "mean, n = 1,000",
@@ -922,7 +1101,9 @@
     0.0018,
     0.0018,
     0.0018
-   ]
+   ],
+   "peak_memory_mib": 57.5,
+   "peak_rss_mib": 96.7
   },
   {
    "case": "mean, n = 1,000",
@@ -934,7 +1115,9 @@
     0.0042,
     0.0043,
     0.0042
-   ]
+   ],
+   "peak_memory_mib": 60.8,
+   "peak_rss_mib": 74.9
   },
   {
    "case": "mean, n = 1,000",
@@ -946,11 +1129,13 @@
     0.0023,
     0.0022,
     0.0023
-   ]
+   ],
+   "peak_memory_mib": 0.1,
+   "peak_rss_mib": 3.0
   },
   {
    "case": "mean, n = 1,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 0.0145,
    "reps": [
     0.0145,
@@ -958,11 +1143,13 @@
     0.0145,
     0.0145,
     0.0145
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.4
   },
   {
    "case": "mean, n = 100,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 1.4306,
    "reps": [
     1.4347,
@@ -970,7 +1157,9 @@
     1.4306,
     1.4305,
     1.4294
-   ]
+   ],
+   "peak_memory_mib": 9.2,
+   "peak_rss_mib": 24.2
   },
   {
    "case": "mean, n = 100,000",
@@ -982,7 +1171,9 @@
     0.2221,
     0.2218,
     0.2222
-   ]
+   ],
+   "peak_memory_mib": 6.9,
+   "peak_rss_mib": 9.5
   },
   {
    "case": "mean, n = 100,000",
@@ -994,7 +1185,9 @@
     0.26,
     0.27,
     0.26
-   ]
+   ],
+   "peak_memory_mib": 69.6,
+   "peak_rss_mib": 83.6
   },
   {
    "case": "mean, n = 100,000",
@@ -1006,7 +1199,9 @@
     0.0148,
     0.0145,
     0.0149
-   ]
+   ],
+   "peak_memory_mib": 62.9,
+   "peak_rss_mib": 101.5
   },
   {
    "case": "mean, n = 1,000,000",
@@ -1018,7 +1213,9 @@
     0.1286,
     0.1297,
     0.1317
-   ]
+   ],
+   "peak_memory_mib": 113.0,
+   "peak_rss_mib": 151.8
   },
   {
    "case": "mean, n = 1,000,000",
@@ -1030,7 +1227,9 @@
     2.6,
     2.6,
     2.6
-   ]
+   ],
+   "peak_memory_mib": 190.4,
+   "peak_rss_mib": 204.4
   },
   {
    "case": "mean, n = 1,000,000",
@@ -1042,11 +1241,13 @@
     2.2264,
     2.2261,
     2.2215
-   ]
+   ],
+   "peak_memory_mib": 68.1,
+   "peak_rss_mib": 71.2
   },
   {
    "case": "mean, n = 1,000,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 14.4899,
    "reps": [
     14.5993,
@@ -1054,11 +1255,13 @@
     14.4899,
     14.478,
     14.487
-   ]
+   ],
+   "peak_memory_mib": 37.8,
+   "peak_rss_mib": 53.5
   },
   {
    "case": "variance, n = 1,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 0.0165,
    "reps": [
     0.0165,
@@ -1066,7 +1269,9 @@
     0.0165,
     0.0165,
     0.0165
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.4
   },
   {
    "case": "variance, n = 1,000",
@@ -1078,7 +1283,9 @@
     0.0043,
     0.0043,
     0.0043
-   ]
+   ],
+   "peak_memory_mib": 0.1,
+   "peak_rss_mib": 3.0
   },
   {
    "case": "variance, n = 1,000",
@@ -1090,7 +1297,9 @@
     0.0073,
     0.0072,
     0.0071
-   ]
+   ],
+   "peak_memory_mib": 60.8,
+   "peak_rss_mib": 75.1
   },
   {
    "case": "variance, n = 1,000",
@@ -1102,7 +1311,9 @@
     0.0055,
     0.0055,
     0.0055
-   ]
+   ],
+   "peak_memory_mib": 57.5,
+   "peak_rss_mib": 96.7
   },
   {
    "case": "variance, n = 100,000",
@@ -1114,7 +1325,9 @@
     0.0572,
     0.057,
     0.0565
-   ]
+   ],
+   "peak_memory_mib": 62.9,
+   "peak_rss_mib": 101.6
   },
   {
    "case": "variance, n = 100,000",
@@ -1126,7 +1339,9 @@
     0.42,
     0.43,
     0.42
-   ]
+   ],
+   "peak_memory_mib": 69.6,
+   "peak_rss_mib": 83.7
   },
   {
    "case": "variance, n = 100,000",
@@ -1138,11 +1353,13 @@
     0.4219,
     0.4207,
     0.4217
-   ]
+   ],
+   "peak_memory_mib": 6.8,
+   "peak_rss_mib": 9.4
   },
   {
    "case": "variance, n = 100,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 1.6564,
    "reps": [
     1.6564,
@@ -1150,11 +1367,13 @@
     1.6592,
     1.655,
     1.6575
-   ]
+   ],
+   "peak_memory_mib": 9.2,
+   "peak_rss_mib": 24.2
   },
   {
    "case": "variance, n = 1,000,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 16.3223,
    "reps": [
     16.4131,
@@ -1162,7 +1381,9 @@
     16.3323,
     16.3096,
     16.3223
-   ]
+   ],
+   "peak_memory_mib": 37.8,
+   "peak_rss_mib": 53.5
   },
   {
    "case": "variance, n = 1,000,000",
@@ -1174,7 +1395,9 @@
     4.2216,
     4.225,
     4.228
-   ]
+   ],
+   "peak_memory_mib": 68.2,
+   "peak_rss_mib": 71.2
   },
   {
    "case": "variance, n = 1,000,000",
@@ -1186,7 +1409,9 @@
     4.1,
     4.1,
     4.1
-   ]
+   ],
+   "peak_memory_mib": 190.4,
+   "peak_rss_mib": 204.7
   },
   {
    "case": "variance, n = 1,000,000",
@@ -1198,7 +1423,9 @@
     0.4686,
     0.4684,
     0.4647
-   ]
+   ],
+   "peak_memory_mib": 113.0,
+   "peak_rss_mib": 151.9
   },
   {
    "case": "beta_quantile, n = 1,000",
@@ -1210,7 +1437,9 @@
     0.5664,
     0.5656,
     0.5662
-   ]
+   ],
+   "peak_memory_mib": 57.5,
+   "peak_rss_mib": 97.4
   },
   {
    "case": "beta_quantile, n = 1,000",
@@ -1222,7 +1451,9 @@
     0.67,
     0.68,
     0.67
-   ]
+   ],
+   "peak_memory_mib": 60.7,
+   "peak_rss_mib": 75.1
   },
   {
    "case": "beta_quantile, n = 1,000",
@@ -1234,11 +1465,13 @@
     1.6291,
     1.6295,
     1.6284
-   ]
+   ],
+   "peak_memory_mib": 0.1,
+   "peak_rss_mib": 3.0
   },
   {
    "case": "beta_quantile, n = 1,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 1.6419,
    "reps": [
     1.6422,
@@ -1246,11 +1479,13 @@
     1.641,
     1.6402,
     1.6424
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.8
   },
   {
    "case": "beta_quantile, n = 1,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 1.6975,
    "reps": [
     1.6959,
@@ -1258,11 +1493,13 @@
     1.6972,
     1.6982,
     1.6982
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.9
   },
   {
    "case": "beta_quantile, n = 100,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 164.2015,
    "reps": [
     164.3511,
@@ -1270,11 +1507,13 @@
     164.0508,
     164.2444,
     164.2015
-   ]
+   ],
+   "peak_memory_mib": 11.6,
+   "peak_rss_mib": 27.2
   },
   {
    "case": "beta_quantile, n = 100,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 159.1417,
    "reps": [
     159.4211,
@@ -1282,7 +1521,9 @@
     159.3532,
     159.1417,
     159.0137
-   ]
+   ],
+   "peak_memory_mib": 11.6,
+   "peak_rss_mib": 27.1
   },
   {
    "case": "beta_quantile, n = 100,000",
@@ -1294,7 +1535,9 @@
     158.0773,
     158.0014,
     158.1005
-   ]
+   ],
+   "peak_memory_mib": 7.0,
+   "peak_rss_mib": 9.5
   },
   {
    "case": "beta_quantile, n = 100,000",
@@ -1306,7 +1549,9 @@
     68.0,
     67.0,
     68.0
-   ]
+   ],
+   "peak_memory_mib": 74.9,
+   "peak_rss_mib": 89.3
   },
   {
    "case": "beta_quantile, n = 100,000",
@@ -1318,7 +1563,9 @@
     50.8389,
     50.8401,
     50.8323
-   ]
+   ],
+   "peak_memory_mib": 68.3,
+   "peak_rss_mib": 108.4
   },
   {
    "case": "beta_quantile, n = 1,000,000",
@@ -1330,7 +1577,9 @@
     506.4774,
     506.5375,
     506.1099
-   ]
+   ],
+   "peak_memory_mib": 168.0,
+   "peak_rss_mib": 208.0
   },
   {
    "case": "beta_quantile, n = 1,000,000",
@@ -1342,7 +1591,9 @@
     677.0,
     696.0,
     678.0
-   ]
+   ],
+   "peak_memory_mib": 220.9,
+   "peak_rss_mib": 234.4
   },
   {
    "case": "beta_quantile, n = 1,000,000",
@@ -1354,11 +1605,13 @@
     1573.9735,
     1574.9345,
     1571.502
-   ]
+   ],
+   "peak_memory_mib": 67.9,
+   "peak_rss_mib": 71.2
   },
   {
    "case": "beta_quantile, n = 1,000,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 1590.9037,
    "reps": [
     1590.3455,
@@ -1366,11 +1619,13 @@
     1590.9037,
     1591.1095,
     1589.1038
-   ]
+   ],
+   "peak_memory_mib": 50.9,
+   "peak_rss_mib": 66.6
   },
   {
    "case": "beta_quantile, n = 1,000,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 1649.3935,
    "reps": [
     1653.5971,
@@ -1378,11 +1633,13 @@
     1650.541,
     1648.8542,
     1649.3935
-   ]
+   ],
+   "peak_memory_mib": 50.9,
+   "peak_rss_mib": 67.4
   },
   {
    "case": "chisquare_cdf, n = 1,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 0.1107,
    "reps": [
     0.1108,
@@ -1390,11 +1647,13 @@
     0.1107,
     0.1106,
     0.1122
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.8
   },
   {
    "case": "chisquare_cdf, n = 1,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 0.0678,
    "reps": [
     0.0682,
@@ -1402,7 +1661,9 @@
     0.068,
     0.0678,
     0.0678
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 19.8
   },
   {
    "case": "chisquare_cdf, n = 1,000",
@@ -1414,7 +1675,9 @@
     0.0543,
     0.0543,
     0.0548
-   ]
+   ],
+   "peak_memory_mib": 0.1,
+   "peak_rss_mib": 3.0
   },
   {
    "case": "chisquare_cdf, n = 1,000",
@@ -1426,7 +1689,9 @@
     0.09,
     0.08,
     0.09
-   ]
+   ],
+   "peak_memory_mib": 60.8,
+   "peak_rss_mib": 75.1
   },
   {
    "case": "chisquare_cdf, n = 1,000",
@@ -1438,7 +1703,9 @@
     0.2,
     0.2021,
     0.2
-   ]
+   ],
+   "peak_memory_mib": 57.5,
+   "peak_rss_mib": 96.8
   },
   {
    "case": "chisquare_cdf, n = 100,000",
@@ -1450,7 +1717,9 @@
     17.5849,
     17.5365,
     17.5398
-   ]
+   ],
+   "peak_memory_mib": 66.6,
+   "peak_rss_mib": 106.2
   },
   {
    "case": "chisquare_cdf, n = 100,000",
@@ -1462,7 +1731,9 @@
     9.0,
     9.0,
     8.0
-   ]
+   ],
+   "peak_memory_mib": 74.9,
+   "peak_rss_mib": 89.3
   },
   {
    "case": "chisquare_cdf, n = 100,000",
@@ -1474,11 +1745,13 @@
     5.4225,
     5.406,
     5.4111
-   ]
+   ],
+   "peak_memory_mib": 6.9,
+   "peak_rss_mib": 9.4
   },
   {
    "case": "chisquare_cdf, n = 100,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 7.0773,
    "reps": [
     7.2297,
@@ -1486,11 +1759,13 @@
     7.0773,
     7.0458,
     7.0613
-   ]
+   ],
+   "peak_memory_mib": 11.5,
+   "peak_rss_mib": 27.0
   },
   {
    "case": "chisquare_cdf, n = 100,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 11.2891,
    "reps": [
     11.2816,
@@ -1498,11 +1773,13 @@
     11.2981,
     11.2891,
     11.2683
-   ]
+   ],
+   "peak_memory_mib": 11.4,
+   "peak_rss_mib": 27.0
   },
   {
    "case": "chisquare_cdf, n = 1,000,000",
-   "implementation": "phit (scalar)",
+   "implementation": "phit (scalar calls)",
    "value": 115.9649,
    "reps": [
     117.2145,
@@ -1510,11 +1787,13 @@
     115.9649,
     115.7071,
     115.7766
-   ]
+   ],
+   "peak_memory_mib": 50.9,
+   "peak_rss_mib": 67.2
   },
   {
    "case": "chisquare_cdf, n = 1,000,000",
-   "implementation": "phit (batch)",
+   "implementation": "phit (one batch call)",
    "value": 71.4151,
    "reps": [
     71.624,
@@ -1522,7 +1801,9 @@
     71.4151,
     71.3285,
     71.3341
-   ]
+   ],
+   "peak_memory_mib": 50.9,
+   "peak_rss_mib": 66.3
   },
   {
    "case": "chisquare_cdf, n = 1,000,000",
@@ -1534,7 +1815,9 @@
     54.1275,
     54.1706,
     54.2045
-   ]
+   ],
+   "peak_memory_mib": 68.0,
+   "peak_rss_mib": 71.2
   },
   {
    "case": "chisquare_cdf, n = 1,000,000",
@@ -1546,7 +1829,9 @@
     85.0,
     99.0,
     85.0
-   ]
+   ],
+   "peak_memory_mib": 220.9,
+   "peak_rss_mib": 234.5
   },
   {
    "case": "chisquare_cdf, n = 1,000,000",
@@ -1558,7 +1843,16 @@
     175.191,
     174.9174,
     175.1117
-   ]
+   ],
+   "peak_memory_mib": 149.0,
+   "peak_rss_mib": 188.9
   }
- ]
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  "cargo build -p stats-core --release --locked --example distribution_bench",
+  "PHP=$(command -v php) .context/bench-venv/bin/python tests/benchmarks/run-distributions.py"
+ ],
+ "source": "docs/benchmarks/distributions-results.json",
+ "group": "Numerics"
 }

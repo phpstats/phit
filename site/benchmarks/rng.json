@@ -1,16 +1,38 @@
 {
  "title": "Seeded sampling: draw time",
- "description": "Median wall time for one seeded call that returns n normal, beta, or Poisson draws in phit.",
- "measure": "median wall time",
+ "label": "Seeded sampling",
+ "description": "One seeded call that returns n normal, beta, or Poisson draws. Sample points are checked against independent ChaCha streams and R quantiles before timing.",
+ "workload": "normal, beta, and Poisson at 1,000, 100,000, and 1,000,000 draws, seed 42",
+ "implementations": {
+  "phit": "phit dist_*_rng(), PHP 8.5.12"
+ },
+ "measure": "Elapsed time",
  "unit": "ms",
+ "statistic": "median",
+ "method": "Complete seeded batch call, including ChaCha initialization, inverse CDF and PHP result allocation; summaries/JSON excluded. Peak RSS covers the entire process.",
+ "time_spent_in": "the measured process",
+ "memory_measure": "peak anonymous memory",
+ "memory_method": "Peak of the process's anonymous resident memory (RssAnon in /proc), sampled every millisecond by bench/peakmem.c; the peak resident set size, file pages included, from getrusage.",
+ "check": {
+  "verification": "17 independent Python ChaCha/PCG/Open01 points mapped by R quantiles at 1e-15 + 1e-12 relative, plus full-vector mean/variance within eight theoretical standard errors."
+ },
  "environment": {
   "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
-  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "cores": 2,
+  "memory_gb": 7.8,
+  "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
   "php": "8.5.12",
-  "date": "2026-11-01T19:50:24.399727+00:00",
-  "repeats": 5
+  "versions": {
+   "R (reference quantiles)": "4.6.2",
+   "jsonlite": "2.0.0"
+  },
+  "threads": 1,
+  "cache": "warm",
+  "repeats": 5,
+  "warmups": 1,
+  "date": "2026-11-01",
+  "commit": null
  },
- "source": "docs/benchmarks/rng-results.json",
  "rows": [
   {
    "case": "normal, n = 1,000",
@@ -22,7 +44,9 @@
     0.1264,
     0.1261,
     0.1257
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 20.0
   },
   {
    "case": "normal, n = 100,000",
@@ -34,7 +58,9 @@
     13.038,
     13.0404,
     13.0347
-   ]
+   ],
+   "peak_memory_mib": 6.9,
+   "peak_rss_mib": 23.5
   },
   {
    "case": "normal, n = 1,000,000",
@@ -46,7 +72,9 @@
     132.5515,
     132.4024,
     132.3789
-   ]
+   ],
+   "peak_memory_mib": 42.2,
+   "peak_rss_mib": 57.7
   },
   {
    "case": "beta, n = 1,000",
@@ -58,7 +86,9 @@
     1.615,
     1.5913,
     1.6156
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 20.2
   },
   {
    "case": "beta, n = 100,000",
@@ -70,7 +100,9 @@
     158.4866,
     157.2142,
     157.3053
-   ]
+   ],
+   "peak_memory_mib": 7.6,
+   "peak_rss_mib": 23.5
   },
   {
    "case": "beta, n = 1,000,000",
@@ -82,7 +114,9 @@
     1566.7105,
     1567.2773,
     1567.6351
-   ]
+   ],
+   "peak_memory_mib": 42.2,
+   "peak_rss_mib": 57.9
   },
   {
    "case": "poisson, n = 1,000",
@@ -94,7 +128,9 @@
     0.2303,
     0.2582,
     0.2299
-   ]
+   ],
+   "peak_memory_mib": 4.1,
+   "peak_rss_mib": 20.2
   },
   {
    "case": "poisson, n = 100,000",
@@ -106,7 +142,9 @@
     24.1089,
     24.1277,
     24.0154
-   ]
+   ],
+   "peak_memory_mib": 7.4,
+   "peak_rss_mib": 23.5
   },
   {
    "case": "poisson, n = 1,000,000",
@@ -118,7 +156,15 @@
     240.4155,
     240.1879,
     240.0589
-   ]
+   ],
+   "peak_memory_mib": 42.2,
+   "peak_rss_mib": 58.0
   }
- ]
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  "PHP=$(command -v php) python3 tests/benchmarks/run-rng.py"
+ ],
+ "source": "docs/benchmarks/rng-results.json",
+ "group": "Numerics"
 }

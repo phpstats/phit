@@ -1,29 +1,69 @@
 {
  "title": "Poisson regression: fit time",
- "description": "Median wall time to fit poisson regression models on the same simulated data in R, Python and phit. Data loading is timed separately and excluded.",
- "measure": "median fit wall time",
+ "label": "Poisson regression",
+ "description": "Fit the same simulated data and return every result: phit fit_poisson_matrix(), R glm(family = poisson), and statsmodels GLM Poisson. All three read the same CSV and agree within the tolerance before timings are kept.",
+ "workload": "1,000, 100,000, and 1,000,000 rows with 3 coefficients; 100,000 rows with 11 (counts include the intercept)",
+ "dataset": {
+  "seed": 20261011,
+  "sha256": {
+   "n=1000,p=3": "8b5bcfdbf0afd979c874b216ddfefe5d05511ede383c0c7f772db2108460cb02",
+   "n=100000,p=3": "14c2534fb86e002d97e49da44679760069a40c1dbd65c3ee19dc76161a8259eb",
+   "n=1000000,p=3": "34c55e2c2341ac1a1dbd23c9fb9502b7b2aa3f7f735e4fee3576b18b7c854a37",
+   "n=100000,p=11": "c464503e20ea6201f020684d592fc74a91e572d24ccbb707ae2caacdfc941490"
+  }
+ },
+ "implementations": {
+  "phit": "phit fit_poisson_matrix(), PHP 8.5.12",
+  "R": "glm(family = poisson)",
+  "statsmodels": "statsmodels GLM Poisson"
+ },
+ "measure": "Elapsed time",
  "unit": "ms",
+ "statistic": "median",
+ "method": "In-process wall-clock time of one complete fit with every output materialized, after one untimed warm-up; five timed fits per worker. Process startup, CSV parsing, data generation, and JSON serialization are excluded. Workers run in separate processes and alternate order between cases.",
+ "time_spent_in": "the measured process",
+ "memory_measure": "peak anonymous memory",
+ "memory_method": "Peak of the process's anonymous resident memory (RssAnon in /proc), sampled every millisecond by bench/peakmem.c; the peak resident set size, file pages included, from getrusage.",
+ "check": {
+  "max_abs_difference_vs_R_statsmodels": 1.862645149230957e-09,
+  "max_abs_difference_vs_R_phit": 1.6065314412117004e-06,
+  "tolerance": "1e-09 + 1e-07\u00b7|R|"
+ },
  "environment": {
   "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
-  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "cores": 2,
+  "memory_gb": 7.8,
+  "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
   "php": "8.5.12",
-  "date": "2026-11-01T19:43:27.332000+00:00",
-  "repeats": 5
+  "versions": {
+   "R": "4.6.2",
+   "statsmodels": "0.15.0",
+   "NumPy": "2.5.4",
+   "Python": "3.14.10",
+   "Rust": "1.99.1",
+   "R BLAS": "/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.0"
+  },
+  "threads": 1,
+  "cache": "warm",
+  "repeats": 5,
+  "warmups": 1,
+  "date": "2026-11-01",
+  "commit": null
  },
- "source": "docs/benchmarks/poisson-results.json",
  "rows": [
   {
    "case": "n = 1,000, p = 3",
-   "implementation": "R",
-   "value": 2.0,
+   "implementation": "phit",
+   "value": 0.487,
    "reps": [
-    3.0,
-    2.0,
-    2.0,
-    3.0,
-    2.0
+    0.546,
+    0.514,
+    0.486,
+    0.487,
+    0.478
    ],
-   "load_ms": 1.0
+   "peak_memory_mib": 4.6,
+   "peak_rss_mib": 20.6
   },
   {
    "case": "n = 1,000, p = 3",
@@ -36,20 +76,23 @@
     1.313,
     1.262
    ],
-   "load_ms": 0.391
+   "peak_memory_mib": 123.0,
+   "peak_rss_mib": 174.6
   },
   {
    "case": "n = 1,000, p = 3",
-   "implementation": "phit",
-   "value": 0.487,
+   "implementation": "R",
+   "value": 2.0,
    "reps": [
-    0.546,
-    0.514,
-    0.486,
-    0.487,
-    0.478
+    3.0,
+    2.0,
+    2.0,
+    3.0,
+    2.0
    ],
-   "load_ms": 1.319
+   "peak_memory_mib": 62.4,
+   "peak_rss_mib": 77.6,
+   "note": "R's timer counts whole milliseconds, so this value is within a few ticks of its resolution"
   },
   {
    "case": "n = 100,000, p = 3",
@@ -62,7 +105,8 @@
     50.189,
     49.862
    ],
-   "load_ms": 129.673
+   "peak_memory_mib": 56.6,
+   "peak_rss_mib": 72.8
   },
   {
    "case": "n = 100,000, p = 3",
@@ -75,7 +119,8 @@
     42.351,
     42.42
    ],
-   "load_ms": 21.47
+   "peak_memory_mib": 325.8,
+   "peak_rss_mib": 378.1
   },
   {
    "case": "n = 100,000, p = 3",
@@ -88,33 +133,8 @@
     158.0,
     159.0
    ],
-   "load_ms": 48.0
-  },
-  {
-   "case": "n = 1,000,000, p = 3",
-   "implementation": "R",
-   "value": 2126.0,
-   "reps": [
-    2126.0,
-    2271.0,
-    2323.0,
-    2067.0,
-    2107.0
-   ],
-   "load_ms": 1041.0
-  },
-  {
-   "case": "n = 1,000,000, p = 3",
-   "implementation": "statsmodels",
-   "value": 458.84,
-   "reps": [
-    465.877,
-    458.84,
-    460.092,
-    456.111,
-    458.129
-   ],
-   "load_ms": 201.809
+   "peak_memory_mib": 123.1,
+   "peak_rss_mib": 137.4
   },
   {
    "case": "n = 1,000,000, p = 3",
@@ -127,7 +147,36 @@
     519.66,
     521.653
    ],
-   "load_ms": 1326.185
+   "peak_memory_mib": 500.4,
+   "peak_rss_mib": 516.5
+  },
+  {
+   "case": "n = 1,000,000, p = 3",
+   "implementation": "statsmodels",
+   "value": 458.84,
+   "reps": [
+    465.877,
+    458.84,
+    460.092,
+    456.111,
+    458.129
+   ],
+   "peak_memory_mib": 2173.0,
+   "peak_rss_mib": 2225.1
+  },
+  {
+   "case": "n = 1,000,000, p = 3",
+   "implementation": "R",
+   "value": 2126.0,
+   "reps": [
+    2126.0,
+    2271.0,
+    2323.0,
+    2067.0,
+    2107.0
+   ],
+   "peak_memory_mib": 615.2,
+   "peak_rss_mib": 628.9
   },
   {
    "case": "n = 100,000, p = 11",
@@ -140,7 +189,8 @@
     113.142,
     113.255
    ],
-   "load_ms": 669.532
+   "peak_memory_mib": 95.5,
+   "peak_rss_mib": 111.6
   },
   {
    "case": "n = 100,000, p = 11",
@@ -153,7 +203,8 @@
     107.079,
     105.934
    ],
-   "load_ms": 141.338
+   "peak_memory_mib": 619.0,
+   "peak_rss_mib": 670.9
   },
   {
    "case": "n = 100,000, p = 11",
@@ -166,7 +217,14 @@
     264.0,
     196.0
    ],
-   "load_ms": 673.0
+   "peak_memory_mib": 189.2,
+   "peak_rss_mib": 203.6
   }
- ]
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  "PHP=$(command -v php) .context/bench-venv/bin/python tests/benchmarks/run.py --model poisson"
+ ],
+ "source": "docs/benchmarks/poisson-results.json",
+ "group": "Models"
 }

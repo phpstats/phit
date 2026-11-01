@@ -1,29 +1,69 @@
 {
  "title": "Logistic regression: fit time",
- "description": "Median wall time to fit logistic regression models on the same simulated data in R, Python and phit. Data loading is timed separately and excluded.",
- "measure": "median fit wall time",
+ "label": "Logistic regression",
+ "description": "Fit the same simulated data and return every result: phit fit_logistic_matrix(), R glm(family = binomial), and statsmodels GLM Binomial. All three read the same CSV and agree within the tolerance before timings are kept.",
+ "workload": "1,000, 100,000, and 1,000,000 rows with 3 coefficients; 100,000 rows with 11 (counts include the intercept)",
+ "dataset": {
+  "seed": 20261011,
+  "sha256": {
+   "n=1000,p=3": "8ed0bbbd18aee84089279d71479d6ea00a6587c589beb638e5eaff94e9d31426",
+   "n=100000,p=3": "69688cdbc4b593dab39121bcaf9d74695fb36efc404254de494ff2eb8860d5b2",
+   "n=1000000,p=3": "9eee5f986af0a8b1ee37594add5b5facd17376e595b20e5db83ba8841d6a8c41",
+   "n=100000,p=11": "4ef86d6c386aca4dea842e605ac02b40501a4d99770bb946ac7bd9db31ce8f27"
+  }
+ },
+ "implementations": {
+  "phit": "phit fit_logistic_matrix(), PHP 8.5.12",
+  "R": "glm(family = binomial)",
+  "statsmodels": "statsmodels GLM Binomial"
+ },
+ "measure": "Elapsed time",
  "unit": "ms",
+ "statistic": "median",
+ "method": "In-process wall-clock time of one complete fit with every output materialized, after one untimed warm-up; five timed fits per worker. Process startup, CSV parsing, data generation, and JSON serialization are excluded. Workers run in separate processes and alternate order between cases.",
+ "time_spent_in": "the measured process",
+ "memory_measure": "peak anonymous memory",
+ "memory_method": "Peak of the process's anonymous resident memory (RssAnon in /proc), sampled every millisecond by bench/peakmem.c; the peak resident set size, file pages included, from getrusage.",
+ "check": {
+  "max_abs_difference_vs_R_statsmodels": 3.5375819749106086e-06,
+  "max_abs_difference_vs_R_phit": 3.5375835665263367e-06,
+  "tolerance": "1e-09 + 1e-07\u00b7|R|"
+ },
  "environment": {
   "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
-  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "cores": 2,
+  "memory_gb": 7.8,
+  "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
   "php": "8.5.12",
-  "date": "2026-11-01T19:42:15.569138+00:00",
-  "repeats": 5
+  "versions": {
+   "R": "4.6.2",
+   "statsmodels": "0.15.0",
+   "NumPy": "2.5.4",
+   "Python": "3.14.10",
+   "Rust": "1.99.1",
+   "R BLAS": "/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.0"
+  },
+  "threads": 1,
+  "cache": "warm",
+  "repeats": 5,
+  "warmups": 1,
+  "date": "2026-11-01",
+  "commit": null
  },
- "source": "docs/benchmarks/logistic-results.json",
  "rows": [
   {
    "case": "n = 1,000, p = 3",
-   "implementation": "R",
-   "value": 2.0,
+   "implementation": "phit",
+   "value": 0.649,
    "reps": [
-    2.0,
-    2.0,
-    3.0,
-    2.0,
-    2.0
+    0.651,
+    0.651,
+    0.649,
+    0.64,
+    0.636
    ],
-   "load_ms": 2.0
+   "peak_memory_mib": 4.6,
+   "peak_rss_mib": 20.8
   },
   {
    "case": "n = 1,000, p = 3",
@@ -36,20 +76,23 @@
     0.759,
     0.741
    ],
-   "load_ms": 0.56
+   "peak_memory_mib": 121.0,
+   "peak_rss_mib": 172.6
   },
   {
    "case": "n = 1,000, p = 3",
-   "implementation": "phit",
-   "value": 0.649,
+   "implementation": "R",
+   "value": 2.0,
    "reps": [
-    0.651,
-    0.651,
-    0.649,
-    0.64,
-    0.636
+    2.0,
+    2.0,
+    3.0,
+    2.0,
+    2.0
    ],
-   "load_ms": 1.934
+   "peak_memory_mib": 61.7,
+   "peak_rss_mib": 76.9,
+   "note": "R's timer counts whole milliseconds, so this value is within a few ticks of its resolution"
   },
   {
    "case": "n = 100,000, p = 3",
@@ -62,7 +105,8 @@
     68.234,
     69.034
    ],
-   "load_ms": 189.748
+   "peak_memory_mib": 58.4,
+   "peak_rss_mib": 75.6
   },
   {
    "case": "n = 100,000, p = 3",
@@ -75,7 +119,8 @@
     15.924,
     15.911
    ],
-   "load_ms": 34.36
+   "peak_memory_mib": 130.6,
+   "peak_rss_mib": 182.6
   },
   {
    "case": "n = 100,000, p = 3",
@@ -88,33 +133,8 @@
     81.0,
     81.0
    ],
-   "load_ms": 81.0
-  },
-  {
-   "case": "n = 1,000,000, p = 3",
-   "implementation": "R",
-   "value": 1110.0,
-   "reps": [
-    1116.0,
-    1090.0,
-    1110.0,
-    1098.0,
-    1115.0
-   ],
-   "load_ms": 2692.0
-  },
-  {
-   "case": "n = 1,000,000, p = 3",
-   "implementation": "statsmodels",
-   "value": 224.99,
-   "reps": [
-    224.99,
-    224.573,
-    224.517,
-    231.559,
-    225.287
-   ],
-   "load_ms": 327.115
+   "peak_memory_mib": 122.2,
+   "peak_rss_mib": 136.5
   },
   {
    "case": "n = 1,000,000, p = 3",
@@ -127,7 +147,36 @@
     713.934,
     715.196
    ],
-   "load_ms": 1921.713
+   "peak_memory_mib": 545.0,
+   "peak_rss_mib": 561.5
+  },
+  {
+   "case": "n = 1,000,000, p = 3",
+   "implementation": "statsmodels",
+   "value": 224.99,
+   "reps": [
+    224.99,
+    224.573,
+    224.517,
+    231.559,
+    225.287
+   ],
+   "peak_memory_mib": 212.2,
+   "peak_rss_mib": 264.4
+  },
+  {
+   "case": "n = 1,000,000, p = 3",
+   "implementation": "R",
+   "value": 1110.0,
+   "reps": [
+    1116.0,
+    1090.0,
+    1110.0,
+    1098.0,
+    1115.0
+   ],
+   "peak_memory_mib": 592.3,
+   "peak_rss_mib": 606.8
   },
   {
    "case": "n = 100,000, p = 11",
@@ -140,7 +189,8 @@
     130.562,
     128.728
    ],
-   "load_ms": 742.733
+   "peak_memory_mib": 86.4,
+   "peak_rss_mib": 102.4
   },
   {
    "case": "n = 100,000, p = 11",
@@ -153,7 +203,8 @@
     34.583,
     34.63
    ],
-   "load_ms": 153.515
+   "peak_memory_mib": 146.8,
+   "peak_rss_mib": 199.0
   },
   {
    "case": "n = 100,000, p = 11",
@@ -166,7 +217,14 @@
     124.0,
     123.0
    ],
-   "load_ms": 1039.0
+   "peak_memory_mib": 210.4,
+   "peak_rss_mib": 224.3
   }
- ]
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  "PHP=$(command -v php) .context/bench-venv/bin/python tests/benchmarks/run.py --model logistic"
+ ],
+ "source": "docs/benchmarks/logistic-results.json",
+ "group": "Models"
 }

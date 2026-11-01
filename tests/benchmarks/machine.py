@@ -43,7 +43,7 @@ def peak_memory(stderr):
 
 
 def machine():
-    """CPU model, memory, and operating system of this host."""
+    """CPU model, memory, and operating system of this host, and the source commit the run used."""
     if sys.platform == 'darwin':
         cpu = subprocess.check_output(['sysctl', '-n', 'machdep.cpu.brand_string'], text=True).strip()
         memory = int(subprocess.check_output(['sysctl', '-n', 'hw.memsize'], text=True))
@@ -54,4 +54,9 @@ def machine():
         memory = 1024 * int(re.search(r'^MemTotal:\s*(\d+)', Path('/proc/meminfo').read_text(), re.M)[1])
         release = re.search(r'^PRETTY_NAME="(.+)"', Path('/etc/os-release').read_text(), re.M)
         system = f'Linux, {release[1] if release else platform.release()} ({platform.machine()})'
-    return {'cpu': cpu, 'cpu_count': os.cpu_count(), 'host_memory_bytes': memory, 'platform': system}
+    head = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True, cwd=ROOT)
+    dirty = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=no'], capture_output=True, text=True,
+                           cwd=ROOT).stdout.strip()
+    commit = head.stdout.strip() + ('+changes' if dirty and head.stdout.strip() else '') or None
+    return {'cpu': cpu, 'cpu_count': os.cpu_count(), 'host_memory_bytes': memory, 'platform': system,
+            'commit': commit}

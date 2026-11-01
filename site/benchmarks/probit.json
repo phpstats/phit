@@ -1,29 +1,69 @@
 {
  "title": "Probit regression: fit time",
- "description": "Median wall time to fit probit regression models on the same simulated data in R, Python and phit. Data loading is timed separately and excluded.",
- "measure": "median fit wall time",
+ "label": "Probit regression",
+ "description": "Fit the same simulated data and return every result: phit fit_probit_matrix(), R glm(family = binomial(link = \"probit\")), and statsmodels GLM Binomial probit. All three read the same CSV and agree within the tolerance before timings are kept.",
+ "workload": "1,000, 100,000, and 1,000,000 rows with 3 coefficients; 100,000 rows with 11 (counts include the intercept)",
+ "dataset": {
+  "seed": 20261011,
+  "sha256": {
+   "n=1000,p=3": "b2ef770b2f61896e70793e1d33c857391d480e04688d02837884d10cbde0110b",
+   "n=100000,p=3": "b935c7de0ddb88e0b6be1b41ec9e24a57434689edb71958f3b87cb8d32c9f811",
+   "n=1000000,p=3": "b6716a8c8cd6599770d5523d1187d2292d71b5430ac63252ad60ca6354b10c37",
+   "n=100000,p=11": "82654501bbce2f8e434e2bf9fe08b087d26ff03a414642a57caf0dd37af1f21f"
+  }
+ },
+ "implementations": {
+  "phit": "phit fit_probit_matrix(), PHP 8.5.12",
+  "R": "glm(family = binomial(link = \"probit\"))",
+  "statsmodels": "statsmodels GLM Binomial probit"
+ },
+ "measure": "Elapsed time",
  "unit": "ms",
+ "statistic": "median",
+ "method": "In-process wall-clock time of one complete fit with every output materialized, after one untimed warm-up; five timed fits per worker. Process startup, CSV parsing, data generation, and JSON serialization are excluded. Workers run in separate processes and alternate order between cases.",
+ "time_spent_in": "the measured process",
+ "memory_measure": "peak anonymous memory",
+ "memory_method": "Peak of the process's anonymous resident memory (RssAnon in /proc), sampled every millisecond by bench/peakmem.c; the peak resident set size, file pages included, from getrusage.",
+ "check": {
+  "max_abs_difference_vs_R_statsmodels": 1.0244548320770264e-08,
+  "max_abs_difference_vs_R_phit": 1.0011717677116394e-08,
+  "tolerance": "1e-09 + 1e-07\u00b7|R|"
+ },
  "environment": {
   "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
-  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "cores": 2,
+  "memory_gb": 7.8,
+  "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
   "php": "8.5.12",
-  "date": "2026-11-01T19:42:44.874283+00:00",
-  "repeats": 5
+  "versions": {
+   "R": "4.6.2",
+   "statsmodels": "0.15.0",
+   "NumPy": "2.5.4",
+   "Python": "3.14.10",
+   "Rust": "1.99.1",
+   "R BLAS": "/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.0"
+  },
+  "threads": 1,
+  "cache": "warm",
+  "repeats": 5,
+  "warmups": 1,
+  "date": "2026-11-01",
+  "commit": null
  },
- "source": "docs/benchmarks/probit-results.json",
  "rows": [
   {
    "case": "n = 1,000, p = 3",
-   "implementation": "R",
-   "value": 2.0,
+   "implementation": "phit",
+   "value": 1.664,
    "reps": [
-    3.0,
-    2.0,
-    2.0,
-    2.0,
-    3.0
+    1.674,
+    1.663,
+    1.665,
+    1.664,
+    1.65
    ],
-   "load_ms": 1.0
+   "peak_memory_mib": 4.6,
+   "peak_rss_mib": 20.8
   },
   {
    "case": "n = 1,000, p = 3",
@@ -36,20 +76,23 @@
     3.236,
     3.277
    ],
-   "load_ms": 0.537
+   "peak_memory_mib": 123.7,
+   "peak_rss_mib": 175.5
   },
   {
    "case": "n = 1,000, p = 3",
-   "implementation": "phit",
-   "value": 1.664,
+   "implementation": "R",
+   "value": 2.0,
    "reps": [
-    1.674,
-    1.663,
-    1.665,
-    1.664,
-    1.65
+    3.0,
+    2.0,
+    2.0,
+    2.0,
+    3.0
    ],
-   "load_ms": 1.977
+   "peak_memory_mib": 61.9,
+   "peak_rss_mib": 77.1,
+   "note": "R's timer counts whole milliseconds, so this value is within a few ticks of its resolution"
   },
   {
    "case": "n = 100,000, p = 3",
@@ -62,7 +105,8 @@
     159.681,
     159.517
    ],
-   "load_ms": 189.39
+   "peak_memory_mib": 58.5,
+   "peak_rss_mib": 75.3
   },
   {
    "case": "n = 100,000, p = 3",
@@ -75,7 +119,8 @@
     73.42,
     73.693
    ],
-   "load_ms": 33.867
+   "peak_memory_mib": 363.0,
+   "peak_rss_mib": 415.3
   },
   {
    "case": "n = 100,000, p = 3",
@@ -88,33 +133,8 @@
     136.0,
     109.0
    ],
-   "load_ms": 83.0
-  },
-  {
-   "case": "n = 1,000,000, p = 3",
-   "implementation": "R",
-   "value": 1422.0,
-   "reps": [
-    1400.0,
-    1422.0,
-    1411.0,
-    1454.0,
-    1443.0
-   ],
-   "load_ms": 2669.0
-  },
-  {
-   "case": "n = 1,000,000, p = 3",
-   "implementation": "statsmodels",
-   "value": 829.189,
-   "reps": [
-    829.189,
-    852.396,
-    819.584,
-    821.418,
-    872.144
-   ],
-   "load_ms": 327.313
+   "peak_memory_mib": 124.5,
+   "peak_rss_mib": 138.7
   },
   {
    "case": "n = 1,000,000, p = 3",
@@ -127,7 +147,36 @@
     1517.053,
     1512.888
    ],
-   "load_ms": 1920.491
+   "peak_memory_mib": 542.6,
+   "peak_rss_mib": 559.5
+  },
+  {
+   "case": "n = 1,000,000, p = 3",
+   "implementation": "statsmodels",
+   "value": 829.189,
+   "reps": [
+    829.189,
+    852.396,
+    819.584,
+    821.418,
+    872.144
+   ],
+   "peak_memory_mib": 2543.2,
+   "peak_rss_mib": 2595.3
+  },
+  {
+   "case": "n = 1,000,000, p = 3",
+   "implementation": "R",
+   "value": 1422.0,
+   "reps": [
+    1400.0,
+    1422.0,
+    1411.0,
+    1454.0,
+    1443.0
+   ],
+   "peak_memory_mib": 593.9,
+   "peak_rss_mib": 608.3
   },
   {
    "case": "n = 100,000, p = 11",
@@ -140,7 +189,8 @@
     241.08,
     241.927
    ],
-   "load_ms": 740.744
+   "peak_memory_mib": 95.5,
+   "peak_rss_mib": 111.6
   },
   {
    "case": "n = 100,000, p = 11",
@@ -153,7 +203,8 @@
     136.755,
     136.748
    ],
-   "load_ms": 154.258
+   "peak_memory_mib": 619.4,
+   "peak_rss_mib": 671.5
   },
   {
    "case": "n = 100,000, p = 11",
@@ -166,7 +217,14 @@
     193.0,
     164.0
    ],
-   "load_ms": 1017.0
+   "peak_memory_mib": 213.4,
+   "peak_rss_mib": 227.3
   }
- ]
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  "PHP=$(command -v php) .context/bench-venv/bin/python tests/benchmarks/run.py --model probit"
+ ],
+ "source": "docs/benchmarks/probit-results.json",
+ "group": "Models"
 }

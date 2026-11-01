@@ -1,41 +1,55 @@
 {
  "title": "Binomial random intercept: fit time",
- "description": "Median wall time to fit binomial random intercept models on the same simulated data in R, Python and phit. Data loading is timed separately and excluded.",
- "measure": "median fit wall time",
+ "label": "Binomial mixed",
+ "description": "Fit a logit model with one random intercept by the Laplace approximation and return every result: phit fit_mixed_logistic_matrix(), R lme4 glmer(), and an independent SciPy optimizer of the same likelihood.",
+ "workload": "1,000, 10,000, and 100,000 rows; 50 groups; 3 fixed coefficients",
+ "dataset": {
+  "seed": 20261011,
+  "sha256": {
+   "n=1000": "bad9d5f36b4d8fcb108f4daf3d0eafa78373d65ab71e431f60070bc5e682342b",
+   "n=10000": "f115227945305945c865c0038001ecfb8a394440bbecbf8e788a61e04c9b4e07",
+   "n=100000": "d921f70ab4f6096fcfd9435dba487bf2eba53ddc8169eb786631fa6edd849a9c"
+  }
+ },
+ "implementations": {
+  "phit": "phit fit_mixed_logistic_matrix(), PHP 8.5.12",
+  "R": "lme4 glmer(), bobyqa",
+  "SciPy": "SciPy L-BFGS-B on the same Laplace likelihood"
+ },
+ "measure": "Elapsed time",
  "unit": "ms",
+ "statistic": "median",
+ "method": "In-process wall-clock time of one complete fit with inference and observation-length outputs, after one warm-up; three timed fits per worker. Startup, CSV reading, and JSON output are excluded.",
+ "time_spent_in": "the measured process",
+ "memory_measure": "peak anonymous memory",
+ "memory_method": "Peak of the process's anonymous resident memory (RssAnon in /proc), sampled every millisecond by bench/peakmem.c; the peak resident set size, file pages included, from getrusage.",
+ "check": {
+  "max_abs_difference_vs_R_SciPy": 6.646382823527475e-05,
+  "max_abs_difference_vs_R_phit": 3.65814065028669e-05,
+  "tolerance": "estimates 2e-05 + 0.0002\u00b7|R|; inference 2e-05 + 0.002\u00b7|R|; likelihood 1e-06 + 1e-08\u00b7|R|; group modes 5e-05 absolute (SciPy as a peer 0.0002)"
+ },
  "environment": {
   "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
-  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "cores": 2,
+  "memory_gb": 7.8,
+  "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
   "php": "8.5.12",
-  "date": "2026-11-01T19:53:05.031289+00:00",
-  "repeats": 3
+  "versions": {
+   "R": "4.6.2",
+   "lme4": "2.1.0",
+   "SciPy": "1.18.1",
+   "Rust": "1.99.1"
+  },
+  "threads": 1,
+  "cache": "warm",
+  "repeats": 3,
+  "warmups": 1,
+  "date": "2026-11-01",
+  "commit": null
  },
- "source": "docs/benchmarks/logistic-mixed-results.json",
  "rows": [
   {
-   "case": "n = 1,000, p = 3",
-   "implementation": "R",
-   "value": 185.0,
-   "reps": [
-    185.0,
-    184.0,
-    186.0
-   ],
-   "load_ms": 1.0
-  },
-  {
-   "case": "n = 1,000, p = 3",
-   "implementation": "SciPy",
-   "value": 752.195,
-   "reps": [
-    752.181,
-    752.195,
-    752.6
-   ],
-   "load_ms": 0.553
-  },
-  {
-   "case": "n = 1,000, p = 3",
+   "case": "n = 1,000, 50 groups",
    "implementation": "phit",
    "value": 11.277,
    "reps": [
@@ -43,32 +57,35 @@
     11.252,
     11.543
    ],
-   "load_ms": 2.048
+   "peak_memory_mib": 4.9,
+   "peak_rss_mib": 21.2
   },
   {
-   "case": "n = 10,000, p = 3",
-   "implementation": "R",
-   "value": 1811.0,
-   "reps": [
-    1811.0,
-    1827.0,
-    1810.0
-   ],
-   "load_ms": 8.0
-  },
-  {
-   "case": "n = 10,000, p = 3",
+   "case": "n = 1,000, 50 groups",
    "implementation": "SciPy",
-   "value": 1169.149,
+   "value": 752.195,
    "reps": [
-    1169.149,
-    1167.967,
-    1171.964
+    752.181,
+    752.195,
+    752.6
    ],
-   "load_ms": 3.695
+   "peak_memory_mib": 122.6,
+   "peak_rss_mib": 174.8
   },
   {
-   "case": "n = 10,000, p = 3",
+   "case": "n = 1,000, 50 groups",
+   "implementation": "R",
+   "value": 185.0,
+   "reps": [
+    185.0,
+    184.0,
+    186.0
+   ],
+   "peak_memory_mib": 214.1,
+   "peak_rss_mib": 233.4
+  },
+  {
+   "case": "n = 10,000, 50 groups",
    "implementation": "phit",
    "value": 117.468,
    "reps": [
@@ -76,32 +93,35 @@
     117.418,
     117.468
    ],
-   "load_ms": 19.976
+   "peak_memory_mib": 11.7,
+   "peak_rss_mib": 28.0
   },
   {
-   "case": "n = 100,000, p = 3",
-   "implementation": "R",
-   "value": 17122.0,
-   "reps": [
-    17148.0,
-    17122.0,
-    16966.0
-   ],
-   "load_ms": 88.0
-  },
-  {
-   "case": "n = 100,000, p = 3",
+   "case": "n = 10,000, 50 groups",
    "implementation": "SciPy",
-   "value": 4740.906,
+   "value": 1169.149,
    "reps": [
-    4740.906,
-    4734.489,
-    4800.783
+    1169.149,
+    1167.967,
+    1171.964
    ],
-   "load_ms": 35.875
+   "peak_memory_mib": 130.9,
+   "peak_rss_mib": 183.0
   },
   {
-   "case": "n = 100,000, p = 3",
+   "case": "n = 10,000, 50 groups",
+   "implementation": "R",
+   "value": 1811.0,
+   "reps": [
+    1811.0,
+    1827.0,
+    1810.0
+   ],
+   "peak_memory_mib": 250.0,
+   "peak_rss_mib": 269.2
+  },
+  {
+   "case": "n = 100,000, 50 groups",
    "implementation": "phit",
    "value": 1202.226,
    "reps": [
@@ -109,7 +129,38 @@
     1199.112,
     1202.226
    ],
-   "load_ms": 200.736
+   "peak_memory_mib": 68.4,
+   "peak_rss_mib": 84.7
+  },
+  {
+   "case": "n = 100,000, 50 groups",
+   "implementation": "SciPy",
+   "value": 4740.906,
+   "reps": [
+    4740.906,
+    4734.489,
+    4800.783
+   ],
+   "peak_memory_mib": 214.5,
+   "peak_rss_mib": 267.6
+  },
+  {
+   "case": "n = 100,000, 50 groups",
+   "implementation": "R",
+   "value": 17122.0,
+   "reps": [
+    17148.0,
+    17122.0,
+    16966.0
+   ],
+   "peak_memory_mib": 353.3,
+   "peak_rss_mib": 371.8
   }
- ]
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  "PHP=$(command -v php) .context/bench-venv/bin/python tests/benchmarks/run-logistic-mixed.py"
+ ],
+ "source": "docs/benchmarks/logistic-mixed-results.json",
+ "group": "Models"
 }

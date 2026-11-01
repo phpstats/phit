@@ -1,0 +1,95 @@
+{
+ "title": "CSV reading: phit and phibble",
+ "label": "CSV reading",
+ "description": "Read one CSV file into PHP values with guessed types: Phit\\read_csv(), phibble's DataFrame::fromCsv() using phit, and phibble with its own PHP reader.",
+ "workload": "1,000,000 rows, 46 MB: id int, key int, g string, x float with ~2% NA, t datetime",
+ "dataset": {
+  "rows": 1000000,
+  "bytes": 45819208,
+  "sha256": "136e805ed48a594f67828cc7cd72367a3795dbd7276c0a4f11e53d93a18e83f7",
+  "columns": "id int, key int, g string, x float with ~2% NA, t datetime"
+ },
+ "implementations": {
+  "Phit\\read_csv()": "phit 0.4.3 extension",
+  "phibble fromCsv(), extension": "phibble v0.6.1-8-g55a829e with phit 0.4.3",
+  "phibble fromCsv(), PHP reader": "phibble v0.6.1-8-g55a829e without the extension"
+ },
+ "measure": "Elapsed time",
+ "unit": "ms",
+ "statistic": "median",
+ "method": "One read of the whole file into PHP values, types guessed; process startup excluded. Memory covers the whole process. Each reader runs in its own process.",
+ "time_spent_in": "the measured process",
+ "memory_measure": "peak anonymous memory",
+ "memory_method": "Peak of the process's anonymous resident memory (RssAnon in /proc), sampled every millisecond by bench/peakmem.c; the peak resident set size, file pages included, from getrusage.",
+ "check": {
+  "rows_read": 1000000,
+  "reader_used": "each run reports whether Phit\\read_csv() was available, and the runner asserts it"
+ },
+ "environment": {
+  "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
+  "cores": 2,
+  "memory_gb": 7.8,
+  "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "php": "8.5.12",
+  "versions": {
+   "phibble": "v0.6.1-8-g55a829e",
+   "phit": "0.4.3"
+  },
+  "threads": 1,
+  "cache": "warm",
+  "repeats": 5,
+  "warmups": 1,
+  "date": "2026-11-01",
+  "commit": null
+ },
+ "rows": [
+  {
+   "case": "1,000,000 rows, types guessed",
+   "implementation": "Phit\\read_csv()",
+   "value": 309.7,
+   "reps": [
+    307.4,
+    306.2,
+    309.7,
+    315.6,
+    309.9
+   ],
+   "peak_memory_mib": 116.8,
+   "peak_rss_mib": 133.3
+  },
+  {
+   "case": "1,000,000 rows, types guessed",
+   "implementation": "phibble fromCsv(), extension",
+   "value": 314.5,
+   "reps": [
+    315.2,
+    316.8,
+    314.2,
+    314.1,
+    314.5
+   ],
+   "peak_memory_mib": 121.6,
+   "peak_rss_mib": 138.4
+  },
+  {
+   "case": "1,000,000 rows, types guessed",
+   "implementation": "phibble fromCsv(), PHP reader",
+   "value": 1604.9,
+   "reps": [
+    1597.9,
+    1604.9,
+    1608.2,
+    1605.7,
+    1603.8
+   ],
+   "peak_memory_mib": 136.7,
+   "peak_rss_mib": 152.1
+  }
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  "PHP=$(command -v php) python3 tests/benchmarks/run-csv.py --phibble /path/to/phibble"
+ ],
+ "source": "docs/benchmarks/csv-results.json",
+ "group": "Input"
+}

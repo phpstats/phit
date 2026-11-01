@@ -10395,12 +10395,12 @@
     },
     {
       "path": "tests/fixtures/distributions-scipy.json",
-      "sha256": "be3d74ca0adead259585d4519a0f5ec4b3281972015e9894d5488eaf984f1722",
+      "sha256": "29cc1596bb6f9f61ece4dd86fe789b46989fa7ac435b026fea2a565f051c6d63",
       "generator": "docs/verifications/compare_distributions.py",
       "generator_sha256": "e428325979c22fd16586837ae07c7ac583582c4cffce1907fbe29f3882d1469c",
       "software_recorded_in_fixture": {
         "reference": "SciPy 1.18.1, NumPy 2.5.4",
-        "recorded_at": "2026-11-01T19:23:00.594834+00:00",
+        "recorded_at": "2026-11-01T21:19:17.144565+00:00",
         "generator": "docs/verifications/compare_distributions.py",
         "conventions": "scipy.stats frozen distributions; quantile is ppf; nonfinite numbers are strings"
       },
@@ -15947,12 +15947,12 @@
     },
     {
       "path": "tests/fixtures/distributions-mpmath.json",
-      "sha256": "85dd7b67cbe51ab6d5af9e5a08301f03c3c8ff3c61bf922e4c929deded137075",
+      "sha256": "7aec1ef0cb4f72f29dbc4ac5acf0cdc1a49720bc1438ce9431656244310ac9b7",
       "generator": "docs/verifications/compare_distributions.py",
       "generator_sha256": "e428325979c22fd16586837ae07c7ac583582c4cffce1907fbe29f3882d1469c",
       "software_recorded_in_fixture": {
         "reference": "mpmath 1.4.1 at 60 digits",
-        "recorded_at": "2026-11-01T19:23:00.594834+00:00",
+        "recorded_at": "2026-11-01T21:19:17.144565+00:00",
         "generator": "docs/verifications/compare_distributions.py",
         "conventions": "correctly rounded double of the exact value; null where no reference was computed"
       },

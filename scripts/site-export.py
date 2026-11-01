@@ -6,7 +6,6 @@ only reshapes results already recorded under docs/; it runs no fits or benchmark
 Run from the repository root: python3 scripts/site-export.py [--check]
 """
 import json
-import statistics
 import sys
 from pathlib import Path
 
@@ -14,171 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / 'site'
 DOCS = ROOT / 'docs'
 
-MODELS = {
-    'ols': 'OLS',
-    'logistic': 'Logistic regression',
-    'probit': 'Probit regression',
-    'poisson': 'Poisson regression',
-    'lmm': 'Gaussian random intercept',
-    'logistic-mixed': 'Binomial random intercept',
-}
-# Benchmark implementation labels as the site shows them.
-IMPLEMENTATIONS = {'PHP': 'phit', 'R': 'R', 'statsmodels': 'statsmodels', 'SciPy reference': 'SciPy',
-                   'PHP_scalar': 'phit (scalar)', 'PHP_batch': 'phit (batch)', 'Rust': 'Rust core', 'SciPy': 'SciPy'}
-
-
-R_TIMER_RESOLUTION = 0.001
-
-
-def versions_text(versions):
-    return ', '.join(v if str(v).startswith(k) else f'{k} {v}' for k, v in versions.items())
-
-
-def load(path):
-    return json.loads((ROOT / path).read_text())
-
-
-def environment(data):
-    return {
-        'cpu': data.get('cpu'),
-        'platform': data.get('platform'),
-        'php': next((v.get('version') for c in data.get('cases', [])[:1]
-                     for k, v in c.get('implementations', {}).items() if k.startswith('PHP')), None),
-        'date': data.get('recorded_at'),
-        'repeats': data.get('repeats'),
-    }
-
-
-def model_benchmark(slug, title):
-    data = load(f'docs/benchmarks/{slug}-results.json')
-    rows = []
-    for case in data['cases']:
-        p = case.get('p')
-        label = f"n = {case['n']:,}" + (f", p = {p}" if p else '')
-        if case.get('groups'):
-            label += f", {case['groups']:,} groups"
-        for name, result in case['implementations'].items():
-            reps = result.get('fit_seconds') or []
-            if not reps:
-                continue
-            row = {
-                'case': label,
-                'implementation': IMPLEMENTATIONS.get(name, name),
-                'value': round(statistics.median(reps) * 1000, 3),
-                'reps': [round(r * 1000, 3) for r in reps],
-                'load_ms': round(result['load_seconds'] * 1000, 3) if result.get('load_seconds') is not None else None,
-            }
-            # R's proc.time() reports whole milliseconds; a fit at or below one tick is not measurable.
-            if name == 'R' and statistics.median(reps) <= R_TIMER_RESOLUTION:
-                row['value'] = None
-                row['note'] = 'below the 1 ms resolution of R\'s timer'
-            rows.append(row)
-    return {
-        'title': f'{title}: fit time',
-        'description': f'Median wall time to fit {title.lower()} models on the same simulated data in R, Python and phit. '
-                       'Data loading is timed separately and excluded.',
-        'measure': 'median fit wall time',
-        'unit': 'ms',
-        'environment': environment(data),
-        'source': f'docs/benchmarks/{slug}-results.json',
-        'rows': rows,
-    }
-
-
-def timed_benchmark(slug, title, description, case_label):
-    data = load(f'docs/benchmarks/{slug}-results.json')
-    if slug == 'rng':
-        # The sampling benchmark times phit alone and keeps each case's timing under 'timing'.
-        data = {**data, 'cases': [{**c, 'implementations': {'PHP': c['timing']}} for c in data['cases']]}
-    rows = []
-    for case in data['cases']:
-        for name, result in case['implementations'].items():
-            timings = result.get('seconds') or []
-            # Draw benchmarks time several operations per case: one row each.
-            for operation, reps in (timings.items() if isinstance(timings, dict) else [(None, timings)]):
-                if not reps:
-                    continue
-                rows.append({
-                    'case': case_label(case) + (f', {operation.replace("_", " ")}' if operation else ''),
-                    'implementation': IMPLEMENTATIONS.get(name, name),
-                    'value': round(statistics.median(reps) * 1000, 4),
-                    'reps': [round(r * 1000, 4) for r in reps],
-                })
-    return {'title': title, 'description': description, 'measure': 'median wall time', 'unit': 'ms',
-            'environment': environment(data), 'source': f'docs/benchmarks/{slug}-results.json', 'rows': rows}
-
-
-def fixed_verification(slug, title, peers):
-    cases = []
-    for record in load(f'docs/verifications/{slug}-results.json'):
-        for quantity, errors in record['max_absolute_errors_vs_R'].items():
-            if 'phit' not in errors:
-                continue
-            cases.append({
-                'name': record['name'],
-                'quantity': quantity,
-                'max_abs_error': errors['phit'],
-                'peers': {k: v for k, v in errors.items() if k != 'phit'},
-                'passed': True,
-            })
-    versions = load(f'docs/verifications/{slug}-results.json')[0]['versions']
-    return {
-        'title': f'{title}: agreement with R',
-        'description': f'The same inputs fitted by phit, R, and {peers}: the largest absolute difference from R for '
-                       'every reported quantity. Each case must agree with R within the tolerance.',
-        'reference': versions_text(versions),
-        'tolerance': '1e-9 + 1e-7*|reference| (fixed models), 1e-7 + 1e-6*|reference| (mixed models)',
-        'source': f'docs/verifications/{slug}-results.json',
-        'cases': cases,
-    }
-
-
-def logistic_mixed_verification():
-    data = load('docs/verifications/logistic-mixed-results.json')
-    tol = data['tolerances']['estimates']
-    cases = [{'name': r['name'], 'quantity': 'coefficients', 'max_abs_error': r['max_coefficient_difference'],
-              'passed': r['max_coefficient_difference'] <= tol['absolute'] + tol['relative'] * 10}
-             for r in data['results']]
-    return {'title': 'Binomial random intercept: agreement with lme4',
-            'description': 'Largest coefficient difference from lme4::glmer for Laplace and adaptive quadrature fits.',
-            'reference': versions_text(data['versions']),
-            'tolerance': f"{tol['absolute']} + {tol['relative']}*|reference|",
-            'source': 'docs/verifications/logistic-mixed-results.json', 'cases': cases}
-
-
-def distributions_verification():
-    data = load('docs/verifications/distributions-results.json')
-    cases = []
-    for c in data['cases']:
-        errors = c['max_error']
-        params = ', '.join(f'{k}={v}' for k, v in c['params'].items())
-        cases.append({'name': f"{c['distribution']}({params})", 'quantity': c['operation'], 'n_compared': c['n'],
-                      'max_rel_error': errors.get('php'), 'peers': {k: v for k, v in errors.items() if k != 'php'},
-                      'passed': errors.get('php') is not None and errors['php'] <= 1e-12})
-    return {'title': 'Distributions: accuracy against 60-digit references',
-            'description': data['error_definition'].capitalize() + '. R and SciPy errors are shown for comparison.',
-            'reference': f"mpmath ({data.get('mpmath_digits', 60)} digits); R {data.get('r')}; SciPy {data.get('scipy')}",
-            'tolerance': '1e-12 relative',
-            'source': 'docs/verifications/distributions-results.json', 'cases': cases}
-
-
-def r_compatibility_verification():
-    data = load('docs/verifications/r-compatibility-results.json')
-    cases = [{'name': f['name'], 'quantity': f'{f["model"]}: all quantities', 'max_abs_error': f['max_absolute_error'],
-              'passed': True} for f in data['fixed']]
-    for m in data['mixed']:
-        for comparison in m.get('comparisons', []):
-            pair = f"phit {comparison['native_optimizer']} vs lme4 {comparison['R_optimizer']}"
-            for key, value in comparison.items():
-                if key.endswith('_difference'):
-                    cases.append({'name': f"{m['name']} ({m['method']})",
-                                  'quantity': f"{pair}: {key.removesuffix('_difference').replace('_', ' ')}",
-                                  'max_abs_error': abs(value), 'passed': True})
-    return {'title': 'Weights, offsets and mixed models: agreement with R and lme4',
-            'description': 'Weighted and offset GLMs against base R, and mixed models against all four lme4 optimizers.',
-            'reference': versions_text(data['versions']),
-            'tolerance': '; '.join(f"{k}: {v['absolute']} + {v['relative']}*|reference|" for k, v in data['tolerances'].items()),
-            'source': 'docs/verifications/r-compatibility-results.json', 'cases': cases}
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import evidence  # noqa: E402
 
 
 def version():
@@ -259,11 +95,16 @@ def manifest(benchmarks, verifications):
                 {'title': 'Fit a mixed model to a Polars table and chart it', 'path': 'examples/polars-mixed-model.qmd'},
                 {'title': 'API overview', 'path': 'contracts.qmd'},
                 {'title': 'R compatibility', 'path': 'r-compatibility.qmd'},
-                {'title': 'Verification', 'path': 'verification.qmd'},
                 {'title': 'Development', 'path': 'development.qmd'},
             ],
         },
         'benchmarks': benchmarks,
+        'evidence_gaps': {
+            'benchmarks': 'No benchmark times formula parsing, predict(), descriptive statistics, kernel densities, '
+                          'or chunked CsvReader reading.',
+            'verification': 'The reference comparisons ran on macOS; Linux and PHP-FPM runs of them are not '
+                            'recorded, though the release workflow installs and checks every Linux binary.',
+        },
         'verifications': verifications,
         'examples': [
             {'path': 'examples/linear-model', 'title': 'Fit a linear model and predict',
@@ -284,38 +125,30 @@ def manifest(benchmarks, verifications):
 def build():
     files = {}
     benchmarks, verifications = [], []
-    for slug, title in MODELS.items():
-        files[f'benchmarks/{slug}.json'] = model_benchmark(slug, title)
-        benchmarks.append(f'site/benchmarks/{slug}.json')
-    files['benchmarks/distributions.json'] = timed_benchmark(
-        'distributions', 'Distributions: evaluation time',
-        'Median wall time to evaluate a distribution function over a batch of inputs in phit (scalar calls and one '
-        'batch call), the Rust core, R and SciPy.',
-        lambda c: f"{c['operation']}, n = {c['n']:,}")
-    files['benchmarks/draws.json'] = timed_benchmark(
-        'draws', 'Posterior draws: moments and transforms',
-        'Median wall time for weighted draw moments (population and unbiased), covariance maps and affine transforms in phit and R.',
-        lambda c: f"n = {c['n']:,} draws, p = {c['p']}")
-    files['benchmarks/rng.json'] = timed_benchmark(
-        'rng', 'Seeded sampling: draw time',
-        'Median wall time for one seeded call that returns n normal, beta, or Poisson draws in phit.',
-        lambda c: f"{c['family']}, n = {c['n']:,}")
-    benchmarks += ['site/benchmarks/distributions.json', 'site/benchmarks/draws.json', 'site/benchmarks/rng.json']
+    for slug in evidence.MODEL_BENCH:
+        files[f'benchmarks/{slug}.json'] = evidence.model_benchmark(slug)
+    files['benchmarks/logistic-mixed.json'] = evidence.logistic_mixed_benchmark()
+    files['benchmarks/distributions.json'] = evidence.distributions_benchmark()
+    files['benchmarks/draws.json'] = evidence.draws_benchmark()
+    files['benchmarks/rng.json'] = evidence.rng_benchmark()
+    files['benchmarks/csv.json'] = evidence.csv_benchmark()
+    benchmarks += [f'site/benchmarks/{slug}.json' for slug in
+                   [*evidence.MODEL_BENCH, 'logistic-mixed', 'distributions', 'draws', 'rng', 'csv']]
     # Written by bench/run.py, not by this script.
     benchmarks += [f'site/benchmarks/{w}-workload.json'
                    for w in ['ols', 'mixed', 'logistic', 'probit', 'mixed-logistic', 'distributions']
                    if (SITE / 'benchmarks' / f'{w}-workload.json').is_file()]
-    for slug, title, peers in [('ols', 'OLS', 'statsmodels'), ('logistic', 'Logistic regression', 'statsmodels'),
-                               ('probit', 'Probit regression', 'statsmodels'), ('poisson', 'Poisson regression', 'statsmodels'),
-                               ('lmm', 'Gaussian random intercept', 'statsmodels'),
-                               ('lmm-public', 'Mixed models on published data sets', 'nlme and statsmodels')]:
-        files[f'verifications/{slug}.json'] = fixed_verification(slug, title, peers)
-        verifications.append(f'site/verifications/{slug}.json')
-    files['verifications/logistic-mixed.json'] = logistic_mixed_verification()
-    files['verifications/r-compatibility.json'] = r_compatibility_verification()
-    files['verifications/distributions.json'] = distributions_verification()
-    verifications += ['site/verifications/logistic-mixed.json', 'site/verifications/r-compatibility.json',
-                      'site/verifications/distributions.json']
+    for slug in evidence.FIXED:
+        files[f'verifications/{slug}.json'] = evidence.fixed_verification(slug)
+    for slug in ['lmm', 'lmm-public']:
+        files[f'verifications/{slug}.json'] = evidence.mixed_verification(slug)
+    files['verifications/logistic-mixed.json'] = evidence.logistic_mixed_verification()
+    files['verifications/r-compatibility.json'] = evidence.r_compatibility_verification()
+    files['verifications/distributions.json'] = evidence.distributions_verification()
+    files['verifications/test-suites.json'] = evidence.test_suites_verification()
+    verifications += [f'site/verifications/{slug}.json' for slug in
+                      [*evidence.FIXED, 'lmm', 'lmm-public', 'logistic-mixed', 'r-compatibility', 'distributions',
+                       'test-suites']]
     files['site.json'] = manifest(benchmarks, verifications)
     return {path: json.dumps(content, indent=1, allow_nan=False) + '\n' for path, content in files.items()}
 

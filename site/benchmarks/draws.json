@@ -1,16 +1,40 @@
 {
  "title": "Posterior draws: moments and transforms",
- "description": "Median wall time for weighted draw moments (population and unbiased), covariance maps and affine transforms in phit and R.",
- "measure": "median wall time",
+ "label": "Posterior draws",
+ "description": "Weighted draw moments (population and unbiased), covariance maps, and affine transforms in phit and R, after every output value is compared.",
+ "workload": "1,000 \u00d7 4, 4,000 \u00d7 16, 10,000 \u00d7 32, and 100,000 \u00d7 8 draws \u00d7 parameters",
+ "implementations": {
+  "phit": "phit draws_* functions, PHP 8.5.12",
+  "R": "colSums, crossprod, chol, backsolve, and determinant on numeric matrices"
+ },
+ "measure": "Elapsed time",
  "unit": "ms",
+ "statistic": "median",
+ "method": "Preloaded inputs; complete result computation/materialization; PHP array conversion and native validation included. Startup, JSON I/O and reference comparisons excluded. Per-call seconds from batches.",
+ "time_spent_in": "the measured process",
+ "check": {
+  "tolerance": "1e-11 + 1e-11*abs(reference)",
+  "max_abs_difference": 5.3290705182007514e-14
+ },
  "environment": {
   "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
-  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "cores": 2,
+  "memory_gb": 7.8,
+  "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
   "php": "8.5.12",
-  "date": "2026-11-01T19:50:01.797600+00:00",
-  "repeats": 5
+  "versions": {
+   "R": "4.6.2",
+   "jsonlite": "2.0.0",
+   "R BLAS": "/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.0",
+   "Rust": "1.99.1"
+  },
+  "threads": 1,
+  "cache": "warm",
+  "repeats": 5,
+  "warmups": 1,
+  "date": "2026-11-01",
+  "commit": null
  },
- "source": "docs/benchmarks/draws-results.json",
  "rows": [
   {
    "case": "n = 1,000 draws, p = 4, population",
@@ -396,5 +420,11 @@
     36.5806
    ]
   }
- ]
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  "PHP=$(command -v php) .context/bench-venv/bin/python tests/benchmarks/run-draws.py"
+ ],
+ "source": "docs/benchmarks/draws-results.json",
+ "group": "Numerics"
 }

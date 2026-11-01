@@ -1,954 +1,1306 @@
 {
  "title": "OLS: agreement with R",
- "description": "The same inputs fitted by phit, R, and statsmodels: the largest absolute difference from R for every reported quantity. Each case must agree with R within the tolerance.",
- "reference": "R version 4.6.1 (2026-06-24), statsmodels 0.15.0, numpy 2.5.4, Python 3.14.7, PHP 8.5.10",
- "tolerance": "1e-9 + 1e-7*|reference| (fixed models), 1e-7 + 1e-6*|reference| (mixed models)",
- "source": "docs/verifications/ols-results.json",
+ "label": "OLS",
+ "kind": "reference",
+ "checked": "The matrix fit's coefficients, covariance, standard errors, test statistics, p-values, intervals, fitted values, residuals, and fit statistics on the same explicit design as R and statsmodels, with missing rows dropped the same way.",
+ "reference": "R lm(), summary(), confint(), logLik()",
+ "versions": {
+  "R": "4.6.1",
+  "statsmodels": "0.15.0",
+  "numpy": "2.5.4",
+  "Python": "3.14.7",
+  "PHP": "8.5.10"
+ },
+ "inputs": "Seven designs: the simulated housing sample with one and two predictors (docs/data/housing.csv), saved R fixtures for simple, multiple, no-intercept, and correlated designs (tests/fixtures/ols-r.json), and a listwise-deletion case (6 rows, 4 retained).",
+ "comparison": [
+  {
+   "id": "model",
+   "applies_to": "every compared value",
+   "kind": "tolerance",
+   "atol": 1e-09,
+   "rtol": 1e-07
+  },
+  {
+   "id": "rows",
+   "applies_to": "retained and dropped row positions, counts, and warnings",
+   "kind": "exact"
+  }
+ ],
  "cases": [
   {
    "name": "simulated_housing",
    "quantity": "coefficients",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 3.979039320256561e-13,
    "peers": {
     "statsmodels": 1.7053025658242404e-13
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
    "quantity": "covariance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 7.275957614183426e-12,
    "peers": {
     "statsmodels": 1.4551915228366852e-11
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
-   "quantity": "std_errors",
+   "quantity": "std errors",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 1.3322676295501878e-15,
    "peers": {
     "statsmodels": 2.842170943040401e-14
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
-   "quantity": "t_statistics",
+   "quantity": "t statistics",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 5.329070518200751e-15,
    "peers": {
     "statsmodels": 1.7763568394002505e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
-   "quantity": "p_values",
+   "quantity": "p values",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 1.1102230246251565e-16,
    "peers": {
     "statsmodels": 2.7755575615628914e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
-   "quantity": "conf_int",
+   "quantity": "conf int",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 7.958078640513122e-13,
    "peers": {
     "statsmodels": 2.4442670110147446e-12
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
    "quantity": "fitted",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 8,
    "max_abs_error": 9.094947017729282e-13,
    "peers": {
     "statsmodels": 6.821210263296962e-13
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
    "quantity": "residuals",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 8,
    "max_abs_error": 8.526512829121202e-13,
    "peers": {
     "statsmodels": 5.684341886080801e-13
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
    "quantity": "rss",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 2.9103830456733704e-11,
+   "actual": 204471.4030566612,
+   "expected": 204471.40305666122,
    "peers": {
     "statsmodels": 8.731149137020111e-11
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
-   "quantity": "residual_variance",
+   "quantity": "residual variance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 7.275957614183426e-12,
+   "actual": 34078.5671761102,
+   "expected": 34078.567176110206,
    "peers": {
     "statsmodels": 1.4551915228366852e-11
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
    "quantity": "sigma",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 2.842170943040401e-14,
+   "actual": 184.6038113802372,
+   "expected": 184.60381138023723,
    "peers": {
     "statsmodels": 2.842170943040401e-14
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
-   "quantity": "r_squared",
-   "max_abs_error": 0.0,
+   "quantity": "r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0.8763743506241495,
+   "expected": 0.8763743506241495,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
-   "quantity": "adj_r_squared",
-   "max_abs_error": 0.0,
+   "quantity": "adj r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0.8557700757281744,
+   "expected": 0.8557700757281744,
    "peers": {
     "statsmodels": 1.1102230246251565e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
-   "quantity": "df_residual",
-   "max_abs_error": 0.0,
+   "quantity": "df residual",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 6,
+   "expected": 6,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing",
-   "quantity": "log_likelihood",
+   "quantity": "log likelihood",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 7.105427357601002e-15,
+   "actual": -51.94647572424989,
+   "expected": -51.9464757242499,
    "peers": {
     "statsmodels": 7.105427357601002e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
    "quantity": "coefficients",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 1.2505552149377763e-12,
    "peers": {
     "statsmodels": 4.547473508864641e-13
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
    "quantity": "covariance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 9,
    "max_abs_error": 1.1641532182693481e-10,
    "peers": {
     "statsmodels": 1.4551915228366852e-11
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
-   "quantity": "std_errors",
+   "quantity": "std errors",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 1.7053025658242404e-13,
    "peers": {
     "statsmodels": 5.684341886080802e-14
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
-   "quantity": "t_statistics",
+   "quantity": "t statistics",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 4.6629367034256575e-15,
    "peers": {
     "statsmodels": 1.9984014443252818e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
-   "quantity": "p_values",
+   "quantity": "p values",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 1.4988010832439613e-15,
    "peers": {
     "statsmodels": 4.996003610813204e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
-   "quantity": "conf_int",
+   "quantity": "conf int",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 6,
    "max_abs_error": 2.0463630789890885e-12,
    "peers": {
     "statsmodels": 6.821210263296962e-13
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
    "quantity": "fitted",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 8,
    "max_abs_error": 4.547473508864641e-13,
    "peers": {
     "statsmodels": 2.2737367544323206e-12
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
    "quantity": "residuals",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 8,
    "max_abs_error": 4.547473508864641e-13,
    "peers": {
     "statsmodels": 2.3705482021796342e-12
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
    "quantity": "rss",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 8.731149137020111e-11,
+   "actual": 181323.1268714824,
+   "expected": 181323.1268714825,
    "peers": {
     "statsmodels": 2.9103830456733704e-11
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
-   "quantity": "residual_variance",
+   "quantity": "residual variance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.4551915228366852e-11,
+   "actual": 36264.625374296484,
+   "expected": 36264.6253742965,
    "peers": {
     "statsmodels": 7.275957614183426e-12
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
    "quantity": "sigma",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 2.842170943040401e-14,
+   "actual": 190.43273188792017,
+   "expected": 190.4327318879202,
    "peers": {
     "statsmodels": 2.842170943040401e-14
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
-   "quantity": "r_squared",
-   "max_abs_error": 0.0,
+   "quantity": "r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0.8903700518935893,
+   "expected": 0.8903700518935893,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
-   "quantity": "adj_r_squared",
-   "max_abs_error": 0.0,
+   "quantity": "adj r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0.8465180726510251,
+   "expected": 0.8465180726510251,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
-   "quantity": "df_residual",
-   "max_abs_error": 0.0,
+   "quantity": "df residual",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 5,
+   "expected": 5,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "simulated_housing_multiple",
-   "quantity": "log_likelihood",
+   "quantity": "log likelihood",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 7.105427357601002e-15,
+   "actual": -51.4658858987207,
+   "expected": -51.46588589872071,
    "peers": {
     "statsmodels": 7.105427357601002e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
    "quantity": "coefficients",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 7.840950111415168e-16,
    "peers": {
     "statsmodels": 4.6629367034256575e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
    "quantity": "covariance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 2.3592239273284576e-16,
    "peers": {
     "statsmodels": 2.914335439641036e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
-   "quantity": "std_errors",
+   "quantity": "std errors",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 5.828670879282072e-16,
    "peers": {
     "statsmodels": 7.216449660063518e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
-   "quantity": "t_statistics",
+   "quantity": "t statistics",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 7.105427357601002e-14,
    "peers": {
     "statsmodels": 1.0658141036401503e-13
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
-   "quantity": "p_values",
+   "quantity": "p values",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 3.774758283725532e-15,
    "peers": {
     "statsmodels": 1.7319479184152442e-14
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
-   "quantity": "conf_int",
+   "quantity": "conf int",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 2.220446049250313e-15,
    "peers": {
     "statsmodels": 6.994405055138486e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
    "quantity": "fitted",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 5,
    "max_abs_error": 1.7763568394002505e-15,
    "peers": {
     "statsmodels": 4.440892098500626e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
    "quantity": "residuals",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 5,
    "max_abs_error": 1.8665624601510444e-15,
    "peers": {
     "statsmodels": 4.107825191113079e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
    "quantity": "rss",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 3.608224830031759e-16,
+   "actual": 0.10699999999999996,
+   "expected": 0.1069999999999996,
    "peers": {
     "statsmodels": 7.494005416219807e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
-   "quantity": "residual_variance",
+   "quantity": "residual variance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.1796119636642288e-16,
+   "actual": 0.03566666666666665,
+   "expected": 0.035666666666666534,
    "peers": {
     "statsmodels": 2.498001805406602e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
    "quantity": "sigma",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 3.3306690738754696e-16,
+   "actual": 0.18885620632287056,
+   "expected": 0.18885620632287023,
    "peers": {
     "statsmodels": 6.661338147750939e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
-   "quantity": "r_squared",
+   "quantity": "r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.1102230246251565e-16,
+   "actual": 0.9973585464599585,
+   "expected": 0.9973585464599586,
    "peers": {
     "statsmodels": 1.1102230246251565e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
-   "quantity": "adj_r_squared",
+   "quantity": "adj r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 2.220446049250313e-16,
+   "actual": 0.9964780619466113,
+   "expected": 0.9964780619466115,
    "peers": {
     "statsmodels": 2.220446049250313e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
-   "quantity": "df_residual",
-   "max_abs_error": 0.0,
+   "quantity": "df residual",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 3,
+   "expected": 3,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "simple",
-   "quantity": "log_likelihood",
+   "quantity": "log likelihood",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 8.43769498715119e-15,
+   "actual": 2.5162182263624655,
+   "expected": 2.516218226362474,
    "peers": {
     "statsmodels": 1.5987211554602254e-14
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
    "quantity": "coefficients",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 4.440892098500626e-15,
    "peers": {
     "statsmodels": 1.3322676295501878e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
    "quantity": "covariance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 9,
    "max_abs_error": 7.494005416219807e-16,
    "peers": {
     "statsmodels": 3.608224830031759e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
-   "quantity": "std_errors",
+   "quantity": "std errors",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 8.326672684688674e-16,
    "peers": {
     "statsmodels": 4.440892098500626e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
-   "quantity": "t_statistics",
+   "quantity": "t statistics",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 3.552713678800501e-14,
    "peers": {
     "statsmodels": 1.7763568394002505e-14
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
-   "quantity": "p_values",
+   "quantity": "p values",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 7.632783294297951e-17,
    "peers": {
     "statsmodels": 1.3877787807814457e-17
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
-   "quantity": "conf_int",
+   "quantity": "conf int",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 6,
    "max_abs_error": 6.661338147750939e-15,
    "peers": {
     "statsmodels": 2.220446049250313e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
    "quantity": "fitted",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 10,
    "max_abs_error": 3.552713678800501e-15,
    "peers": {
     "statsmodels": 3.552713678800501e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
    "quantity": "residuals",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 10,
    "max_abs_error": 3.1086244689504383e-15,
    "peers": {
     "statsmodels": 2.1094237467877974e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
    "quantity": "rss",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 5.773159728050814e-15,
+   "actual": 2.0540540540540597,
+   "expected": 2.054054054054054,
    "peers": {
     "statsmodels": 3.1086244689504383e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
-   "quantity": "residual_variance",
+   "quantity": "residual variance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 8.326672684688674e-16,
+   "actual": 0.29343629343629424,
+   "expected": 0.2934362934362934,
    "peers": {
     "statsmodels": 4.440892098500626e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
    "quantity": "sigma",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 7.771561172376096e-16,
+   "actual": 0.5416976033141501,
+   "expected": 0.5416976033141493,
    "peers": {
     "statsmodels": 3.3306690738754696e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
-   "quantity": "r_squared",
-   "max_abs_error": 0.0,
+   "quantity": "r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0.9918001834169499,
+   "expected": 0.9918001834169499,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
-   "quantity": "adj_r_squared",
-   "max_abs_error": 0.0,
+   "quantity": "adj r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0.9894573786789356,
+   "expected": 0.9894573786789356,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
-   "quantity": "df_residual",
-   "max_abs_error": 0.0,
+   "quantity": "df residual",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 7,
+   "expected": 7,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "multiple",
-   "quantity": "log_likelihood",
+   "quantity": "log likelihood",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.4210854715202004e-14,
+   "actual": -6.275537005287045,
+   "expected": -6.275537005287031,
    "peers": {
     "statsmodels": 6.217248937900877e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
    "quantity": "coefficients",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 6.106226635438361e-16,
    "peers": {
     "statsmodels": 2.0539125955565396e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
    "quantity": "covariance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 6.938893903907228e-17,
    "peers": {
     "statsmodels": 9.71445146547012e-17
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
-   "quantity": "std_errors",
+   "quantity": "std errors",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 1.1102230246251565e-16,
    "peers": {
     "statsmodels": 2.220446049250313e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
-   "quantity": "t_statistics",
+   "quantity": "t statistics",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 1.4210854715202004e-14,
    "peers": {
     "statsmodels": 4.263256414560601e-14
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
-   "quantity": "p_values",
+   "quantity": "p values",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 6.800116025829084e-16,
    "peers": {
     "statsmodels": 1.2212453270876722e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
-   "quantity": "conf_int",
+   "quantity": "conf int",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 2.220446049250313e-15,
    "peers": {
     "statsmodels": 2.4980018054066022e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
    "quantity": "fitted",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 10,
    "max_abs_error": 3.552713678800501e-15,
    "peers": {
     "statsmodels": 1.0658141036401503e-14
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
    "quantity": "residuals",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 10,
    "max_abs_error": 3.552713678800501e-15,
    "peers": {
     "statsmodels": 1.1102230246251565e-14
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
    "quantity": "rss",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 3.552713678800501e-15,
+   "actual": 4.851562500000007,
+   "expected": 4.8515625000000036,
    "peers": {
     "statsmodels": 7.993605777301127e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
-   "quantity": "residual_variance",
+   "quantity": "residual variance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 4.440892098500626e-16,
+   "actual": 0.6064453125000009,
+   "expected": 0.6064453125000004,
    "peers": {
     "statsmodels": 9.992007221626409e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
    "quantity": "sigma",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 3.3306690738754696e-16,
+   "actual": 0.7787459871485701,
+   "expected": 0.7787459871485698,
    "peers": {
     "statsmodels": 6.661338147750939e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
-   "quantity": "r_squared",
-   "max_abs_error": 0.0,
+   "quantity": "r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0.9969039167198468,
+   "expected": 0.9969039167198468,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
-   "quantity": "adj_r_squared",
-   "max_abs_error": 0.0,
+   "quantity": "adj r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0.9961298958998085,
+   "expected": 0.9961298958998085,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
-   "quantity": "df_residual",
-   "max_abs_error": 0.0,
+   "quantity": "df residual",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 8,
+   "expected": 8,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "no_intercept",
-   "quantity": "log_likelihood",
+   "quantity": "log likelihood",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 3.552713678800501e-15,
+   "actual": -10.572963957145813,
+   "expected": -10.57296395714581,
    "peers": {
     "statsmodels": 8.881784197001252e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
    "quantity": "coefficients",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 7.212008767965017e-13,
    "peers": {
     "statsmodels": 8.941458684574854e-14
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
    "quantity": "covariance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 9,
    "max_abs_error": 2.7000623958883807e-12,
    "peers": {
     "statsmodels": 2.8705926524708048e-12
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
-   "quantity": "std_errors",
+   "quantity": "std errors",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 1.1013412404281553e-13,
    "peers": {
     "statsmodels": 1.1723955140041653e-13
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
-   "quantity": "t_statistics",
+   "quantity": "t statistics",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 9.886536034287019e-14,
    "peers": {
     "statsmodels": 1.7083556791419596e-13
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
-   "quantity": "p_values",
+   "quantity": "p values",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3,
    "max_abs_error": 7.438494264988549e-14,
    "peers": {
     "statsmodels": 1.2789769243681803e-13
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
-   "quantity": "conf_int",
+   "quantity": "conf int",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 6,
    "max_abs_error": 9.663381206337363e-13,
    "peers": {
     "statsmodels": 2.913225216616411e-13
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
    "quantity": "fitted",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 10,
    "max_abs_error": 4.796163466380676e-14,
    "peers": {
     "statsmodels": 2.948752353404416e-13
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
    "quantity": "residuals",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 10,
    "max_abs_error": 4.8128168117500536e-14,
    "peers": {
     "statsmodels": 2.9454216843305403e-13
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
    "quantity": "rss",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 2.5757174171303632e-14,
+   "actual": 4.115877437325968,
+   "expected": 4.115877437325942,
    "peers": {
     "statsmodels": 5.861977570020827e-14
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
-   "quantity": "residual_variance",
+   "quantity": "residual variance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 3.774758283725532e-15,
+   "actual": 0.5879824910465669,
+   "expected": 0.5879824910465631,
    "peers": {
     "statsmodels": 8.43769498715119e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
    "quantity": "sigma",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 2.4424906541753444e-15,
+   "actual": 0.7668001636975352,
+   "expected": 0.7668001636975328,
    "peers": {
     "statsmodels": 5.551115123125783e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
-   "quantity": "r_squared",
+   "quantity": "r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.1102230246251565e-16,
+   "actual": 0.9878551860804781,
+   "expected": 0.9878551860804782,
    "peers": {
     "statsmodels": 1.1102230246251565e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
-   "quantity": "adj_r_squared",
+   "quantity": "adj r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.1102230246251565e-16,
+   "actual": 0.9843852392463289,
+   "expected": 0.984385239246329,
    "peers": {
     "statsmodels": 1.1102230246251565e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
-   "quantity": "df_residual",
-   "max_abs_error": 0.0,
+   "quantity": "df residual",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 7,
+   "expected": 7,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "correlated",
-   "quantity": "log_likelihood",
+   "quantity": "log likelihood",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 3.197442310920451e-14,
+   "actual": -9.75072006906033,
+   "expected": -9.750720069060298,
    "peers": {
     "statsmodels": 7.283063041541027e-14
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
    "quantity": "coefficients",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 1.7763568394002505e-15,
    "peers": {
     "statsmodels": 3.552713678800501e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
    "quantity": "covariance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 1.6306400674181987e-16,
    "peers": {
     "statsmodels": 1.3877787807814457e-17
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
-   "quantity": "std_errors",
+   "quantity": "std errors",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 1.1379786002407855e-15,
    "peers": {
     "statsmodels": 9.71445146547012e-17
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
-   "quantity": "t_statistics",
+   "quantity": "t statistics",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 1.5063505998114124e-12,
    "peers": {
     "statsmodels": 1.4210854715202004e-13
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
-   "quantity": "p_values",
+   "quantity": "p values",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2,
    "max_abs_error": 9.270362255620057e-15,
    "peers": {
     "statsmodels": 8.881784197001252e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
-   "quantity": "conf_int",
+   "quantity": "conf int",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 6.106226635438361e-15,
    "peers": {
     "statsmodels": 3.941291737419306e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
    "quantity": "fitted",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 2.6645352591003757e-15,
    "peers": {
     "statsmodels": 4.440892098500626e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
    "quantity": "residuals",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 4,
    "max_abs_error": 2.456368441983159e-15,
    "peers": {
     "statsmodels": 4.253541963095131e-15
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
    "quantity": "rss",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 2.896988204881268e-16,
+   "actual": 0.008999999999999857,
+   "expected": 0.009000000000000147,
    "peers": {
     "statsmodels": 2.949029909160572e-17
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
-   "quantity": "residual_variance",
+   "quantity": "residual variance",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.448494102440634e-16,
+   "actual": 0.0044999999999999285,
+   "expected": 0.004500000000000073,
    "peers": {
     "statsmodels": 1.474514954580286e-17
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
    "quantity": "sigma",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 1.0824674490095276e-15,
+   "actual": 0.06708203932499315,
+   "expected": 0.06708203932499424,
    "peers": {
     "statsmodels": 1.1102230246251565e-16
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
-   "quantity": "r_squared",
-   "max_abs_error": 0.0,
+   "quantity": "r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0.9997772828507795,
+   "expected": 0.9997772828507795,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
-   "quantity": "adj_r_squared",
-   "max_abs_error": 0.0,
+   "quantity": "adj r squared",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 0.9996659242761692,
+   "expected": 0.9996659242761692,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
-   "quantity": "df_residual",
-   "max_abs_error": 0.0,
+   "quantity": "df residual",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
+   "max_abs_error": 0,
+   "actual": 2,
+   "expected": 2,
    "peers": {
     "statsmodels": 0.0
-   },
-   "passed": true
+   }
   },
   {
    "name": "listwise_missing",
-   "quantity": "log_likelihood",
+   "quantity": "log likelihood",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 1,
    "max_abs_error": 6.394884621840902e-14,
+   "actual": 6.517895992712958,
+   "expected": 6.517895992712894,
    "peers": {
     "statsmodels": 7.105427357601002e-15
-   },
-   "passed": true
+   }
   }
- ]
+ ],
+ "exclusions": [
+  "Perfect fits compare coefficients, predictions, residuals, and standard errors only: their t statistics, p-values, R\u00b2, and likelihood are not finite or not stable.",
+  "R reports undefined quantities as NA; those entries are not compared."
+ ],
+ "known_differences": [
+  "phit rejects a rank-deficient design; R lm() drops aliased columns and reports NA.",
+  "Without an intercept, R\u00b2 is uncentered, as in R."
+ ],
+ "reproduce": [
+  "cargo build -p phit --release --locked",
+  ".context/notebooks-venv/bin/python docs/verifications/compare_ols.py"
+ ],
+ "source": "docs/verifications/ols-results.json",
+ "data": "docs/data/housing.csv",
+ "environment": {
+  "date": "2026-11-01",
+  "commit": "066e2e1",
+  "php": "8.5.10",
+  "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "phit": "0.4.4"
+ },
+ "group": "Models"
 }

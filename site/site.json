@@ -131,10 +131,6 @@
     "path": "r-compatibility.qmd"
    },
    {
-    "title": "Verification",
-    "path": "verification.qmd"
-   },
-   {
     "title": "Development",
     "path": "development.qmd"
    }
@@ -150,6 +146,7 @@
   "site/benchmarks/distributions.json",
   "site/benchmarks/draws.json",
   "site/benchmarks/rng.json",
+  "site/benchmarks/csv.json",
   "site/benchmarks/ols-workload.json",
   "site/benchmarks/mixed-workload.json",
   "site/benchmarks/logistic-workload.json",
@@ -157,6 +154,10 @@
   "site/benchmarks/mixed-logistic-workload.json",
   "site/benchmarks/distributions-workload.json"
  ],
+ "evidence_gaps": {
+  "benchmarks": "No benchmark times formula parsing, predict(), descriptive statistics, kernel densities, or chunked CsvReader reading.",
+  "verification": "The reference comparisons ran on macOS; Linux and PHP-FPM runs of them are not recorded, though the release workflow installs and checks every Linux binary."
+ },
  "verifications": [
   "site/verifications/ols.json",
   "site/verifications/logistic.json",
@@ -166,7 +167,8 @@
   "site/verifications/lmm-public.json",
   "site/verifications/logistic-mixed.json",
   "site/verifications/r-compatibility.json",
-  "site/verifications/distributions.json"
+  "site/verifications/distributions.json",
+  "site/verifications/test-suites.json"
  ],
  "examples": [
   {

@@ -13,7 +13,7 @@
     "tests/fixtures/lmm-expanded-r.json": "74fa9de02217ff4ea3ea2cfb544505932e1353ed8d84ff49d34f810a7e900578",
     "docs/data/lmm/sleepstudy.csv": "2918bbddf750e78003059efa97b94885b85c4d7927c22a19c29f7fa5a184c59d"
   },
-  "extension_sha256": "09d7a11614d97fa4d63553e219ac6eafbd76a35b6641bfbfaa66748570498242",
+  "extension_sha256": "b8fd61011b5ed97202137b22fa6bd46b17514dd566df4410eb5a38d0f934e98d",
   "tolerances": {
     "fixed": {
       "absolute": 1e-07,

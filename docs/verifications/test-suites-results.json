@@ -1,0 +1,225 @@
+{
+  "recorded_at": "2026-11-01T21:19:20.991737+00:00",
+  "commit": "066e2e1",
+  "php": "8.5.10",
+  "phit": "0.4.4",
+  "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "suites": [
+    {
+      "suite": "ols",
+      "command": "php -n -d extension=\u2026 tests/ols.php",
+      "status": "pass",
+      "summary": "PHP OLS integration tests passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.058
+    },
+    {
+      "suite": "logistic",
+      "command": "php -n -d extension=\u2026 tests/logistic.php",
+      "status": "pass",
+      "summary": "PHP logistic integration tests passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.058
+    },
+    {
+      "suite": "probit",
+      "command": "php -n -d extension=\u2026 tests/probit.php",
+      "status": "pass",
+      "summary": "PHP probit integration tests passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.059
+    },
+    {
+      "suite": "poisson",
+      "command": "php -n -d extension=\u2026 tests/poisson.php",
+      "status": "pass",
+      "summary": "PHP poisson integration tests passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.057
+    },
+    {
+      "suite": "aliases",
+      "command": "php -n -d extension=\u2026 tests/aliases.php",
+      "status": "pass",
+      "summary": "PHP 0.4 names: 10 deprecated aliases and fit_ols dispatch passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.073
+    },
+    {
+      "suite": "formula",
+      "command": "php -n -d extension=\u2026 tests/formula.php",
+      "status": "pass",
+      "summary": "PHP formula tests passed (33 model.matrix, 14 lm, 15 glm fits; 30007 R comparisons)",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.089
+    },
+    {
+      "suite": "formula-mixed",
+      "command": "php -n -d extension=\u2026 tests/formula-mixed.php",
+      "status": "pass",
+      "summary": "PHP formula mixed-model tests passed (7 lmer and 3 glmer lme4 fits; 782 comparisons)",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.081
+    },
+    {
+      "suite": "predict",
+      "command": "php -n -d extension=\u2026 tests/predict.php",
+      "status": "pass",
+      "summary": "PHP predict tests passed (25 R predict() cases; 877 comparisons)",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.091
+    },
+    {
+      "suite": "lmm",
+      "command": "php -n -d extension=\u2026 tests/lmm.php",
+      "status": "pass",
+      "summary": "PHP mixed-model integration tests passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.092
+    },
+    {
+      "suite": "r-compatibility",
+      "command": "php -n -d extension=\u2026 tests/r-compatibility.php",
+      "status": "pass",
+      "summary": "PHP base-R compatibility tests passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.064
+    },
+    {
+      "suite": "lmm-expanded",
+      "command": "php -n -d extension=\u2026 tests/lmm-expanded.php",
+      "status": "pass",
+      "summary": "PHP expanded mixed-model tests passed (15 models, four lme4 optimizers)",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.189
+    },
+    {
+      "suite": "logistic-mixed",
+      "command": "php -n -d extension=\u2026 tests/logistic-mixed.php",
+      "status": "pass",
+      "summary": "PHP binomial random-intercept integration tests passed (28 lme4 fits)",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.182
+    },
+    {
+      "suite": "stability",
+      "command": "php -n -d extension=\u2026 tests/stability.php",
+      "status": "pass",
+      "summary": "PHP stability, result contracts and exception categories passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.081
+    },
+    {
+      "suite": "intercept",
+      "command": "php -n -d extension=\u2026 tests/intercept.php",
+      "status": "pass",
+      "summary": "PHP automatic intercepts and Poisson exposure offsets passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.08
+    },
+    {
+      "suite": "distributions",
+      "command": "php -n -d extension=\u2026 tests/distributions.php",
+      "status": "pass",
+      "summary": "PHP distribution tests passed (8618 comparisons, 25 independently adjudicated references, 43 documented boundary differences)",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.086
+    },
+    {
+      "suite": "descriptive",
+      "command": "php -n -d extension=\u2026 tests/descriptive.php",
+      "status": "pass",
+      "summary": "PHP descriptive tests passed (145 R comparisons, missing policies and validation)",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.064
+    },
+    {
+      "suite": "smoothing",
+      "command": "php -n -d extension=\u2026 tests/smoothing.php",
+      "status": "pass",
+      "summary": "PHP smoothing tests passed (15639 R comparisons, missing policies and validation)",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.073
+    },
+    {
+      "suite": "optimize",
+      "command": "php -n -d extension=\u2026 tests/optimize.php",
+      "status": "pass",
+      "summary": "PHP optimize/uniroot tests passed (91 bit-for-bit R comparisons, evaluation counts and validation)",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.059
+    },
+    {
+      "suite": "rng",
+      "command": "php -n -d extension=\u2026 tests/rng.php",
+      "status": "pass",
+      "summary": "PHP RNG tests passed (3764 independent R/ChaCha values, seed isolation, validation and moments; uniform, categorical and permutation samplers)",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.089
+    },
+    {
+      "suite": "draws",
+      "command": "php -n -d extension=\u2026 tests/draws.php",
+      "status": "pass",
+      "summary": "25 independent draw fixtures, identities and strict input contracts passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.059
+    },
+    {
+      "suite": "csv",
+      "command": "php -n -d extension=\u2026 tests/csv.php",
+      "status": "pass",
+      "summary": "csv: 190 checks passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.093
+    },
+    {
+      "suite": "csv-conformance",
+      "command": "php -n -d extension=\u2026 tests/csv-conformance.php",
+      "status": "pass",
+      "summary": "csv-conformance: 120 cases matched phibble's reader, at every block size and in chunks",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.144
+    },
+    {
+      "suite": "csv-phibble",
+      "command": "php -n -d extension=\u2026 tests/csv-phibble.php",
+      "status": "pass",
+      "summary": "csv-phibble: 6278 comparisons against phibble's PHP reader passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 1.727
+    },
+    {
+      "suite": "extreme-inputs",
+      "command": "php -n -d extension=\u2026 tests/extreme-inputs.php",
+      "status": "pass",
+      "summary": "PHP extreme-input checks passed",
+      "returncode": 0,
+      "error": null,
+      "seconds": 0.054
+    }
+  ]
+}
