@@ -647,7 +647,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#supported-structures" id="toc-supported-structures" class="nav-link active" data-scroll-target="#supported-structures">Supported structures</a></li>
   <li><a href="#a-random-intercept-model" id="toc-a-random-intercept-model" class="nav-link" data-scroll-target="#a-random-intercept-model">A random-intercept model</a></li>
-  <li><a href="#reading-a-fit_lmer-result" id="toc-reading-a-fit_lmer-result" class="nav-link" data-scroll-target="#reading-a-fit_lmer-result">Reading a fit_lmer result</a></li>
+  <li><a href="#reading-a-fit_mixed_gaussian-result" id="toc-reading-a-fit_mixed_gaussian-result" class="nav-link" data-scroll-target="#reading-a-fit_mixed_gaussian-result">Reading a fit_mixed_gaussian result</a></li>
   <li><a href="#singular-fits" id="toc-singular-fits" class="nav-link" data-scroll-target="#singular-fits">Singular fits</a></li>
   <li><a href="#a-binomial-random-intercept-model" id="toc-a-binomial-random-intercept-model" class="nav-link" data-scroll-target="#a-binomial-random-intercept-model">A binomial random-intercept model</a></li>
   <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction">Prediction</a></li>
@@ -677,13 +677,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><code>fit_lmer()</code> fits Gaussian linear mixed models, as <code>lme4::lmer()</code> does. <code>fit_glmer()</code> fits a binomial logit model with one random intercept, as <code>lme4::glmer()</code> does for that structure. Both take an R formula with lme4’s bar syntax for random effects.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_lmer(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$reml</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
+<p><code>fit_mixed_gaussian()</code> fits Gaussian linear mixed models, as <code>lme4::lmer()</code> does. <code>fit_mixed_logistic()</code> fits a binomial logit model with one random intercept, as <code>lme4::glmer()</code> does for that structure. It fits no other family or link, so it has no <code>family</code> or <code>link</code> arguments. Both take an R formula with lme4’s bar syntax for random effects.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_gaussian(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$reml</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$start</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">int</span> <span class="va">$maxEvaluations</span> <span class="op">=</span> <span class="dv">20000</span><span class="ot">,</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$tolerance</span> <span class="op">=</span> <span class="fl">1e-7</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$optimizer</span> <span class="op">=</span> <span class="st">'bobyqa'</span><span class="ot">,</span> <span class="dt">float</span> <span class="va">$objectiveTolerance</span> <span class="op">=</span> <span class="fl">1e-12</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>Phit\fit_glmer(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$family</span> <span class="op">=</span> <span class="st">'binomial'</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$link</span> <span class="op">=</span> <span class="st">''</span><span class="ot">,</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">int</span> <span class="va">$quadraturePoints</span> <span class="op">=</span> <span class="dv">1</span><span class="ot">,</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$maxEvaluations</span> <span class="op">=</span> <span class="dv">20000</span><span class="ot">,</span> <span class="dt">float</span> <span class="va">$tolerance</span> <span class="op">=</span> <span class="fl">1e-7</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_logistic(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">int</span> <span class="va">$quadraturePoints</span> <span class="op">=</span> <span class="dv">1</span><span class="ot">,</span> <span class="dt">int</span> <span class="va">$maxEvaluations</span> <span class="op">=</span> <span class="dv">20000</span><span class="ot">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$tolerance</span> <span class="op">=</span> <span class="fl">1e-7</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="supported-structures" class="level2">
 <h2 class="anchored" data-anchor-id="supported-structures">Supported structures</h2>
 <table class="caption-top table">
@@ -703,30 +703,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>fit_lmer</code></td>
+<td><code>fit_mixed_gaussian</code></td>
 <td><code>(1 | g)</code>, <code>(x | g)</code>, <code>(0 + x | g)</code>, <code>(x || g)</code> (uncorrelated), several terms such as <code>(1 | g1) + (1 | g2)</code>, interaction groups <code>(1 | g1:g2)</code>, and nesting <code>(1 | g1/g2)</code></td>
 <td>Gaussian, identity</td>
 <td>REML (default) or ML (<code>reml: false</code>); BOBYQA (default) or Nelder–Mead (<code>optimizer: 'nelder_mead'</code>)</td>
 </tr>
 <tr class="even">
-<td><code>fit_glmer</code></td>
+<td><code>fit_mixed_logistic</code></td>
 <td>Exactly one <code>(1 | g)</code></td>
 <td>Binomial, logit</td>
 <td>ML by Laplace (<code>quadraturePoints: 1</code>, the default) or adaptive Gauss–Hermite quadrature with 2 to 61 points</td>
 </tr>
 </tbody>
 </table>
-<p>Any other random-effect structure, family or link throws code 1007. Random slopes, several random terms, the Poisson and probit families, and REML are not available in <code>fit_glmer()</code>. Random-effect terms in <code>fit_lm()</code> or <code>fit_glm()</code> also throw code 1007.</p>
+<p>Any other random-effect structure, family or link throws code 1007. Random slopes, several random terms, the Poisson and probit families, and REML are not available in <code>fit_mixed_logistic()</code>. Random-effect terms in <code>fit_ols()</code> or <code>fit_generalized_linear()</code> also throw code 1007.</p>
 </section>
 <section id="a-random-intercept-model" class="level2">
 <h2 class="anchored" data-anchor-id="a-random-intercept-model">A random-intercept model</h2>
 <p>The example uses <code>docs/data/schools.csv</code> from the repository: 250 simulated students in 12 schools, with study hours, a prior score and a test score.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_lmer<span class="ot">,</span> read_csv}<span class="ot">;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_mixed_gaussian<span class="ot">,</span> read_csv}<span class="ot">;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">$csv</span> <span class="op">=</span> read_csv(<span class="st">'docs/data/schools.csv'</span>)<span class="ot">;</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">$schools</span> <span class="op">=</span> <span class="fu">array_combine</span>(<span class="va">$csv</span>[<span class="st">'names'</span>]<span class="ot">,</span> <span class="fu">array_column</span>(<span class="va">$csv</span>[<span class="st">'columns'</span>]<span class="ot">,</span> <span class="st">'values'</span>))<span class="ot">;</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_lmer(<span class="st">'score ~ study_hours + prior_score + (1 | school)'</span><span class="ot">,</span> <span class="va">$schools</span>)<span class="ot">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_mixed_gaussian(<span class="st">'score ~ study_hours + prior_score + (1 | school)'</span><span class="ot">,</span> <span class="va">$schools</span>)<span class="ot">;</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$fit</span>[<span class="st">'columns'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$name</span>) {</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%-12s %8.4f %8.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$name</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'coefficients'</span>][<span class="va">$i</span>]<span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'std_errors'</span>][<span class="va">$i</span>])<span class="ot">;</span></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>}</span>
@@ -741,8 +741,8 @@ REML: school SD 4.4579, residual SD 5.0566, 12 schools
 school-01 +0.1353</code></pre>
 <p><code>school-01</code>’s predicted random intercept is 0.14 points above the average school.</p>
 </section>
-<section id="reading-a-fit_lmer-result" class="level2">
-<h2 class="anchored" data-anchor-id="reading-a-fit_lmer-result">Reading a fit_lmer result</h2>
+<section id="reading-a-fit_mixed_gaussian-result" class="level2">
+<h2 class="anchored" data-anchor-id="reading-a-fit_mixed_gaussian-result">Reading a fit_mixed_gaussian result</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -795,13 +795,13 @@ school-01 +0.1353</code></pre>
 <section id="a-binomial-random-intercept-model" class="level2">
 <h2 class="anchored" data-anchor-id="a-binomial-random-intercept-model">A binomial random-intercept model</h2>
 <p><code>docs/data/cbpp.csv</code> holds lme4’s <code>cbpp</code> data: cases of contagious bovine pleuropneumonia in 15 herds over four periods.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_glmer<span class="ot">,</span> read_csv}<span class="ot">;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_mixed_logistic<span class="ot">,</span> read_csv}<span class="ot">;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">$csv</span> <span class="op">=</span> read_csv(<span class="st">'docs/data/cbpp.csv'</span><span class="ot">,</span> [<span class="st">'types'</span> =&gt; [<span class="st">'c'</span><span class="ot">,</span> <span class="st">'i'</span><span class="ot">,</span> <span class="st">'i'</span><span class="ot">,</span> <span class="st">'c'</span>]])<span class="ot">;</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="va">$herds</span> <span class="op">=</span> <span class="fu">array_combine</span>(<span class="va">$csv</span>[<span class="st">'names'</span>]<span class="ot">,</span> <span class="fu">array_column</span>(<span class="va">$csv</span>[<span class="st">'columns'</span>]<span class="ot">,</span> <span class="st">'values'</span>))<span class="ot">;</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="va">$herds</span>[<span class="st">'healthy'</span>] <span class="op">=</span> <span class="fu">array_map</span>(<span class="kw">fn</span> (<span class="va">$n</span><span class="ot">,</span> <span class="va">$k</span>) =&gt; <span class="va">$n</span> <span class="op">-</span> <span class="va">$k</span><span class="ot">,</span> <span class="va">$herds</span>[<span class="st">'size'</span>]<span class="ot">,</span> <span class="va">$herds</span>[<span class="st">'incidence'</span>])<span class="ot">;</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_glmer(<span class="st">'cbind(incidence, healthy) ~ period + (1 | herd)'</span><span class="ot">,</span> <span class="va">$herds</span><span class="ot">,</span> quadraturePoints<span class="ot">:</span> <span class="dv">10</span>)<span class="ot">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_mixed_logistic(<span class="st">'cbind(incidence, healthy) ~ period + (1 | herd)'</span><span class="ot">,</span> <span class="va">$herds</span><span class="ot">,</span> quadraturePoints<span class="ot">:</span> <span class="dv">10</span>)<span class="ot">;</span></span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$fit</span>[<span class="st">'named'</span>] <span class="kw">as</span> <span class="va">$name</span> =&gt; <span class="va">$b</span>) <span class="fu">printf</span>(<span class="st">"%-12s %8.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$name</span><span class="ot">,</span> <span class="va">$b</span>)<span class="ot">;</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"herd SD %.4f, %s</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'random_intercept_sd'</span>]<span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'integration'</span>])<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>(Intercept)   -1.3992
@@ -810,7 +810,7 @@ period3       -1.1278
 period4       -1.5795
 herd SD 0.6475, adaptive_gauss_hermite</code></pre>
 <p><code>quadraturePoints</code> is lme4’s <code>nAGQ</code>. The Laplace default is fastest. More points approximate the likelihood more closely, which matters most for small groups and rare events. No number of points guarantees accuracy for every data set, so compare a few values when the estimates matter.</p>
-<p>A <code>fit_glmer</code> result reports the herd effects directly: <code>random_effects</code>, <code>random_effects_cond_var</code>, <code>group_labels</code>, <code>group_sizes</code>, <code>n_groups</code>, <code>random_intercept_variance</code> and <code>random_intercept_sd</code>. It also has <code>linear_predictor</code>, <code>neg2_log_likelihood</code>, <code>quadrature_points</code>, <code>integration</code>, <code>gradient_max</code> and <code>boundary</code>, and the fixed-effect keys of <code>fit_lmer</code>.</p>
+<p>A <code>fit_mixed_logistic</code> result reports the herd effects directly: <code>random_effects</code>, <code>random_effects_cond_var</code>, <code>group_labels</code>, <code>group_sizes</code>, <code>n_groups</code>, <code>random_intercept_variance</code> and <code>random_intercept_sd</code>. It also has <code>linear_predictor</code>, <code>neg2_log_likelihood</code>, <code>quadrature_points</code>, <code>integration</code>, <code>gradient_max</code> and <code>boundary</code>, and the fixed-effect keys of <code>fit_mixed_gaussian</code>.</p>
 </section>
 <section id="prediction" class="level2">
 <h2 class="anchored" data-anchor-id="prediction">Prediction</h2>
@@ -818,7 +818,7 @@ herd SD 0.6475, adaptive_gauss_hermite</code></pre>
 </section>
 <section id="matrix-functions" class="level2">
 <h2 class="anchored" data-anchor-id="matrix-functions">Matrix functions</h2>
-<p><code>fit_mixed()</code>, <code>fit_mixed_intercept()</code> and <code>fit_logistic_mixed()</code> fit the same models from numeric matrices and explicit random-effect designs. <code>fit_mixed_intercept()</code> is a faster path for a Gaussian random intercept by ML. <a href="./reference-models.html">Matrix model functions</a> defines their inputs, the optimizer controls and the convergence rules.</p>
+<p><code>fit_mixed_gaussian_matrix()</code>, <code>fit_mixed_gaussian_intercept_matrix()</code> and <code>fit_mixed_logistic_matrix()</code> fit the same models from numeric matrices and explicit random-effect designs. <code>fit_mixed_gaussian_intercept_matrix()</code> is a faster path for a Gaussian random intercept by ML. <a href="./reference-models.html">Matrix model functions</a> defines their inputs, the optimizer controls and the convergence rules.</p>
 
 
 </section>

@@ -680,7 +680,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
 <p>The formula functions take a data set as named columns: an associative array of <code>column =&gt; list of values</code>, with every column the same length. phibble’s <code>DataFrame</code> is also accepted, through its <code>toModelData()</code> method.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_lm<span class="ot">,</span> predict}<span class="ot">;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_ols<span class="ot">,</span> predict}<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$flats</span> <span class="op">=</span> [</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rent'</span> =&gt; [<span class="fl">1879.25</span><span class="ot">,</span> <span class="fl">1805.03</span><span class="ot">,</span> <span class="fl">2022.29</span><span class="ot">,</span> <span class="fl">1267.85</span><span class="ot">,</span> <span class="fl">1509.24</span><span class="ot">,</span> <span class="fl">2240.10</span><span class="ot">,</span> <span class="fl">959.51</span><span class="ot">,</span> <span class="fl">2386.54</span><span class="ot">,</span> <span class="fl">1655.80</span><span class="ot">,</span> <span class="fl">1420.00</span>]<span class="ot">,</span></span>
@@ -691,7 +691,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="fit" class="level2">
 <h2 class="anchored" data-anchor-id="fit">Fit</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_lm(<span class="st">'rent ~ area + district'</span><span class="ot">,</span> <span class="va">$flats</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_ols(<span class="st">'rent ~ area + district'</span><span class="ot">,</span> <span class="va">$flats</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The formula follows R: <code>rent</code> is the response, and <code>area + district</code> adds a slope for floor area and treatment-coded indicators for the districts. An intercept is included unless the formula removes it with <code>- 1</code> or <code>+ 0</code>.</p>
 </section>
 <section id="read-the-result" class="level2">
@@ -757,7 +757,7 @@ districtsouth     232.16   119.64  0.1004  [  -60.58,   524.90]</code></pre>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="fu">json_encode</span>(<span class="va">$fit</span>[<span class="st">'diagnostics'</span>])<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>R-squared 0.9270, sigma 146.29, 6 residual df, 10 of 10 rows
 {"converged":true,"solver":"scaled_svd","warnings":[]}</code></pre>
-<p><code>fit_glm</code>, <code>fit_lmer</code> and <code>fit_glmer</code> return the same naming and accounting keys, with the statistics of their model. <a href="./models.html">Linear and generalized linear models</a> and <a href="./mixed-models.html">mixed models</a> list them.</p>
+<p><code>fit_generalized_linear</code>, <code>fit_mixed_gaussian</code> and <code>fit_mixed_logistic</code> return the same naming and accounting keys, with the statistics of their model. <a href="./models.html">Linear and generalized linear models</a> and <a href="./mixed-models.html">mixed models</a> list them.</p>
 </section>
 <section id="predict" class="level2">
 <h2 class="anchored" data-anchor-id="predict">Predict</h2>
@@ -774,7 +774,7 @@ districtsouth     232.16   119.64  0.1004  [  -60.58,   524.90]</code></pre>
 <section id="missing-values" class="level2">
 <h2 class="anchored" data-anchor-id="missing-values">Missing values</h2>
 <p><code>null</code> and <code>NAN</code> are missing. By default, a row with a missing value in any column the formula uses is dropped, and the fit emits one <code>E_WARNING</code>. With <code>rent</code> set to <code>null</code> in the third row:</p>
-<pre><code>Warning: Phit\fit_lm(): Phit\fit_lm dropped 1 of 10 observations with missing values (listwise deletion)</code></pre>
+<pre><code>Warning: Phit\fit_ols(): Phit\fit_ols dropped 1 of 10 observations with missing values (listwise deletion)</code></pre>
 <p>The result then reports <code>n_observations</code> 9, <code>n_input</code> 10 and <code>dropped_rows</code> <code>[2]</code>, and <code>diagnostics.warnings</code> holds the same notice. Pass <code>missing: 'raise'</code> to reject missing values instead. The call then throws an <code>Exception</code> with code 1001 and the message <code>missing values found with missing='raise'</code>. <a href="./missing-data.html">Missing data</a> defines which values count as missing and how rows are counted.</p>
 </section>
 <section id="errors" class="level2">

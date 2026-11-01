@@ -673,7 +673,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The <a href="../notebooks/probit-verification.html">executed comparison</a> fits identical observations in base R <code>glm()</code>, statsmodels <code>GLM</code>, and PHP <code>fit_probit()</code>. The <a href="probit-results.json">saved report</a> records versions, complete outputs, maximum differences from R, warnings and retained-row metadata.</p>
+<p>The <a href="../notebooks/probit-verification.html">executed comparison</a> fits identical observations in base R <code>glm()</code>, statsmodels <code>GLM</code>, and PHP <code>fit_probit_matrix()</code>. The <a href="probit-results.json">saved report</a> records versions, complete outputs, maximum differences from R, warnings and retained-row metadata.</p>
 <section id="reference-cases-and-conventions" class="level2">
 <h2 class="anchored" data-anchor-id="reference-cases-and-conventions">Reference cases and conventions</h2>
 <p>Six saved R fixtures cover the simulated learning sample, a single predictor, multiple predictors, no intercept, intercept only, correlated full-rank columns and imbalanced outcomes (the main sample is the multiple-predictor case). The three-way comparison adds listwise deletion of two rows. All coefficients, covariance entries, standard errors, normal z tests and p-values, Wald confidence limits, full fitted probabilities and response residuals, likelihood, deviance, null deviance, AIC and residual df are checked. Numerical tolerance is 1e-9 + 1e-7 × abs(reference); sample accounting is exact.</p>

@@ -11,7 +11,11 @@ $glm = ['z_statistics'=>'list<float>','deviance'=>'float','null_deviance'=>'floa
 $mixed = ['z_statistics'=>'list<float>','fixed_fitted'=>'list<float>','marginal_residuals'=>'list<float>','aic'=>'float',
  'residual_variance'=>'float','sigma'=>'float','method'=>'string','converged'=>'bool'];
 $group = ['group_labels'=>'list<int|string>','group_sizes'=>'list<int>','random_effects'=>'list<float>','random_effects_cond_var'=>'list<float>'];
-$models=['Phit\fit_ols','Phit\fit_logistic','Phit\fit_probit','Phit\fit_poisson','Phit\fit_mixed_intercept','Phit\fit_mixed','Phit\fit_logistic_mixed'];
+$models=['Phit\fit_ols_matrix','Phit\fit_logistic_matrix','Phit\fit_probit_matrix','Phit\fit_poisson_matrix','Phit\fit_mixed_gaussian_intercept_matrix','Phit\fit_mixed_gaussian_matrix','Phit\fit_mixed_logistic_matrix'];
+// The 0.3 names: deprecated aliases in 0.4, removed in 0.5. Each is documented as its replacement plus @deprecated.
+$aliases=['Phit\fit_lm'=>'Phit\fit_ols','Phit\fit_glm'=>'Phit\fit_generalized_linear','Phit\fit_lmer'=>'Phit\fit_mixed_gaussian','Phit\fit_glmer'=>'Phit\fit_mixed_logistic',
+ 'Phit\fit_logistic'=>'Phit\fit_logistic_matrix','Phit\fit_probit'=>'Phit\fit_probit_matrix','Phit\fit_poisson'=>'Phit\fit_poisson_matrix',
+ 'Phit\fit_mixed_intercept'=>'Phit\fit_mixed_gaussian_intercept_matrix','Phit\fit_mixed'=>'Phit\fit_mixed_gaussian_matrix','Phit\fit_logistic_mixed'=>'Phit\fit_mixed_logistic_matrix'];
 $families=['normal'=>'Normal(mean, sd)','t'=>"Student's t with df degrees of freedom",'chisquare'=>'Chi-square with df degrees of freedom',
  'f'=>'F with numerator df1 and denominator df2 degrees of freedom','beta'=>'Beta(alpha, beta) on [0, 1]',
  'gamma'=>'Gamma with shape and scale (mean shape*scale)','exponential'=>'Exponential with rate (mean 1/rate)',
@@ -71,26 +75,26 @@ $formulas=[
  'Phit\model_matrix'=>['summary'=>"R-compatible model.matrix() for a formula over named columns: treatment contrasts (first level is the reference),\n * contr.poly for ordered factors, R column names/term order, inline transforms, offset() and random-effect bars.\n * Unused factor levels are kept, as in model.matrix(); x includes the \"(Intercept)\" column when present.",
   'result'=>['y'=>'list<float>|list<array{float,float}>|null','response_levels?'=>'list<string>','x'=>'list<list<float>>','columns'=>'list<string>','intercept'=>'bool','terms'=>'list<string>','assign'=>'list<int>',
    'formula'=>'string','response'=>'string|null','offset'=>'list<float>|null','random'=>$randomShape,'n_input'=>'int','n_observations'=>'int','n_dropped'=>'int','retained_rows'=>'list<int>','dropped_rows'=>'list<int>']],
- 'Phit\fit_lm'=>['summary'=>"Linear model from a formula, like R's lm(): builds the model matrix and calls the fit_ols core (weights, offset() terms).\n * Factor levels unused after deletion are dropped, as lm() does. Rank deficiency raises 1004 instead of R's NA coefficients.",
+ 'Phit\fit_ols'=>['summary'=>"Linear model from a formula, like R's lm(): builds the model matrix and fits by least squares, weighted least squares\n * when weights are given (as lm(weights = )), with offset() terms. Until phit 0.5, an array first argument (or named x:/y:) runs the deprecated\n * matrix fit, Phit\\fit_ols_matrix(), with one E_USER_DEPRECATED; its result has no formula keys.\n * Factor levels unused after deletion are dropped, as lm() does. Rank deficiency raises 1004 instead of R's NA coefficients.",
   'result'=>$common+$olsKeys+$naming],
- 'Phit\fit_glm'=>['summary'=>"Generalized linear model from a formula, like R's glm(): gaussian/identity (fit_ols core), binomial/logit, binomial/probit\n * and poisson/log (the matrix GLM cores). Binomial responses: 0/1, logical, factor/string (first level = failure),\n * proportions with trial weights, or cbind(successes, failures). The empty link selects the canonical link.",
+ 'Phit\fit_generalized_linear'=>['summary'=>"Generalized linear model from a formula, like R's glm(): gaussian/identity (the OLS core), binomial/logit, binomial/probit\n * and poisson/log (the matrix GLM cores). Binomial responses: 0/1, logical, factor/string (first level = failure),\n * proportions with trial weights, or cbind(successes, failures). The empty link selects the canonical link.",
   'result'=>$common+$glm+['family'=>'string','link'=>'string']+$naming+['t_statistics?'=>'list<float>','rss?'=>'float','residual_variance?'=>'float','sigma?'=>'float','r_squared?'=>'float','adj_r_squared?'=>'float']],
- 'Phit\fit_lmer'=>['summary'=>"Gaussian mixed model from an lme4-style formula, like lme4::lmer(): fixed terms as in fit_lm and random bars\n * (x | g), (x || g), (1 | g1) + (1 | g2), (1 | g1:g2), (1 | g1/g2) mapped onto the fit_mixed core. REML by default.\n * Groups and effects follow first appearance after deletion, not lme4's sorted levels; terms keep formula order.
+ 'Phit\fit_mixed_gaussian'=>['summary'=>"Gaussian mixed model from an lme4-style formula, like lme4::lmer(): fixed terms as in fit_ols and random bars\n * (x | g), (x || g), (1 | g1) + (1 | g2), (1 | g1:g2), (1 | g1/g2) mapped onto the fit_mixed_gaussian_matrix core. REML by default.\n * Groups and effects follow first appearance after deletion, not lme4's sorted levels; terms keep formula order.
  * Each random term's effects_cond_var holds one k x k conditional covariance per group, as ranef(condVar = TRUE).",
   'result'=>$common+$mixed+['n_parameters'=>'int','bic'=>'float','theta'=>'list<float>','singular'=>'bool','optimizer'=>'string','optimizer_implementation'=>'string','evaluations'=>'int',
    'random'=>'list<array{covariance:list<list<float>>,effects:list<list<float>>,effects_cond_var:list<list<list<float>>>,group_labels:list<int|string>,group_sizes:list<int>,label:string,group:string,columns:list<string>,correlated:bool}>']+$naming],
- 'Phit\fit_glmer'=>['summary'=>"Binomial random-intercept model from a formula, like lme4::glmer(family = binomial): exactly one (1 | g) term over the\n * fit_logistic_mixed core (Laplace by default, adaptive quadrature with quadraturePoints > 1). Responses as in fit_glm.
+ 'Phit\fit_mixed_logistic'=>['summary'=>"Binomial logit random-intercept model from a formula, like lme4::glmer(family = binomial): exactly one (1 | g) term over\n * the fit_mixed_logistic_matrix core (Laplace by default, adaptive quadrature with quadraturePoints > 1). It fits only the\n * binomial family with the logit link, so it takes no family or link. Responses as in fit_generalized_linear.
  * random_effects_cond_var holds each conditional mode's variance, as ranef(condVar = TRUE).",
   'result'=>$common+['z_statistics'=>'list<float>','fixed_fitted'=>'list<float>','linear_predictor'=>'list<float>','aic'=>'float','bic'=>'float','n_parameters'=>'int']+$group+
    ['n_groups'=>'int','random_intercept_sd'=>'float','random_intercept_variance'=>'float','neg2_log_likelihood'=>'float','quadrature_points'=>'int','integration'=>'string','method'=>'string','family'=>'string','link'=>'string','optimizer'=>'string','converged'=>'bool','evaluations'=>'int','gradient_max'=>'float','boundary'=>'bool','singular'=>'bool',
    'random'=>'list<array{label:string,group:string,columns:list<string>}>']+$naming],
 ];
-$predict=['summary'=>"Predictions for new data from a fit_lm, fit_glm, fit_lmer or fit_glmer result, like R's predict():\n * the fit's formula is rebuilt over newdata with the fitted factor levels and poly() basis (its predvars key).\n * A level the fit never saw is an error. Rows with missing predictors predict null and are listed in missing_rows.\n * type 'response' applies the inverse link; seFit uses the delta method on that scale. Intervals ('confidence' or\n * 'prediction', t with df_residual) are for fit_lm fits. Mixed fits add random effects of known groups (random: false\n * gives population predictions; allowNewLevels predicts unseen groups at zero). GLM standard errors use the\n * covariance at the final coefficients (docs/r-compatibility.qmd).",
+$predict=['summary'=>"Predictions for new data from a fit_ols (formula), fit_generalized_linear, fit_mixed_gaussian or fit_mixed_logistic result, like R's predict():\n * the fit's formula is rebuilt over newdata with the fitted factor levels and poly() basis (its predvars key).\n * A level the fit never saw is an error. Rows with missing predictors predict null and are listed in missing_rows.\n * type 'response' applies the inverse link; seFit uses the delta method on that scale. Intervals ('confidence' or\n * 'prediction', t with df_residual) are for fit_ols fits. Mixed fits add random effects of known groups (random: false\n * gives population predictions; allowNewLevels predicts unseen groups at zero). GLM standard errors use the\n * covariance at the final coefficients (docs/r-compatibility.qmd).",
   'result'=>['fit'=>'list<float|null>','se_fit?'=>'list<float|null>','df?'=>'int','residual_scale?'=>'float','lower?'=>'list<float|null>','upper?'=>'list<float|null>','level'=>'float|null','n_input'=>'int','n_predicted'=>'int','missing_rows'=>'list<int>']];
 $io=['Phit\read_csv'=>['summary'=>"Read a delimited text file the way phibble's PHP reader (after readr::read_delim()) does: same records,\n * names, guessed types, values and problem messages. Contract and phibble/readr differences: docs/io.qmd.",
   'options'=>"array{delimiter?: string, quote?: string, escape_double?: bool, escape_backslash?: bool, na?: list<string>, trim_ws?: bool,\n *   skip?: int, n_max?: ?int, comment?: string, skip_empty_rows?: bool, col_names?: bool, types?: array<int, '?'|'l'|'i'|'d'|'c'|'D'|'T'|'_'>,\n *   guess_max?: int, decimal_mark?: string, grouping_mark?: ?string, block_size?: int}",
   'result'=>['names'=>'list<string>','columns'=>"list<null|array{type: 'bool'|'int'|'float'|'string'|'date'|'datetime', values: list<bool|int|float|string|null>, failed: int}>",'problems'=>'list<string>']]];
-$text="<?php\n// Generated by scripts/php-stubs.php from the loaded native API.\n// IDE/static-analysis declarations only: do not require this file at runtime.\n// Statistical definitions and supported structures: docs/contracts.qmd.\n// Every function is in the Phit namespace: use function Phit\\fit_lm;\n\nnamespace Phit;\n\n";
+$text="<?php\n// Generated by scripts/php-stubs.php from the loaded native API.\n// IDE/static-analysis declarations only: do not require this file at runtime.\n// Statistical definitions and supported structures: docs/contracts.qmd.\n// Every function is in the Phit namespace: use function Phit\\fit_ols;\n\nnamespace Phit;\n\n";
 $api=[];
 foreach ($functions as $name) {
  $r = new ReflectionFunction($name); $params=[];$schema=[];
@@ -101,9 +105,11 @@ foreach ($functions as $name) {
   $params[]=$part;$schema[]=$meta;
  }
  $api[$name]=['parameters'=>$schema,'return_type'=>(string)$r->getReturnType()];
+ $alias=$name;$name=$aliases[$alias]??$name;
+ if($alias!==$name)$api[$alias]['deprecated']=$name;
  if (isset($draws[$name])) {
   $contract=$draws[$name];
-  $api[$name]['result_keys']=array_keys($contract['result']);sort($api[$name]['result_keys']);
+  $api[$alias]['result_keys']=array_keys($contract['result']);sort($api[$alias]['result_keys']);
   $text.="/**\n * {$contract['summary']}\n * Rows are draws; columns are parameters. Preserves iteration order; no row deletion or intercept insertion.\n * null/NAN/INF and nonnumeric elements are rejected.\n";
   foreach($contract['params'] as $param=>$type)$text.=" * @param $type \$$param\n";
   $text.=" * @return array{";
@@ -111,7 +117,7 @@ foreach ($functions as $name) {
   $text.=implode(', ',$fields)."}\n * @throws \\Exception Input/numerical error (codes 1001–1005).\n */\n";
  } elseif (isset($io[$name])) {
   $contract=$io[$name];
-  $api[$name]['result_keys']=array_keys($contract['result']);sort($api[$name]['result_keys']);
+  $api[$alias]['result_keys']=array_keys($contract['result']);sort($api[$alias]['result_keys']);
   $text.="/**\n * {$contract['summary']}\n * Dates are int days since 1970-01-01; datetimes are int microseconds since the epoch (UTC); NA is null.\n * failed counts values that did not parse under the column's type (they are null). Skipped ('_') columns are null.\n";
   $text.=" * @param string \$path A readable file (bytes are passed through; no encoding validation)\n";
   $text.=" * @param {$contract['options']} \$options readr's defaults when omitted\n";
@@ -120,17 +126,19 @@ foreach ($functions as $name) {
   $text.=implode(', ',$fields)."}\n * @throws \\ValueError Missing or unreadable file, or an invalid option.\n */\n";
  } elseif (isset($formulas[$name])) {
   $contract=$formulas[$name];
-  $api[$name]['result_keys']=array_map(fn($k)=>rtrim($k,'?'),array_keys($contract['result']));sort($api[$name]['result_keys']);
+  $api[$alias]['result_keys']=array_map(fn($k)=>rtrim($k,'?'),array_keys($contract['result']));sort($api[$alias]['result_keys']);
   $text.="/**\n * {$contract['summary']}\n * Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are\n * dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.\n";
-  $text.=" * @param string \$formula R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))'\n";
-  $text.=" * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object \$data Named columns or factor descriptors; objects use toModelData(), else toColumns()\n";
-  if($name==='Phit\fit_glm'||$name==='Phit\fit_glmer')$text.=" * @param string \$family 'gaussian', 'binomial' or 'poisson'\n * @param string \$link '' (canonical), 'identity', 'logit', 'probit' or 'log'\n";
+  $matrix=$alias==='Phit\fit_ols'?' (deprecated until 0.5: a matrix x)':'';
+  $text.=" * @param string".($matrix?'|array<array<int|float|null>>':'')." \$formula R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))'$matrix\n";
+  $text.=" * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object".($matrix?'|array<int|float|null>':'')." \$data Named columns or factor descriptors; objects use toModelData(), else toColumns()".($matrix?' (deprecated: y)':'')."\n";
+  if($name==='Phit\fit_generalized_linear'||$alias==='Phit\fit_glmer')$text.=" * @param string \$family 'gaussian', 'binomial' or 'poisson'\n * @param string \$link '' (canonical), 'identity', 'logit', 'probit' or 'log'\n";
   if($name!=='Phit\model_matrix')$text.=" * @param array<int|float|null>|string|null \$weights Positive prior weights aligned with the original rows, or a column name\n";
+  if($matrix)$text.=" * @param array<int|float|null>|null \$offset Deprecated matrix form only; in a formula write offset()\n * @param bool \$intercept Deprecated matrix form only; in a formula write - 1\n * @param array<array<int|float|null>>|null \$x Deprecated: use Phit\\fit_ols_matrix()\n * @param array<int|float|null>|null \$y Deprecated: use Phit\\fit_ols_matrix()\n";
   $text.=" * @return array{\n";
   foreach($contract['result'] as $key=>$type)$text.=" *   $key: $type,\n";
   $text.=" * }\n * @throws \\Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.\n */\n";
  } elseif ($name==='Phit\predict') {
-  $api[$name]['result_keys']=array_map(fn($k)=>rtrim($k,'?'),array_keys($predict['result']));sort($api[$name]['result_keys']);
+  $api[$alias]['result_keys']=array_map(fn($k)=>rtrim($k,'?'),array_keys($predict['result']));sort($api[$alias]['result_keys']);
   $text.="/**\n * {$predict['summary']}\n";
   $text.=" * @param array<string,mixed> \$fit A formula fit result (needs formula, coefficients, covariance, columns and predvars)\n";
   $text.=" * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object \$newdata Named columns, as for the fit; the response may be absent\n";
@@ -176,21 +184,24 @@ foreach ($functions as $name) {
   $text.=" * @throws \\Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).\n */\n";
  } elseif (in_array($name,$models,true)) {
   $keys=$common;
-  if ($name==='Phit\fit_ols') $keys+=['t_statistics'=>'list<float>','rss'=>'float','residual_variance'=>'float','sigma'=>'float','r_squared'=>'float','adj_r_squared'=>'float'];
-  elseif (in_array($name,['Phit\fit_logistic','Phit\fit_probit','Phit\fit_poisson'],true)) $keys+=$glm;
-  elseif ($name==='Phit\fit_mixed_intercept') $keys+=$mixed+$group+['evaluations'=>'int','n_groups'=>'int','random_intercept_variance'=>'float','icc'=>'float','boundary'=>'bool'];
-  elseif ($name==='Phit\fit_mixed') $keys+=$mixed+['n_parameters'=>'int','bic'=>'float','theta'=>'list<float>','singular'=>'bool','optimizer'=>'string','optimizer_implementation'=>'string','evaluations'=>'int',
+  if ($name==='Phit\fit_ols_matrix') $keys+=['t_statistics'=>'list<float>','rss'=>'float','residual_variance'=>'float','sigma'=>'float','r_squared'=>'float','adj_r_squared'=>'float'];
+  elseif (in_array($name,['Phit\fit_logistic_matrix','Phit\fit_probit_matrix','Phit\fit_poisson_matrix'],true)) $keys+=$glm;
+  elseif ($name==='Phit\fit_mixed_gaussian_intercept_matrix') $keys+=$mixed+$group+['evaluations'=>'int','n_groups'=>'int','random_intercept_variance'=>'float','icc'=>'float','boundary'=>'bool'];
+  elseif ($name==='Phit\fit_mixed_gaussian_matrix') $keys+=$mixed+['n_parameters'=>'int','bic'=>'float','theta'=>'list<float>','singular'=>'bool','optimizer'=>'string','optimizer_implementation'=>'string','evaluations'=>'int',
    'random'=>'list<array{covariance:list<list<float>>,effects:list<list<float>>,effects_cond_var:list<list<list<float>>>,group_labels:list<int|string>,group_sizes:list<int>}>'];
   else $keys+=['z_statistics'=>'list<float>','fixed_fitted'=>'list<float>','linear_predictor'=>'list<float>','aic'=>'float','bic'=>'float','n_parameters'=>'int']+$group+
    ['n_groups'=>'int','random_intercept_sd'=>'float','random_intercept_variance'=>'float','neg2_log_likelihood'=>'float','quadrature_points'=>'int','integration'=>'string','method'=>'string','family'=>'string','link'=>'string','optimizer'=>'string','converged'=>'bool','evaluations'=>'int','gradient_max'=>'float','boundary'=>'bool','singular'=>'bool'];
-  $api[$name]['result_keys']=array_keys($keys);sort($api[$name]['result_keys']);
+  $api[$alias]['result_keys']=array_keys($keys);sort($api[$alias]['result_keys']);
   $text.="/**\n * Predictor matrix: rows are observations. A fixed intercept is prepended by default.\n * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.\n * @param array<array<int|float|null>> \$x\n * @param array<int|float|null> \$y\n * @param bool \$intercept False uses x exactly (including any caller-supplied ones).\n";
-  if(in_array($name,['Phit\fit_mixed_intercept','Phit\fit_logistic_mixed'],true))$text.=" * @param array<int|string|null> \$groups\n";
-  if($name==='Phit\fit_mixed')$text.=" * @param array<array{z:array<array<int|float|null>>,groups:array<int|string|null>,correlated?:bool}> \$random\n";
+  if(in_array($name,['Phit\fit_mixed_gaussian_intercept_matrix','Phit\fit_mixed_logistic_matrix'],true))$text.=" * @param array<int|string|null> \$groups\n";
+  if($name==='Phit\fit_ols_matrix')$text.=" * @param array<int|float|null>|null \$weights Positive weights: weighted least squares, as lm(weights = )\n";
+  if($name==='Phit\fit_mixed_gaussian_matrix')$text.=" * @param array<array{z:array<array<int|float|null>>,groups:array<int|string|null>,correlated?:bool}> \$random\n";
   $text.=" * @return array{\n";
   foreach($keys as $key=>$type)$text.=" *   $key: $type,\n";
   $text.=" * }\n * @throws \\Exception Statistical or input error (codes 1001–1008).\n */\n";
  }
+ if($alias!==$name)$text=preg_replace('~ \*/\n$~'," * @deprecated Since phit 0.4.0; use \\$name(). Removed in phit 0.5.\n */\n",$text);
+ $name=$alias;
  $text.='function '.substr($name,strlen('Phit\\')).'('.implode(', ',$params).'): '.$r->getReturnType()." {}\n\n";
 }
 // Classes, by the same reflection.

@@ -10,8 +10,8 @@ matrix functions they are the supplied predictors, outcome, weights, offsets
 and groups. The `missing` argument selects the policy:
 
 ```php
-$result = Phit\fit_ols(x: $x, y: $y); // missing: 'drop'
-$result = Phit\fit_ols(x: $x, y: $y, missing: 'raise'); // reject missing values
+$result = Phit\fit_ols_matrix(x: $x, y: $y); // missing: 'drop'
+$result = Phit\fit_ols_matrix(x: $x, y: $y, missing: 'raise'); // reject missing values
 ```
 
 ## What counts as missing
@@ -86,8 +86,8 @@ extension can account only for rows it actually receives.
 
 ## Logistic outcomes
 
-`fit_logistic()` follows the same deletion, warning and row-accounting policy
-as `fit_ols()`. With default unit trial weights, numeric outcomes must be exactly 0 or 1, including rows with
+`fit_logistic_matrix()` follows the same deletion, warning and row-accounting policy
+as `fit_ols_matrix()`. With default unit trial weights, numeric outcomes must be exactly 0 or 1, including rows with
 missing predictors. After deletion both classes must remain and n must exceed p;
 otherwise fitting fails. Its residuals are response residuals y - probability,
 and both residuals and fitted probabilities follow retained_rows order.
@@ -102,7 +102,7 @@ values, not missingness. Returned mean counts and residuals follow retained_rows
 
 ## Mixed-model group IDs
 
-fit_mixed_intercept() deletes a row if x, y or the group ID is missing. Group missingness
+fit_mixed_gaussian_intercept_matrix() deletes a row if x, y or the group ID is missing. Group missingness
 means null; NAN/float group IDs are invalid categorical labels and are rejected.
 Validation still covers every original value before deletion. Group labels and
 sizes describe the retained sample, and groups completely removed by deletion
@@ -121,7 +121,7 @@ otherwise be dropped. General mixed fits return one warning and original row
 positions just like the existing functions. These cases are tested in
 `tests/r-compatibility.php` and `tests/lmm-expanded.php`.
 
-`fit_logistic_mixed` applies the same policy across x, proportions, groups,
+`fit_mixed_logistic_matrix` applies the same policy across x, proportions, groups,
 trial counts and offsets. Trial counts above 1,000,000 are rejected before
 deleting rows. Near-integer success encodings within tolerance are canonicalized
 only after original validation and deletion; zero-success/zero-failure samples

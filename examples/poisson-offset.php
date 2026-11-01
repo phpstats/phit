@@ -4,7 +4,7 @@ declare(strict_types=1);
 $visitors = [82, 104, 96, 131, 87, 115, 142, 98];
 $days = [1, 2, 1, 3, 2, 1, 2, 3];
 $calls = [5, 12, 4, 22, 8, 8, 19, 16];
-$result = Phit\fit_poisson(
+$result = Phit\fit_poisson_matrix(
     x: array_map(fn($v) => [$v], $visitors),
     y: $calls,
     offset: array_map(fn($d) => log($d), $days),

@@ -9,7 +9,7 @@ while (($row = fgetcsv($file, escape: '')) !== false) {
     $y[] = (float) $row[2];
 }
 fclose($file);
-$result = Phit\fit_poisson(x: $x, y: $y);
+$result = Phit\fit_poisson_matrix(x: $x, y: $y);
 $labels = ['Intercept', 'Visitors', 'Staff'];
 printf("%-16s %12s %12s %12s %12s\n", 'Term', 'Estimate', 'Std. error', 'z', 'p-value');
 foreach ($result['coefficients'] as $j => $coefficient) {

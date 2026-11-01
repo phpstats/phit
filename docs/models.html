@@ -677,10 +677,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><code>fit_lm()</code> fits a linear model by least squares. <code>fit_glm()</code> fits a generalized linear model by maximum likelihood. Both take an R formula and named columns, as described in <a href="./formulas.html">Model formulas</a>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_lm(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
+<p><code>fit_ols()</code> fits a linear model by least squares. <code>fit_generalized_linear()</code> fits a generalized linear model by maximum likelihood. Both take an R formula and named columns, as described in <a href="./formulas.html">Model formulas</a>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Phit\fit_glm(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$family</span> <span class="op">=</span> <span class="st">'gaussian'</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$link</span> <span class="op">=</span> <span class="st">''</span><span class="ot">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Phit\fit_generalized_linear(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$family</span> <span class="op">=</span> <span class="st">'gaussian'</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$link</span> <span class="op">=</span> <span class="st">''</span><span class="ot">,</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="families-and-links" class="level2">
 <h2 class="anchored" data-anchor-id="families-and-links">Families and links</h2>
@@ -704,19 +704,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>gaussian</code></td>
 <td><code>identity</code></td>
 <td>Numbers</td>
-<td><code>fit_ols</code></td>
+<td><code>fit_ols_matrix</code></td>
 </tr>
 <tr class="even">
 <td><code>binomial</code></td>
 <td><code>logit</code> (default), <code>probit</code></td>
 <td>0/1 numbers, booleans, a factor or strings (first level is failure), proportions with integer trial weights, or <code>cbind(successes, failures)</code></td>
-<td><code>fit_logistic</code>, <code>fit_probit</code></td>
+<td><code>fit_logistic_matrix</code>, <code>fit_probit_matrix</code></td>
 </tr>
 <tr class="odd">
 <td><code>poisson</code></td>
 <td><code>log</code></td>
 <td>Nonnegative integer counts</td>
-<td><code>fit_poisson</code></td>
+<td><code>fit_poisson_matrix</code></td>
 </tr>
 </tbody>
 </table>
@@ -724,12 +724,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="linear-models" class="level2">
 <h2 class="anchored" data-anchor-id="linear-models">Linear models</h2>
-<p><code>fit_lm()</code> assumes independent errors with constant variance. Intervals and tests use Student’s t with <code>df_residual</code> degrees of freedom. The result has <code>t_statistics</code>, <code>rss</code>, <code>residual_variance</code>, <code>sigma</code>, <code>r_squared</code> and <code>adj_r_squared</code>. <a href="./getting-started.html">A first model</a> shows a complete fit and its output.</p>
-<p><code>fit_glm(family: 'gaussian')</code> returns the same fit plus <code>deviance</code>, <code>null_deviance</code> and <code>aic</code> as R’s <code>glm()</code> reports them.</p>
+<p><code>fit_ols()</code> assumes independent errors with constant variance. With <code>weights</code>, it fits weighted least squares, as <code>lm(weights = )</code> does: each squared residual is multiplied by its row’s weight. Intervals and tests use Student’s t with <code>df_residual</code> degrees of freedom. The result has <code>t_statistics</code>, <code>rss</code>, <code>residual_variance</code>, <code>sigma</code>, <code>r_squared</code> and <code>adj_r_squared</code>. <a href="./getting-started.html">A first model</a> shows a complete fit and its output.</p>
+<p><code>fit_generalized_linear(family: 'gaussian')</code> returns the same fit plus <code>deviance</code>, <code>null_deviance</code> and <code>aic</code> as R’s <code>glm()</code> reports them.</p>
 </section>
 <section id="logistic-and-probit-regression" class="level2">
 <h2 class="anchored" data-anchor-id="logistic-and-probit-regression">Logistic and probit regression</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_glm<span class="ot">,</span> predict}<span class="ot">;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_generalized_linear<span class="ot">,</span> predict}<span class="ot">;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">$leases</span> <span class="op">=</span> [</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'renewed'</span> =&gt; [<span class="dv">1</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span>]<span class="ot">,</span></span>
@@ -737,7 +737,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tenure'</span> =&gt; [<span class="dv">4</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">6</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">5</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">6</span><span class="ot">,</span> <span class="dv">4</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">2</span>]<span class="ot">,</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="va">$logit</span> <span class="op">=</span> fit_glm(<span class="st">'renewed ~ increase + tenure'</span><span class="ot">,</span> <span class="va">$leases</span><span class="ot">,</span> family<span class="ot">:</span> <span class="st">'binomial'</span>)<span class="ot">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="va">$logit</span> <span class="op">=</span> fit_generalized_linear(<span class="st">'renewed ~ increase + tenure'</span><span class="ot">,</span> <span class="va">$leases</span><span class="ot">,</span> family<span class="ot">:</span> <span class="st">'binomial'</span>)<span class="ot">;</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$logit</span>[<span class="st">'named'</span>] <span class="kw">as</span> <span class="va">$name</span> =&gt; <span class="va">$b</span>) <span class="fu">printf</span>(<span class="st">"%-12s %8.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$name</span><span class="ot">,</span> <span class="va">$b</span>)<span class="ot">;</span></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"deviance %.4f, null deviance %.4f, AIC %.4f, %d iterations</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="va">$logit</span>[<span class="st">'deviance'</span>]<span class="ot">,</span> <span class="va">$logit</span>[<span class="st">'null_deviance'</span>]<span class="ot">,</span> <span class="va">$logit</span>[<span class="st">'aic'</span>]<span class="ot">,</span> <span class="va">$logit</span>[<span class="st">'iterations'</span>])<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -746,7 +746,7 @@ increase      -1.0308
 tenure         1.3233
 deviance 10.5555, null deviance 21.9301, AIC 16.5555, 8 iterations</code></pre>
 <p>Coefficients are on the log-odds scale. A rent increase of one percentage point multiplies the odds of renewal by <code>exp(-1.0308)</code>, about 0.36. <code>link: 'probit'</code> fits the same model on the probit scale:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">$probit</span> <span class="op">=</span> fit_glm(<span class="st">'renewed ~ increase + tenure'</span><span class="ot">,</span> <span class="va">$leases</span><span class="ot">,</span> family<span class="ot">:</span> <span class="st">'binomial'</span><span class="ot">,</span> <span class="fu">link</span><span class="ot">:</span> <span class="st">'probit'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">$probit</span> <span class="op">=</span> fit_generalized_linear(<span class="st">'renewed ~ increase + tenure'</span><span class="ot">,</span> <span class="va">$leases</span><span class="ot">,</span> family<span class="ot">:</span> <span class="st">'binomial'</span><span class="ot">,</span> <span class="fu">link</span><span class="ot">:</span> <span class="st">'probit'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>(Intercept)    1.8063
 increase      -0.6257
 tenure         0.7672</code></pre>
@@ -767,14 +767,14 @@ tenure         0.7672</code></pre>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'plan'</span> =&gt; [<span class="st">'basic'</span><span class="ot">,</span> <span class="st">'pro'</span><span class="ot">,</span> <span class="st">'basic'</span><span class="ot">,</span> <span class="st">'pro'</span><span class="ot">,</span> <span class="st">'basic'</span><span class="ot">,</span> <span class="st">'basic'</span><span class="ot">,</span> <span class="st">'pro'</span><span class="ot">,</span> <span class="st">'basic'</span><span class="ot">,</span> <span class="st">'pro'</span><span class="ot">,</span> <span class="st">'pro'</span>]<span class="ot">,</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="va">$poisson</span> <span class="op">=</span> fit_glm(<span class="st">'tickets ~ plan + offset(log(months))'</span><span class="ot">,</span> <span class="va">$accounts</span><span class="ot">,</span> family<span class="ot">:</span> <span class="st">'poisson'</span>)<span class="ot">;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="va">$poisson</span> <span class="op">=</span> fit_generalized_linear(<span class="st">'tickets ~ plan + offset(log(months))'</span><span class="ot">,</span> <span class="va">$accounts</span><span class="ot">,</span> family<span class="ot">:</span> <span class="st">'poisson'</span>)<span class="ot">;</span></span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"rate ratio pro/basic %.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="fu">exp</span>(<span class="va">$poisson</span>[<span class="st">'named'</span>][<span class="st">'planpro'</span>]))<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>rate ratio pro/basic 2.0945</code></pre>
 <p>The coefficients are log rate ratios per month. The <code>(Intercept)</code> is -0.8755, a rate of <code>exp(-0.8755)</code>, about 0.42 tickets per month on the basic plan. Poisson fits have the same inference keys as binomial fits. The model assumes the variance equals the mean. Overdispersion is not estimated or corrected.</p>
 </section>
 <section id="result-keys" class="level2">
 <h2 class="anchored" data-anchor-id="result-keys">Result keys</h2>
-<p><code>fit_glm()</code> with the binomial or Poisson family returns:</p>
+<p><code>fit_generalized_linear()</code> with the binomial or Poisson family returns:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -825,7 +825,7 @@ tenure         0.7672</code></pre>
 </section>
 <section id="weights-and-offsets" class="level2">
 <h2 class="anchored" data-anchor-id="weights-and-offsets">Weights and offsets</h2>
-<p><code>weights</code> is an array aligned with the original rows, or the name of a numeric column. Weights must be positive, and a missing weight drops its row. For <code>fit_lm()</code> they are precision weights. For the binomial family they are integer trial counts, with the response given as proportions. Offsets are written in the formula with <code>offset(expr)</code>. Several offsets are added together.</p>
+<p><code>weights</code> is an array aligned with the original rows, or the name of a numeric column. Weights must be positive, and a missing weight drops its row. For <code>fit_ols()</code> they are precision weights. For the binomial family they are integer trial counts, with the response given as proportions. Offsets are written in the formula with <code>offset(expr)</code>. Several offsets are added together.</p>
 </section>
 <section id="differences-from-r" class="level2">
 <h2 class="anchored" data-anchor-id="differences-from-r">Differences from R</h2>
@@ -833,7 +833,7 @@ tenure         0.7672</code></pre>
 <li>A rank-deficient design throws code 1004. R reports aliased coefficients as <code>NA</code>.</li>
 <li>Zero weights are rejected. R gives such rows zero weight.</li>
 <li>Binomial and Poisson covariances are the inverse information at the final coefficients. R’s <code>vcov()</code> uses the IRLS weights of the iteration before the final one, so standard errors differ by about the size of R’s last step: 1.1e-7 relative for <code>am ~ wt + hp</code> on <code>mtcars</code>, up to about 1e-4 near separation. Refitting in R with <code>start = coef(fit)</code> gives phit’s value. <a href="./r-compatibility.html#evidence-and-tolerance-policy">R compatibility</a> has the details.</li>
-<li>Gaussian <code>fit_glm()</code> intervals use t, as <code>fit_lm()</code> does. R’s <code>confint.default()</code> uses z and <code>confint()</code> profiles the likelihood.</li>
+<li>Gaussian <code>fit_generalized_linear()</code> intervals use t, as <code>fit_ols()</code> does. R’s <code>confint.default()</code> uses z and <code>confint()</code> profiles the likelihood.</li>
 </ul>
 <p><a href="./formulas.html#differences-from-r">Model formulas</a> lists the remaining differences in formula handling.</p>
 

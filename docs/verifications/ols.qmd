@@ -53,7 +53,7 @@ print(fit.params, fit.bse, fit.tvalues, fit.pvalues, fit.conf_int(), fit.llf)
 ```php
 // The verification runner prepares a complete design from the shared housing CSV.
 // Each row of $x is [1.0, area_m2]; $y contains monthly_rent.
-$result = Phit\fit_ols(x: $x, y: $y, intercept: false);
+$result = Phit\fit_ols_matrix(x: $x, y: $y, intercept: false);
 ```
 
 These are synthetic apartments, not empirical housing records. The

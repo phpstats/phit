@@ -808,7 +808,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This example reads a CSV file with Polars, fits test scores with a random intercept for each school using <code>fit_lmer()</code>, and charts each school’s fitted line with phiz.</p>
+<p>This example reads a CSV file with Polars, fits test scores with a random intercept for each school using <code>fit_mixed_gaussian()</code>, and charts each school’s fitted line with phiz.</p>
 <p>Requires the phit extension (<a href="../installation.html">Installation</a>), the phpolars extension (<a href="https://phpolars.phpstats.org/docs/deployment">phpolars installation</a>), and phiz from Composer (<code>composer require phpstats/phiz</code>).</p>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
@@ -823,7 +823,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phiz\Plot<span class="ot">;</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\fit_lmer<span class="ot">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\fit_mixed_gaussian<span class="ot">;</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phpolars\scan_csv<span class="ot">;</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">// 1. Read three columns with Polars and copy them into PHP arrays once.</span></span>
@@ -833,7 +833,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span> <span class="op">=</span> <span class="va">$schools</span>-&gt;toColumns()<span class="ot">;</span></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">// 2. Fit a random intercept per school by REML. Keep the fitted values.</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_lmer(<span class="st">'score ~ study_hours + (1 | school)'</span><span class="ot">,</span> <span class="va">$data</span>)<span class="ot">;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_mixed_gaussian(<span class="st">'score ~ study_hours + (1 | school)'</span><span class="ot">,</span> <span class="va">$data</span>)<span class="ot">;</span></span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span>[<span class="st">'fitted'</span>] <span class="op">=</span> <span class="va">$fit</span>[<span class="st">'fitted'</span>]<span class="ot">;</span></span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$fit</span>[<span class="st">'columns'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$name</span>) {</span>
@@ -867,8 +867,8 @@ REML: school SD 4.568, residual SD 5.394
 <h2 class="anchored" data-anchor-id="explanation">Explanation</h2>
 <p>The script has three steps.</p>
 <ol type="1">
-<li><code>scan_csv()</code> starts a lazy query, <code>select()</code> keeps three of the file’s four columns, and <code>collect()</code> runs it. <code>toColumns()</code> copies the result into PHP arrays, one per column. <code>fit_lmer()</code> and <code>Plot::of()</code> both accept an object with <code>toColumns()</code> and would each call it themselves, so the script calls it once and passes the arrays to both.</li>
-<li><code>fit_lmer()</code> fits <code>score ~ study_hours + (1 | school)</code> by REML, as <code>lme4::lmer()</code> does by default. Within a school, each additional study hour is associated with a score about 2.3 points higher. School intercepts vary with a standard deviation of about 4.6 points around the average of 56.5 at zero hours. <code>fitted</code> holds the conditional fitted values, which include each school’s random intercept.</li>
+<li><code>scan_csv()</code> starts a lazy query, <code>select()</code> keeps three of the file’s four columns, and <code>collect()</code> runs it. <code>toColumns()</code> copies the result into PHP arrays, one per column. <code>fit_mixed_gaussian()</code> and <code>Plot::of()</code> both accept an object with <code>toColumns()</code> and would each call it themselves, so the script calls it once and passes the arrays to both.</li>
+<li><code>fit_mixed_gaussian()</code> fits <code>score ~ study_hours + (1 | school)</code> by REML, as <code>lme4::lmer()</code> does by default. Within a school, each additional study hour is associated with a score about 2.3 points higher. School intercepts vary with a standard deviation of about 4.6 points around the average of 56.5 at zero hours. <code>fitted</code> holds the conditional fitted values, which include each school’s random intercept.</li>
 <li>phiz draws every student as a point and joins each school’s fitted values into a line. The model gives every school the same slope, so the twelve lines are parallel and differ only by their intercepts. The script saves the chart as a standalone page, <code>schools.html</code>.</li>
 </ol>
 <p>See <a href="../examples/mixed-model.html">Fit a mixed model</a> for reading the variance components and school effects, <a href="../mixed-models.html">Mixed models</a> for the supported structures, phpolars’ <a href="https://phpolars.phpstats.org/docs/getting-started">Getting started</a> for lazy queries, and phiz’s <a href="https://phiz.phpstats.org/docs/get-started">Get started</a> for layers and aesthetics.</p>

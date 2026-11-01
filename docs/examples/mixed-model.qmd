@@ -2,7 +2,7 @@
 title: "Fit a mixed model"
 ---
 
-This example fits test scores on study hours with a random intercept for each school, using `fit_lmer()`, and reads the fixed effects, the variance components, and each school's estimated effect.
+This example fits test scores on study hours with a random intercept for each school, using `fit_mixed_gaussian()`, and reads the fixed effects, the variance components, and each school's estimated effect.
 
 Requires the phit extension ([Installation](../installation.qmd)) and a Composer project, for `vendor/autoload.php`.
 
@@ -16,7 +16,7 @@ The data are 30 simulated students, five from each of six schools. They are the 
 <?php
 require 'vendor/autoload.php';
 
-use function Phit\fit_lmer;
+use function Phit\fit_mixed_gaussian;
 
 $students = [
     'school' => array_merge(...array_map(fn ($s) => array_fill(0, 5, "school-0$s"), range(1, 6))),
@@ -26,7 +26,7 @@ $students = [
         63.7, 83.9, 52.8, 51.9, 57.1, 68.3, 67.6, 60.5, 81.6, 75.2, 81.5, 89.4, 60.7, 62.5, 68.6],
 ];
 
-$fit = fit_lmer('score ~ study_hours + (1 | school)', $students);
+$fit = fit_mixed_gaussian('score ~ study_hours + (1 | school)', $students);
 
 foreach ($fit['columns'] as $i => $name) {
     printf("%-12s %7.2f (se %.2f)\n", $name, $fit['coefficients'][$i], $fit['std_errors'][$i]);
@@ -67,6 +67,6 @@ school-06  +3.69 (se 2.07)
 - **Variance components.** School intercepts vary with a standard deviation of about 4.9 points. Students within a school vary around their school's line with a residual standard deviation of about 5.1 points.
 - **Group-level estimates.** `effects` holds each school's predicted random intercept, the conditional mode that R reports as `ranef()`. `school-04` is about 7.9 points below the average school at the same study hours. These estimates are shrunk toward zero, more so for smaller schools. Here every school has five students, so their conditional standard errors are equal.
 
-See [Mixed models](../mixed-models.qmd) for the supported structures, the full result, singular fits, and `fit_glmer()`.
+See [Mixed models](../mixed-models.qmd) for the supported structures, the full result, singular fits, and `fit_mixed_logistic()`.
 
 [Interactive version](https://phit.phpstats.org/vignettes/school-shrinkage)

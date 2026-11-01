@@ -3,7 +3,7 @@ title: "Poisson regression verification record"
 ---
 
 The [executed comparison](../notebooks/poisson-verification.qmd) fits identical
-observations in base R `glm()`, statsmodels `GLM`, and PHP `fit_poisson()`.
+observations in base R `glm()`, statsmodels `GLM`, and PHP `fit_poisson_matrix()`.
 The [saved report](poisson-results.json) records versions, complete outputs,
 maximum differences from R, warnings and retained-row metadata.
 

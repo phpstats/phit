@@ -3915,6 +3915,84 @@
             "mean"
         ]
     },
+    "Phit\\fit_generalized_linear": {
+        "parameters": [
+            {
+                "name": "formula",
+                "type": "string",
+                "optional": false
+            },
+            {
+                "name": "data",
+                "type": "mixed",
+                "optional": false
+            },
+            {
+                "name": "family",
+                "type": "string",
+                "optional": true,
+                "default": "gaussian"
+            },
+            {
+                "name": "link",
+                "type": "string",
+                "optional": true,
+                "default": ""
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "drop"
+            },
+            {
+                "name": "weights",
+                "type": "mixed",
+                "optional": true,
+                "default": null
+            }
+        ],
+        "return_type": "array",
+        "result_keys": [
+            "adj_r_squared",
+            "aic",
+            "assign",
+            "coefficients",
+            "columns",
+            "conf_int",
+            "converged",
+            "covariance",
+            "deviance",
+            "df_residual",
+            "diagnostics",
+            "dropped_rows",
+            "family",
+            "fitted",
+            "formula",
+            "intercept",
+            "iterations",
+            "link",
+            "log_likelihood",
+            "n_dropped",
+            "n_input",
+            "n_observations",
+            "named",
+            "null_deviance",
+            "p_values",
+            "predvars",
+            "r_squared",
+            "residual_variance",
+            "residuals",
+            "response",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "std_errors",
+            "t_statistics",
+            "terms",
+            "z_statistics"
+        ]
+    },
     "Phit\\fit_glm": {
         "parameters": [
             {
@@ -3953,6 +4031,7 @@
             }
         ],
         "return_type": "array",
+        "deprecated": "Phit\\fit_generalized_linear",
         "result_keys": [
             "adj_r_squared",
             "aic",
@@ -4049,6 +4128,7 @@
             }
         ],
         "return_type": "array",
+        "deprecated": "Phit\\fit_mixed_logistic",
         "result_keys": [
             "aic",
             "assign",
@@ -4127,6 +4207,7 @@
             }
         ],
         "return_type": "array",
+        "deprecated": "Phit\\fit_ols",
         "result_keys": [
             "adj_r_squared",
             "assign",
@@ -4221,6 +4302,7 @@
             }
         ],
         "return_type": "array",
+        "deprecated": "Phit\\fit_mixed_gaussian",
         "result_keys": [
             "aic",
             "assign",
@@ -4264,6 +4346,69 @@
         ]
     },
     "Phit\\fit_logistic": {
+        "parameters": [
+            {
+                "name": "x",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "y",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "drop"
+            },
+            {
+                "name": "weights",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "offset",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "intercept",
+                "type": "bool",
+                "optional": true,
+                "default": true
+            }
+        ],
+        "return_type": "array",
+        "deprecated": "Phit\\fit_logistic_matrix",
+        "result_keys": [
+            "aic",
+            "coefficients",
+            "conf_int",
+            "converged",
+            "covariance",
+            "deviance",
+            "df_residual",
+            "diagnostics",
+            "dropped_rows",
+            "fitted",
+            "iterations",
+            "log_likelihood",
+            "n_dropped",
+            "n_input",
+            "n_observations",
+            "null_deviance",
+            "p_values",
+            "residuals",
+            "retained_rows",
+            "std_errors",
+            "z_statistics"
+        ]
+    },
+    "Phit\\fit_logistic_matrix": {
         "parameters": [
             {
                 "name": "x",
@@ -4386,6 +4531,7 @@
             }
         ],
         "return_type": "array",
+        "deprecated": "Phit\\fit_mixed_logistic_matrix",
         "result_keys": [
             "aic",
             "bic",
@@ -4430,6 +4576,290 @@
         ]
     },
     "Phit\\fit_mixed": {
+        "parameters": [
+            {
+                "name": "x",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "y",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "random",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "drop"
+            },
+            {
+                "name": "reml",
+                "type": "bool",
+                "optional": true,
+                "default": false
+            },
+            {
+                "name": "weights",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "offset",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "start",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "maxEvaluations",
+                "type": "int",
+                "optional": true,
+                "default": 20000
+            },
+            {
+                "name": "tolerance",
+                "type": "float",
+                "optional": true,
+                "default": 1.0e-7
+            },
+            {
+                "name": "optimizer",
+                "type": "string",
+                "optional": true,
+                "default": "bobyqa"
+            },
+            {
+                "name": "objectiveTolerance",
+                "type": "float",
+                "optional": true,
+                "default": 1.0e-12
+            },
+            {
+                "name": "intercept",
+                "type": "bool",
+                "optional": true,
+                "default": true
+            }
+        ],
+        "return_type": "array",
+        "deprecated": "Phit\\fit_mixed_gaussian_matrix",
+        "result_keys": [
+            "aic",
+            "bic",
+            "coefficients",
+            "conf_int",
+            "converged",
+            "covariance",
+            "df_residual",
+            "diagnostics",
+            "dropped_rows",
+            "evaluations",
+            "fitted",
+            "fixed_fitted",
+            "log_likelihood",
+            "marginal_residuals",
+            "method",
+            "n_dropped",
+            "n_input",
+            "n_observations",
+            "n_parameters",
+            "optimizer",
+            "optimizer_implementation",
+            "p_values",
+            "random",
+            "residual_variance",
+            "residuals",
+            "retained_rows",
+            "sigma",
+            "singular",
+            "std_errors",
+            "theta",
+            "z_statistics"
+        ]
+    },
+    "Phit\\fit_mixed_gaussian": {
+        "parameters": [
+            {
+                "name": "formula",
+                "type": "string",
+                "optional": false
+            },
+            {
+                "name": "data",
+                "type": "mixed",
+                "optional": false
+            },
+            {
+                "name": "reml",
+                "type": "bool",
+                "optional": true,
+                "default": true
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "drop"
+            },
+            {
+                "name": "weights",
+                "type": "mixed",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "start",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "maxEvaluations",
+                "type": "int",
+                "optional": true,
+                "default": 20000
+            },
+            {
+                "name": "tolerance",
+                "type": "float",
+                "optional": true,
+                "default": 1.0e-7
+            },
+            {
+                "name": "optimizer",
+                "type": "string",
+                "optional": true,
+                "default": "bobyqa"
+            },
+            {
+                "name": "objectiveTolerance",
+                "type": "float",
+                "optional": true,
+                "default": 1.0e-12
+            }
+        ],
+        "return_type": "array",
+        "result_keys": [
+            "aic",
+            "assign",
+            "bic",
+            "coefficients",
+            "columns",
+            "conf_int",
+            "converged",
+            "covariance",
+            "df_residual",
+            "diagnostics",
+            "dropped_rows",
+            "evaluations",
+            "fitted",
+            "fixed_fitted",
+            "formula",
+            "intercept",
+            "log_likelihood",
+            "marginal_residuals",
+            "method",
+            "n_dropped",
+            "n_input",
+            "n_observations",
+            "n_parameters",
+            "named",
+            "optimizer",
+            "optimizer_implementation",
+            "p_values",
+            "predvars",
+            "random",
+            "residual_variance",
+            "residuals",
+            "response",
+            "retained_rows",
+            "sigma",
+            "singular",
+            "std_errors",
+            "terms",
+            "theta",
+            "z_statistics"
+        ]
+    },
+    "Phit\\fit_mixed_gaussian_intercept_matrix": {
+        "parameters": [
+            {
+                "name": "x",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "y",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "groups",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "drop"
+            },
+            {
+                "name": "intercept",
+                "type": "bool",
+                "optional": true,
+                "default": true
+            }
+        ],
+        "return_type": "array",
+        "result_keys": [
+            "aic",
+            "boundary",
+            "coefficients",
+            "conf_int",
+            "converged",
+            "covariance",
+            "df_residual",
+            "diagnostics",
+            "dropped_rows",
+            "evaluations",
+            "fitted",
+            "fixed_fitted",
+            "group_labels",
+            "group_sizes",
+            "icc",
+            "log_likelihood",
+            "marginal_residuals",
+            "method",
+            "n_dropped",
+            "n_groups",
+            "n_input",
+            "n_observations",
+            "p_values",
+            "random_effects",
+            "random_effects_cond_var",
+            "random_intercept_variance",
+            "residual_variance",
+            "residuals",
+            "retained_rows",
+            "sigma",
+            "std_errors",
+            "z_statistics"
+        ]
+    },
+    "Phit\\fit_mixed_gaussian_matrix": {
         "parameters": [
             {
                 "name": "x",
@@ -4573,6 +5003,7 @@
             }
         ],
         "return_type": "array",
+        "deprecated": "Phit\\fit_mixed_gaussian_intercept_matrix",
         "result_keys": [
             "aic",
             "boundary",
@@ -4608,7 +5039,291 @@
             "z_statistics"
         ]
     },
+    "Phit\\fit_mixed_logistic": {
+        "parameters": [
+            {
+                "name": "formula",
+                "type": "string",
+                "optional": false
+            },
+            {
+                "name": "data",
+                "type": "mixed",
+                "optional": false
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "drop"
+            },
+            {
+                "name": "weights",
+                "type": "mixed",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "quadraturePoints",
+                "type": "int",
+                "optional": true,
+                "default": 1
+            },
+            {
+                "name": "maxEvaluations",
+                "type": "int",
+                "optional": true,
+                "default": 20000
+            },
+            {
+                "name": "tolerance",
+                "type": "float",
+                "optional": true,
+                "default": 1.0e-7
+            }
+        ],
+        "return_type": "array",
+        "result_keys": [
+            "aic",
+            "assign",
+            "bic",
+            "boundary",
+            "coefficients",
+            "columns",
+            "conf_int",
+            "converged",
+            "covariance",
+            "df_residual",
+            "diagnostics",
+            "dropped_rows",
+            "evaluations",
+            "family",
+            "fitted",
+            "fixed_fitted",
+            "formula",
+            "gradient_max",
+            "group_labels",
+            "group_sizes",
+            "integration",
+            "intercept",
+            "linear_predictor",
+            "link",
+            "log_likelihood",
+            "method",
+            "n_dropped",
+            "n_groups",
+            "n_input",
+            "n_observations",
+            "n_parameters",
+            "named",
+            "neg2_log_likelihood",
+            "optimizer",
+            "p_values",
+            "predvars",
+            "quadrature_points",
+            "random",
+            "random_effects",
+            "random_effects_cond_var",
+            "random_intercept_sd",
+            "random_intercept_variance",
+            "residuals",
+            "response",
+            "retained_rows",
+            "singular",
+            "std_errors",
+            "terms",
+            "z_statistics"
+        ]
+    },
+    "Phit\\fit_mixed_logistic_matrix": {
+        "parameters": [
+            {
+                "name": "x",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "y",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "groups",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "drop"
+            },
+            {
+                "name": "weights",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "offset",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "quadraturePoints",
+                "type": "int",
+                "optional": true,
+                "default": 1
+            },
+            {
+                "name": "maxEvaluations",
+                "type": "int",
+                "optional": true,
+                "default": 20000
+            },
+            {
+                "name": "tolerance",
+                "type": "float",
+                "optional": true,
+                "default": 1.0e-7
+            },
+            {
+                "name": "intercept",
+                "type": "bool",
+                "optional": true,
+                "default": true
+            }
+        ],
+        "return_type": "array",
+        "result_keys": [
+            "aic",
+            "bic",
+            "boundary",
+            "coefficients",
+            "conf_int",
+            "converged",
+            "covariance",
+            "df_residual",
+            "diagnostics",
+            "dropped_rows",
+            "evaluations",
+            "family",
+            "fitted",
+            "fixed_fitted",
+            "gradient_max",
+            "group_labels",
+            "group_sizes",
+            "integration",
+            "linear_predictor",
+            "link",
+            "log_likelihood",
+            "method",
+            "n_dropped",
+            "n_groups",
+            "n_input",
+            "n_observations",
+            "n_parameters",
+            "neg2_log_likelihood",
+            "optimizer",
+            "p_values",
+            "quadrature_points",
+            "random_effects",
+            "random_effects_cond_var",
+            "random_intercept_sd",
+            "random_intercept_variance",
+            "residuals",
+            "retained_rows",
+            "singular",
+            "std_errors",
+            "z_statistics"
+        ]
+    },
     "Phit\\fit_ols": {
+        "parameters": [
+            {
+                "name": "formula",
+                "type": "mixed",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "data",
+                "type": "mixed",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "drop"
+            },
+            {
+                "name": "weights",
+                "type": "mixed",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "offset",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "intercept",
+                "type": "bool",
+                "optional": true,
+                "default": true
+            },
+            {
+                "name": "x",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "y",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            }
+        ],
+        "return_type": "array",
+        "result_keys": [
+            "adj_r_squared",
+            "assign",
+            "coefficients",
+            "columns",
+            "conf_int",
+            "covariance",
+            "df_residual",
+            "diagnostics",
+            "dropped_rows",
+            "fitted",
+            "formula",
+            "intercept",
+            "log_likelihood",
+            "n_dropped",
+            "n_input",
+            "n_observations",
+            "named",
+            "p_values",
+            "predvars",
+            "r_squared",
+            "residual_variance",
+            "residuals",
+            "response",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "std_errors",
+            "t_statistics",
+            "terms"
+        ]
+    },
+    "Phit\\fit_ols_matrix": {
         "parameters": [
             {
                 "name": "x",
@@ -4708,6 +5423,69 @@
             }
         ],
         "return_type": "array",
+        "deprecated": "Phit\\fit_poisson_matrix",
+        "result_keys": [
+            "aic",
+            "coefficients",
+            "conf_int",
+            "converged",
+            "covariance",
+            "deviance",
+            "df_residual",
+            "diagnostics",
+            "dropped_rows",
+            "fitted",
+            "iterations",
+            "log_likelihood",
+            "n_dropped",
+            "n_input",
+            "n_observations",
+            "null_deviance",
+            "p_values",
+            "residuals",
+            "retained_rows",
+            "std_errors",
+            "z_statistics"
+        ]
+    },
+    "Phit\\fit_poisson_matrix": {
+        "parameters": [
+            {
+                "name": "x",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "y",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "drop"
+            },
+            {
+                "name": "weights",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "offset",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "intercept",
+                "type": "bool",
+                "optional": true,
+                "default": true
+            }
+        ],
+        "return_type": "array",
         "result_keys": [
             "aic",
             "coefficients",
@@ -4733,6 +5511,69 @@
         ]
     },
     "Phit\\fit_probit": {
+        "parameters": [
+            {
+                "name": "x",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "y",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "drop"
+            },
+            {
+                "name": "weights",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "offset",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "intercept",
+                "type": "bool",
+                "optional": true,
+                "default": true
+            }
+        ],
+        "return_type": "array",
+        "deprecated": "Phit\\fit_probit_matrix",
+        "result_keys": [
+            "aic",
+            "coefficients",
+            "conf_int",
+            "converged",
+            "covariance",
+            "deviance",
+            "df_residual",
+            "diagnostics",
+            "dropped_rows",
+            "fitted",
+            "iterations",
+            "log_likelihood",
+            "n_dropped",
+            "n_input",
+            "n_observations",
+            "null_deviance",
+            "p_values",
+            "residuals",
+            "retained_rows",
+            "std_errors",
+            "z_statistics"
+        ]
+    },
+    "Phit\\fit_probit_matrix": {
         "parameters": [
             {
                 "name": "x",

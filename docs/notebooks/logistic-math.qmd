@@ -5,7 +5,7 @@ jupyter: python3
 
 This executable walkthrough uses saved **simulated students**, not real student
 records. It derives the Bernoulli likelihood, shows the matrices and dot products,
-and follows Newton/IRLS iterations to the result returned by `fit_logistic()`.
+and follows Newton/IRLS iterations to the result returned by `fit_logistic_matrix()`.
 Production calculations live in `crates/stats-core/src/logistic.rs`; Python here
 makes the intermediate values visible. See [setup](index.qmd).
 

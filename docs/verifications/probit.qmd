@@ -3,7 +3,7 @@ title: "Probit regression verification record"
 ---
 
 The [executed comparison](../notebooks/probit-verification.qmd) fits identical
-observations in base R `glm()`, statsmodels `GLM`, and PHP `fit_probit()`.
+observations in base R `glm()`, statsmodels `GLM`, and PHP `fit_probit_matrix()`.
 The [saved report](probit-results.json) records versions, complete outputs,
 maximum differences from R, warnings and retained-row metadata.
 

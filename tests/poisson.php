@@ -13,7 +13,7 @@ function lcompare(mixed $actual, mixed $expected, string $label): void {
 }
 $fixture = json_decode(file_get_contents(__DIR__ . '/fixtures/poisson-r.json'), true, flags: JSON_THROW_ON_ERROR);
 foreach ($fixture['cases'] as $case) {
-    $result = Phit\fit_poisson(x: $case['x'], y: $case['y'], intercept: false);
+    $result = Phit\fit_poisson_matrix(x: $case['x'], y: $case['y'], intercept: false);
     foreach ($case['expected'] as $key => $expected) lcompare($result[$key], $expected, $case['name'] . '/' . $key);
     lcheck($result['converged'] === true && $result['iterations'] > 0 && $result['iterations'] <= 100, 'convergence metadata');
 }
@@ -31,7 +31,7 @@ foreach ([
     [[[1], [null], [1]], [0,1,0]],
 ] as [$x,$y]) {
     $thrown = false;
-    try { Phit\fit_poisson(x: $x, y: $y, intercept: false); } catch (Throwable $e) { $thrown = true; }
+    try { Phit\fit_poisson_matrix(x: $x, y: $y, intercept: false); } catch (Throwable $e) { $thrown = true; }
     lcheck($thrown, 'invalid or separated input must throw');
 }
 $x = $fixture['cases'][0]['x']; $y = $fixture['cases'][0]['y'];
@@ -40,24 +40,24 @@ $warnings = [];
 set_error_handler(function (int $severity, string $message) use (&$warnings): bool {
     $warnings[] = [$severity,$message]; return true;
 });
-try { $result = Phit\fit_poisson($x,$y, intercept: false); } finally { restore_error_handler(); }
+try { $result = Phit\fit_poisson_matrix($x,$y, intercept: false); } finally { restore_error_handler(); }
 $completeX = $completeY = [];
 foreach ($x as $i => $row) if (!in_array($i,[1,4],true)) { $completeX[] = $row; $completeY[] = $y[$i]; }
-$complete = Phit\fit_poisson($completeX,$completeY, intercept: false);
+$complete = Phit\fit_poisson_matrix($completeX,$completeY, intercept: false);
 lcompare($result['coefficients'],$complete['coefficients'],'complete-case coefficients');
 lcompare($result['fitted'],$complete['fitted'],'complete-case fitted');
 lcheck(count($warnings) === 1 && $warnings[0][0] === E_WARNING, 'one native missing-data warning');
-lcheck(str_contains($warnings[0][1],'Phit\fit_poisson dropped 2 of 120'), 'warning names function/counts');
+lcheck(str_contains($warnings[0][1],'Phit\fit_poisson_matrix dropped 2 of 120'), 'warning names function/counts');
 lcheck($result['dropped_rows'] === [1,4], 'original dropped row positions');
 lcheck($result['retained_rows'] === array_values(array_diff(range(0,119),[1,4])), 'retained row positions');
 lcheck($result['n_input'] === 120 && $result['n_observations'] === 118 && $result['df_residual'] === 115, 'retained sample accounting');
 foreach (['raise','unknown'] as $policy) {
     $thrown = false;
-    try { Phit\fit_poisson($x,$y,$policy, intercept: false); } catch (Throwable $e) { $thrown = true; }
+    try { Phit\fit_poisson_matrix($x,$y,$policy, intercept: false); } catch (Throwable $e) { $thrown = true; }
     lcheck($thrown,'missing policy must throw');
 }
 set_error_handler(function (int $severity, string $message): never { throw new ErrorException($message,0,$severity); });
 $thrown = false;
-try { Phit\fit_poisson($x,$y, intercept: false); } catch (ErrorException $e) { $thrown = true; } finally { restore_error_handler(); }
+try { Phit\fit_poisson_matrix($x,$y, intercept: false); } catch (ErrorException $e) { $thrown = true; } finally { restore_error_handler(); }
 lcheck($thrown,'warning promotion');
 echo "PHP poisson integration tests passed\n";

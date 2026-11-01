@@ -2,7 +2,7 @@
 title: "Fit logistic and Poisson models"
 ---
 
-This example fits a logistic regression to a binary outcome and a Poisson regression to counts with an exposure offset, both with `fit_glm()`.
+This example fits a logistic regression to a binary outcome and a Poisson regression to counts with an exposure offset, both with `fit_generalized_linear()`.
 
 Requires the phit extension ([Installation](../installation.qmd)) and a Composer project, for `vendor/autoload.php`.
 
@@ -16,7 +16,7 @@ Both data sets are small, made up, and inline. `$leases` records whether 16 tena
 <?php
 require 'vendor/autoload.php';
 
-use function Phit\{fit_glm, predict};
+use function Phit\{fit_generalized_linear, predict};
 
 // Lease renewals: renewed (1 or 0), rent increase in percent, and tenure in years.
 $leases = [
@@ -25,7 +25,7 @@ $leases = [
     'tenure' => [4, 2, 1, 6, 3, 1, 5, 2, 3, 1, 2, 6, 4, 3, 1, 2],
 ];
 
-$logit = fit_glm('renewed ~ increase + tenure', $leases, family: 'binomial');
+$logit = fit_generalized_linear('renewed ~ increase + tenure', $leases, family: 'binomial');
 echo "Logistic regression (log odds)\n";
 foreach ($logit['columns'] as $i => $name) {
     printf("%-12s %7.3f (se %.3f)  odds ratio %.3f\n", $name, $logit['coefficients'][$i],
@@ -41,7 +41,7 @@ $accounts = [
     'plan' => ['basic', 'pro', 'basic', 'pro', 'basic', 'basic', 'pro', 'basic', 'pro', 'pro'],
 ];
 
-$poisson = fit_glm('tickets ~ plan + offset(log(months))', $accounts, family: 'poisson');
+$poisson = fit_generalized_linear('tickets ~ plan + offset(log(months))', $accounts, family: 'poisson');
 echo "Poisson regression (log rate per month)\n";
 foreach ($poisson['columns'] as $i => $name) {
     printf("%-12s %7.3f (se %.3f)  rate ratio %.3f\n", $name, $poisson['coefficients'][$i],

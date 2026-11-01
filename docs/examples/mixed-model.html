@@ -674,7 +674,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This example fits test scores on study hours with a random intercept for each school, using <code>fit_lmer()</code>, and reads the fixed effects, the variance components, and each school’s estimated effect.</p>
+<p>This example fits test scores on study hours with a random intercept for each school, using <code>fit_mixed_gaussian()</code>, and reads the fixed effects, the variance components, and each school’s estimated effect.</p>
 <p>Requires the phit extension (<a href="../installation.html">Installation</a>) and a Composer project, for <code>vendor/autoload.php</code>.</p>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
@@ -685,7 +685,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;?php</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">require</span> <span class="st">'vendor/autoload.php'</span><span class="ot">;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\fit_lmer<span class="ot">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\fit_mixed_gaussian<span class="ot">;</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">$students</span> <span class="op">=</span> [</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'school'</span> =&gt; <span class="fu">array_merge</span>(...<span class="fu">array_map</span>(<span class="kw">fn</span> (<span class="va">$s</span>) =&gt; <span class="fu">array_fill</span>(<span class="dv">0</span><span class="ot">,</span> <span class="dv">5</span><span class="ot">,</span> <span class="st">"school-0</span><span class="va">$s</span><span class="st">"</span>)<span class="ot">,</span> <span class="fu">range</span>(<span class="dv">1</span><span class="ot">,</span> <span class="dv">6</span>)))<span class="ot">,</span></span>
@@ -695,7 +695,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="fl">63.7</span><span class="ot">,</span> <span class="fl">83.9</span><span class="ot">,</span> <span class="fl">52.8</span><span class="ot">,</span> <span class="fl">51.9</span><span class="ot">,</span> <span class="fl">57.1</span><span class="ot">,</span> <span class="fl">68.3</span><span class="ot">,</span> <span class="fl">67.6</span><span class="ot">,</span> <span class="fl">60.5</span><span class="ot">,</span> <span class="fl">81.6</span><span class="ot">,</span> <span class="fl">75.2</span><span class="ot">,</span> <span class="fl">81.5</span><span class="ot">,</span> <span class="fl">89.4</span><span class="ot">,</span> <span class="fl">60.7</span><span class="ot">,</span> <span class="fl">62.5</span><span class="ot">,</span> <span class="fl">68.6</span>]<span class="ot">,</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_lmer(<span class="st">'score ~ study_hours + (1 | school)'</span><span class="ot">,</span> <span class="va">$students</span>)<span class="ot">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_mixed_gaussian(<span class="st">'score ~ study_hours + (1 | school)'</span><span class="ot">,</span> <span class="va">$students</span>)<span class="ot">;</span></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$fit</span>[<span class="st">'columns'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$name</span>) {</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%-12s %7.2f (se %.2f)</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$name</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'coefficients'</span>][<span class="va">$i</span>]<span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'std_errors'</span>][<span class="va">$i</span>])<span class="ot">;</span></span>
@@ -733,7 +733,7 @@ school-06  +3.69 (se 2.07)</code></pre>
 <li><strong>Variance components.</strong> School intercepts vary with a standard deviation of about 4.9 points. Students within a school vary around their school’s line with a residual standard deviation of about 5.1 points.</li>
 <li><strong>Group-level estimates.</strong> <code>effects</code> holds each school’s predicted random intercept, the conditional mode that R reports as <code>ranef()</code>. <code>school-04</code> is about 7.9 points below the average school at the same study hours. These estimates are shrunk toward zero, more so for smaller schools. Here every school has five students, so their conditional standard errors are equal.</li>
 </ul>
-<p>See <a href="../mixed-models.html">Mixed models</a> for the supported structures, the full result, singular fits, and <code>fit_glmer()</code>.</p>
+<p>See <a href="../mixed-models.html">Mixed models</a> for the supported structures, the full result, singular fits, and <code>fit_mixed_logistic()</code>.</p>
 <p><a href="https://phit.phpstats.org/vignettes/school-shrinkage">Interactive version</a></p>
 
 

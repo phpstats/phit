@@ -3,7 +3,7 @@ title: "Gaussian random-intercept ML verification record"
 ---
 
 The [executed comparison](../notebooks/lmm-verification.qmd) fits identical
-observations in R lme4 ML, Python statsmodels MixedLM ML and PHP fit_mixed_intercept.
+observations in R lme4 ML, Python statsmodels MixedLM ML and PHP fit_mixed_gaussian_intercept_matrix.
 The [saved report](lmm-results.json) records versions, full outputs, Python
 warnings/backend, covariance convention and differences from R.
 

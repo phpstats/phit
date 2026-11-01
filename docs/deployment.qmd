@@ -14,7 +14,7 @@ this page covers PHP-FPM, containers and manual builds.
   `phpversion('phit')`, `get_extension_funcs('phit')` and Composer's `ext-phit`.
 - Installed module: `phit.so`. A direct Cargo build produces `libphit.so` on
   Linux and `libphit.dylib` on macOS; they are the same extension.
-- Functions are in the `Phit` namespace, such as `Phit\fit_lm`.
+- Functions are in the `Phit` namespace, such as `Phit\fit_ols`.
 
 ## Supported targets
 

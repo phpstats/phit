@@ -674,7 +674,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This example fits monthly rent on floor area and district with <code>fit_lm()</code>, then predicts the rent of two new flats with 95% prediction intervals.</p>
+<p>This example fits monthly rent on floor area and district with <code>fit_ols()</code>, then predicts the rent of two new flats with 95% prediction intervals.</p>
 <p>Requires the phit extension (<a href="../installation.html">Installation</a>) and a Composer project, for <code>vendor/autoload.php</code>.</p>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
@@ -685,7 +685,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;?php</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">require</span> <span class="st">'vendor/autoload.php'</span><span class="ot">;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_lm<span class="ot">,</span> predict}<span class="ot">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_ols<span class="ot">,</span> predict}<span class="ot">;</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">$flats</span> <span class="op">=</span> [</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rent'</span> =&gt; [<span class="fl">1879.25</span><span class="ot">,</span> <span class="fl">1805.03</span><span class="ot">,</span> <span class="fl">2022.29</span><span class="ot">,</span> <span class="fl">1267.85</span><span class="ot">,</span> <span class="fl">1509.24</span><span class="ot">,</span> <span class="fl">2240.10</span><span class="ot">,</span> <span class="fl">959.51</span><span class="ot">,</span> <span class="fl">2386.54</span><span class="ot">,</span> <span class="fl">1655.80</span><span class="ot">,</span> <span class="fl">1420.00</span>]<span class="ot">,</span></span>
@@ -693,7 +693,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'district'</span> =&gt; [<span class="st">'north'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span>]<span class="ot">,</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_lm(<span class="st">'rent ~ area + district'</span><span class="ot">,</span> <span class="va">$flats</span>)<span class="ot">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_ols(<span class="st">'rent ~ area + district'</span><span class="ot">,</span> <span class="va">$flats</span>)<span class="ot">;</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$fit</span>[<span class="st">'columns'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$name</span>) {</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%-14s %8.2f (se %6.2f)  95%% CI [%8.2f, %8.2f]</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$name</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'coefficients'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
@@ -721,7 +721,7 @@ R-squared 0.927, residual SD 146.29, 10 flats
 </section>
 <section id="explanation" class="level2">
 <h2 class="anchored" data-anchor-id="explanation">Explanation</h2>
-<p><code>fit_lm()</code> takes an R formula and named columns. <code>district</code> is a string column, so it becomes a factor with <code>east</code> as the reference level. Among flats in the same district, each additional square meter is associated with a monthly rent about 19.18 units higher (95% CI 11.27 to 27.09). The district coefficients are differences from <code>east</code> for flats of the same area, and with ten flats their intervals include zero.</p>
+<p><code>fit_ols()</code> takes an R formula and named columns. <code>district</code> is a string column, so it becomes a factor with <code>east</code> as the reference level. Among flats in the same district, each additional square meter is associated with a monthly rent about 19.18 units higher (95% CI 11.27 to 27.09). The district coefficients are differences from <code>east</code> for flats of the same area, and with ten flats their intervals include zero.</p>
 <p><code>predict()</code> evaluates the fit on new rows. <code>interval: 'prediction'</code> gives an interval for the rent of a single new flat, which is wider than the interval for the mean (<code>interval: 'confidence'</code>).</p>
 <p>See <a href="../getting-started.html">A first model</a> for the full result array, <a href="../models.html">Linear and generalized linear models</a>, and <a href="../formulas.html">Model formulas</a>.</p>
 

@@ -2,14 +2,14 @@
 title: "Linear and generalized linear models"
 ---
 
-`fit_lm()` fits a linear model by least squares. `fit_glm()` fits a
+`fit_ols()` fits a linear model by least squares. `fit_generalized_linear()` fits a
 generalized linear model by maximum likelihood. Both take an R formula and
 named columns, as described in [Model formulas](formulas.qmd).
 
 ```php
-Phit\fit_lm(string $formula, array|object $data, string $missing = 'drop',
+Phit\fit_ols(string $formula, array|object $data, string $missing = 'drop',
     array|string|null $weights = null): array;
-Phit\fit_glm(string $formula, array|object $data, string $family = 'gaussian', string $link = '',
+Phit\fit_generalized_linear(string $formula, array|object $data, string $family = 'gaussian', string $link = '',
     string $missing = 'drop', array|string|null $weights = null): array;
 ```
 
@@ -17,9 +17,9 @@ Phit\fit_glm(string $formula, array|object $data, string $family = 'gaussian', s
 
 | Family | Links | Response | Matrix function |
 | --- | --- | --- | --- |
-| `gaussian` | `identity` | Numbers | `fit_ols` |
-| `binomial` | `logit` (default), `probit` | 0/1 numbers, booleans, a factor or strings (first level is failure), proportions with integer trial weights, or `cbind(successes, failures)` | `fit_logistic`, `fit_probit` |
-| `poisson` | `log` | Nonnegative integer counts | `fit_poisson` |
+| `gaussian` | `identity` | Numbers | `fit_ols_matrix` |
+| `binomial` | `logit` (default), `probit` | 0/1 numbers, booleans, a factor or strings (first level is failure), proportions with integer trial weights, or `cbind(successes, failures)` | `fit_logistic_matrix`, `fit_probit_matrix` |
+| `poisson` | `log` | Nonnegative integer counts | `fit_poisson_matrix` |
 
 An empty `link` selects the canonical link. Any other family or link throws an
 `Exception` with code 1007, such as `family 'gamma' is not supported; use
@@ -27,19 +27,21 @@ gaussian, binomial or poisson`.
 
 ## Linear models
 
-`fit_lm()` assumes independent errors with constant variance. Intervals and
+`fit_ols()` assumes independent errors with constant variance. With `weights`,
+it fits weighted least squares, as `lm(weights = )` does: each squared residual
+is multiplied by its row's weight. Intervals and
 tests use Student's t with `df_residual` degrees of freedom. The result has
 `t_statistics`, `rss`, `residual_variance`, `sigma`, `r_squared` and
 `adj_r_squared`. [A first model](getting-started.qmd) shows a complete fit and
 its output.
 
-`fit_glm(family: 'gaussian')` returns the same fit plus `deviance`,
+`fit_generalized_linear(family: 'gaussian')` returns the same fit plus `deviance`,
 `null_deviance` and `aic` as R's `glm()` reports them.
 
 ## Logistic and probit regression
 
 ```php
-use function Phit\{fit_glm, predict};
+use function Phit\{fit_generalized_linear, predict};
 
 $leases = [
     'renewed' => [1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0],
@@ -47,7 +49,7 @@ $leases = [
     'tenure' => [4, 2, 1, 6, 3, 1, 5, 2, 3, 1, 2, 6, 4, 3, 1, 2],
 ];
 
-$logit = fit_glm('renewed ~ increase + tenure', $leases, family: 'binomial');
+$logit = fit_generalized_linear('renewed ~ increase + tenure', $leases, family: 'binomial');
 foreach ($logit['named'] as $name => $b) printf("%-12s %8.4f\n", $name, $b);
 printf("deviance %.4f, null deviance %.4f, AIC %.4f, %d iterations\n",
     $logit['deviance'], $logit['null_deviance'], $logit['aic'], $logit['iterations']);
@@ -65,7 +67,7 @@ point multiplies the odds of renewal by `exp(-1.0308)`, about 0.36.
 `link: 'probit'` fits the same model on the probit scale:
 
 ```php
-$probit = fit_glm('renewed ~ increase + tenure', $leases, family: 'binomial', link: 'probit');
+$probit = fit_generalized_linear('renewed ~ increase + tenure', $leases, family: 'binomial', link: 'probit');
 ```
 
 ```
@@ -109,7 +111,7 @@ $accounts = [
     'plan' => ['basic', 'pro', 'basic', 'pro', 'basic', 'basic', 'pro', 'basic', 'pro', 'pro'],
 ];
 
-$poisson = fit_glm('tickets ~ plan + offset(log(months))', $accounts, family: 'poisson');
+$poisson = fit_generalized_linear('tickets ~ plan + offset(log(months))', $accounts, family: 'poisson');
 printf("rate ratio pro/basic %.4f\n", exp($poisson['named']['planpro']));
 ```
 
@@ -125,7 +127,7 @@ corrected.
 
 ## Result keys
 
-`fit_glm()` with the binomial or Poisson family returns:
+`fit_generalized_linear()` with the binomial or Poisson family returns:
 
 | Key | Contents |
 | --- | --- |
@@ -146,7 +148,7 @@ convergence rule.
 
 `weights` is an array aligned with the original rows, or the name of a numeric
 column. Weights must be positive, and a missing weight drops its row. For
-`fit_lm()` they are precision weights. For the binomial family they are
+`fit_ols()` they are precision weights. For the binomial family they are
 integer trial counts, with the response given as proportions. Offsets are
 written in the formula with `offset(expr)`. Several offsets are added
 together.
@@ -163,7 +165,7 @@ together.
   near separation. Refitting in R with `start = coef(fit)` gives phit's value.
   [R compatibility](r-compatibility.qmd#evidence-and-tolerance-policy) has the
   details.
-- Gaussian `fit_glm()` intervals use t, as `fit_lm()` does. R's
+- Gaussian `fit_generalized_linear()` intervals use t, as `fit_ols()` does. R's
   `confint.default()` uses z and `confint()` profiles the likelihood.
 
 [Model formulas](formulas.qmd#differences-from-r) lists the remaining

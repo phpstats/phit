@@ -7,7 +7,7 @@ seven operations each, and scalar plus native `_array` forms, plus 13 explicitly
 [seeded batch sampling functions](rng.qmd). Uniform, categorical and
 permutation samplers have no probability functions and are described there. These return ordinary
 PHP numbers and arrays. Distribution evaluation is separate from regression fitting;
-`fit_poisson()` still fits a count model, while `dist_poisson_pmf()` evaluates a
+`fit_poisson_matrix()` still fits a count model, while `dist_poisson_pmf()` evaluates a
 specified Poisson distribution. [Descriptive statistics](descriptive.qmd) add ten
 functions for supplied numeric slices. [Posterior-draw kernels](draw-numerics.qmd)
 handle literal draw matrices.

@@ -3,7 +3,7 @@ title: "Binary logistic regression verification record"
 ---
 
 The [executed comparison](../notebooks/logistic-verification.qmd) fits identical
-observations in base R `glm()`, statsmodels `Logit`, and PHP `fit_logistic()`.
+observations in base R `glm()`, statsmodels `Logit`, and PHP `fit_logistic_matrix()`.
 The [saved report](logistic-results.json) records versions, complete outputs,
 maximum differences from R, warnings and retained-row metadata.
 

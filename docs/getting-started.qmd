@@ -18,7 +18,7 @@ of `column => list of values`, with every column the same length.
 phibble's `DataFrame` is also accepted, through its `toModelData()` method.
 
 ```php
-use function Phit\{fit_lm, predict};
+use function Phit\{fit_ols, predict};
 
 $flats = [
     'rent' => [1879.25, 1805.03, 2022.29, 1267.85, 1509.24, 2240.10, 959.51, 2386.54, 1655.80, 1420.00],
@@ -34,7 +34,7 @@ lists every accepted column type.
 ## Fit
 
 ```php
-$fit = fit_lm('rent ~ area + district', $flats);
+$fit = fit_ols('rent ~ area + district', $flats);
 ```
 
 The formula follows R: `rent` is the response, and `area + district` adds a
@@ -87,7 +87,7 @@ R-squared 0.9270, sigma 146.29, 6 residual df, 10 of 10 rows
 {"converged":true,"solver":"scaled_svd","warnings":[]}
 ```
 
-`fit_glm`, `fit_lmer` and `fit_glmer` return the same naming and accounting
+`fit_generalized_linear`, `fit_mixed_gaussian` and `fit_mixed_logistic` return the same naming and accounting
 keys, with the statistics of their model. [Linear and generalized linear
 models](models.qmd) and [mixed models](mixed-models.qmd) list them.
 
@@ -120,7 +120,7 @@ column the formula uses is dropped, and the fit emits one `E_WARNING`. With
 `rent` set to `null` in the third row:
 
 ```
-Warning: Phit\fit_lm(): Phit\fit_lm dropped 1 of 10 observations with missing values (listwise deletion)
+Warning: Phit\fit_ols(): Phit\fit_ols dropped 1 of 10 observations with missing values (listwise deletion)
 ```
 
 The result then reports `n_observations` 9, `n_input` 10 and `dropped_rows`

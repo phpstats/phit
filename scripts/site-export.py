@@ -189,8 +189,8 @@ def manifest(benchmarks, verifications):
         'title': 'phit',
         'tagline': 'Regression, mixed models and probability distributions for PHP.',
         'summary': 'phit is a PHP extension, written in Rust, for regression and mixed models, probability '
-                   'distributions and descriptive statistics. Models are written as R formulas (fit_lm, fit_glm, '
-                   'fit_lmer, fit_glmer, predict), and results are plain PHP arrays.',
+                   'distributions and descriptive statistics. Models are written as R formulas (fit_ols, fit_generalized_linear, '
+                   'fit_mixed_gaussian, fit_mixed_logistic, predict), and results are plain PHP arrays.',
         'install': ['pie install phpstats/phit'],
         'php': ['8.3', '8.4', '8.5'],
         'requires': ['PIE', 'unzip or the PHP zip extension', 'NTS (non-thread-safe) PHP'],
@@ -204,8 +204,8 @@ def manifest(benchmarks, verifications):
         'quickstart': 'getting-started',
         'repository': 'https://github.com/phpstats/phit',
         'example': {
-            'chain': "use function Phit\\{fit_lm, predict};\n\n"
-                     "$fit = fit_lm('monthly_rent ~ area_m2 + bedrooms', $housing);\n"
+            'chain': "use function Phit\\{fit_ols, predict};\n\n"
+                     "$fit = fit_ols('monthly_rent ~ area_m2 + bedrooms', $housing);\n"
                      "$fit['named'];  // ['(Intercept)' => ..., 'area_m2' => ..., 'bedrooms' => ...]\n\n"
                      "$p = predict($fit, ['area_m2' => [60, 90], 'bedrooms' => [1, 3]], interval: 'prediction');\n"
                      "$p['fit'];      // point predictions; $p['lower'], $p['upper'] give 95% intervals",
@@ -256,7 +256,7 @@ def manifest(benchmarks, verifications):
             {'path': 'examples/distributions', 'title': 'Densities, quantiles, and random draws',
              'description': "Evaluates normal densities and quantiles, compares Student's t with the normal, and draws seeded samples."},
             {'path': 'examples/polars-mixed-model', 'title': 'Fit a mixed model to a Polars table and chart it',
-             'description': "Reads a CSV file with phpolars, fits a random intercept per school with fit_lmer, and charts each school's fitted line with phiz.",
+             'description': "Reads a CSV file with phpolars, fits a random intercept per school with fit_mixed_gaussian, and charts each school's fitted line with phiz.",
              'also': ['phpolars', 'phiz']},
         ],
     }

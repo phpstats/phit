@@ -9,13 +9,13 @@ matrix, or that needs a design the formula grammar cannot express.
 
 | Function | Model | Formula equivalent |
 | --- | --- | --- |
-| `fit_ols` | Linear regression | `fit_lm` |
-| `fit_logistic` | Binomial, logit link | `fit_glm(family: 'binomial')` |
-| `fit_probit` | Binomial, probit link | `fit_glm(family: 'binomial', link: 'probit')` |
-| `fit_poisson` | Poisson, log link | `fit_glm(family: 'poisson')` |
-| `fit_mixed_intercept` | Gaussian random intercept by ML | `fit_lmer(..., reml: false)` with `(1 | g)` |
-| `fit_mixed` | General Gaussian mixed model | `fit_lmer` |
-| `fit_logistic_mixed` | Binomial logit random intercept | `fit_glmer` |
+| `fit_ols_matrix` | Linear regression | `fit_ols` |
+| `fit_logistic_matrix` | Binomial, logit link | `fit_generalized_linear(family: 'binomial')` |
+| `fit_probit_matrix` | Binomial, probit link | `fit_generalized_linear(family: 'binomial', link: 'probit')` |
+| `fit_poisson_matrix` | Poisson, log link | `fit_generalized_linear(family: 'poisson')` |
+| `fit_mixed_gaussian_intercept_matrix` | Gaussian random intercept by ML | `fit_mixed_gaussian(..., reml: false)` with `(1 | g)` |
+| `fit_mixed_gaussian_matrix` | General Gaussian mixed model | `fit_mixed_gaussian` |
+| `fit_mixed_logistic_matrix` | Binomial logit random intercept | `fit_mixed_logistic` |
 
 Every matrix function prepends an intercept column unless `intercept: false`
 is passed; see [Fixed intercept](contracts.qmd#fixed-intercept-convention-and-migration).
@@ -28,7 +28,7 @@ control.
 
 
 ```php
-$result = Phit\fit_ols(
+$result = Phit\fit_ols_matrix(
     x: [[1.0], [2.0], [3.0], [4.0], [5.0]],
     y: [2.1, 4.2, 5.8, 8.1, 10.2],
 );
@@ -83,7 +83,7 @@ from R despite coefficients and predictions agreeing to machine precision.
 ## Binary logistic regression
 
 ```php
-$result = Phit\fit_logistic(x: $design, y: $binaryOutcomes, missing: 'drop', intercept: false);
+$result = Phit\fit_logistic_matrix(x: $design, y: $binaryOutcomes, missing: 'drop', intercept: false);
 ```
 
 Use the same plain rectangular arrays, automatic fixed intercept, ordering, numeric
@@ -141,7 +141,7 @@ finite estimates; convergence is not assurance of reliable statistical inference
 Overflowing inference also fails explicitly.
 
 The PHP-free Rust entry point is
-`fit_logistic(x: Vec<Vec<f64>>, y: Vec<f64>) -> Result<LogisticResult, StatsError>`.
+`fit_logistic_matrix(x: Vec<Vec<f64>>, y: Vec<f64>) -> Result<LogisticResult, StatsError>`.
 It rejects nonfinite inputs; missing deletion belongs to the binding. Numeric
 field types match OlsResult, with usize for iterations and degrees of freedom.
 `converged` and sample deletion metadata are binding-only. See the
@@ -151,7 +151,7 @@ field types match OlsResult, with usize for iterations and degrees of freedom.
 ## Probit regression
 
 ```php
-Phit\fit_probit(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
+Phit\fit_probit_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
 ```
 
 The binomial input contract and output keys match logistic regression: binary
@@ -180,7 +180,7 @@ rank failure or overflowing calculations throw rather than returning a partial f
 Tail likelihood uses erfc and a Mills-ratio continued fraction beyond -8.
 
 The PHP-free entry point is
-`fit_probit(x: Vec<Vec<f64>>, y: Vec<f64>) -> Result<ProbitResult, StatsError>`.
+`fit_probit_matrix(x: Vec<Vec<f64>>, y: Vec<f64>) -> Result<ProbitResult, StatsError>`.
 Fields have the same Rust types as LogisticResult. Missing filtering and
 converged/sample metadata remain in the PHP binding.
 See the [walkthrough](notebooks/probit-math.qmd).
@@ -188,7 +188,7 @@ See the [walkthrough](notebooks/probit-math.qmd).
 ## Poisson regression
 
 ```php
-Phit\fit_poisson(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
+Phit\fit_poisson_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
 ```
 
 The raw design and missing-data contracts are the same. Outcomes must be finite,
@@ -223,14 +223,14 @@ iteration exhaustion throws. There is no exhaustive boundary-MLE existence
 check. Converged is always true in returned results; no partial fits are returned.
 
 The PHP-free entry point is
-`fit_poisson(x: Vec<Vec<f64>>, y: Vec<f64>) -> Result<PoissonResult, StatsError>`.
+`fit_poisson_matrix(x: Vec<Vec<f64>>, y: Vec<f64>) -> Result<PoissonResult, StatsError>`.
 Its numeric Rust field types match LogisticResult. See the
 [walkthrough](notebooks/poisson-math.qmd) for the likelihood, score, matrices and deviance.
 
 ## Gaussian random-intercept mixed model
 
 ```php
-Phit\fit_mixed_intercept(array $x, array $y, array $groups, string $missing = 'drop', bool $intercept = true): array;
+Phit\fit_mixed_gaussian_intercept_matrix(array $x, array $y, array $groups, string $missing = 'drop', bool $intercept = true): array;
 ```
 
 This first mixed model has continuous Gaussian outcomes and **one random
@@ -318,16 +318,17 @@ The four fixed-model signatures accept optional weights/offsets and append
 the fixed-intercept option after existing positional arguments:
 
 ```php
-Phit\fit_ols(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
-Phit\fit_logistic(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
-Phit\fit_probit(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
-Phit\fit_poisson(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
+Phit\fit_ols_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
+Phit\fit_logistic_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
+Phit\fit_probit_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
+Phit\fit_poisson_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
 ```
 
 Optional vectors must have one value per **original** observation. null means
 unit weights or zero offsets. An explicitly supplied empty array is an invalid
 length, not the default. Weights are positive finite numbers; zero/negative
-weights are rejected. Offsets are known additive terms: `eta = offset + X beta`.
+weights are rejected. In `fit_ols_matrix`, weights give weighted least squares,
+as `lm(weights = )` does. Offsets are known additive terms: `eta = offset + X beta`.
 For OLS they add directly to the outcome mean; Poisson log exposure is supplied
 as `offset = log(exposure)` with exposure positive. Numeric strings are not coerced.
 
@@ -355,7 +356,7 @@ Invalid values and original shapes are checked before deleting rows.
 ```php
 $exposure = [1, 2, 4, 8, 16, 3, 6, 12];
 $counts = [1, 4, 3, 12, 23, 2, 11, 14];
-$r = Phit\fit_poisson(
+$r = Phit\fit_poisson_matrix(
     x: array_fill(0, count($counts), []), // Intercept-only rate model.
     y: $counts,
     offset: array_map(fn($e) => log($e), $exposure),
@@ -375,7 +376,7 @@ The runnable repository example `examples/poisson-offset.php` adds a visitor pre
 ## General Gaussian mixed-model call
 
 ```php
-Phit\fit_mixed(
+Phit\fit_mixed_gaussian_matrix(
     array $x, array $y, array $random,
     string $missing = 'drop', bool $reml = false,
     ?array $weights = null, ?array $offset = null, ?array $start = null,
@@ -395,7 +396,7 @@ combination. There is no two-level limit: supply three, four or more random term
 integer 1 and string "1" remain distinct.
 
 ```php
-$r = Phit\fit_mixed(
+$r = Phit\fit_mixed_gaussian_matrix(
     x: $fixedPredictors, // Fixed intercept is added automatically.
     y: $outcomes,
     random: [
@@ -437,7 +438,7 @@ zero block. lme4 splits `(x || g)` into one-column terms and reports only the
 diagonal; here the term is one block, so its off-diagonal conditional covariances
 are also returned. Dense limits
 are q≤512 random coefficients and n(q+p+1)≤50,000,000 entries; exceeding them fails
-explicitly. The existing `fit_mixed_intercept` remains the faster random-intercept ML path.
+explicitly. The existing `fit_mixed_gaussian_intercept_matrix` remains the faster random-intercept ML path.
 
 The result contains:
 
@@ -467,7 +468,7 @@ the exact boundary of the R/lme4 parity claim.
 ## Binomial random-intercept ML
 
 ```php
-Phit\fit_logistic_mixed(
+Phit\fit_mixed_logistic_matrix(
     array $x, array $y, array $groups, string $missing = 'drop',
     ?array $weights = null, ?array $offset = null,
     int $quadraturePoints = 1, int $maxEvaluations = 20000,

@@ -9,7 +9,7 @@ while (($row = fgetcsv($file, escape: '')) !== false) {
     $y[] = (float) $row[2];
 }
 fclose($file);
-$result = Phit\fit_logistic(x: $x, y: $y);
+$result = Phit\fit_logistic_matrix(x: $x, y: $y);
 $labels = ['Intercept', 'Study hours', 'Practice score'];
 printf("%-16s %12s %12s %12s %12s\n", 'Term', 'Estimate', 'Std. error', 'z', 'p-value');
 foreach ($result['coefficients'] as $j => $coefficient) {

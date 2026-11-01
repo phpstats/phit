@@ -3,7 +3,7 @@ require 'vendor/autoload.php';
 
 use Phiz\Plot;
 
-use function Phit\fit_lmer;
+use function Phit\fit_mixed_gaussian;
 use function Phpolars\scan_csv;
 
 // 1. Read three columns with Polars and copy them into PHP arrays once.
@@ -13,7 +13,7 @@ $schools = scan_csv('schools.csv')
 $data = $schools->toColumns();
 
 // 2. Fit a random intercept per school by REML. Keep the fitted values.
-$fit = fit_lmer('score ~ study_hours + (1 | school)', $data);
+$fit = fit_mixed_gaussian('score ~ study_hours + (1 | school)', $data);
 $data['fitted'] = $fit['fitted'];
 
 foreach ($fit['columns'] as $i => $name) {

@@ -7,8 +7,8 @@ The extension registers the PHP module `phit` (`extension=phit`, Composer
 
 | Prefix or name | Purpose | Reference |
 | --- | --- | --- |
-| `fit_lm`, `fit_glm`, `fit_lmer`, `fit_glmer`, `model_matrix`, `predict` | Formula models and prediction | [Model formulas](formulas.qmd) |
-| `fit_ols`, `fit_logistic`, `fit_probit`, `fit_poisson`, `fit_mixed_intercept`, `fit_mixed`, `fit_logistic_mixed` | Models on numeric matrices | [Matrix model functions](reference-models.qmd) |
+| `fit_ols`, `fit_generalized_linear`, `fit_mixed_gaussian`, `fit_mixed_logistic`, `model_matrix`, `predict` | Formula models and prediction | [Model formulas](formulas.qmd) |
+| `fit_ols_matrix`, `fit_logistic_matrix`, `fit_probit_matrix`, `fit_poisson_matrix`, `fit_mixed_gaussian_intercept_matrix`, `fit_mixed_gaussian_matrix`, `fit_mixed_logistic_matrix` | Models on numeric matrices | [Matrix model functions](reference-models.qmd) |
 | `dist_*` | Densities, CDFs, quantiles and seeded samples | [Distributions and utilities](reference-utilities.qmd) |
 | `stat_*` | Descriptive statistics, kernel density, interpolation and the ECDF | [Distributions and utilities](reference-utilities.qmd) |
 | `draws_*` | Weighted posterior-draw summaries and transforms | [Distributions and utilities](reference-utilities.qmd#posterior-draw-numerical-kernels) |
@@ -19,26 +19,67 @@ The extension registers the PHP module `phit` (`extension=phit`, Composer
 Import the functions you use:
 
 ```php
-use function Phit\{fit_lm, predict, dist_normal_quantile};
+use function Phit\{fit_ols, predict, dist_normal_quantile};
 ```
 
 `stubs/phit.php` in the repository declares every signature with PHPDoc array
 shapes for IDEs and static analysis. Do not load it at runtime.
 
+## Names in phit 0.4
+
+phit 0.4.0 renamed the model functions. The 0.3 names still work in 0.4 as
+deprecated aliases. Each call raises one `E_USER_DEPRECATED` that names the
+replacement and returns exactly the replacement's result. phit 0.5 will remove
+them.
+
+| 0.3 name | 0.4 name | Input |
+| --- | --- | --- |
+| `fit_lm` | `fit_ols` | Formula |
+| `fit_glm` | `fit_generalized_linear` | Formula |
+| `fit_lmer` | `fit_mixed_gaussian` | Formula |
+| `fit_glmer` | `fit_mixed_logistic` | Formula |
+| `fit_ols` (matrix) | `fit_ols_matrix` | Matrix |
+| `fit_logistic` | `fit_logistic_matrix` | Matrix |
+| `fit_probit` | `fit_probit_matrix` | Matrix |
+| `fit_poisson` | `fit_poisson_matrix` | Matrix |
+| `fit_mixed` | `fit_mixed_gaussian_matrix` | Matrix |
+| `fit_mixed_intercept` | `fit_mixed_gaussian_intercept_matrix` | Matrix |
+| `fit_logistic_mixed` | `fit_mixed_logistic_matrix` | Matrix |
+
+`fit_ols` is the one name that 0.3 and 0.4 both use, so during 0.4 it accepts
+both forms and dispatches on its first argument. A string, or the named
+arguments `formula:` and `data:`, is the formula fit. An array, or the named
+arguments `x:` and `y:`, is the 0.3 matrix fit. It returns `fit_ols_matrix()`'s
+result and raises one deprecation. A call never changes meaning. In phit 0.5,
+an array passed to `fit_ols` will be an error that names `fit_ols_matrix()`.
+
+```php
+Phit\fit_ols(mixed $formula = null, mixed $data = null, string $missing = 'drop', mixed $weights = null,
+    ?array $offset = null, bool $intercept = true, ?array $x = null, ?array $y = null): array;
+```
+
+`offset` and `intercept` belong to the matrix form. A formula writes them as
+`offset()` and `- 1`. Mixing the two forms, such as a formula with `x:`, throws
+code 1001.
+
+`fit_mixed_logistic` has no `family` or `link` arguments. The deprecated
+`fit_glmer` still accepts them and throws code 1007 for anything but the
+binomial family with the logit link.
+
 ## PHP entry points
 
 ```php
-Phit\fit_ols(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
-Phit\fit_logistic(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
-Phit\fit_probit(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
-Phit\fit_poisson(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
+Phit\fit_ols_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
+Phit\fit_logistic_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
+Phit\fit_probit_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
+Phit\fit_poisson_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
 
 // Formula interfaces over the same cores; $data is named columns or an object with toModelData()/toColumns().
 Phit\model_matrix(string $formula, array|object $data, string $missing = 'drop'): array;
-Phit\fit_lm(string $formula, array|object $data, string $missing = 'drop', array|string|null $weights = null): array;
-Phit\fit_glm(string $formula, array|object $data, string $family = 'gaussian', string $link = '', string $missing = 'drop', array|string|null $weights = null): array;
-Phit\fit_lmer(string $formula, array|object $data, bool $reml = true, string $missing = 'drop', array|string|null $weights = null, ...): array;
-Phit\fit_glmer(string $formula, array|object $data, string $family = 'binomial', string $link = '', string $missing = 'drop', array|string|null $weights = null, ...): array;
+Phit\fit_ols(string $formula, array|object $data, string $missing = 'drop', array|string|null $weights = null): array;
+Phit\fit_generalized_linear(string $formula, array|object $data, string $family = 'gaussian', string $link = '', string $missing = 'drop', array|string|null $weights = null): array;
+Phit\fit_mixed_gaussian(string $formula, array|object $data, bool $reml = true, string $missing = 'drop', array|string|null $weights = null, ...): array;
+Phit\fit_mixed_logistic(string $formula, array|object $data, string $missing = 'drop', array|string|null $weights = null, ...): array;
 ```
 
 All estimators are synchronous and stateless: each returns a complete fit without
@@ -48,14 +89,14 @@ the caller's arrays. Repeated fits are independent.
 ## Formula interfaces
 
 The formula functions parse an R model formula, build R's `model.matrix()` over
-named columns, and call the estimation cores of `fit_ols`, `fit_logistic`,
-`fit_probit`, `fit_poisson`, `fit_mixed`, and `fit_logistic_mixed`.
+named columns, and call the estimation cores of `fit_ols_matrix`, `fit_logistic_matrix`,
+`fit_probit_matrix`, `fit_poisson_matrix`, `fit_mixed_gaussian_matrix`, and `fit_mixed_logistic_matrix`.
 Each fit returns the complete result contract of its matrix function. It adds
 `formula`, `response`, `columns` (coefficient names in coefficient order), `terms`,
-`assign`, `intercept`, and `named` (`column => coefficient`). `fit_glm` and
-`fit_glmer` also return `family` and `link`. `model_matrix` returns `y`,
+`assign`, `intercept`, and `named` (`column => coefficient`). `fit_generalized_linear` and
+`fit_mixed_logistic` also return `family` and `link`. `model_matrix` returns `y`,
 `x` (including the `(Intercept)` column), the naming keys, `offset`, `random` designs
-in the shape `fit_mixed` accepts, and the deletion accounting.
+in the shape `fit_mixed_gaussian_matrix` accepts, and the deletion accounting.
 
 Missing-value deletion covers only the variables a formula uses, with the same
 warning, `missing: 'raise'` behavior, and row accounting as the matrix functions.
@@ -136,7 +177,7 @@ precision, and extreme input scales can exceed its range.
 ## Rust boundary
 
 ```rust
-pub fn fit_ols(
+pub fn fit_ols_matrix(
     x: Vec<Vec<f64>>,
     y: Vec<f64>,
 ) -> Result<OlsResult, StatsError>

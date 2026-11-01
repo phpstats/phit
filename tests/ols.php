@@ -13,7 +13,7 @@ function compare(mixed $actual, mixed $expected, string $label): void {
 }
 $fixture = json_decode(file_get_contents(__DIR__ . '/fixtures/ols-r.json'), true, flags: JSON_THROW_ON_ERROR);
 foreach ($fixture['cases'] as $case) {
-    $result = Phit\fit_ols(x: $case['x'], y: $case['y'], intercept: false);
+    $result = Phit\fit_ols_matrix(x: $case['x'], y: $case['y'], intercept: false);
     foreach ($case['expected'] as $key => $expected) {
         if (in_array($case['name'], ['perfect', 'zero'], true) && in_array($key, ['t_statistics', 'p_values', 'log_likelihood', 'r_squared', 'adj_r_squared', 'conf_int'], true)) continue;
         compare($result[$key], $expected, $case['name'] . '/' . $key);
@@ -34,11 +34,11 @@ foreach ([
     [[1, 2], [1, 2]], [[[1], [2]], [null, 2]],
 ] as [$x, $y]) {
     $thrown = false;
-    try { Phit\fit_ols($x, $y, intercept: false); } catch (Throwable $e) { $thrown = true; }
+    try { Phit\fit_ols_matrix($x, $y, intercept: false); } catch (Throwable $e) { $thrown = true; }
     check($thrown, 'invalid input must throw');
 }
 $thrown = false;
-try { Phit\fit_ols('bad', [], intercept: false); } catch (Throwable $e) { $thrown = true; }
+try { Phit\fit_ols_matrix('bad', [], intercept: false); } catch (Throwable $e) { $thrown = true; }
 check($thrown, 'non-array input must throw');
 // Default listwise deletion is visible and preserves original row positions.
 $warnings = [];
@@ -48,8 +48,8 @@ set_error_handler(function (int $severity, string $message) use (&$warnings): bo
 });
 $x = [[1, 1], [1, null], [1, 2], [1, 3], [1, 4], [1, NAN], [1, 5]];
 $y = [2.1, 99, 4.2, null, 8.1, 99, 10.2];
-try { $dropped = Phit\fit_ols($x, $y, intercept: false); } finally { restore_error_handler(); }
-$complete = Phit\fit_ols([[1, 1], [1, 2], [1, 4], [1, 5]], [2.1, 4.2, 8.1, 10.2], intercept: false);
+try { $dropped = Phit\fit_ols_matrix($x, $y, intercept: false); } finally { restore_error_handler(); }
+$complete = Phit\fit_ols_matrix([[1, 1], [1, 2], [1, 4], [1, 5]], [2.1, 4.2, 8.1, 10.2], intercept: false);
 compare($dropped['coefficients'], $complete['coefficients'], 'complete-case coefficients');
 compare($dropped['fitted'], $complete['fitted'], 'complete-case fitted');
 check($dropped['dropped_rows'] === [1, 3, 5], 'dropped row positions');
@@ -72,12 +72,12 @@ foreach ([
     [[[1, null], [1], [1, 3], [1, 4]], [1, 2, 3, 4], 'drop'],
 ] as [$badX, $badY, $policy]) {
     $thrown = false;
-    try { Phit\fit_ols(x: $badX, y: $badY, missing: $policy, intercept: false); } catch (Throwable $e) { $thrown = true; }
+    try { Phit\fit_ols_matrix(x: $badX, y: $badY, missing: $policy, intercept: false); } catch (Throwable $e) { $thrown = true; }
     check($thrown, 'missing-data validation must throw');
 }
 // A PHP application can promote the warning to an exception.
 set_error_handler(function (int $severity, string $message): never { throw new ErrorException($message, 0, $severity); });
 $thrown = false;
-try { Phit\fit_ols($x, $y, intercept: false); } catch (ErrorException $e) { $thrown = true; } finally { restore_error_handler(); }
+try { Phit\fit_ols_matrix($x, $y, intercept: false); } catch (ErrorException $e) { $thrown = true; } finally { restore_error_handler(); }
 check($thrown, 'warning-to-exception handler is respected');
 echo "PHP OLS integration tests passed\n";

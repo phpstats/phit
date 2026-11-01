@@ -14,9 +14,9 @@ floor area and district. Factors, interactions and transformations such as
 from named columns.
 
 ```php
-use function Phit\{fit_lm, predict};
+use function Phit\{fit_ols, predict};
 
-$fit = fit_lm('rent ~ area + district', $flats);
+$fit = fit_ols('rent ~ area + district', $flats);
 $fit['named'];     // ['(Intercept)' => 352.64, 'area' => 19.18, 'districtnorth' => 203.64, ...]
 $fit['p_values'];  // One per coefficient, in the same order
 $fit['r_squared']; // 0.927
@@ -30,11 +30,11 @@ explains each part of the result.
 
 ## What phit provides
 
-- **Regression models**: `fit_lm()` and `fit_glm()` for linear, logistic,
+- **Regression models**: `fit_ols()` and `fit_generalized_linear()` for linear, logistic,
   probit and Poisson regression, with weights and offsets. See [Linear and
   generalized linear models](models.qmd).
-- **Mixed models**: `fit_lmer()` for Gaussian models with random intercepts
-  and slopes, and `fit_glmer()` for a binomial model with a random intercept.
+- **Mixed models**: `fit_mixed_gaussian()` for Gaussian models with random intercepts
+  and slopes, and `fit_mixed_logistic()` for a binomial model with a random intercept.
   See [Mixed models](mixed-models.qmd).
 - **Prediction** on new data with confidence and prediction intervals.
 - **Probability distributions**: densities, CDFs, survival functions and
@@ -49,8 +49,8 @@ explains each part of the result.
 - **CSV input**: a native reader used by phibble. See [Reading CSV
   files](io.qmd).
 
-Each model also has a function over numeric matrices, such as `fit_ols()` and
-`fit_logistic()`, for code that builds its own design matrix. See [Matrix
+Each model also has a function over numeric matrices, such as `fit_ols_matrix()` and
+`fit_logistic_matrix()`, for code that builds its own design matrix. See [Matrix
 model functions](reference-models.qmd).
 
 ## Results

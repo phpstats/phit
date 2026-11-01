@@ -675,9 +675,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>phit is a PHP extension, written in Rust, for statistical models. It fits linear, logistic, probit, Poisson and mixed-effects regression models, and evaluates probability distributions and descriptive statistics. Data go in as ordinary PHP arrays and results come back as associative arrays, with no model objects or services.</p>
 <p>Models are written as R formulas: <code>rent ~ area + district</code> models rent from floor area and district. Factors, interactions and transformations such as <code>log(area)</code> are written in the formula, and phit builds the numeric design from named columns.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_lm<span class="ot">,</span> predict}<span class="ot">;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_ols<span class="ot">,</span> predict}<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_lm(<span class="st">'rent ~ area + district'</span><span class="ot">,</span> <span class="va">$flats</span>)<span class="ot">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_ols(<span class="st">'rent ~ area + district'</span><span class="ot">,</span> <span class="va">$flats</span>)<span class="ot">;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span>[<span class="st">'named'</span>]<span class="ot">;</span>     <span class="co">// ['(Intercept)' =&gt; 352.64, 'area' =&gt; 19.18, 'districtnorth' =&gt; 203.64, ...]</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span>[<span class="st">'p_values'</span>]<span class="ot">;</span>  <span class="co">// One per coefficient, in the same order</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span>[<span class="st">'r_squared'</span>]<span class="ot">;</span> <span class="co">// 0.927</span></span>
@@ -688,15 +688,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="what-phit-provides" class="level2">
 <h2 class="anchored" data-anchor-id="what-phit-provides">What phit provides</h2>
 <ul>
-<li><strong>Regression models</strong>: <code>fit_lm()</code> and <code>fit_glm()</code> for linear, logistic, probit and Poisson regression, with weights and offsets. See <a href="./models.html">Linear and generalized linear models</a>.</li>
-<li><strong>Mixed models</strong>: <code>fit_lmer()</code> for Gaussian models with random intercepts and slopes, and <code>fit_glmer()</code> for a binomial model with a random intercept. See <a href="./mixed-models.html">Mixed models</a>.</li>
+<li><strong>Regression models</strong>: <code>fit_ols()</code> and <code>fit_generalized_linear()</code> for linear, logistic, probit and Poisson regression, with weights and offsets. See <a href="./models.html">Linear and generalized linear models</a>.</li>
+<li><strong>Mixed models</strong>: <code>fit_mixed_gaussian()</code> for Gaussian models with random intercepts and slopes, and <code>fit_mixed_logistic()</code> for a binomial model with a random intercept. See <a href="./mixed-models.html">Mixed models</a>.</li>
 <li><strong>Prediction</strong> on new data with confidence and prediction intervals.</li>
 <li><strong>Probability distributions</strong>: densities, CDFs, survival functions and quantiles for 12 families (13 parameterizations), and seeded random samples, including uniform, categorical and permutation sampling. See <a href="./distributions.html">Probability distributions</a> and <a href="./rng.html">Seeded sampling</a>.</li>
 <li><strong>Descriptive statistics</strong>: means, variances, quantiles, weighted statistics, kernel density estimates and the ECDF. See <a href="./descriptive.html">Descriptive statistics</a>.</li>
 <li><strong>Posterior draws</strong>: weighted moments and transforms for MCMC output. See <a href="./draw-numerics.html">Posterior draws</a>.</li>
 <li><strong>CSV input</strong>: a native reader used by phibble. See <a href="./io.html">Reading CSV files</a>.</li>
 </ul>
-<p>Each model also has a function over numeric matrices, such as <code>fit_ols()</code> and <code>fit_logistic()</code>, for code that builds its own design matrix. See <a href="./reference-models.html">Matrix model functions</a>.</p>
+<p>Each model also has a function over numeric matrices, such as <code>fit_ols_matrix()</code> and <code>fit_logistic_matrix()</code>, for code that builds its own design matrix. See <a href="./reference-models.html">Matrix model functions</a>.</p>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>

@@ -1,5 +1,5 @@
 <?php
-// One PHP worker. Native Phit\fit_ols returns its complete public result each time.
+// One PHP worker. Native Phit\fit_ols_matrix returns its complete public result each time.
 $start = hrtime(true);
 $stream = fopen($argv[1], 'r');
 fgetcsv($stream, escape: '');
@@ -14,7 +14,7 @@ fclose($stream);
 $loadSeconds = (hrtime(true) - $start) / 1e9;
 $model = $argv[3] ?? 'ols';
 if (!in_array($model, ['ols','logistic','probit','poisson','lmm'], true)) throw new InvalidArgumentException('Unknown model');
-$function = 'Phit\\' . ['ols' => 'fit_ols', 'logistic' => 'fit_logistic', 'probit' => 'fit_probit', 'poisson' => 'fit_poisson', 'lmm' => 'fit_mixed_intercept'][$model];
+$function = 'Phit\\' . ['ols' => 'fit_ols_matrix', 'logistic' => 'fit_logistic_matrix', 'probit' => 'fit_probit_matrix', 'poisson' => 'fit_poisson_matrix', 'lmm' => 'fit_mixed_gaussian_intercept_matrix'][$model];
 $indices = [];
 for ($i = 0; $i < 10; $i++) $indices[] = (int) floor($i * (count($y) - 1) / 9);
 $indices = array_values(array_unique($indices));

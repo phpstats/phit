@@ -2,7 +2,7 @@
 title: "Fit a linear model and predict"
 ---
 
-This example fits monthly rent on floor area and district with `fit_lm()`, then predicts the rent of two new flats with 95% prediction intervals.
+This example fits monthly rent on floor area and district with `fit_ols()`, then predicts the rent of two new flats with 95% prediction intervals.
 
 Requires the phit extension ([Installation](../installation.qmd)) and a Composer project, for `vendor/autoload.php`.
 
@@ -16,7 +16,7 @@ The data are ten simulated flats. `rent` is the monthly rent in an unnamed curre
 <?php
 require 'vendor/autoload.php';
 
-use function Phit\{fit_lm, predict};
+use function Phit\{fit_ols, predict};
 
 $flats = [
     'rent' => [1879.25, 1805.03, 2022.29, 1267.85, 1509.24, 2240.10, 959.51, 2386.54, 1655.80, 1420.00],
@@ -24,7 +24,7 @@ $flats = [
     'district' => ['north', 'south', 'north', 'east', 'south', 'north', 'east', 'south', 'east', 'south'],
 ];
 
-$fit = fit_lm('rent ~ area + district', $flats);
+$fit = fit_ols('rent ~ area + district', $flats);
 
 foreach ($fit['columns'] as $i => $name) {
     printf("%-14s %8.2f (se %6.2f)  95%% CI [%8.2f, %8.2f]\n", $name, $fit['coefficients'][$i],
@@ -55,7 +55,7 @@ R-squared 0.927, residual SD 146.29, 10 flats
 
 ## Explanation
 
-`fit_lm()` takes an R formula and named columns. `district` is a string column, so it becomes a factor with `east` as the reference level. Among flats in the same district, each additional square meter is associated with a monthly rent about 19.18 units higher (95% CI 11.27 to 27.09). The district coefficients are differences from `east` for flats of the same area, and with ten flats their intervals include zero.
+`fit_ols()` takes an R formula and named columns. `district` is a string column, so it becomes a factor with `east` as the reference level. Among flats in the same district, each additional square meter is associated with a monthly rent about 19.18 units higher (95% CI 11.27 to 27.09). The district coefficients are differences from `east` for flats of the same area, and with ten flats their intervals include zero.
 
 `predict()` evaluates the fit on new rows. `interval: 'prediction'` gives an interval for the rent of a single new flat, which is wider than the interval for the mean (`interval: 'confidence'`).
 

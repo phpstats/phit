@@ -10,7 +10,7 @@ while (($row = fgetcsv($file, escape: '')) !== false) {
     $y[] = (float) $row[2];
 }
 fclose($file);
-$result = Phit\fit_ols(x: $x, y: $y);
+$result = Phit\fit_ols_matrix(x: $x, y: $y);
 printf("%-12s %12s %12s %12s\n", 'Term', 'Estimate', 'Std. error', 'p-value');
 foreach ($result['coefficients'] as $j => $coefficient) {
     printf("%-12s %12.6f %12.6f %12.6g\n", $j === 0 ? 'Intercept' : 'Area (m²)', $coefficient, $result['std_errors'][$j], $result['p_values'][$j]);

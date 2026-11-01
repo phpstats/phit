@@ -39,7 +39,7 @@ the estimator reuse experiment is recorded in the [v0.2 assessment](v0.2.qmd).
 | Binomial random intercept | ML; trial counts and offsets; Laplace/2..61-node adaptive quadrature; conditional modes and their conditional variances; joint observed-information inference | R `glmer(binomial)` plus independent SciPy integration |
 | Gaussian mixed | ML/REML; correlated or independent random slopes; multiple random terms; crossed/nested groups; positive prior weights; offsets; starting values; singular covariance boundaries; conditional covariances of the random effects (`ranef(condVar = TRUE)`) | R `lmer()` with all four optimizer wrappers |
 
-The new mixed call is `fit_mixed()`. The existing `fit_mixed_intercept()` remains the
+The new mixed call is `fit_mixed_gaussian_matrix()`. The existing `fit_mixed_gaussian_intercept_matrix()` remains the
 optimized one-group random-intercept ML call used by the million-row benchmarks.
 The general implementation caches a **dense QR square-root summary** and then
 solves penalized least squares; it does not allocate an observation covariance

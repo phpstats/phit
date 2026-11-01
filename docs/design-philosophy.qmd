@@ -35,7 +35,7 @@ missing observations, or attach coefficient labels. These are possible helper
 responsibilities, not features currently implemented or a commitment to build them.
 
 Whatever the source, preparation should finish with the same x and y arrays
-accepted by fit_ols(), fit_logistic(), fit_probit(), fit_poisson() or fit_mixed_intercept(). A user can construct those arrays directly and get the
+accepted by fit_ols_matrix(), fit_logistic_matrix(), fit_probit_matrix(), fit_poisson_matrix() or fit_mixed_gaussian_intercept_matrix(). A user can construct those arrays directly and get the
 same estimation behavior without a helper. Helpers must make choices visible,
 especially column order, intercept insertion, missing-value handling and row
 alignment. They should preserve the raw result or explain any transformation,
@@ -51,7 +51,7 @@ foreach ($observations as $observation) {
     $x[] = [$observation['size'], $observation['bedrooms']];
     $y[] = $observation['price'];
 }
-$result = Phit\fit_ols(x: $x, y: $y);
+$result = Phit\fit_ols_matrix(x: $x, y: $y);
 $coefficientLabels = ['intercept', 'size', 'bedrooms'];
 ```
 

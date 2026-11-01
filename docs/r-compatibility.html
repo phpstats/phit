@@ -731,7 +731,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>The new mixed call is <code>fit_mixed()</code>. The existing <code>fit_mixed_intercept()</code> remains the optimized one-group random-intercept ML call used by the million-row benchmarks. The general implementation caches a <strong>dense QR square-root summary</strong> and then solves penalized least squares; it does not allocate an observation covariance matrix. It has explicit dense-design limits: at most 512 random coefficients and 50,000,000 entries in the initial augmented matrix. This is not yet lme4’s sparse implementation and has not been benchmarked on large general designs.</p>
+<p>The new mixed call is <code>fit_mixed_gaussian_matrix()</code>. The existing <code>fit_mixed_gaussian_intercept_matrix()</code> remains the optimized one-group random-intercept ML call used by the million-row benchmarks. The general implementation caches a <strong>dense QR square-root summary</strong> and then solves penalized least squares; it does not allocate an observation covariance matrix. It has explicit dense-design limits: at most 512 random coefficients and 50,000,000 entries in the initial augmented matrix. This is not yet lme4’s sparse implementation and has not been benchmarked on large general designs.</p>
 <p>An intercept-only OLS fit now reports R-squared and adjusted R-squared as zero, matching <code>summary.lm()</code>. Other undefined statistics retain their documented NAN/INF representation. This is a documented change to the previous intercept-only zero-response R-squared convention.</p>
 </section>
 <section id="optimizers-runtime-versus-reference" class="level2">

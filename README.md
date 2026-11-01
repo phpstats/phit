@@ -11,7 +11,7 @@ formulas over named columns, and results are plain PHP arrays.
 [Verification](https://phit.phpstats.org/docs/verification)
 
 ```php
-use function Phit\{fit_lm, predict};
+use function Phit\{fit_ols, predict};
 
 $flats = [
     'rent' => [1879.25, 1805.03, 2022.29, 1267.85, 1509.24, 2240.10, 959.51, 2386.54, 1655.80, 1420.00],
@@ -19,7 +19,7 @@ $flats = [
     'district' => ['north', 'south', 'north', 'east', 'south', 'north', 'east', 'south', 'east', 'south'],
 ];
 
-$fit = fit_lm('rent ~ area + district', $flats);
+$fit = fit_ols('rent ~ area + district', $flats);
 $fit['named'];     // ['(Intercept)' => 352.64, 'area' => 19.18, 'districtnorth' => 203.64, 'districtsouth' => 232.16]
 $fit['r_squared']; // 0.927
 
@@ -50,13 +50,16 @@ extensions cannot be installed.
 
 | Area | Functions |
 | --- | --- |
-| Formula models | `fit_lm`, `fit_glm` (Gaussian, binomial logit and probit, Poisson), `fit_lmer`, `fit_glmer`, `model_matrix`, `predict` |
-| Matrix models | `fit_ols`, `fit_logistic`, `fit_probit`, `fit_poisson`, `fit_mixed_intercept`, `fit_mixed`, `fit_logistic_mixed` |
+| Formula models | `fit_ols`, `fit_generalized_linear` (Gaussian, binomial logit and probit, Poisson), `fit_mixed_gaussian`, `fit_mixed_logistic`, `model_matrix`, `predict` |
+| Matrix models | `fit_ols_matrix`, `fit_logistic_matrix`, `fit_probit_matrix`, `fit_poisson_matrix`, `fit_mixed_gaussian_intercept_matrix`, `fit_mixed_gaussian_matrix`, `fit_mixed_logistic_matrix` |
 | Distributions | `dist_*`: densities, CDFs, survival functions, quantiles and seeded samples |
 | Descriptive statistics | `stat_*`: moments, quantiles, weighted statistics, kernel density, interpolation, ECDF |
 | Posterior draws | `draws_moments`, `draws_covariance_map`, `draws_affine` |
 | Optimization | `optimize`, `uniroot` |
 | CSV input | `read_csv`, `CsvReader` |
+
+phit 0.4 renamed the model functions. The 0.3 names still work as deprecated
+aliases until 0.5; [CHANGELOG.md](CHANGELOG.md) has the migration table.
 
 All functions are in the `Phit` namespace. [stubs/phit.php](stubs/phit.php)
 declares them for IDEs and static analysis; do not load it at runtime.

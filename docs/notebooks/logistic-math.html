@@ -711,7 +711,7 @@ window.Quarto = {
 </header>
 
 
-<p>This executable walkthrough uses saved <strong>simulated students</strong>, not real student records. It derives the Bernoulli likelihood, shows the matrices and dot products, and follows Newton/IRLS iterations to the result returned by <code>stats_logistic()</code>. Production calculations live in <code>crates/stats-core/src/logistic.rs</code>; Python here makes the intermediate values visible. See <a href="../notebooks/index.html">setup</a>.</p>
+<p>This executable walkthrough uses saved <strong>simulated students</strong>, not real student records. It derives the Bernoulli likelihood, shows the matrices and dot products, and follows Newton/IRLS iterations to the result returned by <code>fit_logistic_matrix()</code>. Production calculations live in <code>crates/stats-core/src/logistic.rs</code>; Python here makes the intermediate values visible. See <a href="../notebooks/index.html">setup</a>.</p>
 <section id="observations-parameters-and-probabilities" class="level2">
 <h2 class="anchored" data-anchor-id="observations-parameters-and-probabilities">1. Observations, parameters and probabilities</h2>
 <p>Each observation has study hours, a practice score and an observed pass/fail outcome. Those input values are data, not coefficient guesses. The supplied column of ones is constructed to estimate an intercept. We simulate 80 students using R seed <code>20261012</code>, with practice scores correlated with study hours:</p>

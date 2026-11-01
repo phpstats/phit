@@ -705,7 +705,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td>Formula models and prediction</td>
-<td><code>model_matrix</code>, <code>fit_lm</code>, <code>fit_glm</code>, <code>fit_lmer</code>, <code>fit_glmer</code> and <code>predict</code>, with a port of the extension’s formula parser</td>
+<td><code>model_matrix</code>, <code>fit_ols</code>, <code>fit_generalized_linear</code>, <code>fit_mixed_gaussian</code>, <code>fit_mixed_logistic</code> and <code>predict</code>, with a port of the extension’s formula parser</td>
 </tr>
 <tr class="even">
 <td>Matrix models</td>
@@ -713,7 +713,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td>Mixed models</td>
-<td>The same structures as the extension: <code>fit_lmer</code> with random intercepts and slopes, <code>(x || g)</code>, several terms and nesting, by REML or ML with BOBYQA or Nelder–Mead; <code>fit_glmer</code> with one binomial logit <code>(1 | g)</code>, by Laplace or adaptive quadrature with up to 61 points</td>
+<td>The same structures as the extension: <code>fit_mixed_gaussian</code> with random intercepts and slopes, <code>(x || g)</code>, several terms and nesting, by REML or ML with BOBYQA or Nelder–Mead; <code>fit_mixed_logistic</code> with one binomial logit <code>(1 | g)</code>, by Laplace or adaptive quadrature with up to 61 points</td>
 </tr>
 <tr class="even">
 <td>Distributions, descriptive statistics, seeded sampling</td>
@@ -762,14 +762,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>fit_ols</code>, n = 100,000, 10 predictors</td>
+<td><code>fit_ols_matrix</code>, n = 100,000, 10 predictors</td>
 <td>2026-10-28, polyfill ab803fd, phit 3861d77</td>
 <td>262 ms</td>
 <td>29 ms</td>
 <td>9.1×</td>
 </tr>
 <tr class="even">
-<td><code>fit_logistic</code>, same design</td>
+<td><code>fit_logistic_matrix</code>, same design</td>
 <td>2026-10-28, polyfill ab803fd, phit 3861d77</td>
 <td>1.60 s</td>
 <td>72 ms</td>

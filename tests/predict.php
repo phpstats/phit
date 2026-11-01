@@ -26,10 +26,10 @@ function pcompare(mixed $actual, mixed $expected, string $label, float $abs, flo
 function fit_case(array $case, array $data): array {
     $args = $case['args'];
     return @match ($case['function']) {
-        'lm' => Phit\fit_lm($case['formula'], $data, weights: $args['weights'] ?? null),
-        'glm' => Phit\fit_glm($case['formula'], $data, family: $args['family'], link: $args['link']),
-        'lmer' => Phit\fit_lmer($case['formula'], $data, reml: $args['reml'] ?? true),
-        'glmer' => Phit\fit_glmer($case['formula'], $data),
+        'lm' => Phit\fit_ols($case['formula'], $data, weights: $args['weights'] ?? null),
+        'glm' => Phit\fit_generalized_linear($case['formula'], $data, family: $args['family'], link: $args['link']),
+        'lmer' => Phit\fit_mixed_gaussian($case['formula'], $data, reml: $args['reml'] ?? true),
+        'glmer' => Phit\fit_mixed_logistic($case['formula'], $data),
     };
 }
 $fixture = json_decode(file_get_contents(__DIR__ . '/fixtures/predict-r.json'), true, flags: JSON_THROW_ON_ERROR);
@@ -62,12 +62,12 @@ foreach ($fixture['cases'] as $case) {
 
 // Predicting the training data reproduces the fitted values.
 $cars = $fixture['datasets']['cars'];
-$fit = Phit\fit_lm('mpg ~ poly(hp, 3) + factor(cyl) + wt:am', $cars);
+$fit = Phit\fit_ols('mpg ~ poly(hp, 3) + factor(cyl) + wt:am', $cars);
 pcompare(Phit\predict($fit, $cars)['fit'], $fit['fitted'], 'lm training data', 1e-12, 1e-12);
-$fit = Phit\fit_glm('am ~ wt + hp', $cars, family: 'binomial');
+$fit = Phit\fit_generalized_linear('am ~ wt + hp', $cars, family: 'binomial');
 pcompare(Phit\predict($fit, $cars, type: 'response')['fit'], $fit['fitted'], 'glm training data', 1e-12, 1e-10);
 $schools = $fixture['datasets']['schools'];
-$fit = Phit\fit_lmer('score ~ study_hours + (1 | school)', $schools);
+$fit = Phit\fit_mixed_gaussian('score ~ study_hours + (1 | school)', $schools);
 pcompare(Phit\predict($fit, $schools)['fit'], $fit['fitted'], 'lmer training data', 1e-10, 1e-10);
 pcompare(Phit\predict($fit, $schools, random: false)['fit'], $fit['fixed_fitted'], 'lmer population', 1e-10, 1e-10);
 
@@ -81,17 +81,17 @@ function pthrows(callable $f, string $needle, string $label): void {
     }
     throw new RuntimeException("$label: no exception");
 }
-$fit = Phit\fit_lm('mpg ~ wt + gear_label', $cars);
+$fit = Phit\fit_ols('mpg ~ wt + gear_label', $cars);
 pthrows(fn() => Phit\predict($fit, ['wt' => [3.0], 'gear_label' => ['six']]), 'factor gear_label has new level six', 'new level');
 pthrows(fn() => Phit\predict($fit, ['wt' => [3.0], 'gear_label' => [4]]), "was a factor", 'numeric for factor');
 pthrows(fn() => Phit\predict($fit, ['wt' => ['heavy'], 'gear_label' => ['four']]), "was numeric", 'factor for numeric');
 pthrows(fn() => Phit\predict($fit, ['gear_label' => ['four']]), "unknown column 'wt'", 'missing column');
 pthrows(fn() => Phit\predict($fit, ['wt' => [3.0], 'gear_label' => ['four']], type: 'probability'), 'type must be', 'type');
-$fit = Phit\fit_lmer('score ~ study_hours + (1 | school)', $schools);
+$fit = Phit\fit_mixed_gaussian('score ~ study_hours + (1 | school)', $schools);
 pthrows(fn() => Phit\predict($fit, ['study_hours' => [3.0], 'school' => ['nowhere']]), 'new levels detected in newdata: school=nowhere', 'new group');
 pthrows(fn() => Phit\predict($fit, ['study_hours' => [3.0], 'school' => ['nowhere']], seFit: true), 'not available for mixed', 'mixed se');
-$glm = Phit\fit_glm('am ~ wt', $cars, family: 'binomial');
-pthrows(fn() => Phit\predict($glm, $cars, interval: 'confidence'), 'intervals are available for Phit\fit_lm', 'glm interval');
+$glm = Phit\fit_generalized_linear('am ~ wt', $cars, family: 'binomial');
+pthrows(fn() => Phit\predict($glm, $cars, interval: 'confidence'), 'intervals are available for Phit\fit_ols', 'glm interval');
 pthrows(fn() => Phit\predict(['formula' => 'y ~ x'], $cars), 'fit must be a result', 'malformed fit');
 // A response column is optional; population predictions need no grouping column.
 $p = Phit\predict($fit, ['study_hours' => [1.0, 2.0]], random: false);

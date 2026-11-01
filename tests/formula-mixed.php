@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-// Phit\fit_lmer/Phit\fit_glmer formulas versus lme4 (tests/generate-formula-lme4-fixtures.R).
+// Phit\fit_mixed_gaussian/Phit\fit_mixed_logistic formulas versus lme4 (tests/generate-formula-lme4-fixtures.R).
 // Tolerances follow lmm-expanded-r (lmer) and logistic-mixed-r (glmer).
 function mcheck(bool $condition, string $message): void {
     if (!$condition) throw new RuntimeException($message);
@@ -38,8 +38,8 @@ foreach ($fixture['cases'] as $case) {
     $data = $fixture['datasets'][$case['dataset']];
     $name = $case['name'];
     $result = @($case['function'] === 'lmer'
-        ? Phit\fit_lmer($case['formula'], $data, reml: $case['reml'])
-        : Phit\fit_glmer($case['formula'], $data, quadraturePoints: $case['quadrature_points']));
+        ? Phit\fit_mixed_gaussian($case['formula'], $data, reml: $case['reml'])
+        : Phit\fit_mixed_logistic($case['formula'], $data, quadraturePoints: $case['quadrature_points']));
     $expected = $case['expected'];
     mcheck($result['columns'] === $expected['columns'], "$name: columns");
     mcheck($result['n_observations'] === $expected['n_observations'], "$name: observations");
@@ -73,27 +73,27 @@ foreach ($fixture['cases'] as $case) {
 
 // Formula fits equal the matrix interfaces they wrap.
 $schools = $fixture['datasets']['schools'];
-$lmer = Phit\fit_lmer('score ~ study_hours + (1 | school)', $schools, reml: false);
-$matrix = Phit\fit_mixed(array_map(fn($h) => [$h], $schools['study_hours']), $schools['score'],
+$lmer = Phit\fit_mixed_gaussian('score ~ study_hours + (1 | school)', $schools, reml: false);
+$matrix = Phit\fit_mixed_gaussian_matrix(array_map(fn($h) => [$h], $schools['study_hours']), $schools['score'],
     [['z' => array_fill(0, count($schools['score']), [1]), 'groups' => $schools['school']]]);
-mcompare($lmer['coefficients'], $matrix['coefficients'], 'lmer equals Phit\fit_mixed', 1e-12, 1e-12);
+mcompare($lmer['coefficients'], $matrix['coefficients'], 'lmer equals Phit\fit_mixed_gaussian_matrix', 1e-12, 1e-12);
 mcheck($lmer['method'] === 'ML' && $lmer['random'][0]['label'] === '1 | school' && $lmer['random'][0]['group_labels'] === $matrix['random'][0]['group_labels'], 'lmer metadata');
-// Phit\fit_mixed_intercept (random-intercept ML) reports the same conditional variances as lme4.
+// Phit\fit_mixed_gaussian_intercept_matrix (random-intercept ML) reports the same conditional variances as lme4.
 $ml = array_values(array_filter($fixture['cases'], fn($c) => $c['name'] === 'lmer_schools_intercept_ml'))[0];
-$lmm = Phit\fit_mixed_intercept(array_map(null, $schools['study_hours'], $schools['prior_score']), $schools['score'], $schools['school']);
+$lmm = Phit\fit_mixed_gaussian_intercept_matrix(array_map(null, $schools['study_hours'], $schools['prior_score']), $schools['score'], $schools['school']);
 cond_var_compare(array_map(fn($v) => [[$v]], $lmm['random_effects_cond_var']), $lmm['group_labels'],
-    $ml['expected']['random_cond_var'][0], 'Phit\fit_mixed_intercept/random_effects_cond_var', 1e-5, 1e-5);
+    $ml['expected']['random_cond_var'][0], 'Phit\fit_mixed_gaussian_intercept_matrix/random_effects_cond_var', 1e-5, 1e-5);
 $panel = $fixture['datasets']['panel'];
-$glmer = @Phit\fit_glmer('yb ~ x + (1 | subject)', $panel);
+$glmer = @Phit\fit_mixed_logistic('yb ~ x + (1 | subject)', $panel);
 mcheck($glmer['family'] === 'binomial' && $glmer['random'][0]['group'] === 'subject' && $glmer['n_dropped'] === 2, 'glmer metadata');
 foreach ([
-    ['no random term', fn() => Phit\fit_lmer('score ~ study_hours', $schools), 1001, 'random-effect term'],
-    ['glmer slopes', fn() => Phit\fit_glmer('yb ~ x + (x | subject)', $panel), 1007, 'exactly one random intercept'],
-    ['glmer two terms', fn() => Phit\fit_glmer('yb ~ x + (1 | subject) + (1 | item)', $panel), 1007, 'exactly one random intercept'],
-    ['glmer family', fn() => Phit\fit_glmer('yb ~ x + (1 | subject)', $panel, 'poisson'), 1007, 'binomial'],
-    ['glmer link', fn() => Phit\fit_glmer('yb ~ x + (1 | subject)', $panel, link: 'probit'), 1007, 'logit'],
-    ['lmer optimizer', fn() => Phit\fit_lmer('y ~ x + (1 | subject)', $panel, optimizer: 'nloptwrap'), 1007, 'optimizer'],
-    ['lmer raise', fn() => Phit\fit_lmer('y ~ x + (1 | subject)', $panel, missing: 'raise'), 1001, "missing='raise'"],
+    ['no random term', fn() => Phit\fit_mixed_gaussian('score ~ study_hours', $schools), 1001, 'random-effect term'],
+    ['glmer slopes', fn() => Phit\fit_mixed_logistic('yb ~ x + (x | subject)', $panel), 1007, 'exactly one random intercept'],
+    ['glmer two terms', fn() => Phit\fit_mixed_logistic('yb ~ x + (1 | subject) + (1 | item)', $panel), 1007, 'exactly one random intercept'],
+    ['glmer family (deprecated alias)', fn() => Phit\fit_glmer('yb ~ x + (1 | subject)', $panel, 'poisson'), 1007, 'binomial'],
+    ['glmer link (deprecated alias)', fn() => Phit\fit_glmer('yb ~ x + (1 | subject)', $panel, link: 'probit'), 1007, 'logit'],
+    ['lmer optimizer', fn() => Phit\fit_mixed_gaussian('y ~ x + (1 | subject)', $panel, optimizer: 'nloptwrap'), 1007, 'optimizer'],
+    ['lmer raise', fn() => Phit\fit_mixed_gaussian('y ~ x + (1 | subject)', $panel, missing: 'raise'), 1001, "missing='raise'"],
 ] as [$label, $call, $code, $fragment]) {
     $thrown = null;
     try { @$call(); } catch (Throwable $e) { $thrown = $e; }
@@ -101,6 +101,6 @@ foreach ([
 }
 $warnings = [];
 set_error_handler(function (int $severity, string $message) use (&$warnings): bool { $warnings[] = $message; return true; });
-try { $r = Phit\fit_lmer('y ~ x + (1 | subject)', $panel); } finally { restore_error_handler(); }
-mcheck(count($warnings) === 1 && str_contains($warnings[0], 'Phit\fit_lmer dropped 5 of 384') && $r['dropped_rows'] === [4, 39, 76, 210, 299], 'lmer deletion warning');
+try { $r = Phit\fit_mixed_gaussian('y ~ x + (1 | subject)', $panel); } finally { restore_error_handler(); }
+mcheck(count($warnings) === 1 && str_contains($warnings[0], 'Phit\fit_mixed_gaussian dropped 5 of 384') && $r['dropped_rows'] === [4, 39, 76, 210, 299], 'lmer deletion warning');
 echo "PHP formula mixed-model tests passed ({$fits['lmer']} lmer and {$fits['glmer']} glmer lme4 fits; $comparisons comparisons)\n";
