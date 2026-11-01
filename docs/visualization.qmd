@@ -2,11 +2,10 @@
 title: "Figure conventions and reproducibility"
 ---
 
-Documentation figures use **R and ggplot2**, with one shared theme in
-`figures/style.R` and explicit figure jobs in `figures/render.R`. Rust/PHP
-estimation has no graphics or R dependency. The .qmd walkthroughs still use
-Python for matrices and independent verification; a small bridge passes computed
-points to R for drawing. No ipynb files are maintained as documentation sources.
+Documentation figures are drawn with **R and ggplot2**, from one shared theme in
+`figures/style.R` and the figure jobs in `figures/render.R`. The walkthroughs
+compute with Python and pass the points to R for drawing. The extension itself has
+no graphics or R dependency.
 
 ## Visual conventions
 
@@ -31,11 +30,12 @@ points to R for drawing. No ipynb files are maintained as documentation sources.
 - Error-versus-reference figures use a zero reference line and label any unit
   multiplier. Agreement plots are not residual or model-adequacy diagnostics.
 
-These conventions use ggplot2's [shared themes](https://ggplot2.tidyverse.org/reference/theme.html)
-and [explicit export controls](https://ggplot2.tidyverse.org/reference/ggsave.html).
-Each figure is saved as selectable-text **SVG** and a **160-dpi PNG**, with
-fixed dimensions recorded in the [figure manifest](figures/manifest.json).
-Font family is generic sans-serif; the resolved font can differ across platforms.
+Each figure is saved as an **SVG** with selectable text and a **160-dpi PNG**,
+at fixed dimensions recorded in the [figure manifest](figures/manifest.json). The
+font family is generic sans-serif, so the resolved font can differ across
+platforms. The conventions use ggplot2's
+[themes](https://ggplot2.tidyverse.org/reference/theme.html) and
+[export controls](https://ggplot2.tidyverse.org/reference/ggsave.html).
 
 ## Generate figures without running fits or benchmarks
 
@@ -57,32 +57,33 @@ Rscript docs/figures/render.R sleepstudy
 ./scripts/render-docs
 ```
 
-The renderer reads saved benchmark/reference reports and notebook-exported
-points in `figures/data/`. It does not call estimators, regenerate reference
-fixtures or run timed workers. A changed numerical report requires refreshed
-plots; unchanged measurements should not be retimed for a style change.
+- The renderer reads saved benchmark and reference reports and the points in
+  `figures/data/`. It does not call estimators, regenerate fixtures, or run
+  timings. Refresh the plots when a numerical report changes; a style change
+  does not need new timings.
+- Profile and posterior plots use points exported by the executable walkthroughs.
+  Re-executing those pages updates their JSON point snapshots and figures.
+- SVGs are embedded with namespaced clip IDs, so figures on one page do not
+  interfere.
+- An ordinary site render reuses frozen outputs and saved images. Re-executing
+  the computational notebooks needs the [documentation environment](documentation.qmd).
 
-The [manifest](figures/manifest.json) records each input path/content MD5, image
-hashes, dimensions, renderer/theme hashes, R version, platform and direct package
-versions. [The R package record](figures/r-packages.json) also records installed
-transitive dependency versions. These are the versions used for the saved figures;
-installing another version is not a claim of byte-identical reproduction.
-Data/report provenance remains in its original statistical verification records.
-
-Mathematical profile and posterior plots use points exported by the executable
-walkthroughs, preserving the visible calculations. Re-executing those .qmd pages
-updates their small JSON point snapshots and figures. Other figures read existing
-result reports. Jupyter embeds SVGs with namespaced clip IDs so figures on the same
-page do not interfere with each other.
-
-Ordinary website rendering reuses frozen outputs and saved images. Neither R
-nor Python is required to browse the committed HTML. Re-executing computational
-notebooks still requires the [documentation environment](documentation.qmd).
+The [manifest](figures/manifest.json) records each input's path and MD5, the image
+hashes and dimensions, the renderer and theme hashes, the R version, the platform,
+and the direct package versions. [The R package record](figures/r-packages.json)
+adds the transitive dependency versions. Other versions may not reproduce the
+figures byte for byte. The data's provenance stays in the verification records.
 
 ## Existing figure coverage
 
-The common renderer covers all five fixed/Gaussian-intercept benchmarks, the
-logistic-mixed benchmark, v0.1 preservation comparisons, Gaussian likelihood
-profiles, published-data numerical agreement, sleepstudy random slopes,
-logistic-mixed integration error, node sensitivity and conditional posterior shape.
-SVG and PNG downloads are retained alongside their saved input records.
+The renderer draws:
+
+- the five fixed-effect and Gaussian random-intercept benchmarks, and the
+  binomial mixed-model benchmark
+- the v0.1 comparisons with earlier results
+- Gaussian likelihood profiles, published-data agreement, and sleepstudy random
+  slopes
+- binomial mixed-model integration error, node sensitivity, and conditional
+  posterior shape
+
+SVG and PNG downloads are kept next to their input records.

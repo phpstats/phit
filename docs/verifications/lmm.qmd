@@ -2,67 +2,69 @@
 title: "Gaussian random-intercept ML verification record"
 ---
 
-The [executed comparison](../notebooks/lmm-verification.qmd) fits identical
-observations in R lme4 ML, Python statsmodels MixedLM ML and PHP fit_mixed_gaussian_intercept_matrix.
-The [saved report](lmm-results.json) records versions, full outputs, Python
-warnings/backend, covariance convention and differences from R.
+phit's `fit_mixed_gaussian_intercept_matrix()` is compared with lme4 and statsmodels `MixedLM`, all fitted by ML, on identical observations. The [executed comparison](../notebooks/lmm-verification.qmd) shows the calls and results side by side. Four published datasets are also checked against lme4 and nlme. Shared metrics are described in [Verification](../verification.qmd).
 
-Six saved R fixtures cover simulated schools with correlated predictors,
-a single predictor, no fixed intercept, intercept only, a singleton group and
-an exact zero-group-variance boundary. Three-way verification adds missingness
-in predictors, outcomes and group IDs. Independent Rust tests also check a
-balanced intercept-only sample with analytically known variances and shrinkage.
-The deterministic tests run without R/Python installed.
+## Compared
 
-Four additional published datasets—sleepstudy, Orthodont, Machines and Hsb82—
-are checked against **both lme4 and nlme saved ML outputs** in Rust and PHP.
-The [published-data notebook](../notebooks/lmm-public-verification.qmd) executes
-fresh fits in both R packages, statsmodels and PHP and checks every row.
-See [source provenance](../data/lmm/index.qmd),
-`tests/fixtures/lmm-public-r.json` and the [live report](lmm-public-results.json).
-Published-data tolerances retain 1e-7 absolute + 1e-6 relative for ordinary
-quantities, use 1e-6 absolute + 1e-6 relative for observation-length outputs, and
-1e-7 absolute + 1e-10 relative for likelihood/AIC. The notebook documents the
-measured R optimizer precision limit for near-zero Hsb82 residuals. A separate
-native-versus-statsmodels check keeps the strict original uniform tolerance.
+Fixed-effect estimates and inference, covariance, population and conditional fitted values, both residual definitions, group effects, variance components, ICC, marginal likelihood, and AIC. Group labels, their order, and missing-row positions must match exactly.
 
-All fixed-effect inference, covariance, population/conditional fitted values,
-both residual definitions, group effects, variances, ICC, marginal likelihood
-and AIC are compared at 1e-7 + 1e-6 × abs(reference). Labels/order and missing
-positions are exact. Python uses statsmodels estimates with plug-in GLS covariance
-to match lme4; its native joint-Hessian covariance is a different convention.
-The boundary fixture's Python reference is explicitly the NumPy OLS ML limit,
-not a statsmodels mixed optimizer result.
+## Inputs and scope
 
-PHP tests check integer/string group identity, null group deletion, invalid
-float/boolean labels before deletion, missing warnings and strict rejection.
-Rust tests check units, row/group order, invalid shapes, unidentified grouping,
-rank deficiency, perfect fits and unsupported zero-residual-variance limits.
-An independent observation-level GLS test checks the cached QR reduction at
-several variance ratios, with correlated predictors and large outcome offsets;
-it verifies both optimized and arbitrary-coefficient residual norms.
-The profile search has a finite log-ratio range/grid and is not an exhaustive
-global optimization proof. The first model has no REML, random slopes, multiple
-grouping factors, finite-sample df adjustments or variance-component tests.
-Normal inference with few groups can be unreliable.
+| Set | Cases |
+| --- | --- |
+| Saved R fixtures | Simulated schools with correlated predictors, a single predictor, no fixed intercept, intercept only, a singleton group, and an exact zero group-variance boundary |
+| Three-way comparison | The fixtures plus missing values in predictors, outcomes, and group IDs |
+| Published data | sleepstudy, Orthodont, Machines, and Hsb82 ([provenance](../data/lmm/index.qmd)), checked in the [published-data notebook](../notebooks/lmm-public-verification.qmd) |
+
+## Reference and versions
+
+R 4.6.1 with lme4 2.0.6 and nlme 3.1.169, statsmodels 0.15.0 on Python 3.14.7, and phit on PHP 8.5.10, on the development Mac. Linux, PHP-FPM, and other mixed-model structures are not covered by this report.
+
+- statsmodels estimates are combined with plug-in GLS covariance to match lme4. statsmodels' own joint-Hessian covariance is a different convention.
+- For the boundary fixture, the Python reference is the NumPy OLS ML limit, since the statsmodels mixed optimizer is not an exact-boundary reference.
+
+## Metric and tolerance
+
+| Quantities | Tolerance |
+| --- | --- |
+| All compared quantities, simulated fixtures | 1e-7 absolute + 1e-6 relative |
+| Published data, ordinary quantities | 1e-7 absolute + 1e-6 relative |
+| Published data, observation-length outputs | 1e-6 absolute + 1e-6 relative |
+| Published data, likelihood and AIC | 1e-7 absolute + 1e-10 relative |
+
+The published-data notebook documents R's optimizer precision limit for the near-zero Hsb82 residuals. A separate phit-versus-statsmodels check keeps the uniform 1e-7 + 1e-6 tolerance.
+
+## Results
+
+All quantities pass in every case. The [saved report](lmm-results.json) and the [published-data report](lmm-public-results.json) record versions, full outputs, Python warnings and backend, the covariance convention, and differences from R.
+
+Further tests outside the comparison:
+
+- PHP: integer and string group identity, deletion of null groups, rejection of float and boolean labels before deletion, missing-value warnings, and strict rejection.
+- Rust: units, row and group order, invalid shapes, unidentified grouping, rank deficiency, perfect fits, and unsupported zero residual variance.
+- Rust: a balanced intercept-only sample with analytically known variances and shrinkage.
+- Rust: an observation-level GLS check of the cached QR reduction at several variance ratios, with correlated predictors and large outcome offsets, for both optimized and arbitrary coefficients.
+
+## Known exceptions and limits
+
+- The profile search uses a finite log-ratio range and grid. It is not a proof of global optimality.
+- This record covers one random intercept fitted by ML. REML, random slopes, and several grouping terms are verified separately in [R compatibility](../r-compatibility.qmd).
+- No finite-sample df adjustment or variance-component test is offered. Normal inference with few groups can be unreliable.
+
+## Reproduction
 
 ```sh
-export PHP=/opt/homebrew/bin/php
-export PHP_CONFIG=/opt/homebrew/bin/php-config
 cargo test --workspace --locked
 cargo build -p phit --locked
 php -n -d "extension=$PWD/target/debug/libphit.dylib" tests/lmm.php
 .context/notebooks-venv/bin/python docs/verifications/compare_lmm.py
-QUARTO_PYTHON="$PWD/.context/notebooks-venv/bin/python" quarto render docs/notebooks/lmm-verification.qmd
+QUARTO_PYTHON="$PWD/.context/notebooks-venv/bin/python" \
+  quarto render docs/notebooks/lmm-verification.qmd
 ```
 
-For the published comparisons, run the same command with `--public`. Regenerate
-public expectations from the pinned snapshots with
-`.context/notebooks-venv/bin/python tests/generate-lmm-public-fixtures.py`;
-add `--export` only when intentionally refreshing upstream data.
+- Add `--public` to `compare_lmm.py` for the published-data comparison.
+- Regenerate published-data expectations from the pinned snapshots with `.context/notebooks-venv/bin/python tests/generate-lmm-public-fixtures.py`. Add `--export` only to refresh the upstream data.
+- Regenerate the simulated fixtures with `Rscript tests/generate-lmm-fixtures.R`. lme4 is a development dependency, and the Rust and PHP tests need no R.
+- Use `.so` on Linux.
 
-Use matching PHP tools and `.so` on Linux. Regenerate intentionally with
-`Rscript tests/generate-lmm-fixtures.R`; lme4 is a development dependency.
-See the [contract](../reference-models.qmd#gaussian-random-intercept-mixed-model),
-[math](../notebooks/lmm-math.qmd) and [benchmark](../benchmarks/lmm.qmd).
-Linux/PHP-FPM and broader mixed-model structures are not established by this evidence.
+See also: [contract](../reference-models.qmd#gaussian-random-intercept-mixed-model) · [math](../notebooks/lmm-math.qmd) · [benchmark](../benchmarks/lmm.qmd)

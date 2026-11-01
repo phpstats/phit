@@ -2,52 +2,51 @@
 title: "Poisson regression verification record"
 ---
 
-The [executed comparison](../notebooks/poisson-verification.qmd) fits identical
-observations in base R `glm()`, statsmodels `GLM`, and PHP `fit_poisson_matrix()`.
-The [saved report](poisson-results.json) records versions, complete outputs,
-maximum differences from R, warnings and retained-row metadata.
+phit's `fit_poisson_matrix()` is compared with base R `glm()` and statsmodels `GLM` with the Poisson family on identical observations. The [executed comparison](../notebooks/poisson-verification.qmd) shows the calls and results side by side. Shared metrics are described in [Verification](../verification.qmd).
 
-## Reference cases and conventions
+## Compared
 
-Six saved R fixtures cover the simulated clinic sample, a single predictor,
-multiple predictors, no intercept, intercept only, correlated full-rank columns
-and sparse counts (the main sample is the multiple-predictor case).
-The three-way comparison adds listwise deletion of two rows. All coefficients,
-covariance entries, standard errors, normal z tests and p-values, Wald confidence
-limits, full fitted mean counts and response residuals, likelihood, deviance,
-null deviance, AIC and residual df are checked. Numerical tolerance is
-1e-9 + 1e-7 × abs(reference); sample accounting is exact.
+Coefficients, covariance, standard errors, normal z tests and p-values, Wald confidence limits, fitted mean counts and response residuals, log-likelihood, deviance, null deviance, AIC, and residual df.
 
-R uses `confint.default(fit)`, not profile-likelihood `confint(fit)`.
-Its fitting tolerance is 1e-16 to make covariance evaluated at the preceding
-IRLS iterate negligible. Iteration counts can differ across implementations;
-they are not a reference equality requirement. Without a ones column the null
-baseline is mean one; the Python runner computes this convention explicitly.
+## Inputs and scope
 
-## Failure and integration checks
+Six saved R fixtures: the simulated clinic sample (the multiple-predictor case), a single predictor, no intercept, intercept only, correlated full-rank columns, and sparse counts. The three-way comparison adds a listwise-deletion case with two dropped rows.
 
-Rust/PHP tests reject insufficient observations, invalid shapes, nonfinite or
-negative/fractional outcomes, all-zero samples, dependent columns, and selected boundary designs. They check scaled predictor units, zero-count and near-fit deviance arithmetic, iteration exhaustion, missing-row warnings and alignment.
-OLS integration tests also run after changes to the shared PHP conversion code.
-No exhaustive finite-MLE existence test is supplied. Count overdispersion and
-sparse samples can invalidate conventional Wald inference. Offsets and exposure
-arguments are outside the first implementation. Linux and PHP-FPM deployment have not been exercised by these reports.
+## Reference and versions
 
-## Reproduce
+R 4.6.1, statsmodels 0.15.0 with NumPy 2.5.4 on Python 3.14.7, and phit on PHP 8.5.10, on the development Mac. Linux and PHP-FPM are not covered by this report.
 
-From the repository root with matching PHP development tools:
+- R intervals use `confint.default(fit)` (Wald), not profile-likelihood `confint(fit)`.
+- R's fitting tolerance is 1e-16, so the covariance evaluated at the preceding IRLS iterate is negligible.
+- Without a ones column, the null baseline is mean one. The Python runner computes this convention explicitly.
+
+## Metric and tolerance
+
+Absolute 1e-9 plus relative 1e-7 of the R value for every numerical field. Sample accounting must match exactly. Iteration counts may differ.
+
+## Results
+
+All fields in all seven cases pass. The [saved report](poisson-results.json) records versions, complete outputs, maximum differences from R, warnings, and retained-row metadata.
+
+## Known exceptions and limits
+
+The Rust and PHP tests reject insufficient observations, invalid shapes, nonfinite values, negative or fractional outcomes, all-zero samples, dependent columns, and selected boundary designs. They also check scaled predictor units, zero-count and near-fit deviance arithmetic, iteration exhaustion, and missing-row warnings and alignment.
+
+- No exhaustive test for the existence of a finite MLE is offered.
+- Overdispersion and sparse counts can invalidate conventional Wald inference.
+- These cases use no offset. Offset and exposure fits are checked separately in `tests/intercept.php` and against R fixtures; see [Verification](../verification.qmd#php-intercept-and-offset-contracts).
+
+## Reproduction
+
+From the repository root, with the PHP development tools and the [notebook environment](../notebooks/index.qmd):
 
 ```sh
-export PHP=/opt/homebrew/bin/php
-export PHP_CONFIG=/opt/homebrew/bin/php-config
 cargo test --workspace --locked
 cargo build -p phit --locked
 php -n -d "extension=$PWD/target/debug/libphit.dylib" tests/poisson.php
 .context/notebooks-venv/bin/python docs/verifications/compare_poisson.py
-QUARTO_PYTHON="$PWD/.context/notebooks-venv/bin/python" quarto render docs/notebooks/poisson-verification.qmd
+QUARTO_PYTHON="$PWD/.context/notebooks-venv/bin/python" \
+  quarto render docs/notebooks/poisson-verification.qmd
 ```
 
-Use `.so` on Linux. R fixture regeneration is an explicit development step:
-`Rscript tests/generate-probit-poisson-fixtures.R`. Ordinary Rust/PHP tests use saved
-fixtures without R or Python. See [development](../development.qmd) for setup and
-[large-sample benchmarks](../benchmarks/poisson.qmd) for additional evidence.
+Use `.so` on Linux. Regenerating the R fixtures is a separate step: `Rscript tests/generate-probit-poisson-fixtures.R`. The Rust and PHP tests read saved fixtures and need no R or Python. [Large-sample benchmarks](../benchmarks/poisson.qmd) are reported separately.

@@ -139,6 +139,7 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -674,7 +675,8 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#numerical-agreement-first" id="toc-numerical-agreement-first" class="nav-link active" data-scroll-target="#numerical-agreement-first">Numerical agreement first</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link active" data-scroll-target="#methods">Methods</a></li>
+  <li><a href="#numerical-agreement-first" id="toc-numerical-agreement-first" class="nav-link" data-scroll-target="#numerical-agreement-first">Numerical agreement first</a></li>
   <li><a href="#recorded-timings" id="toc-recorded-timings" class="nav-link" data-scroll-target="#recorded-timings">Recorded timings</a></li>
   <li><a href="#reproduction-and-timing-boundaries" id="toc-reproduction-and-timing-boundaries" class="nav-link" data-scroll-target="#reproduction-and-timing-boundaries">Reproduction and timing boundaries</a></li>
   </ul>
@@ -702,7 +704,60 @@ window.Quarto = {
 </header>
 
 
-<p>These release-extension benchmarks compare the PHP draw kernels with independent R matrix calculations. Complete outputs are compared before <strong>any timing phase</strong>. The <a href="draws-results.json">raw report</a> preserves every timing sample, comparison error, input hash, batch count, machine, runtime version and thread setting.</p>
+<p>phit’s posterior-draw kernels are timed against equivalent R matrix calculations, after their complete outputs are compared. The <a href="draws-results.json">raw report</a> keeps every timing sample, comparison error, input hash, batch count, machine, runtime version, and thread setting.</p>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Setting</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Workloads</td>
+<td>Population and unbiased moments, covariance map, and affine draws at four draw and parameter sizes</td>
+</tr>
+<tr class="even">
+<td>Data</td>
+<td>Python <code>random.Random(20261012)</code>, saved as JSON shared by PHP and R</td>
+</tr>
+<tr class="odd">
+<td>Machine</td>
+<td>Apple M5 Ultra, macOS 27.0.1, recorded 2026-10-12</td>
+</tr>
+<tr class="even">
+<td>Software</td>
+<td>Rust 1.99.0, PHP 8.5.10 (phit release build, no BLAS), R 4.6.1 with OpenBLAS 0.3.34, jsonlite 2.0.0</td>
+</tr>
+<tr class="odd">
+<td>Threads</td>
+<td>OpenBLAS, OpenMP, MKL, Accelerate, and BLIS thread variables set to 1</td>
+</tr>
+<tr class="even">
+<td>Repetitions</td>
+<td>One warm-up, then five measurements; calls are batched (see <a href="#reproduction-and-timing-boundaries">timing boundaries</a>)</td>
+</tr>
+<tr class="odd">
+<td>Statistic</td>
+<td>Median milliseconds per call</td>
+</tr>
+<tr class="even">
+<td>Timed</td>
+<td>Complete result arrays, including PHP input conversion, validation, and allocation</td>
+</tr>
+<tr class="odd">
+<td>Excluded</td>
+<td>Startup, input generation, JSON parsing and serialization, and reference comparison</td>
+</tr>
+<tr class="even">
+<td>Memory</td>
+<td>Not measured</td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="numerical-agreement-first" class="level2">
 <h2 class="anchored" data-anchor-id="numerical-agreement-first">Numerical agreement first</h2>
 <p>The 2026-10-12 run compared weighted means, both covariance normalizations, covariance maps and log determinants, and <strong>every transformed draw value</strong> against R. All quantities passed <span class="math inline">\(10^{-11}+10^{-11}|\mathrm{reference}|\)</span>.</p>
@@ -746,7 +801,6 @@ window.Quarto = {
 </section>
 <section id="recorded-timings" class="level2">
 <h2 class="anchored" data-anchor-id="recorded-timings">Recorded timings</h2>
-<p>Machine: Apple M5 Ultra, macOS 27.0.1 arm64. Rust 1.99.0, PHP 8.5.10, R 4.6.1, jsonlite 2.0.0, R OpenBLAS 0.3.34. Thread environment variables are fixed to one for OpenBLAS, OpenMP, MKL, Accelerate and BLIS. PHP uses nalgebra’s Rust-native path without BLAS. Five measurements follow one warm-up per operation.</p>
 <p>Median milliseconds per call, including complete output materialization:</p>
 <table class="caption-top table">
 <colgroup>
@@ -844,7 +898,7 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>PHP’s moments/affine calls include conversion from nested PHP numeric arrays to owned Rust vectors, strict validation, numerical computation and conversion back to PHP arrays. R starts from already numeric matrices and does not implement all of PHP’s validation/rank policies. This is an API-level workload comparison, not a measurement of isolated matrix multiplication. Map timings depend only on parameter count; the corresponding draw count labels the surrounding workload. Compensated sums in Rust and R’s BLAS cross-products have different arithmetic and runtime costs. These measurements do not establish a reason to change the repository’s numerical backend.</p>
+<p>PHP’s moments/affine calls include conversion from nested PHP numeric arrays to owned Rust vectors, strict validation, numerical computation and conversion back to PHP arrays. R starts from already numeric matrices and does not implement all of PHP’s validation/rank policies. This is an API-level workload comparison, not a measurement of isolated matrix multiplication. Map timings depend only on parameter count; the corresponding draw count labels the surrounding workload. Compensated sums in Rust and R’s BLAS cross-products have different arithmetic and runtime costs.</p>
 </section>
 <section id="reproduction-and-timing-boundaries" class="level2">
 <h2 class="anchored" data-anchor-id="reproduction-and-timing-boundaries">Reproduction and timing boundaries</h2>

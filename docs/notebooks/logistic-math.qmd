@@ -3,8 +3,7 @@ title: "Binary logistic regression: from probabilities to maximum likelihood"
 jupyter: python3
 ---
 
-This executable walkthrough uses saved **simulated students**, not real student
-records. It derives the Bernoulli likelihood, shows the matrices and dot products,
+This executable walkthrough uses saved simulated students. It derives the Bernoulli likelihood, shows the matrices and dot products,
 and follows Newton/IRLS iterations to the result returned by `fit_logistic_matrix()`.
 Production calculations live in `crates/stats-core/src/logistic.rs`; Python here
 makes the intermediate values visible. See [setup](index.qmd).
@@ -12,8 +11,7 @@ makes the intermediate values visible. See [setup](index.qmd).
 ## 1. Observations, parameters and probabilities
 
 Each observation has study hours, a practice score and an observed pass/fail
-outcome. Those input values are data, not coefficient guesses. The supplied
-column of ones is constructed to estimate an intercept. We simulate 80 students
+outcome. The supplied column of ones estimates an intercept. We simulate 80 students
 using R seed `20261012`, with practice scores correlated with study hours:
 
 $$\mathrm{score}_i=\operatorname{clip}(45+3\,\mathrm{hours}_i+e_i,20,95),
@@ -28,17 +26,14 @@ $$\eta_i=-3.28+0.22\,\mathrm{hours}_i+0.018\,\mathrm{score}_i,
 A Bernoulli outcome is either 0 or 1. A probability such as 0.6 means a 60% chance
 of success under the model; the observed outcome is still a single 0 or 1.
 The generator is `tests/generate-logistic-fixtures.R`; the shared observations
-are in [learning.csv](../data/learning.csv). Known generating coefficients and
-estimated coefficients are different objects: estimates vary with the random sample.
+are in [learning.csv](../data/learning.csv). The estimates differ from the
+generating coefficients because they vary with the random sample.
 
-The hand-worked iteration below deliberately uses zero starting coefficients to
-make the first weights and dot products easy to inspect. Since the v0.1
-stabilization, the native implementation uses a finite marginal intercept start
-for extreme inputs when a ones column is present, which cancels a large common offset.
-Ordinary inputs retain the original zero start; the finite intercept fallback
-is used only for extreme offsets/counts described in the release notes.
-Starting values change the iteration path, not the declared likelihood or
-converged estimates. See [the release notes](../v0.1.qmd).
+The hand-worked iteration below starts from zero coefficients so the first
+weights and dot products are easy to inspect. phit also starts from zero, except
+for extreme inputs with a ones column, where it uses a finite marginal intercept
+start. Starting values change the iteration path, not the likelihood or the
+converged estimates.
 
 ```{python}
 from pathlib import Path
@@ -365,9 +360,11 @@ rank-deficient information and iteration exhaustion. It is not an exhaustive
 linear-programming separation detector and does not guarantee detection of every
 numerically difficult case. It never returns a `converged: false` partial fit.
 
-This first version requires both classes, finite full-rank inputs, and $n>p$.
-It supports individual 0/1 outcomes only: no grouped trials, sample weights,
-penalties, Firth correction, or automatic threshold selection. The model assumes
+The fit requires both classes, finite full-rank inputs, and $n>p$. This walkthrough
+uses individual 0/1 outcomes. phit also accepts prior weights, grouped-binomial
+proportions with trial weights, and offsets (see [Matrix model
+functions](../reference-models.qmd)). It offers no penalties, Firth correction,
+or automatic threshold selection. The model assumes
 independent observations and linear log-odds in the supplied predictors.
 Missing-data deletion occurs before estimation and warns as in OLS; see the
 [contract](../reference-models.qmd#binary-logistic-regression).

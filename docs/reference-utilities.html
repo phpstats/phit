@@ -139,6 +139,7 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -674,7 +675,12 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#probability-distributions-and-descriptive-statistics" id="toc-probability-distributions-and-descriptive-statistics" class="nav-link active" data-scroll-target="#probability-distributions-and-descriptive-statistics">Probability distributions and descriptive statistics</a></li>
+  <li><a href="#probability-distributions-and-descriptive-statistics" id="toc-probability-distributions-and-descriptive-statistics" class="nav-link active" data-scroll-target="#probability-distributions-and-descriptive-statistics">Probability distributions and descriptive statistics</a>
+  <ul class="collapse">
+  <li><a href="#distribution-functions" id="toc-distribution-functions" class="nav-link" data-scroll-target="#distribution-functions">Distribution functions</a></li>
+  <li><a href="#seeded-sampling" id="toc-seeded-sampling" class="nav-link" data-scroll-target="#seeded-sampling">Seeded sampling</a></li>
+  <li><a href="#descriptive-statistics" id="toc-descriptive-statistics" class="nav-link" data-scroll-target="#descriptive-statistics">Descriptive statistics</a></li>
+  </ul></li>
   <li><a href="#posterior-draw-numerical-kernels" id="toc-posterior-draw-numerical-kernels" class="nav-link" data-scroll-target="#posterior-draw-numerical-kernels">Posterior-draw numerical kernels</a></li>
   <li><a href="#one-dimensional-optimization-and-root-finding" id="toc-one-dimensional-optimization-and-root-finding" class="nav-link" data-scroll-target="#one-dimensional-optimization-and-root-finding">One-dimensional optimization and root finding</a></li>
   <li><a href="#csv-input" id="toc-csv-input" class="nav-link" data-scroll-target="#csv-input">CSV input</a></li>
@@ -705,35 +711,330 @@ window.Quarto = {
 
 <section id="probability-distributions-and-descriptive-statistics" class="level2">
 <h2 class="anchored" data-anchor-id="probability-distributions-and-descriptive-statistics">Probability distributions and descriptive statistics</h2>
-<p>Thirteen distribution parameterizations expose seven operations, each in scalar and <code>_array</code> form: 182 functions in total. Continuous families use <code>pdf</code>, <code>logpdf</code>, <code>cdf</code>, <code>logcdf</code>, <code>sf</code>, <code>logsf</code>, <code>quantile</code>; discrete families replace pdf/logpdf with pmf/logpmf. Names follow <code>dist_{family}_{operation}</code> and <code>dist_{family}_{operation}_array</code>. The <a href="./distributions.html">distribution contract</a> lists every family, parameter name/default, domain and support. The generated <code>stubs/phit.php</code> is the exact signature reference.</p>
-<p>Numeric arguments/elements accept PHP integers or floats; binomial <code>size</code> is an integer in <code>[0,2^53]</code>. Batch results are packed lists preserving iteration order, with keys discarded. Empty input returns an empty result after parameter validation. Null, NAN and malformed elements reject the entire batch; there is no row deletion or missing policy. Distribution evaluation points may be ±INF; parameters must be finite. Invalid domains raise 1001, NAN points/nonfinite parameters raise 1003, unsupported binomial size raises 1007, and a NAN numerical result raises 1006. Boundary densities/log values can legitimately be ±INF. Discrete quantiles are floats with a <code>64*EPSILON</code> relative allowance at CDF steps. Degenerate distributions return their point mass at quantile p=1, even where R/SciPy differ.</p>
-<p>The ten <a href="./descriptive.html">descriptive functions</a> are mean, variance, SD, covariance, correlation, scalar/batch type-7 quantiles, median, weighted mean and weighted variance. They default to <code>missing: 'raise'</code>, with explicit <code>'drop'</code> deletion, pairwise for aligned inputs. Variance/SD/covariance defaults to sample normalization; weighted variance defaults to frequency weighting, with reliability and population options. Missing null/NAN raises 1001 by default; infinity always raises 1003. Constant-input correlation is explicitly NAN. Other nonfinite arithmetic raises 1003, rather than allowing overflow to appear as zero variance. Negative weights are rejected before missing-value deletion. These policies differ from regression defaults and from strict literal draw kernels, and are not inferred from input shape.</p>
-<p>Each family also exposes <code>dist_{family}_rng(int $n, int $seed, ...parameters): array</code>, with the same distribution parameters/defaults. n is in <code>[0,1000000]</code>, seed is a nonnegative PHP integer, and every call owns local ChaCha20 state. Successful results are packed lists of n finite floats, including discrete counts. Repeated seed/parameters reproduce prefixes within the pinned build; empty batches still validate parameters. Negative count/seed raises 1001, excessive count raises 1007, and nonfinite parameters/generated samples raise 1003. Runtime argument-conversion errors retain code zero. The <a href="./rng.html">sampling contract</a> defines the inverse-CDF method, finite uniform grid and version/platform reproducibility limits.</p>
-<p>All calls are stateless with respect to the caller’s PHP RNG state. The <a href="./verifications/distributions.html">reference record</a>, <a href="./benchmarks/distributions.html">benchmarks</a> and <a href="./v0.2.html">v0.2 assessment</a> distinguish implemented behavior, verified accuracy and publication/platform limits.</p>
+<section id="distribution-functions" class="level3">
+<h3 class="anchored" data-anchor-id="distribution-functions">Distribution functions</h3>
+<p>Thirteen distribution parameterizations each have seven operations, in scalar and <code>_array</code> form, plus a sampler:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>dist_{family}_pdf</code>, <code>_logpdf</code></td>
+<td>Density, continuous families</td>
+</tr>
+<tr class="even">
+<td><code>dist_{family}_pmf</code>, <code>_logpmf</code></td>
+<td>Mass, discrete families</td>
+</tr>
+<tr class="odd">
+<td><code>dist_{family}_cdf</code>, <code>_logcdf</code></td>
+<td>Lower tail</td>
+</tr>
+<tr class="even">
+<td><code>dist_{family}_sf</code>, <code>_logsf</code></td>
+<td>Upper tail</td>
+</tr>
+<tr class="odd">
+<td><code>dist_{family}_quantile</code></td>
+<td>Inverse CDF</td>
+</tr>
+<tr class="even">
+<td><code>dist_{family}_{operation}_array</code></td>
+<td>The same operation over a list of points</td>
+</tr>
+<tr class="odd">
+<td><code>dist_{family}_rng</code></td>
+<td>Seeded samples</td>
+</tr>
+</tbody>
+</table>
+<p><code>dist_uniform_rng</code>, <code>dist_categorical_rng</code>, and <code>dist_categorical_rows_rng</code> are samplers only. <a href="./distributions.html">Probability distributions</a> lists every family with its parameter names, defaults, domains, and support, and <code>stubs/phit.php</code> has the exact signatures.</p>
+<p><strong>Inputs.</strong></p>
+<ul>
+<li>Numeric arguments and elements accept PHP integers or floats. Binomial <code>size</code> is an integer in [0, 2^53].</li>
+<li>Evaluation points may be ±INF. Parameters must be finite.</li>
+<li>Batch results are packed lists in input order, with keys discarded. An empty batch returns an empty list after the parameters are validated.</li>
+<li><code>null</code>, <code>NAN</code>, or a malformed element rejects the whole batch. There is no missing-value policy.</li>
+</ul>
+<p><strong>Results.</strong></p>
+<ul>
+<li>Boundary densities and log values can be ±INF.</li>
+<li>Discrete quantiles are floats, with a <code>64 * EPSILON</code> relative allowance at CDF steps.</li>
+<li>A degenerate distribution returns its point mass at p = 1, even where R or SciPy differ.</li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Failure</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Invalid parameter domain</td>
+<td>1001</td>
+</tr>
+<tr class="even">
+<td><code>NAN</code> point or nonfinite parameter</td>
+<td>1003</td>
+</tr>
+<tr class="odd">
+<td>Unsupported binomial size</td>
+<td>1007</td>
+</tr>
+<tr class="even">
+<td><code>NAN</code> numerical result</td>
+<td>1006</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="seeded-sampling" class="level3">
+<h3 class="anchored" data-anchor-id="seeded-sampling">Seeded sampling</h3>
+<p><code>dist_{family}_rng(int $n, int $seed, ...parameters): array</code> takes the family’s parameters and defaults.</p>
+<ul>
+<li><code>n</code> is in [0, 1,000,000], and <code>seed</code> is a nonnegative PHP integer.</li>
+<li>Every call uses its own ChaCha20 state and does not touch PHP’s random state.</li>
+<li>Results are packed lists of n finite floats, including discrete counts.</li>
+<li>The same seed and parameters reproduce the same draws, and a longer request extends a shorter one, within the same build.</li>
+<li>An empty request still validates its parameters.</li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Failure</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Negative <code>n</code> or <code>seed</code></td>
+<td>1001</td>
+</tr>
+<tr class="even">
+<td><code>n</code> above 1,000,000</td>
+<td>1007</td>
+</tr>
+<tr class="odd">
+<td>Nonfinite parameters or generated samples</td>
+<td>1003</td>
+</tr>
+<tr class="even">
+<td>PHP argument-conversion errors</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><a href="./rng.html">Seeded sampling</a> defines the inverse-CDF method, the uniform grid, and the limits of reproducibility across versions and platforms.</p>
+</section>
+<section id="descriptive-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="descriptive-statistics">Descriptive statistics</h3>
+<p>The ten <a href="./descriptive.html">descriptive functions</a> are <code>stat_mean</code>, <code>stat_var</code>, <code>stat_sd</code>, <code>stat_cov</code>, <code>stat_cor</code>, <code>stat_quantile</code> (type 7), <code>stat_quantile_array</code>, <code>stat_median</code>, <code>stat_weighted_mean</code>, and <code>stat_weighted_var</code>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Rule</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Missing values</td>
+<td><code>missing: 'raise'</code> by default (code 1001). <code>missing: 'drop'</code> deletes them, pairwise for aligned inputs</td>
+</tr>
+<tr class="even">
+<td>Infinity</td>
+<td>Always raises 1003</td>
+</tr>
+<tr class="odd">
+<td>Normalization</td>
+<td>Variance, SD, and covariance default to the sample (n − 1) divisor</td>
+</tr>
+<tr class="even">
+<td>Weighted variance</td>
+<td>Frequency weights by default; reliability and population options</td>
+</tr>
+<tr class="odd">
+<td>Negative weights</td>
+<td>Rejected before missing-value deletion</td>
+</tr>
+<tr class="even">
+<td>Constant input to <code>stat_cor</code></td>
+<td>Returns <code>NAN</code></td>
+</tr>
+<tr class="odd">
+<td>Other nonfinite arithmetic</td>
+<td>Raises 1003, so overflow cannot appear as zero variance</td>
+</tr>
+</tbody>
+</table>
+<p>These defaults differ from the model functions, which drop missing rows by default, and from the draw kernels below, which accept no missing values. They do not depend on the input’s shape.</p>
+<p>The <a href="./verifications/distributions.html">verification record</a>, <a href="./benchmarks/distributions.html">benchmarks</a>, and <a href="./v0.2.html">v0.2 assessment</a> cover accuracy, speed, and platform limits.</p>
+</section>
 </section>
 <section id="posterior-draw-numerical-kernels" class="level2">
 <h2 class="anchored" data-anchor-id="posterior-draw-numerical-kernels">Posterior-draw numerical kernels</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\draws_moments(<span class="dt">array</span> <span class="va">$draws</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$normalization</span> <span class="op">=</span> <span class="st">'population'</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>Phit\draws_covariance_map(<span class="dt">array</span> <span class="va">$sourceCovariance</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$targetCovariance</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Phit\draws_affine(<span class="dt">array</span> <span class="va">$draws</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$matrix</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$shift</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>These synchronous, stateless functions accept ordinary PHP numeric arrays. Draw matrices have one row per draw and one column per parameter, with at least one row and column. All matrices must be rectangular. Only integer/float elements are accepted: null, strings and booleans raise 1001; NAN/INF raise 1003. The optional <code>weights</code> argument itself may be null to select uniform weights. Array keys are ignored; iteration order determines row and parameter order, and output arrays are packed lists. Inputs are not mutated. No rows are dropped and no intercept is inserted; there is no <code>missing</code> or <code>intercept</code> option.</p>
-<p><code>draws_moments</code> returns exactly <code>['mean' =&gt; list&lt;float&gt;, 'covariance' =&gt; list&lt;list&lt;float&gt;&gt;]</code>. Weights must be finite and nonnegative with one per draw and positive total weight. They are normalized internally to sum to one. The mean is <span class="math inline">\(\sum_i w_i x_i\)</span> and population covariance is <span class="math inline">\(\sum_i w_i(x_i-\mu)(x_i-\mu)^T\)</span>. <code>'unbiased'</code> divides that covariance by <span class="math inline">\(1-\sum_i w_i^2\)</span>: weights express <strong>reliability, not frequency counts</strong>. Zero total weight, unknown normalization and undefined unbiased normalization raise 1001. Zero-weight rows are still validated. One effective draw is valid for population moments (zero covariance); unbiased normalization must be positive in floating-point arithmetic. Singular covariance is valid, including when draws are fewer than parameters.</p>
-<p><code>draws_covariance_map</code> returns exactly <code>['matrix' =&gt; list&lt;list&lt;float&gt;&gt;, 'log_abs_det' =&gt; float]</code>. Both covariances must be square, finite, symmetric and positive definite with equal dimensions. It returns <span class="math inline">\(A=L_tL_s^{-1}\)</span> using Cholesky factors and a triangular solve, so <span class="math inline">\(A C_s A^T=C_t\)</span>, with the identity interpreted to floating-point precision. This parameter-order-dependent map is deterministic but not unique. Asymmetry beyond the documented tolerance raises 1001; failed positive definiteness or numerical singularity raises 1005. There is no ridge, jitter or silent regularization.</p>
-<p><code>draws_affine</code> returns exactly <code>['draws' =&gt; list&lt;list&lt;float&gt;&gt;, 'log_abs_det' =&gt; float]</code>. A square, numerically invertible <span class="math inline">\(A\)</span> and a shift of the same parameter dimension are required. Each row becomes <span class="math inline">\(y_i=A x_i+b\)</span>; row-oriented matrix notation is <span class="math inline">\(Y=X A^T+b\)</span>. The output has exactly the original row/column counts and draw order. Negative determinants are allowed; the returned quantity is <span class="math inline">\(\log|\det A|\)</span>. Singular or numerically singular maps raise 1004.</p>
-<p>In all three functions, ragged/incompatible dimensions raise 1002 and nonfinite arithmetic results raise 1003. Zend errors for non-array arguments follow the existing runtime conventions. The <a href="./draw-numerics.html">numerical notes</a> define symmetry/rank tolerances, formulas, implementation boundaries and verification. Stan evaluation, PSIS, moment-matching iteration and diagnostics belong to the consuming CmdStan package.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\draws_moments(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$draws</span><span class="ot">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$normalization</span> <span class="op">=</span> <span class="st">'population'</span><span class="ot">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>Phit\draws_covariance_map(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$sourceCovariance</span><span class="ot">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$targetCovariance</span><span class="ot">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>Phit\draws_affine(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$draws</span><span class="ot">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$matrix</span><span class="ot">,</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$shift</span><span class="ot">,</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Shared rules.</strong></p>
+<ul>
+<li>Draw matrices have one row per draw and one column per parameter, with at least one of each. All matrices must be rectangular.</li>
+<li>Only integers and floats are accepted. <code>null</code>, strings, and booleans raise 1001; <code>NAN</code> and <code>INF</code> raise 1003. <code>weights</code> itself may be <code>null</code> for uniform weights.</li>
+<li>Keys are ignored, iteration order sets the row and parameter order, and results are packed lists.</li>
+<li>Inputs are not modified. No rows are dropped and no intercept is added; there is no <code>missing</code> or <code>intercept</code> option.</li>
+<li>Ragged or incompatible dimensions raise 1002, and nonfinite arithmetic raises 1003.</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Returns</th>
+<th>Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>draws_moments</code></td>
+<td><code>['mean' =&gt; list&lt;float&gt;, 'covariance' =&gt; list&lt;list&lt;float&gt;&gt;]</code></td>
+<td>Weights are finite, nonnegative, one per draw, with positive total, and are normalized to sum to one</td>
+</tr>
+<tr class="even">
+<td><code>draws_covariance_map</code></td>
+<td><code>['matrix' =&gt; list&lt;list&lt;float&gt;&gt;, 'log_abs_det' =&gt; float]</code></td>
+<td>Both covariances square, finite, symmetric, positive definite, of equal size</td>
+</tr>
+<tr class="odd">
+<td><code>draws_affine</code></td>
+<td><code>['draws' =&gt; list&lt;list&lt;float&gt;&gt;, 'log_abs_det' =&gt; float]</code></td>
+<td>A square, invertible matrix and a shift of the parameter dimension</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>draws_moments</code>.</strong> The mean is <span class="math inline">\(\sum_i w_i x_i\)</span> and the population covariance <span class="math inline">\(\sum_i w_i(x_i-\mu)(x_i-\mu)^T\)</span>. <code>'unbiased'</code> divides the covariance by <span class="math inline">\(1-\sum_i w_i^2\)</span>, so weights express reliability, not frequency counts.</p>
+<ul>
+<li>Zero total weight, an unknown normalization, or an undefined unbiased normalization raises 1001.</li>
+<li>Zero-weight rows are still validated.</li>
+<li>One effective draw is valid for population moments and gives zero covariance.</li>
+<li>A singular covariance is valid, including when there are fewer draws than parameters.</li>
+</ul>
+<p><strong><code>draws_covariance_map</code>.</strong> Returns <span class="math inline">\(A=L_tL_s^{-1}\)</span> from the Cholesky factors and a triangular solve, so <span class="math inline">\(A C_s A^T=C_t\)</span> to floating-point precision. The map depends on the parameter order and is not unique.</p>
+<ul>
+<li>Asymmetry beyond the documented tolerance raises 1001.</li>
+<li>A failed positive-definite factorization or a numerically singular matrix raises 1005.</li>
+<li>There is no ridge, jitter, or other regularization.</li>
+</ul>
+<p><strong><code>draws_affine</code>.</strong> Each row becomes <span class="math inline">\(y_i=A x_i+b\)</span>, or <span class="math inline">\(Y=X A^T+b\)</span> in row-oriented notation. The output keeps the row and column counts and the draw order. Negative determinants are allowed, and <code>log_abs_det</code> is <span class="math inline">\(\log|\det A|\)</span>. A singular or numerically singular map raises 1004.</p>
+<p><a href="./draw-numerics.html">Posterior-draw kernels</a> gives the tolerances, formulas, and verification. Stan evaluation, PSIS, moment matching, and diagnostics belong to the consuming CmdStan package.</p>
 </section>
 <section id="one-dimensional-optimization-and-root-finding" class="level2">
 <h2 class="anchored" data-anchor-id="one-dimensional-optimization-and-root-finding">One-dimensional optimization and root finding</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Phit\optimize(<span class="kw">callable</span> <span class="va">$f</span><span class="ot">,</span> <span class="dt">float</span> <span class="va">$lower</span><span class="ot">,</span> <span class="dt">float</span> <span class="va">$upper</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">float</span> <span class="va">$tol</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$maximum</span> <span class="op">=</span> <span class="kw">false</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Phit\uniroot(<span class="kw">callable</span> <span class="va">$f</span><span class="ot">,</span> <span class="dt">float</span> <span class="va">$lower</span><span class="ot">,</span> <span class="dt">float</span> <span class="va">$upper</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">float</span> <span class="va">$tol</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">int</span> <span class="va">$maxiter</span> <span class="op">=</span> <span class="dv">1000</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>optimize</code> ports R’s <code>optimize()</code>. It returns <code>['minimum' =&gt; x, 'objective' =&gt; f(x)]</code>, or <code>['maximum' =&gt; x, 'objective' =&gt; f(x)]</code> with <code>maximum: true</code>. <code>uniroot</code> ports R’s <code>uniroot()</code> and returns <code>['root', 'f_root', 'iter', 'estim_prec']</code>. Both run R’s C code (Brent_fmin and R_zeroin2) step by step, so they evaluate f at the same points and return the same doubles. The default <code>tol</code> is R’s <code>.Machine$double.eps^0.25</code>.</p>
-<p><code>f</code> is any PHP callable that takes one float and returns an int or float. Any other return value raises 1001, and an exception thrown by <code>f</code> propagates unchanged. As in R, nonfinite values during the search are replaced by the largest finite value, with the sign kept for <code>-INF</code> in <code>uniroot</code>. One <code>E_WARNING</code> reports the replacement. <code>uniroot</code> requires f(lower) and f(upper) without NAN and without the same sign. When it runs out of iterations, it raises an <code>E_WARNING</code>, sets <code>iter</code> to <code>maxiter</code>, and returns its last estimate. R’s <code>extendInt</code> and <code>check.conv</code> options are not available.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Phit\optimize(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">callable</span> <span class="va">$f</span><span class="ot">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$lower</span><span class="ot">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$upper</span><span class="ot">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">float</span> <span class="va">$tol</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="va">$maximum</span> <span class="op">=</span> <span class="kw">false</span><span class="ot">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>Phit\uniroot(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">callable</span> <span class="va">$f</span><span class="ot">,</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$lower</span><span class="ot">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$upper</span><span class="ot">,</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">float</span> <span class="va">$tol</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$maxiter</span> <span class="op">=</span> <span class="dv">1000</span><span class="ot">,</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>R function</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>optimize</code></td>
+<td><code>optimize()</code></td>
+<td><code>['minimum' =&gt; x, 'objective' =&gt; f(x)]</code>, or <code>['maximum' =&gt; x, 'objective' =&gt; f(x)]</code> with <code>maximum: true</code></td>
+</tr>
+<tr class="even">
+<td><code>uniroot</code></td>
+<td><code>uniroot()</code></td>
+<td><code>['root', 'f_root', 'iter', 'estim_prec']</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Both follow R’s C code (<code>Brent_fmin</code> and <code>R_zeroin2</code>) step by step, so they evaluate <code>f</code> at the same points and return the same doubles.</li>
+<li>The default <code>tol</code> is R’s <code>.Machine$double.eps^0.25</code>.</li>
+<li><code>f</code> is any PHP callable that takes one float and returns an int or float. Any other return value raises 1001. An exception thrown by <code>f</code> propagates unchanged.</li>
+<li>As in R, a nonfinite value during the search is replaced by the largest finite value, keeping the sign of <code>-INF</code> in <code>uniroot</code>. One <code>E_WARNING</code> reports the replacement.</li>
+<li><code>uniroot</code> needs <code>f(lower)</code> and <code>f(upper)</code> without <code>NAN</code> and with opposite signs.</li>
+<li>When <code>uniroot</code> runs out of iterations, it raises an <code>E_WARNING</code>, sets <code>iter</code> to <code>maxiter</code>, and returns its last estimate.</li>
+<li>R’s <code>extendInt</code> and <code>check.conv</code> options are not available.</li>
+</ul>
 <p><code>tests/optimize.php</code> compares 91 results with R 4.6.1 bit for bit, including the number of function evaluations. The cases cover smooth, flat, kinked, multimodal, and boundary minima, infinite values, roots at the endpoints, a step function, and a search that does not converge. Regenerate the fixture with <code>Rscript tests/generate-optimize-fixtures.R</code>.</p>
 </section>
 <section id="csv-input" class="level2">
 <h2 class="anchored" data-anchor-id="csv-input">CSV input</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Phit\read_csv(<span class="dt">string</span> <span class="va">$path</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$options</span> <span class="op">=</span> [])<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The reader returns <code>['names' =&gt; list&lt;string&gt;, 'columns' =&gt; list&lt;null|array{type, values, failed}&gt;, 'problems' =&gt; list&lt;string&gt;]</code>. Missing or unreadable files and invalid options throw <code>\ValueError</code>. The options, type rules, and storage forms are defined in <a href="./io.html">Reading CSV files</a>.</p>
+<p>The reader returns:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>names</code></td>
+<td><code>list&lt;string&gt;</code></td>
+</tr>
+<tr class="even">
+<td><code>columns</code></td>
+<td><code>list&lt;null\|array{type, values, failed}&gt;</code></td>
+</tr>
+<tr class="odd">
+<td><code>problems</code></td>
+<td><code>list&lt;string&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p>Missing or unreadable files and invalid options throw <code>\ValueError</code>. The options, type rules, and storage forms are in <a href="./io.html">Reading CSV files</a>. The CSV reader requires the extension; the polyfill does not provide it.</p>
 
 
 </section>

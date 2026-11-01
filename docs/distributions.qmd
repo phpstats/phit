@@ -2,169 +2,151 @@
 title: "Probability distributions"
 ---
 
-The extension provides 182 probability-evaluation functions: 13 parameterizations,
-seven operations each, and scalar plus native `_array` forms, plus 13 explicitly
-[seeded batch sampling functions](rng.qmd). Uniform, categorical and
-permutation samplers have no probability functions and are described there. These return ordinary
-PHP numbers and arrays. Distribution evaluation is separate from regression fitting;
-`fit_poisson_matrix()` still fits a count model, while `dist_poisson_pmf()` evaluates a
-specified Poisson distribution. [Descriptive statistics](descriptive.qmd) add ten
-functions for supplied numeric slices. [Posterior-draw kernels](draw-numerics.qmd)
-handle literal draw matrices.
-
-## Families and parameterizations
-
-Replace `{family}` in the operation names below with one of these names. PHP numeric
-arguments accept integers or floats; binomial `size` specifically requires an integer.
-All parameters must be finite and satisfy their domains.
-
-| Family | Parameters in call order | Support and conventions |
-| --- | --- | --- |
-| `normal` | `mean = 0`, `sd = 1` | Real line; `sd > 0` |
-| `t` | `df` | Standard Student t; `df > 0`, no location/scale arguments |
-| `chisquare` | `df` | Nonnegative; `df > 0` |
-| `f` | `df1`, `df2` | Nonnegative; numerator/denominator df both positive |
-| `beta` | `alpha`, `beta` | `[0,1]`; both shape parameters positive |
-| `gamma` | `shape`, `scale = 1` | Nonnegative; both positive; mean `shape * scale` |
-| `exponential` | `rate = 1` | Nonnegative; positive rate; mean `1/rate` |
-| `lognormal` | `meanlog = 0`, `sdlog = 1` | Positive; log X is Normal(meanlog, sdlog); `sdlog > 0` |
-| `logistic` | `location = 0`, `scale = 1` | Real line; positive scale |
-| `binomial` | `size`, `prob` | Integer successes `0..size`; size `0..2^53`, prob `[0,1]` |
-| `poisson` | `lambda` | Nonnegative integer counts; lambda nonnegative |
-| `nbinom` | `size`, `prob` | Failures before size-th success; real size > 0, prob `(0,1]` |
-| `nbinom_mu` | `size`, `mu` | Same negative binomial; size > 0, mu ≥ 0; variance `mu + mu^2/size` |
-
-Gamma's second parameter is **scale**, exponential's is **rate**. Negative-binomial
-`size` is a positive real dispersion/shape parameter, not a binomial trial count.
-The two NB forms are equivalent when `prob = size/(size + mu)`. Poisson lambda zero,
-binomial size zero/prob zero/prob one, and NB prob one/mu zero represent point masses.
-Parameter conversion in the mean-form NB avoids overflowing `size + mu`.
-
-## Scalar and batch operations
-
-| Operation | Scalar function | Definition |
-| --- | --- | --- |
-| Density | `dist_{family}_pdf(x, ...parameters)` | Continuous density f(x) |
-| Log density | `dist_{family}_logpdf(x, ...parameters)` | Natural log of density |
-| Mass | `dist_{family}_pmf(k, ...parameters)` | Discrete P(X = k) |
-| Log mass | `dist_{family}_logpmf(k, ...parameters)` | Natural log of mass |
-| CDF | `dist_{family}_cdf(x_or_k, ...parameters)` | P(X ≤ x) |
-| Log CDF | `dist_{family}_logcdf(x_or_k, ...parameters)` | ln P(X ≤ x) |
-| Survival | `dist_{family}_sf(x_or_k, ...parameters)` | P(X > x), evaluated directly |
-| Log survival | `dist_{family}_logsf(x_or_k, ...parameters)` | ln P(X > x) |
-| Quantile | `dist_{family}_quantile(p, ...parameters)` | Inverse CDF; p in `[0,1]` |
-
-Continuous families expose pdf/logpdf; discrete families expose pmf/logpmf. Every
-operation has an `_array` function taking a PHP array as its first argument and
-the same parameters/defaults, for example:
+Evaluate densities, probabilities, and quantiles for 12 distribution families in 13 parameterizations (negative binomial has two), one value at a time or for a whole array. Each function returns a PHP float or a packed PHP array.
 
 ```php
-$probability = Phit\dist_normal_cdf(x: 1.96); // Approximately 0.975.
+$p = Phit\dist_normal_cdf(x: 1.96); // 0.975
 $tails = Phit\dist_t_sf_array(values: [1, 2, 3], df: 12);
-$logMass = Phit\dist_poisson_logpmf_array(counts: [0, 2, 5], lambda: 3.2);
-$interval = Phit\dist_gamma_quantile_array(probabilities: [.025, .975], shape: 2, scale: 3);
+$logMass = Phit\dist_poisson_logpmf_array(
+    counts: [0, 2, 5],
+    lambda: 3.2,
+);
+$interval = Phit\dist_gamma_quantile_array(
+    probabilities: [.025, .975],
+    shape: 2,
+    scale: 3,
+);
 ```
 
-Scalar continuous evaluation uses argument `x`; discrete uses `k`. Batch continuous
-evaluation uses `values`; discrete uses `counts`; all batch quantiles use
-`probabilities`. Parameter names are part of the contract because PHP supports
-named arguments. The generated `stubs/phit.php` lists every exact
-signature. Loading the extension makes all functions available globally.
+- Draw random samples with the seeded `dist_{family}_rng()` functions in [Seeded sampling](rng.qmd). The uniform, categorical, and permutation samplers are described there too.
+- Distribution functions evaluate a specified distribution. To estimate parameters from data, use a model such as `fit_generalized_linear(family: 'poisson')`.
+- [Descriptive statistics](descriptive.qmd) summarize supplied values, and the [posterior-draw kernels](draw-numerics.qmd) summarize draw matrices.
 
-Batch evaluation constructs the distribution once, then streams input values
-through the same core evaluation policy. Output is a packed list in input iteration
-order; keys are not retained. Empty input returns `[]`, but parameters are still
-validated. An invalid element rejects the entire call. No missing rows are dropped.
-The [benchmarks](benchmarks/distributions.qmd) quantify when batching saves PHP
-boundary overhead and when numerical evaluation dominates.
+## Operations
+
+Replace `{family}` with a parameterization name from the next table.
+
+| Operation | Scalar function | Returns |
+| --- | --- | --- |
+| Density | `dist_{family}_pdf(x, ...)` | Continuous density f(x) |
+| Log density | `dist_{family}_logpdf(x, ...)` | ln f(x) |
+| Mass | `dist_{family}_pmf(k, ...)` | Discrete P(X = k) |
+| Log mass | `dist_{family}_logpmf(k, ...)` | ln P(X = k) |
+| CDF | `dist_{family}_cdf(x_or_k, ...)` | P(X ≤ x) |
+| Log CDF | `dist_{family}_logcdf(x_or_k, ...)` | ln P(X ≤ x) |
+| Survival | `dist_{family}_sf(x_or_k, ...)` | P(X > x), computed directly |
+| Log survival | `dist_{family}_logsf(x_or_k, ...)` | ln P(X > x) |
+| Quantile | `dist_{family}_quantile(p, ...)` | Inverse CDF, p in `[0, 1]` |
+
+Continuous families have pdf and logpdf. Discrete families have pmf and logpmf. That gives seven operations for each of the 13 parameterizations, or 91 scalar functions.
+
+Every operation also has an `_array` form with the same parameters and defaults. Its first argument is an array.
+
+| Argument | Scalar | Batch |
+| --- | --- | --- |
+| Continuous evaluation point | `x` | `values` |
+| Discrete evaluation point | `k` | `counts` |
+| Quantile probability | `p` | `probabilities` |
+
+Parameter names are part of the contract, because PHP supports named arguments. `stubs/phit.php` lists every signature.
+
+## Families and parameters {#families-and-parameterizations}
+
+Each row is one parameterization. Parameters are listed in call order, with defaults. Every parameter must be finite and inside its domain.
+
+| Family | Parameters | Support and domain |
+| --- | --- | --- |
+| `normal` | `mean = 0`, `sd = 1` | Real line; `sd > 0` |
+| `t` | `df` | Standard Student's t, no location or scale; `df > 0` |
+| `chisquare` | `df` | x ≥ 0; `df > 0` |
+| `f` | `df1`, `df2` | x ≥ 0; both positive |
+| `beta` | `alpha`, `beta` | `[0, 1]`; both positive |
+| `gamma` | `shape`, `scale = 1` | x ≥ 0; both positive; mean `shape * scale` |
+| `exponential` | `rate = 1` | x ≥ 0; `rate > 0`; mean `1 / rate` |
+| `lognormal` | `meanlog = 0`, `sdlog = 1` | x > 0; log X is Normal(meanlog, sdlog); `sdlog > 0` |
+| `logistic` | `location = 0`, `scale = 1` | Real line; `scale > 0` |
+| `binomial` | `size`, `prob` | Integers `0..size`; `size` an integer in `0..2^53`; `prob` in `[0, 1]` |
+| `poisson` | `lambda` | Nonnegative integers; `lambda ≥ 0` |
+| `nbinom` | `size`, `prob` | Failures before the `size`-th success; real `size > 0`; `prob` in `(0, 1]` |
+| `nbinom_mu` | `size`, `mu` | Same distribution; `size > 0`, `mu ≥ 0`; variance `mu + mu^2 / size` |
+
+- Gamma's second parameter is a **scale**. Exponential's is a **rate**.
+- Negative-binomial `size` is a positive real dispersion parameter, not a trial count. The two forms agree when `prob = size / (size + mu)`.
+- Poisson `lambda = 0`, binomial `size = 0` or `prob` of 0 or 1, and negative-binomial `prob = 1` or `mu = 0` are point masses.
+
+## Batch evaluation
+
+- The output is a packed list in input iteration order. Keys are not kept.
+- Empty input returns `[]`, but the parameters are still validated.
+- One invalid element rejects the whole call. No elements are dropped.
+- The distribution is constructed once per call. The [benchmarks](benchmarks/distributions.qmd) show when batching saves PHP call overhead.
 
 ## Tails and likelihoods
 
-Use survival functions for upper tails rather than subtracting a rounded CDF
-from one. Use log functions directly rather than taking the log of a probability
-that may already have underflowed.
+Use the survival function for upper tails, and the log functions when a probability may underflow.
 
 ```php
-Phit\dist_normal_sf(10);     // About 7.62e-24; 1 - Phit\dist_normal_cdf(10) is zero.
-Phit\dist_normal_logsf(40);  // About -804.61, even though the ordinary SF is zero.
-$logLikelihood = array_sum(Phit\dist_poisson_logpmf_array([2, 5, 3, 0], lambda: 2.5));
+Phit\dist_normal_sf(10);    // 7.62e-24
+1 - Phit\dist_normal_cdf(10); // 0.0
+// -804.61; dist_normal_sf(40) is 0.0
+Phit\dist_normal_logsf(40);
+$logLikelihood = array_sum(
+    Phit\dist_poisson_logpmf_array([2, 5, 3, 0], lambda: 2.5),
+);
 ```
 
-A density is not a probability at a point and may exceed one. Sum log densities
-or log masses for independent observations; likelihood underflow is avoided this
-way. Log probabilities at impossible events are `-INF`. PHP JSON encoding with
-`JSON_THROW_ON_ERROR` rejects nonfinite results; callers must choose their own
-serialization policy rather than silently replacing numerical values.
+- A density is not a probability and can exceed one.
+- Sum log densities or log masses to get the log-likelihood of independent observations.
+- The log probability of an impossible event is `-INF`. `json_encode()` with `JSON_THROW_ON_ERROR` rejects nonfinite values, so choose a serialization policy for them.
 
-The runnable `examples/distributions.php` demonstrates a two-sided t
-test, a mean confidence interval, a Poisson likelihood, a central probability,
-extreme upper tails and equivalent NB parameterizations. The sample data are
-hypothetical and the computations illustrate the API.
+`examples/distributions.php` shows a two-sided t test, a confidence interval for a mean, a Poisson likelihood, extreme upper tails, and the two negative-binomial forms.
 
-## Boundaries and errors
+## Boundaries
 
-Evaluation points may be ±INF, but NAN raises 1003. Null, numeric strings, booleans
-and nested array elements are not numeric inputs; malformed batch elements raise
-1001. Scalar argument-type failures follow Zend's runtime conventions. There is
-no distribution `missing` option. Nonfinite parameters raise 1003; invalid domains
-and quantile probabilities outside `[0,1]` raise 1001. Binomial size above `2^53`
-raises 1007. A NAN numerical result raises 1006; it is not returned as a value.
-Parameters so extreme that the incomplete beta or gamma cannot be evaluated also
-raise 1006 promptly: a beta-type sum $a + b$ beyond the double range, a beta-type
-parameter above $10^{300}$ evaluated within $10^{-300}$ of an end of the support, or
-a gamma-type shape or point above $10^{300}$ (for example `dist_f_cdf(2, 3, PHP_FLOAT_MAX)`
-or `dist_gamma_cdf(1e30, 1e30)`). Earlier builds could hang or panic on such input.
+- Outside the support, a density or mass is 0 and its log is `-INF`.
+- A boundary density can be infinite, for example a beta density with a shape below one at an endpoint.
+- A discrete PMF at a non-integer count is 0. CDF and SF use the floor of the evaluation point, and SF always means strictly greater.
+- Continuous quantiles at p = 0 and p = 1 are the support bounds, including infinities.
+- A discrete quantile is the smallest support value whose CDF reaches p. The comparison allows a relative `64 * EPSILON` on the smaller tail, to absorb rounding at CDF steps. A point mass returns its location at p = 1, which differs from R and SciPy in some degenerate cases.
+- Count quantiles are returned as PHP floats, so they are exact only up to 2^53.
 
-Outside support, density/mass is zero and log density/mass is `-INF`. Boundary
-densities can be infinite, for example a beta shape below one at a support endpoint.
-Discrete PMFs at non-integer counts are zero, while CDF/SF use the floor of the
-evaluation point. SF always means strictly greater than that count.
+## Errors
 
-Continuous quantile endpoints are the support bounds, including infinities. Discrete
-quantiles return the smallest support value whose CDF reaches the requested
-probability, using a documented `64 * EPSILON` relative comparison allowance on
-the smaller tail to accommodate rounding at CDF steps. Endpoint p=0 follows the
-conventional lower support bound; p=1 follows the upper support bound for ordinary
-distributions. A point mass returns its actual mass location at p=1. This differs
-from R/SciPy in some degenerate cases. Returned count quantiles are PHP floats;
-precision is limited by binary64's exact integer range.
+| Input | Result |
+| --- | --- |
+| Evaluation point `±INF` | Evaluated at the limit |
+| Evaluation point `NAN` | Exception 1003 |
+| Nonfinite parameter | Exception 1003 |
+| Parameter outside its domain, or quantile p outside `[0, 1]` | Exception 1001 |
+| `null`, numeric string, boolean, or nested array in a batch | Exception 1001 |
+| Binomial `size` above 2^53 | Exception 1007 |
+| Result would be `NAN` | Exception 1006 |
+| Parameters too extreme for the incomplete beta or gamma | Exception 1006 |
 
-## Numerical implementation and dependency audit
+Scalar argument types follow PHP's usual rules. There is no `missing` option. The last row covers a beta-type sum a + b beyond the double range, a beta-type parameter above 10^300 evaluated within 10^-300 of a support endpoint, and a gamma-type shape or point above 10^300. Examples are `dist_f_cdf(2, 3, PHP_FLOAT_MAX)` and `dist_gamma_cdf(1e30, 1e30)`.
 
-The [raw statrs audit](verifications/distributions-audit.json) evaluates the saved
-R cases with statrs 0.19, using log(CDF)/log(SF) because that crate has no log-tail
-API. In these cases it loses small tails, has roughly `4.8e-4` relative binomial
-CDF error at size one million, and suffers inaccurate extreme quantiles. Those
-findings motivated a separate distribution module while retaining existing
-estimator numerical paths.
+## Evidence
 
-| Families | Probability backend | Density and extreme-tail work |
+- [Distributions: verification](verifications/distributions.qmd) compares phit with R, SciPy, and 60-digit mpmath references, with tolerances for each quantity and the documented boundary differences.
+- [Distributions: performance](benchmarks/distributions.qmd) covers 1,000, 100,000, and one million values, including peak memory.
+
+## Implementation notes
+
+The distribution functions use their own module, not the estimators' statrs paths. An audit of statrs 0.19 on the saved R cases ([raw results](verifications/distributions-audit.json)) found lost small tails, a relative binomial CDF error near `4.8e-4` at size one million, and inaccurate extreme quantiles. statrs has no log-tail API, so the audit used log(CDF) and log(SF).
+
+| Families | Probability backend | Density and extreme tails |
 | --- | --- | --- |
 | Normal, lognormal | cdflib Cody normal tails | Split normal density; Mills-ratio log tails; safeguarded quantiles |
-| Student t, F, beta | cdflib TOMS 708 incomplete beta | Stable log beta/gamma terms; log-scale incomplete-beta fraction |
-| Gamma, chi-square | cdflib TOMS 654 incomplete gamma | Stable densities; log-scale gamma series/fraction |
-| Binomial, negative binomial | cdflib incomplete beta | Loader-style saddle-point mass calculations; direct log tails |
+| Student's t, F, beta | cdflib TOMS 708 incomplete beta | Stable log beta and gamma terms; log-scale incomplete-beta fraction |
+| Gamma, chi-square | cdflib TOMS 654 incomplete gamma | Stable densities; log-scale gamma series and fraction |
+| Binomial, negative binomial | cdflib incomplete beta | Loader saddle-point mass; direct log tails |
 | Poisson | cdflib incomplete gamma | Loader Poisson mass; log-scale gamma tails |
-| Exponential, logistic | Closed-form Rust calculations | `expm1`, `log1p` and stable softplus formulas |
+| Exponential, logistic | Closed-form Rust | `expm1`, `log1p`, and stable softplus |
 
-The runtime pins MIT-licensed `cdflib = 0.4.3`; GPL nmath ports were excluded by
-the dependency audit. statrs remains the estimator dependency and a source of
-special functions/seeds where appropriate. The implementation forms both tails
-independently and uses custom log-scale expansions below `1e-280`. Continuous
-quantiles use log-tail Newton steps protected by brackets. No R/Python/BLAS runtime
-dependency is introduced. Numerical failure is explicit; this is not proof of
-accuracy for every finite argument or arbitrarily extreme shape parameter.
+- The runtime pins the MIT-licensed `cdflib = 0.4.3`. GPL nmath ports were not used.
+- Both tails are computed independently, with custom log-scale expansions below `1e-280`.
+- Continuous quantiles use bracketed Newton steps on the log tail.
+- The mean-form negative binomial converts its parameters without overflowing `size + mu`.
+- There is no R, Python, or BLAS runtime dependency.
 
-## Reference evidence and release scope
-
-[The executed comparison](verifications/distributions.qmd) records R, SciPy and
-60-digit mpmath references, documented boundary differences and quantity-specific
-tolerances. Scalar/batch identities and validation run in the offline release gate.
-[Performance evidence](benchmarks/distributions.qmd) covers 1,000, 100,000 and one
-million values, including peak process memory and regression preservation.
-
-Random sampling uses explicitly seeded `dist_{family}_rng(n, seed, ...parameters)`
-calls with local ChaCha20 state. The [sampling contract](rng.qmd) documents
-reproducibility, validation and independent reference vectors.
-[The readiness assessment](v0.2.qmd) records this implementation,
-the estimator reuse experiment and remaining publication/platform gates.
+These methods make numerical failure explicit. They do not prove accuracy for every finite argument or arbitrarily extreme shape.

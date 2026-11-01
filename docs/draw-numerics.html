@@ -139,6 +139,7 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -675,9 +676,9 @@ window.Quarto = {
    
   <ul>
   <li><a href="#weighted-moments" id="toc-weighted-moments" class="nav-link active" data-scroll-target="#weighted-moments">Weighted moments</a></li>
-  <li><a href="#covariance-map-and-tolerances" id="toc-covariance-map-and-tolerances" class="nav-link" data-scroll-target="#covariance-map-and-tolerances">Covariance map and tolerances</a></li>
-  <li><a href="#affine-transformation-and-determinant" id="toc-affine-transformation-and-determinant" class="nav-link" data-scroll-target="#affine-transformation-and-determinant">Affine transformation and determinant</a></li>
-  <li><a href="#using-the-php-api" id="toc-using-the-php-api" class="nav-link" data-scroll-target="#using-the-php-api">Using the PHP API</a></li>
+  <li><a href="#covariance-map" id="toc-covariance-map" class="nav-link" data-scroll-target="#covariance-map">Covariance map</a></li>
+  <li><a href="#affine-transformation" id="toc-affine-transformation" class="nav-link" data-scroll-target="#affine-transformation">Affine transformation</a></li>
+  <li><a href="#limits" id="toc-limits" class="nav-link" data-scroll-target="#limits">Limits</a></li>
   <li><a href="#independent-verification" id="toc-independent-verification" class="nav-link" data-scroll-target="#independent-verification">Independent verification</a></li>
   </ul>
 </nav>
@@ -704,69 +705,127 @@ window.Quarto = {
 </header>
 
 
-<p>These kernels support a separate PHP CmdStan interface’s PSIS-LOO moment matching. They compute weighted moments, covariance maps and affine transformations using nalgebra in <code>stats-core</code>. The PHP extension supplies strict numeric conversion and ordinary array results. The caller owns Stan model evaluation, importance ratios, PSIS, iteration control and diagnostics. These functions also work on other literal numeric matrices. They add no fitting, plotting or model abstraction.</p>
+<p>Compute weighted moments of a draw matrix, a map between two covariance matrices, and an affine transformation of the draws with its log Jacobian. The kernels support PSIS-LOO moment matching in a PHP CmdStan interface, and they work on any numeric matrix with draws in rows.</p>
+<p>The caller owns model evaluation, importance ratios, PSIS, iteration control, and diagnostics. The kernels add no fitting, plotting, or model objects.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">$draws</span> <span class="op">=</span> [[<span class="op">-</span><span class="dv">3</span><span class="ot">,</span> <span class="op">-</span><span class="dv">5</span>]<span class="ot">,</span> [<span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span>]<span class="ot">,</span> [<span class="dv">2</span><span class="ot">,</span> <span class="dv">3</span>]<span class="ot">,</span> [<span class="dv">5</span><span class="ot">,</span> <span class="dv">8</span>]<span class="ot">,</span> [<span class="dv">1</span><span class="ot">,</span> <span class="op">-</span><span class="dv">2</span>]]<span class="ot">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">$source</span> <span class="op">=</span> Phit\draws_moments(<span class="va">$draws</span>)<span class="ot">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$target</span> <span class="op">=</span> Phit\draws_moments(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">$draws</span><span class="ot">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    weights<span class="ot">:</span> [<span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">4</span><span class="ot">,</span> <span class="dv">3</span>]<span class="ot">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="va">$map</span> <span class="op">=</span> Phit\draws_covariance_map(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">$source</span>[<span class="st">'covariance'</span>]<span class="ot">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">$target</span>[<span class="st">'covariance'</span>]<span class="ot">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="va">$a</span> <span class="op">=</span> <span class="va">$map</span>[<span class="st">'matrix'</span>]<span class="ot">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="va">$shift</span> <span class="op">=</span> []<span class="ot">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$a</span> <span class="kw">as</span> <span class="va">$j</span> =&gt; <span class="va">$row</span>) {</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="va">$mapped</span> <span class="op">=</span> <span class="fl">0.0</span><span class="ot">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">foreach</span> (<span class="va">$row</span> <span class="kw">as</span> <span class="va">$k</span> =&gt; <span class="va">$value</span>) {</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="va">$mapped</span> <span class="op">+=</span> <span class="va">$value</span> <span class="op">*</span> <span class="va">$source</span>[<span class="st">'mean'</span>][<span class="va">$k</span>]<span class="ot">;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="va">$shift</span>[] <span class="op">=</span> <span class="va">$target</span>[<span class="st">'mean'</span>][<span class="va">$j</span>] <span class="op">-</span> <span class="va">$mapped</span><span class="ot">;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="va">$moved</span> <span class="op">=</span> Phit\draws_affine(<span class="va">$draws</span><span class="ot">,</span> matrix<span class="ot">:</span> <span class="va">$a</span><span class="ot">,</span> shift<span class="ot">:</span> <span class="va">$shift</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>The unweighted moments of <code>$moved['draws']</code> equal the target moments.</li>
+<li><code>$moved['log_abs_det']</code> is the change-of-variables log Jacobian.</li>
+<li>The transformation acts in the caller’s parameter coordinates. Constrained Stan parameters and model-specific Jacobians are the caller’s responsibility.</li>
+<li><a href="./reference-utilities.html#posterior-draw-numerical-kernels">The reference</a> lists the result keys and exception codes.</li>
+</ul>
 <section id="weighted-moments" class="level2">
 <h2 class="anchored" data-anchor-id="weighted-moments">Weighted moments</h2>
-<p>For <span class="math inline">\(X\in\mathbb R^{S\times P}\)</span>, normalize nonnegative weights to <span class="math inline">\(w_i\)</span> with <span class="math inline">\(\sum_i w_i=1\)</span>. A null weights argument selects <span class="math inline">\(w_i=1/S\)</span>.</p>
+<p>For <span class="math inline">\(X\in\mathbb R^{S\times P}\)</span>, nonnegative weights are normalized to <span class="math inline">\(w_i\)</span> with <span class="math inline">\(\sum_i w_i=1\)</span>. <code>weights: null</code> gives <span class="math inline">\(w_i=1/S\)</span>.</p>
 <p><span class="math display">\[
 \mu=\sum_i w_i x_i,\qquad
 C_{\mathrm{pop}}=\sum_i w_i(x_i-\mu)(x_i-\mu)^T,\qquad
 C_{\mathrm{unbiased}}=\frac{C_{\mathrm{pop}}}{1-\sum_i w_i^2}.
 \]</span></p>
-<p>Unbiased normalization uses <strong>reliability weights</strong>, not frequency/replication counts. Multiplying all supplied weights by a positive constant does not change the result. Uniform weights give divisor <span class="math inline">\(S\)</span> for population covariance and <span class="math inline">\(S-1\)</span> for unbiased covariance. A singular covariance is a legitimate moment result.</p>
-<p>Weights are divided by their maximum before compensated summation and normalization, so a finite weight array whose ordinary sum would overflow still works. Means use an anchor from a positive-weight draw, a compensated sum of deviations, and a second correction pass. Covariance uses compensated centered cross-products and is returned exactly symmetric. This avoids cancellation from a large common offset. Zero-weight rows contribute nothing but still undergo full validation. The unbiased denominator is evaluated as <span class="math inline">\(1-\sum_i w_i^2\)</span> in binary64; a zero or negative computed denominator is explicitly rejected, including concentrations that round to one effective draw. No extra effective-sample-size cutoff is imposed.</p>
+<ul>
+<li><code>unbiased</code> uses <strong>reliability weights</strong>, not frequency counts. Multiplying all weights by a positive constant does not change the result.</li>
+<li>Uniform weights give divisor S for the population covariance and S − 1 for the unbiased covariance.</li>
+<li>A singular covariance is a valid moment result.</li>
+<li>Zero-weight rows contribute nothing but are still validated.</li>
+<li>The unbiased denominator <span class="math inline">\(1-\sum_i w_i^2\)</span> is computed in binary64. A zero or negative value is rejected, including weights so concentrated that they round to one effective draw. No other effective-sample-size cutoff applies.</li>
+</ul>
+<p>Numerical method: weights are divided by their maximum before compensated summation, so weights whose ordinary sum would overflow still work. The mean uses an anchor from a positive-weight draw, a compensated sum of deviations, and a second correction pass. The covariance uses compensated centered cross-products and is returned exactly symmetric. Together these avoid cancellation from a large common offset.</p>
 </section>
-<section id="covariance-map-and-tolerances" class="level2">
-<h2 class="anchored" data-anchor-id="covariance-map-and-tolerances">Covariance map and tolerances</h2>
-<p>Use lower Cholesky factors <span class="math inline">\(C_s=L_sL_s^T\)</span>, <span class="math inline">\(C_t=L_tL_t^T\)</span> and solve</p>
+<section id="covariance-map" class="level2">
+<h2 class="anchored" data-anchor-id="covariance-map">Covariance map</h2>
+<p>With lower Cholesky factors <span class="math inline">\(C_s=L_sL_s^T\)</span> and <span class="math inline">\(C_t=L_tL_t^T\)</span>, the map solves</p>
 <p><span class="math display">\[
 L_s^T A^T=L_t^T,\qquad A C_s A^T=C_t.
 \]</span></p>
-<p>No matrix inverse is formed. The returned log Jacobian is <span class="math inline">\(\sum_j\log (L_{t,jj})-\log(L_{s,jj})\)</span>, so a very large or small determinant need not be representable as a floating-point number. The map depends on parameter order and is one of many possible covariance maps.</p>
-<p>Let <span class="math inline">\(d_i=\sqrt{C_{ii}}\)</span> and <span class="math inline">\(R_{ij}=C_{ij}/d_i/d_j\)</span>. Each diagonal must be strictly positive. Before Cholesky, compare opposite standardized entries <span class="math inline">\(a,b\)</span>:</p>
-<p><span class="math display">\[
-|a-b|\le64\epsilon\max(1,|a|,|b|),\qquad \epsilon=2^{-52}.
-\]</span></p>
-<p>Accepted rounding-level asymmetry is averaged on this standardized scale. The Cholesky factor of <span class="math inline">\(R\)</span> must exist, and <strong>each squared diagonal pivot must exceed <span class="math inline">\(64\epsilon P\)</span></strong>. Then rescale its rows by <span class="math inline">\(d_i\)</span> to recover the original covariance’s factor. These relative checks are invariant to changing individual parameter units within representable arithmetic. They define a pivot-based numerical-singularity policy, not a guarantee of a particular condition number. Near the threshold, rounding and parameter order can affect acceptance. No diagonal jitter, ridge, eigenvalue clipping or fallback factorization is performed. Singular moment covariance may therefore be returned by <code>draws_moments</code> and explicitly rejected by <code>draws_covariance_map</code>.</p>
+<ul>
+<li>No inverse is formed.</li>
+<li>The log Jacobian is <span class="math inline">\(\sum_j\log (L_{t,jj})-\log(L_{s,jj})\)</span>, so a very large or small determinant need not be representable.</li>
+<li>The map depends on parameter order and is one of many covariance maps.</li>
+</ul>
+<p>Both covariances must pass a numerical check before factorization. Let <span class="math inline">\(d_i=\sqrt{C_{ii}}\)</span> and <span class="math inline">\(R_{ij}=C_{ij}/d_i/d_j\)</span>.</p>
+<ul>
+<li>Each diagonal must be strictly positive.</li>
+<li>Opposite standardized entries a and b must satisfy <span class="math inline">\(|a-b|\le64\epsilon\max(1,|a|,|b|)\)</span>, with <span class="math inline">\(\epsilon=2^{-52}\)</span>. Accepted asymmetry is averaged on this scale.</li>
+<li>R must have a Cholesky factor, and <strong>each squared diagonal pivot must exceed <span class="math inline">\(64\epsilon P\)</span></strong>. The factor’s rows are then rescaled by <span class="math inline">\(d_i\)</span>.</li>
+</ul>
+<p>These checks do not depend on the units of individual parameters. They define a pivot threshold, not a condition-number guarantee, and near the threshold rounding and parameter order can decide acceptance. No jitter, ridge, eigenvalue clipping, or fallback factorization is applied. A singular covariance that <code>draws_moments()</code> returns is therefore rejected by <code>draws_covariance_map()</code>.</p>
 </section>
-<section id="affine-transformation-and-determinant" class="level2">
-<h2 class="anchored" data-anchor-id="affine-transformation-and-determinant">Affine transformation and determinant</h2>
-<p>For each draw interpreted as a column vector, <span class="math inline">\(y_i=A x_i+b\)</span>. Because PHP draw matrices have draws in rows, the implementation uses <span class="math inline">\(Y=X A^T+\mathbf1 b^T\)</span>. There is no intercept column or change of draw order.</p>
-<p>To assess invertibility, divide each row of <span class="math inline">\(A\)</span> by its largest absolute element, then divide each column of that scaled matrix by its largest absolute element. Zero rows/columns are singular. On the equilibrated matrix <span class="math inline">\(B\)</span>, require</p>
+<section id="affine-transformation" class="level2">
+<h2 class="anchored" data-anchor-id="affine-transformation">Affine transformation</h2>
+<p>Each draw, as a column vector, becomes <span class="math inline">\(y_i=A x_i+b\)</span>. With draws in rows, the implementation computes <span class="math inline">\(Y=X A^T+\mathbf1 b^T\)</span>. No intercept column is added, and draw order is kept.</p>
+<p>Invertibility is checked on an equilibrated matrix. Each row of A is divided by its largest absolute element, then each column of the result by its largest absolute element. A zero row or column is singular. The equilibrated matrix B must satisfy</p>
 <p><span class="math display">\[
 \sigma_{\min}(B)&gt;64\epsilon P\sigma_{\max}(B).
 \]</span></p>
-<p>SVD assesses numerical rank; pivoted LU supplies log absolute diagonal pivots. The returned log determinant adds the logs of all row and column scales. Summing logs avoids determinant overflow/underflow, and absolute pivots support reflections and negative determinants. The code forms no inverse. Division rather than a reciprocal handles subnormal scales. Numerical singularity raises 1004.</p>
-<p>All arithmetic uses binary64. Finite inputs may still cause nonfinite intermediate or final arithmetic at extreme scales; this raises 1003 rather than returning NAN/INF. These kernels do not guarantee relative accuracy for underflow-sized covariances or arbitrarily ill-conditioned inputs.</p>
+<ul>
+<li>SVD assesses numerical rank, and pivoted LU supplies the log absolute pivots.</li>
+<li>The log determinant adds the logs of the row and column scales. Summing logs avoids overflow and underflow, and absolute pivots allow reflections and negative determinants.</li>
+<li>Scales are applied by division, which handles subnormal values.</li>
+<li>A numerically singular matrix raises 1004.</li>
+</ul>
 </section>
-<section id="using-the-php-api" class="level2">
-<h2 class="anchored" data-anchor-id="using-the-php-api">Using the PHP API</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">$draws</span> <span class="op">=</span> [[<span class="op">-</span><span class="dv">3</span><span class="ot">,</span> <span class="op">-</span><span class="dv">5</span>]<span class="ot">,</span> [<span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span>]<span class="ot">,</span> [<span class="dv">2</span><span class="ot">,</span> <span class="dv">3</span>]<span class="ot">,</span> [<span class="dv">5</span><span class="ot">,</span> <span class="dv">8</span>]<span class="ot">,</span> [<span class="dv">1</span><span class="ot">,</span> <span class="op">-</span><span class="dv">2</span>]]<span class="ot">;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">$source</span> <span class="op">=</span> Phit\draws_moments(<span class="va">$draws</span>)<span class="ot">;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$target</span> <span class="op">=</span> Phit\draws_moments(<span class="va">$draws</span><span class="ot">,</span> weights<span class="ot">:</span> [<span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">4</span><span class="ot">,</span> <span class="dv">3</span>])<span class="ot">;</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="va">$map</span> <span class="op">=</span> Phit\draws_covariance_map(<span class="va">$source</span>[<span class="st">'covariance'</span>]<span class="ot">,</span> <span class="va">$target</span>[<span class="st">'covariance'</span>])<span class="ot">;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$a</span> <span class="op">=</span> <span class="va">$map</span>[<span class="st">'matrix'</span>]<span class="ot">;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">$shift</span> <span class="op">=</span> []<span class="ot">;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$a</span> <span class="kw">as</span> <span class="va">$j</span> =&gt; <span class="va">$row</span>) {</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">$mappedMean</span> <span class="op">=</span> <span class="fl">0.0</span><span class="ot">;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">foreach</span> (<span class="va">$row</span> <span class="kw">as</span> <span class="va">$k</span> =&gt; <span class="va">$value</span>) <span class="va">$mappedMean</span> <span class="op">+=</span> <span class="va">$value</span> <span class="op">*</span> <span class="va">$source</span>[<span class="st">'mean'</span>][<span class="va">$k</span>]<span class="ot">;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="va">$shift</span>[] <span class="op">=</span> <span class="va">$target</span>[<span class="st">'mean'</span>][<span class="va">$j</span>] <span class="op">-</span> <span class="va">$mappedMean</span><span class="ot">;</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="va">$transformed</span> <span class="op">=</span> Phit\draws_affine(<span class="va">$draws</span><span class="ot">,</span> matrix<span class="ot">:</span> <span class="va">$a</span><span class="ot">,</span> shift<span class="ot">:</span> <span class="va">$shift</span>)<span class="ot">;</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">// The unweighted moments of transformed draws equal the target moments.</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">// transformed['log_abs_det'] is the change-of-variables log Jacobian.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The transformation acts in the caller’s chosen parameter coordinates. Handling constrained Stan parameters and any model-specific Jacobians belongs to the caller. The <a href="./reference-utilities.html#posterior-draw-numerical-kernels">contracts</a> list result keys and exception codes.</p>
+<section id="limits" class="level2">
+<h2 class="anchored" data-anchor-id="limits">Limits</h2>
+<p>All arithmetic is binary64. Finite inputs can still produce nonfinite intermediate or final values at extreme scales, which raises 1003 rather than returning <code>NAN</code> or <code>INF</code>. Relative accuracy is not guaranteed for underflow-sized covariances or arbitrarily ill-conditioned inputs.</p>
 </section>
 <section id="independent-verification" class="level2">
 <h2 class="anchored" data-anchor-id="independent-verification">Independent verification</h2>
-<p><code>tests/generate-draw-fixtures.py</code> produces 25 cases using only Python’s standard library Decimal at 80-digit precision. It implements weighted formulas with scalar loops, a scalar Cholesky and backward solve, and independent pivoted Gauss-Jordan for reference inverse/log determinants. It never calls the extension or nalgebra. The saved <code>tests/fixtures/draws-python.json</code> records the Python version, algorithm and tolerances. The provenance manifest hashes the generator and fixture, input options and compared quantities. R/Python are unnecessary for ordinary tests.</p>
-<p>Rust and PHP compare all fixture outputs at <span class="math inline">\(10^{-11}+10^{-11}|\mathrm{reference}|\)</span>. Extreme-scale nonzero affine outputs and covariance identities also use <span class="math inline">\(10^{-12}\)</span> relative error. Affine round trips and summed forward/reverse log determinants use the ordinary absolute-plus-relative tolerance. Tests cover correlated parameters, uniform/nonuniform/zero weights, weight rescaling, one effective draw, singular covariance, one parameter, large offsets, mixed units, nontrivial orientation, reflections, determinant overflow/underflow, invalid arrays and threshold behavior. Rust also checks weighted covariance transformation under both normalizations. PHP verifies named arguments, defaults, array iteration order and strict rejection without missing-row warnings. Existing regression tests preserve their contracts.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> tests/generate-draw-fixtures.py <span class="co"># Intentional reference refresh</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/reference-manifest.py</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> test <span class="at">-p</span> stats-core <span class="at">--locked</span> <span class="at">--test</span> draws</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/draws.php</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="va">PHP</span><span class="op">=</span>/path/to/matching/php <span class="va">PHP_CONFIG</span><span class="op">=</span>/path/to/php-config <span class="ex">./scripts/check</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Reproducible API-level <a href="./benchmarks/draws.html">benchmarks</a> compare full outputs to R before measuring moments, maps and affine transformations on representative sizes.</p>
+<p><code>tests/generate-draw-fixtures.py</code> produces 25 cases with Python’s standard-library <code>Decimal</code> at 80 digits. It uses scalar loops for the weighted formulas, a scalar Cholesky and backward solve, and pivoted Gauss–Jordan elimination for reference inverses and log determinants. It never calls the extension or nalgebra.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Quantity</th>
+<th>Tolerance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>All fixture outputs (Rust and PHP)</td>
+<td><span class="math inline">\(10^{-11}+10^{-11}\lvert\mathrm{reference}\rvert\)</span></td>
+</tr>
+<tr class="even">
+<td>Extreme-scale nonzero affine outputs, covariance identities</td>
+<td>Also relative <span class="math inline">\(10^{-12}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Affine round trips, forward plus reverse log determinants</td>
+<td><span class="math inline">\(10^{-11}+10^{-11}\lvert\mathrm{reference}\rvert\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The cases cover correlated parameters, uniform, nonuniform, and zero weights, weight rescaling, one effective draw, singular covariance, one parameter, large offsets, mixed units, orientation, reflections, determinant overflow and underflow, invalid arrays, and the thresholds. Rust also checks the weighted covariance transformation under both normalizations. PHP checks named arguments, defaults, iteration order, and strict rejection without missing-row warnings.</p>
+<p><code>tests/fixtures/draws-python.json</code> records the Python version, algorithm, and tolerances, and the provenance manifest hashes the generator and fixture. The regular tests need neither R nor Python.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Refresh the reference deliberately.</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> tests/generate-draw-fixtures.py</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/reference-manifest.py</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> test <span class="at">-p</span> stats-core <span class="at">--locked</span> <span class="at">--test</span> draws</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/draws.php</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="va">PHP</span><span class="op">=</span>/path/to/php <span class="va">PHP_CONFIG</span><span class="op">=</span>/path/to/php-config <span class="ex">./scripts/check</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <a href="./benchmarks/draws.html">draw benchmarks</a> compare full outputs with R before timing moments, maps, and affine transformations.</p>
 
 
 </section>

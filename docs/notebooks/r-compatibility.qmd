@@ -3,11 +3,7 @@ title: "Expanded R compatibility and all four lme4 optimizers"
 jupyter: python3
 ---
 
-This notebook executes the **installed PHP extension** on saved R reference inputs.
-R generated the checked-in expected values using `lm`, `glm`, and `lmer` with each
-of its four optimizer wrappers. The two native algorithms are BOBYQA and
-Nelder–Mead. See the [compatibility ledger](../r-compatibility.qmd) for supported
-features and the work still needed for full parity.
+This notebook runs the installed PHP extension on saved R reference inputs and compares the results with R's `lm()`, `glm()`, and `lmer()` under each of lme4's four optimizer wrappers. phit's two optimizers are BOBYQA and Nelder–Mead. [R compatibility](../r-compatibility.qmd) lists what is supported, what differs, and what is not supported.
 
 ## Run the audit
 
@@ -28,11 +24,10 @@ report=run()
 print(report['versions'])
 ```
 
-The audit checks every coefficient, inference quantity, fitted value and residual;
-for mixed models it also checks every random effect and covariance entry, variance
-scale, likelihood, AIC/BIC and singular flag. It refuses nonzero R optimizer codes
-or R warnings in the saved reference runs. Reference controls and checksums are
-recorded alongside the actual PHP outputs in the [downloadable audit](../verifications/r-compatibility-results.json).
+- The audit checks every coefficient, inference quantity, fitted value, and residual.
+- For mixed models it also checks every random effect and covariance entry, the variance scale, likelihood, AIC, BIC, and the singular flag.
+- It rejects saved R runs with a nonzero optimizer code or a warning.
+- The [downloadable audit](../verifications/r-compatibility-results.json) records the reference controls and checksums with the PHP outputs.
 
 ## Fixed estimators: weights, offsets and binomial trials
 
@@ -42,10 +37,9 @@ display(pd.DataFrame([dict(case=r['name'],estimator=r['model'],
                      for r in report['fixed']]))
 ```
 
-Each estimator is fitted with an intercept and without one. Binary estimators
-include both individual binary responses and grouped success proportions.
-Weights and offsets affect the fit, covariance, null model and likelihood. We
-check those quantities rather than testing only unweighted coefficients.
+- Each estimator is fitted with and without an intercept.
+- Binary estimators cover individual binary responses and grouped success proportions.
+- Weights and offsets change the fit, covariance, null model, and likelihood, and all of those are compared.
 
 For grouped binomial rows with s successes out of m trials, supply y=s/m and
 weight=m. R's equivalent calls are:
@@ -63,11 +57,10 @@ fit$deviance
 fit$null.deviance
 ```
 
-A Poisson exposure e contributes `log(e)` to the linear predictor; a prior weight
-instead multiplies that observation's likelihood. Those are different operations.
-For weighted OLS, residual variance is `sigma²/w_i` and likelihood includes the
-weight determinant. Full generator code is in
-`tests/generate-r-compatibility-fixtures.R`.
+- A Poisson exposure e contributes `log(e)` to the linear predictor. A prior weight instead multiplies that observation's log-likelihood.
+- For weighted OLS, the residual variance is `sigma²/w_i`, and the likelihood includes the weight determinant.
+
+The generator is `tests/generate-r-compatibility-fixtures.R`.
 
 ## Mixed models and optimizer agreement
 
@@ -87,35 +80,25 @@ for case in report['mixed']:
 display(pd.DataFrame(rows))
 ```
 
-The model suite contains correlated/independent random slopes, crossed and nested
-terms, a random slope without a random intercept, no fixed intercept, weights and
-offsets, and an exact zero-variance boundary. The published sleepstudy model is
-`Reaction ~ Days + (Days | Subject)`, under both ML and REML.
+The models include correlated and independent random slopes, crossed and nested terms, a random slope without a random intercept, no fixed intercept, weights and offsets, and an exact zero-variance boundary. The published sleepstudy model is `Reaction ~ Days + (Days | Subject)`, under ML and REML.
 
-The R generator explicitly selects all four wrappers, tightened stopping controls
-and `boundary.tol=1e-3`. The exact per-wrapper settings are recorded in each fixture. Multi-level BOBYQA
-references also restart from their first R fit with rhobeg=0.001 and rhoend=1e-9:
-this improved random-effect agreement on a flat likelihood while keeping the
-comparison tolerances unchanged. Native estimates never seed the R references.
-At a smaller default boundary tolerance, one wrapper stopped just above a singular
-boundary; overly strict nlminb settings also produced convergence warnings. The
-saved audit does **not** claim identical behavior under every package default.
+**R settings.**
 
-Likelihoods use `5e-6 + 1e-9 * abs(reference)` tolerance. Native/R BOBYQA estimates
-use `1e-5 + 1e-5 * abs(reference)`; other optimizer comparisons use
-`1e-3 + 3e-4 * abs(reference)`. These admit the observed spread in parameters on a
-flat likelihood. Shapes, grouping/sample metadata and parameter counts are exact.
-All rows and raw outputs remain available for inspection.
+- The generator selects each of the four wrappers explicitly, with tightened stopping controls and `boundary.tol = 1e-3`. Each fixture records the exact settings.
+- Multi-level BOBYQA references restart from their first R fit with `rhobeg = 0.001` and `rhoend = 1e-9`, which improves agreement of the random effects on a flat likelihood. The comparison tolerances are unchanged, and phit estimates never seed R.
+- At the default boundary tolerance, one wrapper stopped just above a singular boundary. Overly strict `nlminb` settings produced convergence warnings.
+- The audit does not claim identical behavior under every package default.
+
+| Comparison | Tolerance |
+| --- | --- |
+| Likelihood | `5e-6 + 1e-9 * abs(reference)` |
+| phit BOBYQA against R BOBYQA | `1e-5 + 1e-5 * abs(reference)` |
+| Other optimizer pairs | `1e-3 + 3e-4 * abs(reference)`, for the spread of parameters on a flat likelihood |
+| Shapes, grouping and sample metadata, parameter counts | Exact |
 
 ## More than two grouping levels
 
-The fitter accepts a list of random terms; there is no two-level cap. The new
-synthetic cases use **256 repeated assessments**, with 8 districts, 16 schools,
-32 classes and 64 students. They fit three grouping levels (district/school/class)
-and four grouping levels (district/school/class/student), each under ML and REML.
-The four-level simulation includes independent Gaussian intercepts at all four
-grouping levels; the three-level simulation omits the student effect. Study hours
-and practice scores are correlated observed predictors, not initial parameter guesses.
+The fitter accepts any number of random terms. The synthetic cases use 256 repeated assessments of 64 students in 32 classes, 16 schools, and 8 districts. They fit three grouping levels (district/school/class) and four (district/school/class/student), each under ML and REML. The four-level simulation has independent Gaussian intercepts at all four levels; the three-level simulation omits the student effect. Study hours and practice scores are correlated observed predictors.
 
 ```{python}
 fixture=json.loads((ROOT/'tests/fixtures/lmm-expanded-r.json').read_text())
@@ -134,37 +117,29 @@ for c in report['mixed']:
 display(pd.DataFrame(summary))
 ```
 
-Each random term is independent of the other terms. Dependence between observations
-arises because they share some group effects. For two observations in the same
-class but different students, the district, school and class effects are shared;
-the student effects and observation noise are not.
-
-Provide globally unique nested IDs: the native interface does not infer that a
-class label belongs to a school. Reusing local class number 1 across schools
-without a parent-aware key instead specifies a crossed/shared group effect.
-Three grouping levels plus the observation level are often called a **four-level
-model**; we count grouping terms explicitly here to avoid that ambiguity.
+- Random terms are independent of one another. Observations are dependent because they share group effects: two observations in the same class but of different students share the district, school, and class effects, but not the student effect or the observation noise.
+- Nested IDs must be globally unique. The matrix interface does not infer that a class belongs to a school, so reusing class number 1 across schools without a parent-aware key specifies a crossed effect. The formula interface's `(1 | g1/g2)` builds these keys.
+- Three grouping levels plus the observation level are often called a four-level model. This page counts grouping terms to avoid the ambiguity.
 
 ```php
-$result = Phit\fit_mixed(
+$result = Phit\fit_mixed_gaussian_matrix(
     x: $fixedDesign,
     y: $scores,
     random: [
         ['z' => $ones, 'groups' => $districtIds],
         ['z' => $ones, 'groups' => $districtSchoolKeys],
-        ['z' => $ones, 'groups' => $districtSchoolClassKeys],
-        ['z' => $ones, 'groups' => $districtSchoolClassStudentKeys],
+        ['z' => $ones, 'groups' => $classKeys],
+        ['z' => $ones, 'groups' => $studentKeys],
     ],
-    reml: true, intercept: false
+    reml: true,
+    intercept: false,
 );
 ```
 
-The equivalent R random-intercept specification is
-`(1 | district/school/class/student)`. Nesting does not introduce a correlation
-parameter between the levels; each term has its own variance. Random slopes can
-also be supplied through each term's z columns, subject to identifiability and
-size limits. The current dense implementation supports at most 512 total random
-coefficients and 50,000,000 initial augmented matrix entries.
+- The R equivalent is `(1 | district/school/class/student)`.
+- Nesting adds no correlation parameter between levels; each term has its own variance.
+- Random slopes can be supplied through each term's `z` columns, subject to identifiability.
+- Nested terms are factored block by block, one block per district here. The dense limits of 512 random coefficients and 50,000,000 initial matrix entries apply only to crossed designs, which connect all the random columns into one block.
 
 ## Published sleepstudy: R, statsmodels and PHP
 
@@ -183,12 +158,10 @@ for case in [r for r in report['mixed'] if r['name'].startswith('sleepstudy_')]:
     print('statsmodels warnings:',case['statsmodels_warnings'])
 ```
 
-statsmodels independently estimates ML/REML fixed effects and variance components.
-For fixed-effect inference we calculate plug-in GLS covariance from its estimates,
-matching lme4 and our contract; its default joint-Hessian standard errors differ.
-We require convergence and retain Python warnings. BFGS uses gtol=1e-8; at 1e-10 the REML fit reached the same likelihood but failed its convergence flag, so that failed run was not accepted. Its public MixedLM interface
-does not provide prior weights, so this Python comparison covers sleepstudy,
-not the weighted case or every general grouping specification.
+- statsmodels estimates the ML and REML fixed effects and variance components independently.
+- Fixed-effect standard errors are the plug-in GLS covariance computed from statsmodels' estimates, as lme4 and phit report it. statsmodels' default joint-Hessian standard errors differ.
+- Convergence is required and Python warnings are kept. BFGS uses `gtol = 1e-8`; at 1e-10 the REML fit reached the same likelihood but reported nonconvergence, so it is not used.
+- statsmodels' MixedLM has no prior weights, so this comparison covers sleepstudy only.
 
 ## What the random slopes mean
 
@@ -204,11 +177,7 @@ subjects=sorted(data.Subject.unique())
 render_figure('sleepstudy')
 ```
 
-The observed predictor is **days of sleep deprivation**; it is not a trial
-coefficient. Each person's intercept shifts the line, and their random slope
-changes its rate of increase. The population line averages over the zero-mean
-random effects. This model captures individual differences; numerical agreement
-alone does not establish that the Gaussian assumptions explain the study.
+The predictor is days of sleep deprivation. Each person's random intercept shifts their line, and their random slope changes its rate of increase. The population line is the fixed-effect line, where the zero-mean random effects are zero. Numerical agreement with R does not show that the Gaussian assumptions fit the study.
 
 ## Reproduce or refresh
 

@@ -2,17 +2,42 @@
 title: "Posterior-draw numerical kernels"
 ---
 
-These kernels support a separate PHP CmdStan interface's PSIS-LOO moment matching.
-They compute weighted moments, covariance maps and affine transformations using
-nalgebra in `stats-core`. The PHP extension supplies strict numeric conversion and
-ordinary array results. The caller owns Stan model evaluation, importance ratios,
-PSIS, iteration control and diagnostics. These functions also work on other literal
-numeric matrices. They add no fitting, plotting or model abstraction.
+Compute weighted moments of a draw matrix, a map between two covariance matrices, and an affine transformation of the draws with its log Jacobian. The kernels support PSIS-LOO moment matching in a PHP CmdStan interface, and they work on any numeric matrix with draws in rows.
+
+The caller owns model evaluation, importance ratios, PSIS, iteration control, and diagnostics. The kernels add no fitting, plotting, or model objects.
+
+```php
+$draws = [[-3, -5], [0, 1], [2, 3], [5, 8], [1, -2]];
+$source = Phit\draws_moments($draws);
+$target = Phit\draws_moments(
+    $draws,
+    weights: [1, 0, 2, 4, 3],
+);
+$map = Phit\draws_covariance_map(
+    $source['covariance'],
+    $target['covariance'],
+);
+
+$a = $map['matrix'];
+$shift = [];
+foreach ($a as $j => $row) {
+    $mapped = 0.0;
+    foreach ($row as $k => $value) {
+        $mapped += $value * $source['mean'][$k];
+    }
+    $shift[] = $target['mean'][$j] - $mapped;
+}
+$moved = Phit\draws_affine($draws, matrix: $a, shift: $shift);
+```
+
+- The unweighted moments of `$moved['draws']` equal the target moments.
+- `$moved['log_abs_det']` is the change-of-variables log Jacobian.
+- The transformation acts in the caller's parameter coordinates. Constrained Stan parameters and model-specific Jacobians are the caller's responsibility.
+- [The reference](reference-utilities.qmd#posterior-draw-numerical-kernels) lists the result keys and exception codes.
 
 ## Weighted moments
 
-For $X\in\mathbb R^{S\times P}$, normalize nonnegative weights to $w_i$ with
-$\sum_i w_i=1$. A null weights argument selects $w_i=1/S$.
+For $X\in\mathbb R^{S\times P}$, nonnegative weights are normalized to $w_i$ with $\sum_i w_i=1$. `weights: null` gives $w_i=1/S$.
 
 $$
 \mu=\sum_i w_i x_i,\qquad
@@ -20,129 +45,74 @@ C_{\mathrm{pop}}=\sum_i w_i(x_i-\mu)(x_i-\mu)^T,\qquad
 C_{\mathrm{unbiased}}=\frac{C_{\mathrm{pop}}}{1-\sum_i w_i^2}.
 $$
 
-Unbiased normalization uses **reliability weights**, not frequency/replication
-counts. Multiplying all supplied weights by a positive constant does not change
-the result. Uniform weights give divisor $S$ for population covariance and $S-1$
-for unbiased covariance. A singular covariance is a legitimate moment result.
+- `unbiased` uses **reliability weights**, not frequency counts. Multiplying all weights by a positive constant does not change the result.
+- Uniform weights give divisor S for the population covariance and S − 1 for the unbiased covariance.
+- A singular covariance is a valid moment result.
+- Zero-weight rows contribute nothing but are still validated.
+- The unbiased denominator $1-\sum_i w_i^2$ is computed in binary64. A zero or negative value is rejected, including weights so concentrated that they round to one effective draw. No other effective-sample-size cutoff applies.
 
-Weights are divided by their maximum before compensated summation and normalization,
-so a finite weight array whose ordinary sum would overflow still works. Means use
-an anchor from a positive-weight draw, a compensated sum of deviations, and a
-second correction pass. Covariance uses compensated centered cross-products and
-is returned exactly symmetric. This avoids cancellation from a large common
-offset. Zero-weight rows contribute nothing but still undergo full validation.
-The unbiased denominator is evaluated as $1-\sum_i w_i^2$ in binary64; a zero or
-negative computed denominator is explicitly rejected, including concentrations
-that round to one effective draw. No extra effective-sample-size cutoff is imposed.
+Numerical method: weights are divided by their maximum before compensated summation, so weights whose ordinary sum would overflow still work. The mean uses an anchor from a positive-weight draw, a compensated sum of deviations, and a second correction pass. The covariance uses compensated centered cross-products and is returned exactly symmetric. Together these avoid cancellation from a large common offset.
 
-## Covariance map and tolerances
+## Covariance map
 
-Use lower Cholesky factors $C_s=L_sL_s^T$, $C_t=L_tL_t^T$ and solve
+With lower Cholesky factors $C_s=L_sL_s^T$ and $C_t=L_tL_t^T$, the map solves
 
 $$
 L_s^T A^T=L_t^T,\qquad A C_s A^T=C_t.
 $$
 
-No matrix inverse is formed. The returned log Jacobian is
-$\sum_j\log (L_{t,jj})-\log(L_{s,jj})$, so a very large or small determinant
-need not be representable as a floating-point number. The map depends on parameter
-order and is one of many possible covariance maps.
+- No inverse is formed.
+- The log Jacobian is $\sum_j\log (L_{t,jj})-\log(L_{s,jj})$, so a very large or small determinant need not be representable.
+- The map depends on parameter order and is one of many covariance maps.
 
-Let $d_i=\sqrt{C_{ii}}$ and $R_{ij}=C_{ij}/d_i/d_j$. Each diagonal must be
-strictly positive. Before Cholesky, compare opposite standardized entries $a,b$:
+Both covariances must pass a numerical check before factorization. Let $d_i=\sqrt{C_{ii}}$ and $R_{ij}=C_{ij}/d_i/d_j$.
 
-$$
-|a-b|\le64\epsilon\max(1,|a|,|b|),\qquad \epsilon=2^{-52}.
-$$
+- Each diagonal must be strictly positive.
+- Opposite standardized entries a and b must satisfy $|a-b|\le64\epsilon\max(1,|a|,|b|)$, with $\epsilon=2^{-52}$. Accepted asymmetry is averaged on this scale.
+- R must have a Cholesky factor, and **each squared diagonal pivot must exceed $64\epsilon P$**. The factor's rows are then rescaled by $d_i$.
 
-Accepted rounding-level asymmetry is averaged on this standardized scale. The
-Cholesky factor of $R$ must exist, and **each squared diagonal pivot must exceed
-$64\epsilon P$**. Then rescale its rows by $d_i$ to recover the original covariance's
-factor. These relative checks are invariant to changing individual parameter units
-within representable arithmetic. They define a pivot-based numerical-singularity
-policy, not a guarantee of a particular condition number. Near the threshold,
-rounding and parameter order can affect acceptance. No diagonal jitter, ridge,
-eigenvalue clipping or fallback factorization is performed. Singular moment
-covariance may therefore be returned by `draws_moments` and explicitly rejected
-by `draws_covariance_map`.
+These checks do not depend on the units of individual parameters. They define a pivot threshold, not a condition-number guarantee, and near the threshold rounding and parameter order can decide acceptance. No jitter, ridge, eigenvalue clipping, or fallback factorization is applied. A singular covariance that `draws_moments()` returns is therefore rejected by `draws_covariance_map()`.
 
-## Affine transformation and determinant
+## Affine transformation
 
-For each draw interpreted as a column vector, $y_i=A x_i+b$. Because PHP draw
-matrices have draws in rows, the implementation uses $Y=X A^T+\mathbf1 b^T$.
-There is no intercept column or change of draw order.
+Each draw, as a column vector, becomes $y_i=A x_i+b$. With draws in rows, the implementation computes $Y=X A^T+\mathbf1 b^T$. No intercept column is added, and draw order is kept.
 
-To assess invertibility, divide each row of $A$ by its largest absolute element,
-then divide each column of that scaled matrix by its largest absolute element.
-Zero rows/columns are singular. On the equilibrated matrix $B$, require
+Invertibility is checked on an equilibrated matrix. Each row of A is divided by its largest absolute element, then each column of the result by its largest absolute element. A zero row or column is singular. The equilibrated matrix B must satisfy
 
 $$
 \sigma_{\min}(B)>64\epsilon P\sigma_{\max}(B).
 $$
 
-SVD assesses numerical rank; pivoted LU supplies log absolute diagonal pivots.
-The returned log determinant adds the logs of all row and column scales. Summing
-logs avoids determinant overflow/underflow, and absolute pivots support reflections
-and negative determinants. The code forms no inverse. Division rather than a
-reciprocal handles subnormal scales. Numerical singularity raises 1004.
+- SVD assesses numerical rank, and pivoted LU supplies the log absolute pivots.
+- The log determinant adds the logs of the row and column scales. Summing logs avoids overflow and underflow, and absolute pivots allow reflections and negative determinants.
+- Scales are applied by division, which handles subnormal values.
+- A numerically singular matrix raises 1004.
 
-All arithmetic uses binary64. Finite inputs may still cause nonfinite intermediate
-or final arithmetic at extreme scales; this raises 1003 rather than returning
-NAN/INF. These kernels do not guarantee relative accuracy for underflow-sized
-covariances or arbitrarily ill-conditioned inputs.
+## Limits
 
-## Using the PHP API
-
-```php
-$draws = [[-3, -5], [0, 1], [2, 3], [5, 8], [1, -2]];
-$source = Phit\draws_moments($draws);
-$target = Phit\draws_moments($draws, weights: [1, 0, 2, 4, 3]);
-$map = Phit\draws_covariance_map($source['covariance'], $target['covariance']);
-$a = $map['matrix'];
-$shift = [];
-foreach ($a as $j => $row) {
-    $mappedMean = 0.0;
-    foreach ($row as $k => $value) $mappedMean += $value * $source['mean'][$k];
-    $shift[] = $target['mean'][$j] - $mappedMean;
-}
-$transformed = Phit\draws_affine($draws, matrix: $a, shift: $shift);
-// The unweighted moments of transformed draws equal the target moments.
-// transformed['log_abs_det'] is the change-of-variables log Jacobian.
-```
-
-The transformation acts in the caller's chosen parameter coordinates. Handling
-constrained Stan parameters and any model-specific Jacobians belongs to the caller.
-The [contracts](reference-utilities.qmd#posterior-draw-numerical-kernels) list result keys and
-exception codes.
+All arithmetic is binary64. Finite inputs can still produce nonfinite intermediate or final values at extreme scales, which raises 1003 rather than returning `NAN` or `INF`. Relative accuracy is not guaranteed for underflow-sized covariances or arbitrarily ill-conditioned inputs.
 
 ## Independent verification
 
-`tests/generate-draw-fixtures.py` produces 25 cases using only Python's standard
-library Decimal at 80-digit precision. It implements weighted formulas with scalar
-loops, a scalar Cholesky and backward solve, and independent pivoted Gauss-Jordan
-for reference inverse/log determinants. It never calls the extension or nalgebra.
-The saved `tests/fixtures/draws-python.json` records the Python version, algorithm
-and tolerances. The provenance manifest hashes the generator and fixture, input
-options and compared quantities. R/Python are unnecessary for ordinary tests.
+`tests/generate-draw-fixtures.py` produces 25 cases with Python's standard-library `Decimal` at 80 digits. It uses scalar loops for the weighted formulas, a scalar Cholesky and backward solve, and pivoted Gauss–Jordan elimination for reference inverses and log determinants. It never calls the extension or nalgebra.
 
-Rust and PHP compare all fixture outputs at $10^{-11}+10^{-11}|\mathrm{reference}|$.
-Extreme-scale nonzero affine outputs and covariance identities also use $10^{-12}$
-relative error. Affine round trips and summed forward/reverse log determinants use
-the ordinary absolute-plus-relative tolerance. Tests cover correlated parameters,
-uniform/nonuniform/zero weights, weight rescaling, one effective draw, singular
-covariance, one parameter, large offsets, mixed units, nontrivial orientation,
-reflections, determinant overflow/underflow, invalid arrays and threshold behavior.
-Rust also checks weighted covariance transformation under both normalizations.
-PHP verifies named arguments, defaults, array iteration order and strict rejection
-without missing-row warnings. Existing regression tests preserve their contracts.
+| Quantity | Tolerance |
+| --- | --- |
+| All fixture outputs (Rust and PHP) | $10^{-11}+10^{-11}\lvert\mathrm{reference}\rvert$ |
+| Extreme-scale nonzero affine outputs, covariance identities | Also relative $10^{-12}$ |
+| Affine round trips, forward plus reverse log determinants | $10^{-11}+10^{-11}\lvert\mathrm{reference}\rvert$ |
+
+The cases cover correlated parameters, uniform, nonuniform, and zero weights, weight rescaling, one effective draw, singular covariance, one parameter, large offsets, mixed units, orientation, reflections, determinant overflow and underflow, invalid arrays, and the thresholds. Rust also checks the weighted covariance transformation under both normalizations. PHP checks named arguments, defaults, iteration order, and strict rejection without missing-row warnings.
+
+`tests/fixtures/draws-python.json` records the Python version, algorithm, and tolerances, and the provenance manifest hashes the generator and fixture. The regular tests need neither R nor Python.
 
 ```sh
-python3 tests/generate-draw-fixtures.py # Intentional reference refresh
+# Refresh the reference deliberately.
+python3 tests/generate-draw-fixtures.py
 python3 scripts/reference-manifest.py
 cargo test -p stats-core --locked --test draws
 php -n -d "extension=$STATS_EXTENSION" tests/draws.php
-PHP=/path/to/matching/php PHP_CONFIG=/path/to/php-config ./scripts/check
+PHP=/path/to/php PHP_CONFIG=/path/to/php-config ./scripts/check
 ```
 
-Reproducible API-level [benchmarks](benchmarks/draws.qmd) compare full outputs to R
-before measuring moments, maps and affine transformations on representative sizes.
+The [draw benchmarks](benchmarks/draws.qmd) compare full outputs with R before timing moments, maps, and affine transformations.

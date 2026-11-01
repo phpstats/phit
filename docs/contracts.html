@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -646,13 +647,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#names-in-phit-0.4" id="toc-names-in-phit-0.4" class="nav-link active" data-scroll-target="#names-in-phit-0.4">Names in phit 0.4</a></li>
-  <li><a href="#php-entry-points" id="toc-php-entry-points" class="nav-link" data-scroll-target="#php-entry-points">PHP entry points</a></li>
+  <li><a href="#signatures" id="toc-signatures" class="nav-link" data-scroll-target="#signatures">Signatures</a></li>
   <li><a href="#formula-interfaces" id="toc-formula-interfaces" class="nav-link" data-scroll-target="#formula-interfaces">Formula interfaces</a></li>
   <li><a href="#matrix-model-contracts" id="toc-matrix-model-contracts" class="nav-link" data-scroll-target="#matrix-model-contracts">Matrix model contracts</a></li>
   <li><a href="#fixed-intercept-convention-and-migration" id="toc-fixed-intercept-convention-and-migration" class="nav-link" data-scroll-target="#fixed-intercept-convention-and-migration">Fixed intercept</a></li>
-  <li><a href="#errors-and-conversion" id="toc-errors-and-conversion" class="nav-link" data-scroll-target="#errors-and-conversion">Errors and conversion</a></li>
-  <li><a href="#rust-boundary" id="toc-rust-boundary" class="nav-link" data-scroll-target="#rust-boundary">Rust boundary</a></li>
-  <li><a href="#v01-diagnostics-and-errors" id="toc-v01-diagnostics-and-errors" class="nav-link" data-scroll-target="#v01-diagnostics-and-errors">Diagnostics and error codes</a></li>
+  <li><a href="#input-conversion" id="toc-input-conversion" class="nav-link" data-scroll-target="#input-conversion">Input conversion</a></li>
+  <li><a href="#v01-diagnostics-and-errors" id="toc-v01-diagnostics-and-errors" class="nav-link" data-scroll-target="#v01-diagnostics-and-errors">Diagnostics and error codes</a>
+  <ul class="collapse">
+  <li><a href="#exceptions" id="toc-exceptions" class="nav-link" data-scroll-target="#exceptions">Exceptions</a></li>
+  <li><a href="#diagnostics" id="toc-diagnostics" class="nav-link" data-scroll-target="#diagnostics">Diagnostics</a></li>
+  <li><a href="#undefined-values-and-limits" id="toc-undefined-values-and-limits" class="nav-link" data-scroll-target="#undefined-values-and-limits">Undefined values and limits</a></li>
+  </ul></li>
+  <li><a href="#implementation-notes" id="toc-implementation-notes" class="nav-link" data-scroll-target="#implementation-notes">Implementation notes</a></li>
   </ul>
 </nav>
     </div>
@@ -678,7 +684,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The extension registers the PHP module <code>phit</code> (<code>extension=phit</code>, Composer <code>ext-phit</code>). Every function is in the <code>Phit</code> namespace and is named by prefix.</p>
+<p>The extension registers the PHP module <code>phit</code> (<code>extension=phit</code>, Composer <code>ext-phit</code>). Every function is in the <code>Phit</code> namespace and is named by prefix. The polyfill defines the same functions except the CSV reader; see <a href="./extension-or-polyfill.html">Extension or polyfill</a>.</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -807,35 +813,91 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p><code>fit_ols</code> is the one name that 0.3 and 0.4 both use, so during 0.4 it accepts both forms and dispatches on its first argument. A string, or the named arguments <code>formula:</code> and <code>data:</code>, is the formula fit. An array, or the named arguments <code>x:</code> and <code>y:</code>, is the 0.3 matrix fit. It returns <code>fit_ols_matrix()</code>’s result and raises one deprecation. A call never changes meaning. In phit 0.5, an array passed to <code>fit_ols</code> will be an error that names <code>fit_ols_matrix()</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols(<span class="dt">mixed</span> <span class="va">$formula</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">mixed</span> <span class="va">$data</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">mixed</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$x</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$y</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>offset</code> and <code>intercept</code> belong to the matrix form. A formula writes them as <code>offset()</code> and <code>- 1</code>. Mixing the two forms, such as a formula with <code>x:</code>, throws code 1001.</p>
-<p><code>fit_mixed_logistic</code> has no <code>family</code> or <code>link</code> arguments. The deprecated <code>fit_glmer</code> still accepts them and throws code 1007 for anything but the binomial family with the logit link.</p>
+<p><code>fit_ols</code> is the one name that 0.3 and 0.4 both use, so during 0.4 it accepts both forms and dispatches on its first argument:</p>
+<ul>
+<li>A string, or the named arguments <code>formula:</code> and <code>data:</code>, is the formula fit.</li>
+<li>An array, or the named arguments <code>x:</code> and <code>y:</code>, is the 0.3 matrix fit. It returns <code>fit_ols_matrix()</code>’s result and raises one deprecation.</li>
+<li>In phit 0.5, an array passed to <code>fit_ols</code> will be an error that names <code>fit_ols_matrix()</code>.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mixed</span> <span class="va">$formula</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mixed</span> <span class="va">$data</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mixed</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$x</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$y</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>offset</code> and <code>intercept</code> belong to the matrix form. A formula writes them as <code>offset()</code> and <code>- 1</code>.</li>
+<li>Mixing the two forms, such as a formula with <code>x:</code>, throws code 1001.</li>
+<li><code>fit_mixed_logistic</code> has no <code>family</code> or <code>link</code> arguments. The deprecated <code>fit_glmer</code> still accepts them and throws code 1007 for anything but the binomial family with the logit link.</li>
+</ul>
 </section>
-<section id="php-entry-points" class="level2">
-<h2 class="anchored" data-anchor-id="php-entry-points">PHP entry points</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols_matrix(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Phit\fit_logistic_matrix(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Phit\fit_probit_matrix(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>Phit\fit_poisson_matrix(<span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Formula interfaces over the same cores; $data is named columns or an object with toModelData()/toColumns().</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>Phit\model_matrix(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>Phit\fit_generalized_linear(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$family</span> <span class="op">=</span> <span class="st">'gaussian'</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$link</span> <span class="op">=</span> <span class="st">''</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_gaussian(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$reml</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> ...)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_logistic(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> ...)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>All estimators are synchronous and stateless: each returns a complete fit without retaining a model handle, input data or mutable configuration. It does not mutate the caller’s arrays. Repeated fits are independent.</p>
+<section id="signatures" class="level2">
+<h2 class="anchored" data-anchor-id="signatures">Signatures</h2>
+<p>The formula functions are listed in <a href="./formulas.html">Model formulas</a>. The four fixed-effect matrix functions share one signature:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// fit_ols_matrix, fit_logistic_matrix,</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">// fit_probit_matrix, fit_poisson_matrix</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols_matrix(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="./reference-models.html">Matrix model functions</a> lists the mixed-model matrix signatures.</p>
+<p>Every estimator is synchronous and stateless:</p>
+<ul>
+<li>It returns a complete fit and keeps no model handle, input data, or configuration.</li>
+<li>It does not modify the caller’s arrays.</li>
+<li>Repeated fits are independent.</li>
+</ul>
 </section>
 <section id="formula-interfaces" class="level2">
 <h2 class="anchored" data-anchor-id="formula-interfaces">Formula interfaces</h2>
-<p>The formula functions parse an R model formula, build R’s <code>model.matrix()</code> over named columns, and call the estimation cores of <code>fit_ols_matrix</code>, <code>fit_logistic_matrix</code>, <code>fit_probit_matrix</code>, <code>fit_poisson_matrix</code>, <code>fit_mixed_gaussian_matrix</code>, and <code>fit_mixed_logistic_matrix</code>. Each fit returns the complete result contract of its matrix function. It adds <code>formula</code>, <code>response</code>, <code>columns</code> (coefficient names in coefficient order), <code>terms</code>, <code>assign</code>, <code>intercept</code>, and <code>named</code> (<code>column =&gt; coefficient</code>). <code>fit_generalized_linear</code> and <code>fit_mixed_logistic</code> also return <code>family</code> and <code>link</code>. <code>model_matrix</code> returns <code>y</code>, <code>x</code> (including the <code>(Intercept)</code> column), the naming keys, <code>offset</code>, <code>random</code> designs in the shape <code>fit_mixed_gaussian_matrix</code> accepts, and the deletion accounting.</p>
-<p>Missing-value deletion covers only the variables a formula uses, with the same warning, <code>missing: 'raise'</code> behavior, and row accounting as the matrix functions. <code>model_matrix</code> keeps unused factor levels, as <code>model.matrix()</code> does. The fitting functions drop them, as <code>lm()</code>, <code>glm()</code>, and lme4 do. Unknown columns, malformed factor descriptors, referenced list-columns, and invalid formulas raise 1001. Column-length mismatch raises 1002. Infinite transform results raise 1003. Unsupported functions, families, links, and random-effect structures raise 1007. Rank deficiency raises 1004. The <a href="./formulas.html">formula guide</a> defines the syntax, contrasts, data shapes, verification, and every known difference from R.</p>
+<p>The formula functions build R’s <code>model.matrix()</code> over named columns and fit it with the estimator of the matching matrix function. Each result has that matrix function’s complete contract plus naming keys (<code>formula</code>, <code>response</code>, <code>columns</code>, <code>terms</code>, <code>assign</code>, <code>intercept</code>, <code>named</code>, <code>predvars</code>, and, for <code>fit_generalized_linear</code> and <code>fit_mixed_logistic</code>, <code>family</code> and <code>link</code>).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Failure</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Unknown column, malformed factor descriptor, referenced list-column, or invalid formula</td>
+<td>1001</td>
+</tr>
+<tr class="even">
+<td>Columns of different lengths</td>
+<td>1002</td>
+</tr>
+<tr class="odd">
+<td>Infinite transform result</td>
+<td>1003</td>
+</tr>
+<tr class="even">
+<td>Rank-deficient design</td>
+<td>1004</td>
+</tr>
+<tr class="odd">
+<td>Unsupported function, family, link, or random-effect structure</td>
+<td>1007</td>
+</tr>
+</tbody>
+</table>
+<p><a href="./formulas.html">Model formulas</a> defines the syntax, data shapes, contrasts, missing-value handling, and differences from R.</p>
 </section>
 <section id="matrix-model-contracts" class="level2">
 <h2 class="anchored" data-anchor-id="matrix-model-contracts">Matrix model contracts</h2>
-<p><a href="./reference-models.html">Matrix model functions</a> defines the inputs, results, convergence rules and failure cases of each matrix function:</p>
+<p><a href="./reference-models.html">Matrix model functions</a> defines the inputs, results, convergence rules, and failure cases of each matrix function:</p>
 <ul>
 <li><a href="./reference-models.html#ols-input-and-output">OLS</a></li>
 <li><span id="binary-logistic-regression"></span><a href="./reference-models.html#binary-logistic-regression">Binary logistic regression</a></li>
@@ -849,71 +911,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="fixed-intercept-convention-and-migration" class="level2">
 <h2 class="anchored" data-anchor-id="fixed-intercept-convention-and-migration">Fixed intercept</h2>
-<p>The seven matrix estimators take <code>bool $intercept = true</code>. Supply predictor columns only: the binding prepends an exact ones column and the estimated intercept is coefficient 0, followed by predictors in supplied column order. Covariance, standard errors, tests and intervals follow that same order. Parameter counts and residual degrees of freedom include the added coefficient. No input array is mutated.</p>
-<p><code>intercept: false</code> passes the supplied x matrix literally. It is both the opt-out for a through-origin model and the compatibility option for callers already supplying a complete design with ones. There is <strong>no automatic detection</strong> of existing constant columns: leaving ones in x with the default creates a duplicate intercept and a rank-deficiency error, rather than silently guessing intent.</p>
-<p>For an intercept-only fit, supply one empty predictor row per outcome, such as <code>x: array_fill(0, count($y), [])</code>. An empty sample or ragged matrix is still invalid; empty predictor rows require <code>intercept: true</code>. Missing-row validation and deletion still apply to outcomes, predictors, groups, weights and offsets before fitting.</p>
-<p>The Rust core takes the design literally.</p>
-<p>Random-effect designs <code>random[*].z</code> remain explicit; this option only constructs the fixed design. For a random intercept/slope, z still needs <code>[1, slope]</code> rows.</p>
+<p>The seven matrix functions take <code>bool $intercept = true</code>.</p>
+<ul>
+<li>With the default, supply predictor columns only. phit prepends an exact ones column, and the intercept is coefficient 0, followed by the predictors in column order. Covariance, standard errors, tests, and intervals follow the same order.</li>
+<li>Parameter counts and residual degrees of freedom include the added coefficient.</li>
+<li><code>intercept: false</code> uses <code>x</code> exactly. Use it for a model through the origin, or for a design that already contains a ones column.</li>
+<li>phit does not detect existing constant columns. Leaving a ones column in <code>x</code> with the default creates a duplicate intercept and raises a rank-deficiency error.</li>
+<li>For an intercept-only fit, supply one empty predictor row per outcome, such as <code>x: array_fill(0, count($y), [])</code>. Empty predictor rows require <code>intercept: true</code>.</li>
+<li>Random-effect designs (<code>random[*].z</code>) are not affected. A random intercept and slope still needs <code>[1, slope]</code> rows.</li>
+</ul>
 </section>
-<section id="errors-and-conversion" class="level2">
-<h2 class="anchored" data-anchor-id="errors-and-conversion">Errors and conversion</h2>
-<p>The binding accepts actual integers and floats as numeric elements, with null and NAN representing missingness. PHP integers are converted to f64, so integers beyond the exact range of double precision may lose precision. Array keys and names do not label coefficients: row order aligns x with y, and column order aligns all coefficient results. Callers should normally supply packed lists and keep labels separately.</p>
-<p>Missing values use listwise deletion by default, with one E_WARNING on a successful fit that omits rows. missing: ‘raise’ rejects missingness. Values are not coerced from strings, columns are not added, and aliased predictors are not removed. fitted and residuals follow retained_rows order. See <a href="./missing-data.html">Missing data</a> for validation order, warnings, accounting and application handling. Applications can promote PHP warnings to exceptions.</p>
-<p>Statistical and input failures use PHP Exception with stable numeric codes 1001–1008; see <a href="#v01-diagnostics-and-errors">the diagnostic/error contract</a>. There are no estimator-specific exception classes. Callers can inspect getCode() and should handle Throwable at their application boundary, since PHP argument and runtime errors use their own types. Message text may change. If the extension is absent, the functions themselves are unavailable; that is an installation failure rather than an invalid-data result.</p>
-<p>NAN/INF are floating-point values in successful results, not failure sentinels. Serialization helpers may map them to null using a documented policy, while the native result preserves them. Current arithmetic uses f64; it is not arbitrary precision, and extreme input scales can exceed its range.</p>
-</section>
-<section id="rust-boundary" class="level2">
-<h2 class="anchored" data-anchor-id="rust-boundary">Rust boundary</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">fn</span> fit_ols_matrix(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;&gt;,</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;,</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>OlsResult<span class="op">,</span> StatsError<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The core owns its inputs and has no PHP dependency. OlsResult exposes the same statistical fields as the PHP array (sample-deletion metadata is PHP-only), with Vec<f64> for numeric lists, Vec&lt;Vec<f64>&gt; for covariance, Vec&lt;[f64; 2]&gt; for confidence intervals, f64 for scalars, and usize for residual degrees of freedom. StatsError implements Display and Error. The binding converts errors and values without implementing statistical formulas.</f64></f64></p>
-<p>See <a href="./design-philosophy.html">Design philosophy</a> for the boundary between this raw API and optional convenience layers.</p>
+<section id="input-conversion" class="level2">
+<h2 class="anchored" data-anchor-id="input-conversion">Input conversion</h2>
+<ul>
+<li>Numeric elements must be PHP integers or floats. Values are not coerced from strings.</li>
+<li>PHP integers are converted to 64-bit floats, so integers beyond 2^53 can lose precision.</li>
+<li>Arrays are read in iteration order, and keys are ignored. Row order aligns <code>x</code> with <code>y</code>, and column order aligns every coefficient result. Keep labels separately.</li>
+<li><code>null</code> and <code>NAN</code> are missing. By default, rows with missing values are deleted with one <code>E_WARNING</code>, and <code>missing: 'raise'</code> rejects them. <code>fitted</code> and <code>residuals</code> follow <code>retained_rows</code>. See <a href="./missing-data.html">Missing values</a>.</li>
+<li>phit does not add columns or remove aliased predictors.</li>
+<li>Arithmetic is 64-bit floating point. Extreme input scales can exceed its range.</li>
+</ul>
 </section>
 <section id="v01-diagnostics-and-errors" class="level2">
 <h2 class="anchored" data-anchor-id="v01-diagnostics-and-errors">Diagnostics and error codes</h2>
-<p>Every successful estimator returns <code>diagnostics</code>:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Diagnostic key</th>
-<th>Contract</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>converged</td>
-<td>true on successful return, including direct OLS; failed fitting throws</td>
-</tr>
-<tr class="even">
-<td>solver</td>
-<td>scaled_svd, newton_irls, fisher_scoring, profile_variance_search, bobyqa or nelder_mead</td>
-</tr>
-<tr class="odd">
-<td>iterations, evaluations</td>
-<td>Present only when the corresponding historical top-level key exists; same value, not a second counter</td>
-</tr>
-<tr class="even">
-<td>gradient_max</td>
-<td>Present for logistic mixed only; same scaled-coordinate finite-difference score as its top-level key</td>
-</tr>
-<tr class="odd">
-<td>boundary, singular</td>
-<td>Present when the estimator already reports that flag; legitimate zero variance is permitted</td>
-</tr>
-<tr class="even">
-<td>warnings</td>
-<td>list<string>; missing-row deletion, a reported near-singular covariance, or the logistic-mixed Laplace approximation advisory</string></td>
-</tr>
-</tbody>
-</table>
-<p>Warnings in this array are interpretation notices. Only listwise deletion also emits the existing single PHP E_WARNING. Missing/undefined diagnostics are omitted; there is no fabricated iteration count or universal score. General Gaussian convergence still uses optimizer termination, parameter bounds, valid factors and finite output; it does not have a final variance-parameter gradient/Hessian gate. OLS has no iterative optimizer. Normal/Wald inference and local convergence do not guarantee model adequacy or quadrature accuracy.</p>
-<p>Statistical and input failures throw PHP <code>Exception</code> with a numeric <code>getCode()</code>:</p>
+<section id="exceptions" class="level3">
+<h3 class="anchored" data-anchor-id="exceptions">Exceptions</h3>
+<p>Statistical and input failures throw a PHP <code>Exception</code> with a numeric <code>getCode()</code>:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -923,55 +946,132 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <thead>
 <tr class="header">
 <th>Code</th>
-<th>Rust ErrorKind</th>
+<th>Category</th>
 <th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>1001</td>
-<td>InvalidInput</td>
-<td>Type/domain/control error, missing=‘raise’, invalid groups/weights/counts</td>
+<td>Invalid input</td>
+<td>Type, domain, or control error; <code>missing: 'raise'</code>; invalid groups, weights, or counts</td>
 </tr>
 <tr class="even">
 <td>1002</td>
-<td>DimensionMismatch</td>
-<td>Shape/alignment or insufficient residual observations</td>
+<td>Dimension mismatch</td>
+<td>Shape or alignment error, or too few residual observations</td>
 </tr>
 <tr class="odd">
 <td>1003</td>
 <td>Nonfinite</td>
-<td>Nonfinite values or arithmetic beyond floating-point range, including nonzero residual variance underflow</td>
+<td>Nonfinite values, or arithmetic beyond floating-point range, including nonzero residual variance that underflows</td>
 </tr>
 <tr class="even">
 <td>1004</td>
-<td>RankDeficiency</td>
-<td>Numerical design/information rank failure</td>
+<td>Rank deficiency</td>
+<td>Numerical rank failure of the design or information</td>
 </tr>
 <tr class="odd">
 <td>1005</td>
-<td>FactorizationFailure</td>
-<td>Required linear solve or positive-definite information factor fails</td>
+<td>Factorization failure</td>
+<td>A required linear solve or positive-definite factorization fails</td>
 </tr>
 <tr class="even">
 <td>1006</td>
 <td>Nonconvergence</td>
-<td>Budget/line-search/optimizer/score failure, separation or unsupported finite optimum at a search boundary</td>
+<td>Iteration budget, line search, optimizer, or score failure; separation; an optimum at a search boundary</td>
 </tr>
 <tr class="odd">
 <td>1007</td>
 <td>Unsupported</td>
-<td>Explicit size/count limit or unimplemented configuration</td>
+<td>An explicit size or count limit, or an unimplemented configuration</td>
 </tr>
 <tr class="even">
 <td>1008</td>
 <td>Internal</td>
-<td>Required decomposition output missing or an internal mathematical invariant fails</td>
+<td>A required decomposition output is missing, or an internal invariant fails</td>
 </tr>
 </tbody>
 </table>
-<p>Messages remain explanatory, not stable machine identifiers. Validation can report the first failed check when multiple problems exist; combined validation checks may use the most relevant category. Zend argument <code>TypeError</code>, result conversion/runtime errors, and caught Rust panics are runtime errors rather than statistical codes. Invalid data are checked before listwise deletion. Rust <code>StatsError::new(kind, message)</code> carries the explicit enum without classifying message text; <code>.0</code> remains the display message and <code>kind()</code> exposes its category.</p>
-<p>Binomial calls limit trials to 1,000,000 per original row, and accepted success-count rounding is canonicalized with <code>round(y*trials)/trials</code>. For exact zero-variance OLS, the existing NaN/INF conventions remain; nonzero variance underflow instead throws 1003. JSON consumers must handle documented undefined OLS quantities explicitly; PHP’s JSON_THROW_ON_ERROR rejects NaN/INF. See the <a href="./v0.1.html">v0.1 assessment</a> for compatibility notes and tested stress ranges.</p>
+<ul>
+<li>There are no estimator-specific exception classes. Handle <code>Throwable</code> at the application boundary, since PHP argument and runtime errors use their own types.</li>
+<li>Message text can change. Use the code, not the message.</li>
+<li>When several checks fail, the exception can report the first, or the most relevant category.</li>
+<li>Invalid data are checked before missing-value deletion.</li>
+<li>Zend <code>TypeError</code>, result-conversion errors, and caught Rust panics are runtime errors, not statistical codes.</li>
+<li>If neither the extension nor the polyfill is loaded, the functions do not exist. That is an installation failure.</li>
+</ul>
+</section>
+<section id="diagnostics" class="level3">
+<h3 class="anchored" data-anchor-id="diagnostics">Diagnostics</h3>
+<p>Every successful estimator returns <code>diagnostics</code>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>converged</code></td>
+<td><code>true</code> on every returned fit, including direct OLS. A failed fit throws.</td>
+</tr>
+<tr class="even">
+<td><code>solver</code></td>
+<td><code>scaled_svd</code>, <code>newton_irls</code>, <code>fisher_scoring</code>, <code>profile_variance_search</code>, <code>bobyqa</code>, or <code>nelder_mead</code></td>
+</tr>
+<tr class="odd">
+<td><code>iterations</code>, <code>evaluations</code></td>
+<td>Present when the result has the top-level key of the same name, with the same value</td>
+</tr>
+<tr class="even">
+<td><code>gradient_max</code></td>
+<td>Binomial mixed model only; the same value as its top-level key</td>
+</tr>
+<tr class="odd">
+<td><code>boundary</code>, <code>singular</code></td>
+<td>Present when the estimator reports that flag. A zero variance is a valid fit.</td>
+</tr>
+<tr class="even">
+<td><code>warnings</code></td>
+<td><code>list&lt;string&gt;</code>: missing-row deletion, a near-singular covariance, or the binomial mixed model’s Laplace advisory</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The warnings are interpretation notices. Only missing-row deletion also raises a PHP <code>E_WARNING</code>.</li>
+<li>Diagnostics that do not apply are omitted. phit does not invent an iteration count or a gradient.</li>
+<li>General Gaussian mixed fits check optimizer termination, parameter bounds, valid factors, and finite output. They have no final gradient or Hessian check on the variance parameters.</li>
+<li>Wald inference and local convergence do not establish model adequacy or quadrature accuracy.</li>
+</ul>
+</section>
+<section id="undefined-values-and-limits" class="level3">
+<h3 class="anchored" data-anchor-id="undefined-values-and-limits">Undefined values and limits</h3>
+<ul>
+<li><code>NAN</code> and <code>INF</code> in a successful result are values, not failure markers. An exact zero-residual OLS fit keeps its documented <code>NAN</code> and <code>INF</code> statistics, while nonzero variance that underflows raises 1003.</li>
+<li>PHP’s <code>json_encode()</code> with <code>JSON_THROW_ON_ERROR</code> rejects <code>NAN</code> and <code>INF</code>, so JSON consumers must handle them explicitly.</li>
+<li>Binomial models allow at most 1,000,000 trials per original row. Accepted success counts are rounded with <code>round(y*trials)/trials</code>.</li>
+</ul>
+</section>
+</section>
+<section id="implementation-notes" class="level2">
+<h2 class="anchored" data-anchor-id="implementation-notes">Implementation notes</h2>
+<p>The Rust core takes the design literally and has no PHP dependency:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">fn</span> fit_ols(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;&gt;,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>OlsResult<span class="op">,</span> StatsError<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>OlsResult</code> has the statistical fields of the PHP array, with <code>Vec&lt;f64&gt;</code> for lists, <code>Vec&lt;Vec&lt;f64&gt;&gt;</code> for covariance, <code>Vec&lt;[f64; 2]&gt;</code> for confidence intervals, <code>f64</code> for scalars, and <code>usize</code> for residual degrees of freedom. Missing-value deletion and its metadata exist only in the PHP binding.</li>
+<li><code>StatsError::new(kind, message)</code> carries an explicit <code>ErrorKind</code>. <code>kind()</code> returns the category, and <code>.0</code> the message. The binding maps each <code>ErrorKind</code> to the codes above.</li>
+<li>The binding converts values and errors. It does not implement statistical formulas.</li>
+</ul>
+<p>See <a href="./design-philosophy.html">Design philosophy</a> for the boundary between this API and optional convenience layers, and the <a href="./v0.1.html">v0.1 assessment</a> for the tested stress ranges.</p>
 
 
 </section>

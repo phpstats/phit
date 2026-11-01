@@ -3,8 +3,8 @@ title: "Binomial mixed-model verification and approximation accuracy"
 jupyter: python3
 ---
 
-We compare the native binomial random-intercept fitter with **R lme4**, and
-independently evaluate its likelihood with **SciPy**. The model uses marginal
+phit's binomial random-intercept fit is compared with R lme4, and its likelihood
+is evaluated independently with SciPy. The model uses marginal
 maximum likelihood, a logit link and a Gaussian random intercept. Inputs remain
 plain design/outcome/group arrays. See the [math walkthrough](logistic-mixed-math.qmd)
 and [contract](../reference-models.qmd#binomial-random-intercept-ml).
@@ -62,8 +62,7 @@ cbpp likelihood and checks its estimates against high-node native output.
 
 [statsmodels BinomialBayesMixedGLM](https://www.statsmodels.org/stable/generated/statsmodels.genmod.bayes_mixed_glm.BinomialBayesMixedGLM.html)
 uses Bayesian posterior estimation with priors on fixed effects and variance
-parameters. That is a different objective, so we do not claim equivalent mixed
-ML estimates from it. statsmodels **GLM** verifies the exact zero-random-variance
+parameters. That is a different objective, so it is not used as a mixed ML reference. statsmodels **GLM** verifies the exact zero-random-variance
 reduction instead. The full mixed-model Python reference here is explicitly SciPy.
 
 ## Likelihood normalization matters
@@ -79,7 +78,7 @@ display(pd.DataFrame([dict(nodes=r['quadrature_points'],
 
 For grouped-binomial responses, lme4 nAGQ>1 computes its reported criterion using
 conditional deviance relative to the saturated model. Its additive constant
-differs from nAGQ=1. We retain the raw R value and restore the saturated log
+differs from nAGQ=1. The comparison keeps the raw R value and restore the saturated log
 likelihood, `sum(dbinom(successes, trials, successes/trials, log=TRUE))`, before
 comparing normalized likelihoods and AIC/BIC. For binary observations this
 constant is zero. This convention is disclosed in the
@@ -124,7 +123,7 @@ budget throws an error. Controls have explicit parameter bounds; convergence is
 local and does not prove global optimality. Missingness follows the existing
 listwise policy with one warning and original retained/dropped positions.
 
-## Reproduce
+## Reproduction
 
 ```sh
 cargo test --workspace --locked

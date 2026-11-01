@@ -2,10 +2,22 @@
 title: "Posterior-draw scale validation and performance"
 ---
 
-These release-extension benchmarks compare the PHP draw kernels with independent
-R matrix calculations. Complete outputs are compared before **any timing phase**.
-The [raw report](draws-results.json) preserves every timing sample, comparison
-error, input hash, batch count, machine, runtime version and thread setting.
+phit's posterior-draw kernels are timed against equivalent R matrix calculations, after their complete outputs are compared. The [raw report](draws-results.json) keeps every timing sample, comparison error, input hash, batch count, machine, runtime version, and thread setting.
+
+## Methods
+
+| Item | Setting |
+| --- | --- |
+| Workloads | Population and unbiased moments, covariance map, and affine draws at four draw and parameter sizes |
+| Data | Python `random.Random(20261012)`, saved as JSON shared by PHP and R |
+| Machine | Apple M5 Ultra, macOS 27.0.1, recorded 2026-10-12 |
+| Software | Rust 1.99.0, PHP 8.5.10 (phit release build, no BLAS), R 4.6.1 with OpenBLAS 0.3.34, jsonlite 2.0.0 |
+| Threads | OpenBLAS, OpenMP, MKL, Accelerate, and BLIS thread variables set to 1 |
+| Repetitions | One warm-up, then five measurements; calls are batched (see [timing boundaries](#reproduction-and-timing-boundaries)) |
+| Statistic | Median milliseconds per call |
+| Timed | Complete result arrays, including PHP input conversion, validation, and allocation |
+| Excluded | Startup, input generation, JSON parsing and serialization, and reference comparison |
+| Memory | Not measured |
 
 ## Numerical agreement first
 
@@ -29,11 +41,6 @@ the algebraic identity and edge-case checks.
 
 ## Recorded timings
 
-Machine: Apple M5 Ultra, macOS 27.0.1 arm64. Rust 1.99.0, PHP 8.5.10, R 4.6.1,
-jsonlite 2.0.0, R OpenBLAS 0.3.34. Thread environment variables are fixed to one
-for OpenBLAS, OpenMP, MKL, Accelerate and BLIS. PHP uses nalgebra's Rust-native
-path without BLAS. Five measurements follow one warm-up per operation.
-
 Median milliseconds per call, including complete output materialization:
 
 | Draws | Parameters | API | Population moments | Unbiased moments | Covariance map | Affine draws |
@@ -54,8 +61,7 @@ of PHP's validation/rank policies. This is an API-level workload comparison, not
 a measurement of isolated matrix multiplication. Map timings depend only on
 parameter count; the corresponding draw count labels the surrounding workload.
 Compensated sums in Rust and R's BLAS cross-products have different arithmetic
-and runtime costs. These measurements do not establish a reason to change the
-repository's numerical backend.
+and runtime costs.
 
 ## Reproduction and timing boundaries
 

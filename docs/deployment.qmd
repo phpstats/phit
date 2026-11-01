@@ -36,9 +36,8 @@ PHP loads the extension when a process starts. After installing or replacing
 3. Check the web runtime, not only the CLI, for example with
    `extension_loaded('phit')` and `phpversion('phit')` in a request.
 
-Each call converts PHP arrays into Rust vectors, fits the model and returns an
-array within the request. No background process, subprocess or network service
-is involved.
+Each call does its work within the request. There is no background process,
+subprocess, or network service.
 
 ## A PHP-FPM container image
 
@@ -51,14 +50,17 @@ docker build -f docker/Dockerfile -t phit:local .
 ./scripts/check-container phit:local phit:checks
 ```
 
-The build installs the extension through PIE 1.5.0 and runs the Rust and PHP checks.
-The isolated FPM check sends a real FastCGI request. The production-image check
-then exercises both CLI and FPM using the shipped PHP configuration and verifies
-identical OLS coefficients and a Poisson log-exposure fit.
+- The build installs the extension with PIE 1.5.0 and runs the Rust and PHP
+  checks.
+- `check-container` sends a FastCGI request to an isolated FPM container, then
+  runs the production image's CLI and FPM with its shipped PHP configuration.
+  Both must give identical OLS coefficients and a Poisson fit with a log-exposure
+  offset.
+- The final image holds the PHP runtime and the extension. Rust, Clang, PIE,
+  Python, sources, and test tools stay in the build stages.
+- The image keeps the official PHP entrypoint and runs PHP-FPM in the
+  foreground.
 
-The final image contains the PHP runtime and installed extension. Rust, Clang,
-PIE, Python, repository sources, and test utilities remain in the build stages.
-The image retains the official PHP entrypoint and foreground PHP-FPM command.
 Use it as an application base:
 
 ```dockerfile
@@ -66,21 +68,21 @@ FROM phit:local
 COPY app/ /var/www/html/
 ```
 
-Connect your normal web server to FPM. FPM speaks FastCGI, not HTTP; no public
-FPM listener is needed for the tests. The verification script removes only its
-own temporary container and never edits a production PHP/FPM configuration.
+Connect your web server to FPM, which speaks FastCGI rather than HTTP.
 
 ### Build pins and reproducibility
 
-The Dockerfile pins PHP and Rust base images by OCI digest. The workflow records
-separate PHP 8.3/8.4/8.5 image digests. Build and runtime stages share exactly the
-same PHP image. `Cargo.lock` pins Rust dependencies; the downloaded PIE PHAR has
-a pinned SHA-256. Update those pins deliberately and rerun the gate.
+| Input | Pinned by |
+| --- | --- |
+| PHP and Rust base images | OCI digest, one PHP digest each for 8.3, 8.4, and 8.5; build and runtime stages share the PHP image |
+| Rust dependencies | `Cargo.lock` |
+| PIE PHAR | SHA-256 |
+| Debian APT packages | Not pinned; resolved at build time |
 
-Debian APT packages are resolved at build time. These pins establish a repeatable
-base and dependency selection, not a promise that every future rebuild has the
-same bytes. Binary manifests record the compiler, PHP API, architecture, libc,
-linked libraries, extension hash and Cargo.lock hash.
+Update the pins deliberately and rerun the checks. Because APT packages are not
+pinned, a rebuild is repeatable but not byte-identical. Binary manifests record
+the compiler, PHP API, architecture, libc, linked libraries, extension hash, and
+`Cargo.lock` hash.
 
 ## Manual build without PIE
 
@@ -99,12 +101,13 @@ make install INSTALL_ROOT=/absolute/path/to/staging
 # sudo make install
 ```
 
-Build as an unprivileged user before installing. The install goal requires the
-already built module and does not rerun Cargo under sudo. `INSTALL_ROOT` stages
-under the configured extension directory. On macOS, use the matching LLVM/header
-setup in the [development guide](development.qmd#environment).
-
-Add `extension=phit.so` to the relevant PHP INI configuration after a manual
-install. Inspect `php --ini` for CLI; check the FPM configuration separately.
-Verify the native functions through both. Rebuild for another PHP ABI,
-architecture, thread-safety/debug configuration, or platform.
+- Build as an unprivileged user. `make install` needs the built module and
+  does not rerun Cargo under sudo.
+- `INSTALL_ROOT` stages under the configured extension directory.
+- On macOS, use the LLVM and header setup in the
+  [development guide](development.qmd#environment).
+- After installing, add `extension=phit.so` to the PHP configuration. Check
+  `php --ini` for the CLI and the FPM configuration separately, and confirm the
+  functions load in both.
+- Rebuild for another PHP ABI, architecture, thread-safety or debug
+  configuration, or platform.

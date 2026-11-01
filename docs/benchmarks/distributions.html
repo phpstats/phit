@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -645,9 +646,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#numerical-comparisons-before-timings" id="toc-numerical-comparisons-before-timings" class="nav-link active" data-scroll-target="#numerical-comparisons-before-timings">Numerical comparisons before timings</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link active" data-scroll-target="#methods">Methods</a></li>
+  <li><a href="#numerical-comparisons-before-timings" id="toc-numerical-comparisons-before-timings" class="nav-link" data-scroll-target="#numerical-comparisons-before-timings">Numerical comparisons before timings</a></li>
   <li><a href="#timing-boundaries-and-interpretation" id="toc-timing-boundaries-and-interpretation" class="nav-link" data-scroll-target="#timing-boundaries-and-interpretation">Timing boundaries and interpretation</a></li>
-  <li><a href="#seven-model-preservation" id="toc-seven-model-preservation" class="nav-link" data-scroll-target="#seven-model-preservation">Seven-model preservation</a></li>
+  <li><a href="#seven-model-preservation-v0.2-release-check" id="toc-seven-model-preservation-v0.2-release-check" class="nav-link" data-scroll-target="#seven-model-preservation-v0.2-release-check">Seven-model preservation (v0.2 release check)</a></li>
   <li><a href="#reproduction" id="toc-reproduction" class="nav-link" data-scroll-target="#reproduction">Reproduction</a></li>
   </ul>
 </nav>
@@ -674,11 +676,64 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The distribution benchmark compares a PHP scalar loop, one native PHP batch call, an internal Rust loop, vectorized R and SciPy on identical saved temporary inputs. It covers 1,000, 100,000 and one million values for normal CDF/SF, Student-t quantile, binomial/Poisson log-PMF, mean/variance, beta quantile and chi-square CDF with df one million. <a href="distributions-results.json">Raw results</a> retain every measurement, numerical summary, input hash, runtime version, thread setting and peak resident memory.</p>
+<p>This benchmark times distribution and descriptive functions in five ways on identical inputs: a PHP loop of scalar calls, one PHP batch call, an internal Rust loop, vectorized R, and SciPy. <a href="distributions-results.json">Raw results</a> keep every measurement, numerical summary, input hash, runtime version, thread setting, and peak RSS.</p>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Setting</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Workloads</td>
+<td>Normal CDF and SF, Student-t quantile, binomial and Poisson log-PMF, mean, variance, beta quantile, and chi-square CDF with df one million</td>
+</tr>
+<tr class="even">
+<td>Sizes</td>
+<td>1,000, 100,000, and 1,000,000 values</td>
+</tr>
+<tr class="odd">
+<td>Data</td>
+<td>Generated with seed 20261012 and saved as JSON; SHA-256 hashes are recorded</td>
+</tr>
+<tr class="even">
+<td>Machine</td>
+<td>Apple M5 Ultra, macOS 27, recorded 2026-10-12</td>
+</tr>
+<tr class="odd">
+<td>Threads</td>
+<td>OpenBLAS, OpenMP, MKL, Accelerate, and BLIS thread variables set to 1</td>
+</tr>
+<tr class="even">
+<td>Repetitions</td>
+<td>One untimed warm-up, then five measurements; small cases batch calls (see <a href="#timing-boundaries-and-interpretation">Timing boundaries</a>)</td>
+</tr>
+<tr class="odd">
+<td>Statistic</td>
+<td>Median milliseconds per call</td>
+</tr>
+<tr class="even">
+<td>Timed</td>
+<td>The call, including PHP input and output conversion and validation</td>
+</tr>
+<tr class="odd">
+<td>Excluded</td>
+<td>Startup, JSON input and output, and output summaries</td>
+</tr>
+<tr class="even">
+<td>Memory</td>
+<td>Peak RSS of the whole worker process</td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="numerical-comparisons-before-timings" class="level2">
 <h2 class="anchored" data-anchor-id="numerical-comparisons-before-timings">Numerical comparisons before timings</h2>
 <p>All input cases are verified across implementations before any timing phase begins. Seventeen evenly spaced output values plus min/max use the distribution fixture tolerance: <code>1e-300 + 1e-12*abs(reference)</code>, or <code>1e-15 + 1e-12*abs(reference)</code> for quantiles. Sum and sum-of-squares consume <strong>all</strong> outputs, with tolerance <code>1e-9 + 1e-10*abs(reference)</code> to allow different accumulation orders. Mean/variance outputs are checked directly. R is the benchmark reference; the separate <a href="../verifications/distributions.html">R/SciPy/mpmath record</a> adjudicates reference differences and tests extreme/boundary values more broadly.</p>
-<p>Native comparisons must pass. SciPy peer discrepancies are retained and labeled; they do not silently relax the native gate. Every timed output summary is checked again. This benchmark does not compare every individual element of the large vectors; the complete-vector aggregates and sampled values complement the strict small reference/identity suite.</p>
+<p>phit’s comparisons must pass. SciPy discrepancies are recorded and labeled without relaxing phit’s tolerance. Every timed output summary is checked again. Individual elements of the large vectors are not all compared; the aggregates and sampled values complement the small reference suite.</p>
 <!-- BEGIN BENCHMARK EVIDENCE -->
 <p>Recorded: <strong>2026-10-12T15:18:59.861643+00:00</strong>; Apple M5 Ultra, macOS-27.0.1-arm64-arm-64bit-Mach-O. 27 input cases; all native/R comparisons passed. SciPy exceeded the same tolerance for: chisquare_cdf (1,000), chisquare_cdf (100,000), chisquare_cdf (1,000,000).</p>
 <p>Median milliseconds per full call, 5 measurements after one warm-up:</p>
@@ -954,13 +1009,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="timing-boundaries-and-interpretation" class="level2">
 <h2 class="anchored" data-anchor-id="timing-boundaries-and-interpretation">Timing boundaries and interpretation</h2>
-<p>Each worker loads/parses inputs once, performs one untimed warm-up, and measures five repetitions. Distribution calls allocate and populate the complete output vector. The PHP scalar loop constructs a distribution and crosses the PHP/native boundary for each value; batch calls construct it once and stream values natively. The internal Rust loop uses the same validation and an allocated result vector. Descriptive mean/variance has one PHP native call; there is no invented scalar-loop equivalent for those operations.</p>
+<p>Distribution calls allocate and populate the complete output vector. The PHP scalar loop constructs a distribution and crosses the PHP/native boundary for each value; batch calls construct it once and stream values natively. The internal Rust loop uses the same validation and an allocated result vector. Descriptive mean/variance has one PHP native call; there is no invented scalar-loop equivalent for those operations.</p>
 <p>JSON I/O, startup and output summaries are outside timed calls. PHP input/output conversion and native validation are included. R/SciPy start with native numeric vectors. Runtime reclamation/garbage collection of prior results contributes to the observed API cost. Peak RSS is the <strong>whole worker process</strong>, including imports, JSON parsing, inputs, outputs and summaries, not isolated kernel memory. Process elapsed time and input loading time are recorded separately.</p>
-<p>R’s timer has millisecond resolution. Small distribution cases batch 100 calls; mean/variance batch enough calls to process at least ten million input values per measurement, with a minimum of ten calls. Per-call times divide by the batch count. All raw timings must be positive. Thread environment variables are fixed to one for OpenBLAS, OpenMP, MKL, Accelerate and BLIS; they do not make different numerical implementations identical. PHP scalar/batch worker order alternates by case. Machine load, timer precision and GC make these measurements evidence for these workloads rather than universal speed claims.</p>
+<p>R’s timer has millisecond resolution. Small distribution cases batch 100 calls; mean/variance batch enough calls to process at least ten million input values per measurement, with a minimum of ten calls. Per-call times divide by the batch count. All raw timings must be positive. The thread settings do not make different numerical implementations equivalent. PHP scalar and batch worker order alternates by case. Machine load, timer precision, and garbage collection affect the measurements, which describe these workloads only.</p>
 </section>
-<section id="seven-model-preservation" class="level2">
-<h2 class="anchored" data-anchor-id="seven-model-preservation">Seven-model preservation</h2>
-<p>The <a href="v02-preservation-results.json">preservation report</a> compares the current extension with a rebuilt pre-v0.2 baseline at <code>6342562</code>, using the same PHP 8.5 headers/compiler. Both receive identical complete designs with intercept insertion disabled where supported. It exercises all seven existing fitters. Reference tolerance is <code>1e-7 + 1e-6*abs(reference)</code> for the compared inference/scalar outputs, group effects and ten sampled observation outputs. Fits materialize their complete public results before summarization. This is separate from fitting all independent R fixtures in the release gate.</p>
+<section id="seven-model-preservation-v0.2-release-check" class="level2">
+<h2 class="anchored" data-anchor-id="seven-model-preservation-v0.2-release-check">Seven-model preservation (v0.2 release check)</h2>
+<p>This check was recorded for the v0.2 release. The <a href="v02-preservation-results.json">preservation report</a> compares the current extension with a rebuilt pre-v0.2 baseline at <code>6342562</code>, using the same PHP 8.5 headers/compiler. Both receive identical complete designs with intercept insertion disabled where supported. It exercises all seven existing fitters. Reference tolerance is <code>1e-7 + 1e-6*abs(reference)</code> for the compared inference/scalar outputs, group effects and ten sampled observation outputs. Fits materialize their complete public results before summarization.</p>
 <!-- BEGIN PRESERVATION EVIDENCE -->
 <p>Recorded: <strong>2026-10-12T15:18:25.373311+00:00</strong>; baseline revision <code>6342562</code>. All seven model comparisons passed.</p>
 <table class="caption-top table">
@@ -1046,7 +1101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--baseline</span> .context/v02/baseline-target/release/libphit.dylib <span class="dt">\</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--baseline-revision</span> 6342562 <span class="at">--output</span> docs/benchmarks/v02-preservation-results.json</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/distribution-docs.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The worker uses reflected function parameters, so the older module name and API remain loadable without importing current stubs into the baseline runtime. No benchmark changes a user’s PHP configuration or needs network/model services.</p>
+<p>The worker reflects function parameters, so the older module name and API load without the current stubs.</p>
 
 
 </section>

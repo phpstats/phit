@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -678,10 +679,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p><code>fit_ols()</code> fits a linear model by least squares. <code>fit_generalized_linear()</code> fits a generalized linear model by maximum likelihood. Both take an R formula and named columns, as described in <a href="./formulas.html">Model formulas</a>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Phit\fit_generalized_linear(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$family</span> <span class="op">=</span> <span class="st">'gaussian'</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$link</span> <span class="op">=</span> <span class="st">''</span><span class="ot">,</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>Phit\fit_generalized_linear(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$family</span> <span class="op">=</span> <span class="st">'gaussian'</span><span class="ot">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$link</span> <span class="op">=</span> <span class="st">''</span><span class="ot">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="families-and-links" class="level2">
 <h2 class="anchored" data-anchor-id="families-and-links">Families and links</h2>
 <table class="caption-top table">
@@ -724,39 +735,89 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="linear-models" class="level2">
 <h2 class="anchored" data-anchor-id="linear-models">Linear models</h2>
-<p><code>fit_ols()</code> assumes independent errors with constant variance. With <code>weights</code>, it fits weighted least squares, as <code>lm(weights = )</code> does: each squared residual is multiplied by its row’s weight. Intervals and tests use Student’s t with <code>df_residual</code> degrees of freedom. The result has <code>t_statistics</code>, <code>rss</code>, <code>residual_variance</code>, <code>sigma</code>, <code>r_squared</code> and <code>adj_r_squared</code>. <a href="./getting-started.html">A first model</a> shows a complete fit and its output.</p>
-<p><code>fit_generalized_linear(family: 'gaussian')</code> returns the same fit plus <code>deviance</code>, <code>null_deviance</code> and <code>aic</code> as R’s <code>glm()</code> reports them.</p>
+<ul>
+<li><code>fit_ols()</code> assumes independent errors with constant variance.</li>
+<li>With <code>weights</code>, it fits weighted least squares, as <code>lm(weights = )</code> does: each squared residual is multiplied by its row’s weight.</li>
+<li>Intervals and tests use Student’s t with <code>df_residual</code> degrees of freedom.</li>
+<li>The result adds <code>t_statistics</code>, <code>rss</code>, <code>residual_variance</code>, <code>sigma</code>, <code>r_squared</code>, and <code>adj_r_squared</code> to the shared keys.</li>
+<li><code>fit_generalized_linear(family: 'gaussian')</code> returns the same fit plus <code>deviance</code>, <code>null_deviance</code>, and <code>aic</code>, as R’s <code>glm()</code> reports them.</li>
+</ul>
+<p><a href="./getting-started.html">A first model</a> shows a complete fit and its output.</p>
 </section>
 <section id="logistic-and-probit-regression" class="level2">
 <h2 class="anchored" data-anchor-id="logistic-and-probit-regression">Logistic and probit regression</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_generalized_linear<span class="ot">,</span> predict}<span class="ot">;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">$leases</span> <span class="op">=</span> [</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'renewed'</span> =&gt; [<span class="dv">1</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span>]<span class="ot">,</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'increase'</span> =&gt; [<span class="fl">2.0</span><span class="ot">,</span> <span class="fl">3.5</span><span class="ot">,</span> <span class="fl">8.0</span><span class="ot">,</span> <span class="fl">1.0</span><span class="ot">,</span> <span class="fl">6.5</span><span class="ot">,</span> <span class="fl">4.0</span><span class="ot">,</span> <span class="fl">2.5</span><span class="ot">,</span> <span class="fl">9.0</span><span class="ot">,</span> <span class="fl">5.0</span><span class="ot">,</span> <span class="fl">4.5</span><span class="ot">,</span> <span class="fl">3.0</span><span class="ot">,</span> <span class="fl">7.0</span><span class="ot">,</span> <span class="fl">10.0</span><span class="ot">,</span> <span class="fl">6.0</span><span class="ot">,</span> <span class="fl">5.5</span><span class="ot">,</span> <span class="fl">7.5</span>]<span class="ot">,</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tenure'</span> =&gt; [<span class="dv">4</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">6</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">5</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">6</span><span class="ot">,</span> <span class="dv">4</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">2</span>]<span class="ot">,</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="va">$logit</span> <span class="op">=</span> fit_generalized_linear(<span class="st">'renewed ~ increase + tenure'</span><span class="ot">,</span> <span class="va">$leases</span><span class="ot">,</span> family<span class="ot">:</span> <span class="st">'binomial'</span>)<span class="ot">;</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$logit</span>[<span class="st">'named'</span>] <span class="kw">as</span> <span class="va">$name</span> =&gt; <span class="va">$b</span>) <span class="fu">printf</span>(<span class="st">"%-12s %8.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$name</span><span class="ot">,</span> <span class="va">$b</span>)<span class="ot">;</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"deviance %.4f, null deviance %.4f, AIC %.4f, %d iterations</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="va">$logit</span>[<span class="st">'deviance'</span>]<span class="ot">,</span> <span class="va">$logit</span>[<span class="st">'null_deviance'</span>]<span class="ot">,</span> <span class="va">$logit</span>[<span class="st">'aic'</span>]<span class="ot">,</span> <span class="va">$logit</span>[<span class="st">'iterations'</span>])<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'renewed'</span> =&gt; [</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'increase'</span> =&gt; [</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="fl">2.0</span><span class="ot">,</span> <span class="fl">3.5</span><span class="ot">,</span> <span class="fl">8.0</span><span class="ot">,</span> <span class="fl">1.0</span><span class="ot">,</span> <span class="fl">6.5</span><span class="ot">,</span> <span class="fl">4.0</span><span class="ot">,</span> <span class="fl">2.5</span><span class="ot">,</span> <span class="fl">9.0</span><span class="ot">,</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="fl">5.0</span><span class="ot">,</span> <span class="fl">4.5</span><span class="ot">,</span> <span class="fl">3.0</span><span class="ot">,</span> <span class="fl">7.0</span><span class="ot">,</span> <span class="fl">10.0</span><span class="ot">,</span> <span class="fl">6.0</span><span class="ot">,</span> <span class="fl">5.5</span><span class="ot">,</span> <span class="fl">7.5</span><span class="ot">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tenure'</span> =&gt; [</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="dv">4</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">6</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">5</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="dv">3</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">6</span><span class="ot">,</span> <span class="dv">4</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="va">$logit</span> <span class="op">=</span> fit_generalized_linear(</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">'renewed ~ increase + tenure'</span><span class="ot">,</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="va">$leases</span><span class="ot">,</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    family<span class="ot">:</span> <span class="st">'binomial'</span><span class="ot">,</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$logit</span>[<span class="st">'named'</span>] <span class="kw">as</span> <span class="va">$name</span> =&gt; <span class="va">$b</span>) {</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%-12s %8.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$name</span><span class="ot">,</span> <span class="va">$b</span>)<span class="ot">;</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"deviance %.4f, null deviance %.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="va">$logit</span>[<span class="st">'deviance'</span>]<span class="ot">,</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="va">$logit</span>[<span class="st">'null_deviance'</span>]<span class="ot">,</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AIC %.4f, %d iterations</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="va">$logit</span>[<span class="st">'aic'</span>]<span class="ot">,</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="va">$logit</span>[<span class="st">'iterations'</span>]<span class="ot">,</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>(Intercept)    2.7907
 increase      -1.0308
 tenure         1.3233
-deviance 10.5555, null deviance 21.9301, AIC 16.5555, 8 iterations</code></pre>
-<p>Coefficients are on the log-odds scale. A rent increase of one percentage point multiplies the odds of renewal by <code>exp(-1.0308)</code>, about 0.36. <code>link: 'probit'</code> fits the same model on the probit scale:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">$probit</span> <span class="op">=</span> fit_generalized_linear(<span class="st">'renewed ~ increase + tenure'</span><span class="ot">,</span> <span class="va">$leases</span><span class="ot">,</span> family<span class="ot">:</span> <span class="st">'binomial'</span><span class="ot">,</span> <span class="fu">link</span><span class="ot">:</span> <span class="st">'probit'</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+deviance 10.5555, null deviance 21.9301
+AIC 16.5555, 8 iterations</code></pre>
+<p>Coefficients are on the log-odds scale, and <code>exp()</code> of a coefficient is an odds ratio. <code>link: 'probit'</code> fits the same model on the probit scale:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">$probit</span> <span class="op">=</span> fit_generalized_linear(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'renewed ~ increase + tenure'</span><span class="ot">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">$leases</span><span class="ot">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    family<span class="ot">:</span> <span class="st">'binomial'</span><span class="ot">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">link</span><span class="ot">:</span> <span class="st">'probit'</span><span class="ot">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$probit</span>[<span class="st">'named'</span>] <span class="kw">as</span> <span class="va">$name</span> =&gt; <span class="va">$b</span>) {</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%-12s %8.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$name</span><span class="ot">,</span> <span class="va">$b</span>)<span class="ot">;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>(Intercept)    1.8063
 increase      -0.6257
 tenure         0.7672</code></pre>
 <p>Predicted probabilities come from <code>predict()</code> with <code>type: 'response'</code>. <code>seFit: true</code> adds delta-method standard errors:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> predict(<span class="va">$logit</span><span class="ot">,</span> [<span class="st">'increase'</span> =&gt; [<span class="fl">3.0</span><span class="ot">,</span> <span class="fl">8.0</span>]<span class="ot">,</span> <span class="st">'tenure'</span> =&gt; [<span class="dv">2</span><span class="ot">,</span> <span class="dv">2</span>]]<span class="ot">,</span> type<span class="ot">:</span> <span class="st">'response'</span><span class="ot">,</span> seFit<span class="ot">:</span> <span class="kw">true</span>)<span class="ot">;</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$p</span>[<span class="st">'fit'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$v</span>) <span class="fu">printf</span>(<span class="st">"%.4f (se %.4f)</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$v</span><span class="ot">,</span> <span class="va">$p</span>[<span class="st">'se_fit'</span>][<span class="va">$i</span>])<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> predict(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">$logit</span><span class="ot">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'increase'</span> =&gt; [<span class="fl">3.0</span><span class="ot">,</span> <span class="fl">8.0</span>]<span class="ot">,</span> <span class="st">'tenure'</span> =&gt; [<span class="dv">2</span><span class="ot">,</span> <span class="dv">2</span>]]<span class="ot">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    type<span class="ot">:</span> <span class="st">'response'</span><span class="ot">,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    seFit<span class="ot">:</span> <span class="kw">true</span><span class="ot">,</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$p</span>[<span class="st">'fit'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$v</span>) {</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%.4f (se %.4f)</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$v</span><span class="ot">,</span> <span class="va">$p</span>[<span class="st">'se_fit'</span>][<span class="va">$i</span>])<span class="ot">;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>0.9125 (se 0.1227)
 0.0568 (se 0.0916)</code></pre>
-<p>Binomial fits report <code>z_statistics</code>, with p-values and 95% intervals from the normal distribution (Wald inference). <code>fitted</code> holds probabilities and <code>residuals</code> holds <code>y - fitted</code>. The dispersion is fixed at one.</p>
-<p>Complete or quasi-complete separation, where a combination of predictors divides successes from failures, means no finite maximum-likelihood estimate exists. The fit then throws code 1006 with the message <code>complete or quasi-complete separation: no finite unpenalized logistic MLE</code>. A fit near separation can converge with very large standard errors. Convergence does not show that the inference is reliable.</p>
+<ul>
+<li>Binomial fits report <code>z_statistics</code>, with p-values and 95% intervals from the normal distribution (Wald inference).</li>
+<li><code>fitted</code> holds probabilities, and <code>residuals</code> holds <code>y - fitted</code>.</li>
+<li>The dispersion is fixed at one.</li>
+<li>Under complete or quasi-complete separation, where a combination of predictors divides successes from failures, no finite maximum-likelihood estimate exists. The fit throws code 1006: <code>complete or quasi-complete separation: no finite unpenalized logistic MLE</code>.</li>
+<li>A fit near separation can converge with very large standard errors. Convergence does not show that the inference is reliable.</li>
+</ul>
 </section>
 <section id="poisson-regression" class="level2">
 <h2 class="anchored" data-anchor-id="poisson-regression">Poisson regression</h2>
@@ -764,13 +825,25 @@ tenure         0.7672</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="va">$accounts</span> <span class="op">=</span> [</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tickets'</span> =&gt; [<span class="dv">3</span><span class="ot">,</span> <span class="dv">7</span><span class="ot">,</span> <span class="dv">1</span><span class="ot">,</span> <span class="dv">12</span><span class="ot">,</span> <span class="dv">4</span><span class="ot">,</span> <span class="dv">0</span><span class="ot">,</span> <span class="dv">9</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">5</span><span class="ot">,</span> <span class="dv">15</span>]<span class="ot">,</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'months'</span> =&gt; [<span class="dv">6</span><span class="ot">,</span> <span class="dv">12</span><span class="ot">,</span> <span class="dv">3</span><span class="ot">,</span> <span class="dv">12</span><span class="ot">,</span> <span class="dv">8</span><span class="ot">,</span> <span class="dv">2</span><span class="ot">,</span> <span class="dv">12</span><span class="ot">,</span> <span class="dv">5</span><span class="ot">,</span> <span class="dv">7</span><span class="ot">,</span> <span class="dv">12</span>]<span class="ot">,</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'plan'</span> =&gt; [<span class="st">'basic'</span><span class="ot">,</span> <span class="st">'pro'</span><span class="ot">,</span> <span class="st">'basic'</span><span class="ot">,</span> <span class="st">'pro'</span><span class="ot">,</span> <span class="st">'basic'</span><span class="ot">,</span> <span class="st">'basic'</span><span class="ot">,</span> <span class="st">'pro'</span><span class="ot">,</span> <span class="st">'basic'</span><span class="ot">,</span> <span class="st">'pro'</span><span class="ot">,</span> <span class="st">'pro'</span>]<span class="ot">,</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="va">$poisson</span> <span class="op">=</span> fit_generalized_linear(<span class="st">'tickets ~ plan + offset(log(months))'</span><span class="ot">,</span> <span class="va">$accounts</span><span class="ot">,</span> family<span class="ot">:</span> <span class="st">'poisson'</span>)<span class="ot">;</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"rate ratio pro/basic %.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="fu">exp</span>(<span class="va">$poisson</span>[<span class="st">'named'</span>][<span class="st">'planpro'</span>]))<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'plan'</span> =&gt; [</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">'basic'</span><span class="ot">,</span> <span class="st">'pro'</span><span class="ot">,</span> <span class="st">'basic'</span><span class="ot">,</span> <span class="st">'pro'</span><span class="ot">,</span> <span class="st">'basic'</span><span class="ot">,</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">'basic'</span><span class="ot">,</span> <span class="st">'pro'</span><span class="ot">,</span> <span class="st">'basic'</span><span class="ot">,</span> <span class="st">'pro'</span><span class="ot">,</span> <span class="st">'pro'</span><span class="ot">,</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="va">$poisson</span> <span class="op">=</span> fit_generalized_linear(</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tickets ~ plan + offset(log(months))'</span><span class="ot">,</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="va">$accounts</span><span class="ot">,</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    family<span class="ot">:</span> <span class="st">'poisson'</span><span class="ot">,</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="va">$ratio</span> <span class="op">=</span> <span class="fu">exp</span>(<span class="va">$poisson</span>[<span class="st">'named'</span>][<span class="st">'planpro'</span>])<span class="ot">;</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"rate ratio pro/basic %.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$ratio</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>rate ratio pro/basic 2.0945</code></pre>
-<p>The coefficients are log rate ratios per month. The <code>(Intercept)</code> is -0.8755, a rate of <code>exp(-0.8755)</code>, about 0.42 tickets per month on the basic plan. Poisson fits have the same inference keys as binomial fits. The model assumes the variance equals the mean. Overdispersion is not estimated or corrected.</p>
+<ul>
+<li>With the offset, the coefficients are log rate ratios per month. <code>exp()</code> of the <code>(Intercept)</code> is the monthly rate on the reference plan, <code>basic</code>.</li>
+<li>Poisson fits have the same inference keys as binomial fits.</li>
+<li>The model assumes the variance equals the mean. Overdispersion is not estimated or corrected.</li>
+</ul>
 </section>
 <section id="result-keys" class="level2">
 <h2 class="anchored" data-anchor-id="result-keys">Result keys</h2>
@@ -825,14 +898,19 @@ tenure         0.7672</code></pre>
 </section>
 <section id="weights-and-offsets" class="level2">
 <h2 class="anchored" data-anchor-id="weights-and-offsets">Weights and offsets</h2>
-<p><code>weights</code> is an array aligned with the original rows, or the name of a numeric column. Weights must be positive, and a missing weight drops its row. For <code>fit_ols()</code> they are precision weights. For the binomial family they are integer trial counts, with the response given as proportions. Offsets are written in the formula with <code>offset(expr)</code>. Several offsets are added together.</p>
+<ul>
+<li><code>weights</code> is an array aligned with the original rows, or the name of a numeric column.</li>
+<li>Weights must be positive. A missing weight drops its row.</li>
+<li>For <code>fit_ols()</code> and the Poisson family they are precision (prior) weights. For the binomial family they are integer trial counts, with the response given as proportions.</li>
+<li>Offsets are written in the formula with <code>offset(expr)</code>. Several offsets are added together.</li>
+</ul>
 </section>
 <section id="differences-from-r" class="level2">
 <h2 class="anchored" data-anchor-id="differences-from-r">Differences from R</h2>
 <ul>
 <li>A rank-deficient design throws code 1004. R reports aliased coefficients as <code>NA</code>.</li>
 <li>Zero weights are rejected. R gives such rows zero weight.</li>
-<li>Binomial and Poisson covariances are the inverse information at the final coefficients. R’s <code>vcov()</code> uses the IRLS weights of the iteration before the final one, so standard errors differ by about the size of R’s last step: 1.1e-7 relative for <code>am ~ wt + hp</code> on <code>mtcars</code>, up to about 1e-4 near separation. Refitting in R with <code>start = coef(fit)</code> gives phit’s value. <a href="./r-compatibility.html#evidence-and-tolerance-policy">R compatibility</a> has the details.</li>
+<li>Binomial and Poisson covariances are the inverse information at the final coefficients. R’s <code>vcov()</code> uses the IRLS weights of the iteration before the final one, so standard errors differ by about the size of R’s last step, up to about 1e-4 relative near separation. See <a href="./r-compatibility.html#glm-covariance">GLM covariance</a>.</li>
 <li>Gaussian <code>fit_generalized_linear()</code> intervals use t, as <code>fit_ols()</code> does. R’s <code>confint.default()</code> uses z and <code>confint()</code> profiles the likelihood.</li>
 </ul>
 <p><a href="./formulas.html#differences-from-r">Model formulas</a> lists the remaining differences in formula handling.</p>

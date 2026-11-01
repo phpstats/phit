@@ -3,10 +3,22 @@ title: "Random-intercept Gaussian ML scale validation and performance"
 jupyter: python3
 ---
 
-The release PHP extension, R lme4 lmer and Python statsmodels MixedLM fit identical
-synthetic observations, with marginal ML (not REML), one random intercept and
-plug-in GLS fixed-effect inference. The [raw report](lmm-results.json) records
-versions, machine/thread settings, artifact/data hashes and every measurement.
+phit's `fit_mixed_gaussian_intercept_matrix()`, R lme4 `lmer()`, and Python statsmodels `MixedLM` fit identical simulated observations with one random intercept, by marginal ML (not REML), with plug-in GLS fixed-effect inference. The [raw report](lmm-results.json) records versions, machine and thread settings, artifact and data hashes, and every measurement.
+
+## Methods
+
+| Item | Setting |
+| --- | --- |
+| Workloads | 1,000, 100,000, and 1,000,000 rows with 3 fixed coefficients; 100,000 rows with 11 (counts include the intercept); min(100, n/20) groups |
+| Data | Simulated with NumPy seed `20261011` (see [Simulation and numerical checks](#simulation-and-numerical-checks)) |
+| Machine | Apple M5 Ultra, macOS 27, recorded 2026-10-11 |
+| Builds | phit release build; runtime versions are printed below |
+| Threads | Common BLAS and OpenMP thread variables set to 1 |
+| Repetitions | One untimed warm-up, then five timed fits per worker; workers run separately and alternate order |
+| Statistic | Median and minimum in-process wall-clock time |
+| Timed | One complete fit with every output materialized (see [Timing boundaries and methods](#timing-boundaries-and-methods)) |
+| Excluded | Startup, CSV parsing, data generation, and JSON serialization |
+| Memory | Peak RSS of the whole worker process |
 
 ## Recorded results
 
@@ -33,11 +45,7 @@ for case in report['cases']:
 display(ordered_table(rows))
 ```
 
-Cases cover 1,000, 100,000 and one million observations with three fixed
-coefficients, and 100,000 observations with eleven fixed coefficients.
-There are min(100, n/20) groups; coefficient counts include the fixed intercept.
-Group count and group size affect mixed-model work, so these timings should not
-be generalized to many thousands of small groups or random slopes.
+Group count and group size affect mixed-model work, so these timings do not carry over to many thousands of small groups or to random slopes.
 
 ## Visual comparison
 
@@ -52,19 +60,12 @@ render_charts(report,'lmm')
 
 ![Random-intercept ML peak whole-process memory.](figures/lmm-memory.svg)
 
-Each panel uses its own labeled linear scale. Order/colors remain R, statsmodels,
-PHP. Download timing [SVG](figures/lmm-fit-time.svg)/[PNG](figures/lmm-fit-time.png)
+Each panel uses its own labeled linear scale. Download timing [SVG](figures/lmm-fit-time.svg)/[PNG](figures/lmm-fit-time.png)
 and memory [SVG](figures/lmm-memory.svg)/[PNG](figures/lmm-memory.png).
 
 ## Native Rust optimization
 
-The first implementation repeatedly whitened and SVD-factorized all n rows
-at every trial variance ratio. The optimized implementation follows lme4's
-penalized least-squares elimination idea: separate within-group deviations
-from group means and cache an augmented QR square-root summary. Each trial now
-factors p+1+G rows. Covariance is computed only for the selected solution.
-The same grid, score root refinements, ML objective, rank threshold, input/output
-contract and numerical tolerances are retained; this is a computational change.
+This section compares the current implementation with the one recorded before it, on 2026-10-11. The earlier implementation whitened and SVD-factorized all n rows at every trial variance ratio. The current one follows lme4's penalized least-squares elimination: it separates within-group deviations from group means and caches an augmented QR square-root summary, so each trial factors p + 1 + G rows. Covariance is computed only for the selected solution. The grid, score-root refinement, ML objective, rank threshold, input and output contract, and tolerances are unchanged.
 The [walkthrough](../notebooks/lmm-math.qmd#cache-a-square-root-reduction-following-the-lme4-idea)
 derives the reduction and checks its residual norms numerically.
 
@@ -84,29 +85,19 @@ display(pd.DataFrame(comparison))
 print('Baseline recorded:',baseline['recorded_at'])
 ```
 
-The [baseline report](lmm-baseline-results.json) preserves all original timings
-and artifact hashes. These are separate runs on the same machine and identical
-seeded CSVs, so timing ratios remain subject to system noise. Both reports time
-complete PHP calls, including conversion and all observation-length outputs.
-This is native nalgebra QR/SVD, with no BLAS/LAPACK or sparse backend dependency.
-lme4 uses a general sparse Cholesky implementation; our specialized square-root
-reduction reuses its mathematical elimination idea while retaining SVD rank checks.
+The [baseline report](lmm-baseline-results.json) keeps the earlier timings and artifact hashes. The two are separate runs on the same machine with identical seeded CSVs, so the ratios include system noise. Both time complete PHP calls, including conversion and all observation-length outputs. phit uses nalgebra QR and SVD with no BLAS, LAPACK, or sparse backend. lme4 uses a general sparse Cholesky factorization; phit's specialized reduction applies the same elimination and keeps SVD rank checks.
 
 ## Timing boundaries and methods
 
-Each worker loads one CSV, warms up once and fits five times. Timed calls include
-estimation, fixed-effect covariance and normal Wald inference, variance components,
+Timed calls include estimation, fixed-effect covariance and normal Wald inference, variance components,
 ICC, likelihood/AIC, all population/conditional fits and both residual vectors,
 and all conditional group estimates. PHP also validates/copies inputs and converts
-all output arrays and group/sample metadata inside the timer. Startup, CSV parsing,
-data generation and final compact JSON serialization are excluded.
+all output arrays and group and sample metadata inside the timer.
 
 R uses lmer REML=FALSE with bobyqa rhoend=1e-10. Python uses MixedLM ML BFGS with
 gtol=1e-10 and recalculates plug-in GLS covariance to align with the documented
-convention. Its native joint observed-Hessian covariance is not compared as though
-it were identical. Rust scans a log-ratio profile grid and refines analytic-score
-roots with compact weighted SVD GLS fits, after a one-time QR reduction. These algorithms and stopping rules differ.
-The comparison measures complete declared API behavior, not a single common solver.
+convention. Its own joint observed-Hessian covariance is a different convention and is not compared. Rust scans a log-ratio profile grid and refines analytic-score
+roots with compact weighted SVD GLS fits, after a one-time QR reduction. The algorithms and stopping rules differ, so this compares complete API calls, not one common solver.
 
 ```{python}
 display(ordered_table(memory))
@@ -114,10 +105,7 @@ display(ordered_table(memory))
 
 Whole-process time includes startup/imports, CSV loading, warm-up and all five
 fits. Peak RSS covers that entire process, not only the numerical solver. PHP's
-memory limit is disabled for these large nested arrays. Thread environment variables
-are set to one, worker order alternates, and runtimes execute separately. Timer
-resolution, system activity and caches can affect results. See the
-[OLS timing discussion](ols.qmd#timing-boundaries).
+memory limit is disabled for these large nested arrays. Timer resolution, system activity, and caches can affect results; see the [OLS timing discussion](ols.qmd#timing-boundaries).
 
 ## Simulation and numerical checks
 
@@ -140,14 +128,9 @@ outputs, 1e-5 for covariance, SE, z-statistics, variance components, sigma and I
 and 1e-9 for likelihood/AIC. Small saved references use the tighter uniform
 1e-7 + 1e-6 × abs(reference) policy.
 
-The first 100,000-row check found R's between-group variance differed from the
-analytic-score solution by about 2.6e-6 relative while log-likelihood differed
+At 100,000 rows, R's between-group variance differed from the analytic-score solution by about 2.6e-6 relative while log-likelihood differed
 by only about 8e-10. The log-ratio profile score was approximately 2.55e-4 in R,
--1.88e-6 in Python and 3.12e-11 in Rust. A flat likelihood and floating-point
-objective resolution limit independently optimized variance-component agreement;
-the variance-sensitive benchmark tolerances reflect that measured distinction.
-They do not replace the closed-form ML check or justify relaxing likelihood
-agreement. The finite Rust profile grid itself is not a global-optimum proof.
+-1.88e-6 in Python and 3.12e-11 in Rust. A flat likelihood and the floating-point resolution of the objective limit how closely independently optimized variance components agree, and the variance-sensitive tolerances above reflect that measurement. Likelihood agreement keeps its tight tolerance. The finite profile grid is not a proof of global optimality.
 
 ```{python}
 display(ordered_table([dict(observations=case['n'],coefficients=case['p'],implementation=name,
@@ -155,20 +138,14 @@ display(ordered_table([dict(observations=case['n'],coefficients=case['p'],implem
                       for case in report['cases'] for name,errors in case['max_absolute_errors_vs_R'].items()]))
 ```
 
-## Reproduce
+## Reproduction
 
 ```sh
-export PHP=/opt/homebrew/bin/php
-export PHP_CONFIG=/opt/homebrew/bin/php-config
 cargo build -p phit --release --locked
 .context/notebooks-venv/bin/python tests/benchmarks/run.py --model lmm
-QUARTO_PYTHON="$PWD/.context/notebooks-venv/bin/python" quarto render docs/benchmarks/lmm.qmd
-quarto render docs
+QUARTO_PYTHON="$PWD/.context/notebooks-venv/bin/python" \
+  quarto render docs/benchmarks/lmm.qmd
 ```
 
-R requires lme4 as a development package. Use matching PHP tools and `.so` on
-Linux. For a quick check preserving the published report, add
-`--cases 1000:3 --repeats 2 --output .context/lmm-smoke.json`.
-Numerical failures abort before publication. Ordinary renders read saved results
-and do not rerun these timings. See the [contract](../reference-models.qmd#gaussian-random-intercept-mixed-model)
+R needs lme4. Set matching `PHP` and `PHP_CONFIG`, and use `.so` on Linux. For a quick check that leaves the published report unchanged, add `--cases 1000:3 --repeats 2 --output .context/lmm-smoke.json`. A numerical failure aborts the run without writing results. See the [contract](../reference-models.qmd#gaussian-random-intercept-mixed-model)
 for model and inference limits.

@@ -3,7 +3,7 @@ title: "Binomial mixed models: likelihood, latent effects and integration"
 jupyter: python3
 ---
 
-We now model a binary or grouped-binomial outcome with a Gaussian random intercept.
+This walkthrough models a binary or grouped-binomial outcome with a Gaussian random intercept.
 The outcome distribution changes; the group-effect distribution remains Gaussian.
 This walkthrough uses the published cattle-disease **cbpp** data from lme4, with
 56 herd/period records across 15 herds. Period one is the baseline.

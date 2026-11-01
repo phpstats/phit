@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -645,13 +646,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#distribution-and-statistical-utility-compatibility" id="toc-distribution-and-statistical-utility-compatibility" class="nav-link active" data-scroll-target="#distribution-and-statistical-utility-compatibility">Distribution and statistical utility compatibility</a></li>
-  <li><a href="#implemented-and-verified" id="toc-implemented-and-verified" class="nav-link" data-scroll-target="#implemented-and-verified">Implemented and verified</a></li>
-  <li><a href="#optimizers-runtime-versus-reference" id="toc-optimizers-runtime-versus-reference" class="nav-link" data-scroll-target="#optimizers-runtime-versus-reference">Optimizers: runtime versus reference</a></li>
-  <li><a href="#evidence-and-tolerance-policy" id="toc-evidence-and-tolerance-policy" class="nav-link" data-scroll-target="#evidence-and-tolerance-policy">Evidence and tolerance policy</a></li>
-  <li><a href="#remaining-compatibility-work" id="toc-remaining-compatibility-work" class="nav-link" data-scroll-target="#remaining-compatibility-work">Remaining compatibility work</a></li>
+  <li><a href="#supported" id="toc-supported" class="nav-link active" data-scroll-target="#supported">Supported</a></li>
+  <li><a href="#optimizers" id="toc-optimizers" class="nav-link" data-scroll-target="#optimizers">Optimizers</a></li>
+  <li><a href="#differences-from-r" id="toc-differences-from-r" class="nav-link" data-scroll-target="#differences-from-r">Differences from R</a>
+  <ul class="collapse">
+  <li><a href="#glm-covariance" id="toc-glm-covariance" class="nav-link" data-scroll-target="#glm-covariance">GLM covariance</a></li>
+  <li><a href="#glmer-conditional-modes" id="toc-glmer-conditional-modes" class="nav-link" data-scroll-target="#glmer-conditional-modes">glmer conditional modes</a></li>
+  </ul></li>
+  <li><a href="#not-supported" id="toc-not-supported" class="nav-link" data-scroll-target="#not-supported">Not supported</a></li>
+  <li><a href="#evidence-and-tolerance-policy" id="toc-evidence-and-tolerance-policy" class="nav-link" data-scroll-target="#evidence-and-tolerance-policy">Evidence and tolerances</a></li>
   <li><a href="#reproduce" id="toc-reproduce" class="nav-link" data-scroll-target="#reproduce">Reproduce</a></li>
-  <li><a href="#binomial-mixed-model-evidence" id="toc-binomial-mixed-model-evidence" class="nav-link" data-scroll-target="#binomial-mixed-model-evidence">Binomial mixed-model evidence</a></li>
   </ul>
 </nav>
     </div>
@@ -677,65 +681,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The target is equivalent statistical results for equivalent supplied numerical designs in R and this extension. <strong>Full R/lme4 compatibility is a project goal, not a claim about the current release.</strong> This expansion adds tested functionality; the open items below remain part of the goal. Base R’s <code>stats</code> package supplies <code>lm()</code> and <code>glm()</code>; lme4 is an additional R package.</p>
-<p>The native API remains ordinary arrays. Formulas, factor encoding and R’s S3/S4 model objects are separate concerns; matching estimation does not require making PHP impersonate R. A helper can construct designs, proportions/trial counts and nested grouping identifiers without changing the estimator. See the <a href="./contracts.html">contracts</a> and <a href="./design-philosophy.html">design philosophy</a>.</p>
-<section id="distribution-and-statistical-utility-compatibility" class="level2">
-<h2 class="anchored" data-anchor-id="distribution-and-statistical-utility-compatibility">Distribution and statistical utility compatibility</h2>
-<p>The <a href="./distributions.html">v0.2 probability APIs</a> cover the planned distribution families with scalar/batch density, mass, tail and quantile operations. <a href="./descriptive.html">Descriptive statistics</a> follow sample variance/covariance and R type-7 quantiles, with explicit frequency/reliability/population weight definitions. R and independent 60-digit mpmath fixtures verify ordinary and extreme values; <a href="./verifications/distributions.html">the comparison record</a> documents intentional point-mass/endpoint differences, R inaccuracies and SciPy peer discrepancies. This numerical coverage does not implement R recycling, coercion, vector names or formulas. Seeded sampling uses <a href="./rng.html">local ChaCha20 state</a>; its sequences are independent of R’s RNG algorithms/state. Existing model paths and their behavior remain unchanged; the estimator reuse experiment is recorded in the <a href="./v0.2.html">v0.2 assessment</a>.</p>
-</section>
-<section id="implemented-and-verified" class="level2">
-<h2 class="anchored" data-anchor-id="implemented-and-verified">Implemented and verified</h2>
+<p>phit aims to give the same statistical results as R and lme4 for the same data and model. This page lists what phit reproduces, where its results or conventions differ, and what it does not support. Agreement is established on the tested cases listed under <a href="#evidence-and-tolerance-policy">Evidence and tolerances</a>, not for every possible input. Full R/lme4 compatibility is a goal, not a claim about the current release.</p>
+<p>Base R’s <code>stats</code> package supplies <code>lm()</code> and <code>glm()</code>. lme4 is a separate R package.</p>
+<section id="supported" class="level2">
+<h2 class="anchored" data-anchor-id="supported">Supported</h2>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
 <thead>
 <tr class="header">
-<th>Estimator</th>
-<th>Added numerical capabilities</th>
-<th>Reference</th>
+<th>R</th>
+<th>phit</th>
+<th>Scope</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>OLS</td>
-<td>Positive prior weights; additive offsets; weighted Gaussian likelihood and weighted R-squared</td>
-<td>R <code>lm()</code></td>
+<td><code>lm()</code></td>
+<td><code>fit_ols()</code>, <code>fit_ols_matrix()</code></td>
+<td>Positive prior weights, offsets, weighted Gaussian likelihood, and weighted R-squared</td>
 </tr>
 <tr class="even">
-<td>Logistic</td>
-<td>Integer trial weights; grouped-binomial proportions; additive offsets; binomial likelihood constant and deviance</td>
-<td>R <code>glm(binomial("logit"))</code></td>
+<td><code>glm(binomial("logit"))</code></td>
+<td><code>fit_generalized_linear(family: 'binomial')</code>, <code>fit_logistic_matrix()</code></td>
+<td>Binary responses, grouped proportions with integer trial weights, offsets</td>
 </tr>
 <tr class="odd">
-<td>Probit</td>
-<td>Integer trial weights; grouped-binomial proportions; additive offsets; expected-information covariance</td>
-<td>R <code>glm(binomial("probit"))</code></td>
+<td><code>glm(binomial("probit"))</code></td>
+<td><code>link: 'probit'</code>, <code>fit_probit_matrix()</code></td>
+<td>As logit, with expected-information covariance</td>
 </tr>
 <tr class="even">
-<td>Poisson</td>
-<td>Positive prior weights; offsets (including log exposure); weighted likelihood and deviance</td>
-<td>R <code>glm(poisson("log"))</code></td>
+<td><code>glm(poisson("log"))</code></td>
+<td><code>family: 'poisson'</code>, <code>fit_poisson_matrix()</code></td>
+<td>Positive prior weights and offsets, including log exposure</td>
 </tr>
 <tr class="odd">
-<td>Binomial random intercept</td>
-<td>ML; trial counts and offsets; Laplace/2..61-node adaptive quadrature; conditional modes and their conditional variances; joint observed-information inference</td>
-<td>R <code>glmer(binomial)</code> plus independent SciPy integration</td>
+<td><code>lmer()</code></td>
+<td><code>fit_mixed_gaussian()</code>, <code>fit_mixed_gaussian_matrix()</code></td>
+<td>ML and REML; correlated or uncorrelated random slopes; several terms; crossed and nested groups; weights; offsets; starting values; singular boundaries; conditional covariances of the random effects (<code>ranef(condVar = TRUE)</code>)</td>
 </tr>
 <tr class="even">
-<td>Gaussian mixed</td>
-<td>ML/REML; correlated or independent random slopes; multiple random terms; crossed/nested groups; positive prior weights; offsets; starting values; singular covariance boundaries; conditional covariances of the random effects (<code>ranef(condVar = TRUE)</code>)</td>
-<td>R <code>lmer()</code> with all four optimizer wrappers</td>
+<td><code>glmer(binomial)</code> with one <code>(1 | g)</code></td>
+<td><code>fit_mixed_logistic()</code>, <code>fit_mixed_logistic_matrix()</code></td>
+<td>ML by Laplace or adaptive quadrature with 2 to 61 nodes (<code>nAGQ</code>); trial counts; offsets; conditional modes and their variances</td>
+</tr>
+<tr class="odd">
+<td><code>model.matrix()</code>, <code>predict()</code></td>
+<td><code>model_matrix()</code>, <code>predict()</code></td>
+<td>The formula grammar, transforms, factors, and contrasts in <a href="./formulas.html">Model formulas</a></td>
+</tr>
+<tr class="even">
+<td><code>dnorm()</code>, <code>pnorm()</code>, <code>qnorm()</code> and other families</td>
+<td><code>dist_*</code></td>
+<td>The families in <a href="./distributions.html">Probability distributions</a></td>
+</tr>
+<tr class="odd">
+<td><code>mean()</code>, <code>var()</code>, <code>sd()</code>, <code>cov()</code>, <code>cor()</code>, <code>quantile(type = 7)</code></td>
+<td><code>stat_*</code></td>
+<td>See <a href="./descriptive.html">Descriptive statistics</a></td>
+</tr>
+<tr class="even">
+<td><code>optimize()</code>, <code>uniroot()</code></td>
+<td><code>optimize()</code>, <code>uniroot()</code></td>
+<td>Bit-identical evaluation sequence; see <a href="./reference-utilities.html#one-dimensional-optimization-and-root-finding">the reference</a></td>
 </tr>
 </tbody>
 </table>
-<p>The new mixed call is <code>fit_mixed_gaussian_matrix()</code>. The existing <code>fit_mixed_gaussian_intercept_matrix()</code> remains the optimized one-group random-intercept ML call used by the million-row benchmarks. The general implementation caches a QR square-root summary and then solves penalized least squares; it does not allocate an observation covariance matrix. Single and nested grouping terms split into independent blocks, one per group or outermost group, so their cost is linear in the rows and the groups. Crossed terms use a dense summary with explicit limits: at most 512 random coefficients and 50,000,000 entries in the initial augmented matrix. lme4 uses a sparse Cholesky factor for every design, including crossed ones.</p>
-<p>An intercept-only OLS fit now reports R-squared and adjusted R-squared as zero, matching <code>summary.lm()</code>. Other undefined statistics retain their documented NAN/INF representation. This is a documented change to the previous intercept-only zero-response R-squared convention.</p>
+<p><code>fit_mixed_gaussian_intercept_matrix()</code> is a faster ML path for one random intercept.</p>
 </section>
-<section id="optimizers-runtime-versus-reference" class="level2">
-<h2 class="anchored" data-anchor-id="optimizers-runtime-versus-reference">Optimizers: runtime versus reference</h2>
+<section id="optimizers" class="level2">
+<h2 class="anchored" data-anchor-id="optimizers">Optimizers</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -744,44 +758,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </colgroup>
 <thead>
 <tr class="header">
-<th>Method or wrapper</th>
-<th>Available in our runtime?</th>
-<th>Included in R comparisons?</th>
+<th>Method or lme4 wrapper</th>
+<th>In phit</th>
+<th>Compared with R</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>BOBYQA</td>
-<td>Yes: pure Rust <code>bobyqa</code> 0.3.2, PRIMA port</td>
-<td>Yes: lme4’s <code>bobyqa</code>/minqa</td>
+<td>Yes: Rust <code>bobyqa</code> 0.3.2, a PRIMA port</td>
+<td>Yes: lme4’s <code>bobyqa</code> (minqa)</td>
 </tr>
 <tr class="even">
 <td>Nelder–Mead</td>
-<td>Yes: pure Rust <code>argmin</code> 0.11.0, <code>optimizer: 'nelder_mead'</code></td>
+<td>Yes: Rust <code>argmin</code> 0.11.0, <code>optimizer: 'nelder_mead'</code></td>
 <td>Yes: lme4’s <code>Nelder_Mead</code></td>
 </tr>
 <tr class="odd">
 <td><code>nloptwrap</code></td>
-<td>No NLopt backend yet</td>
-<td>Yes: the actual lme4 wrapper</td>
+<td>No</td>
+<td>Yes</td>
 </tr>
 <tr class="even">
 <td><code>nlminbwrap</code></td>
-<td>No PORT/nlminb backend yet</td>
-<td>Yes: the actual lme4 wrapper</td>
+<td>No</td>
+<td>Yes</td>
 </tr>
 </tbody>
 </table>
-<p>BOBYQA implementations can share an algorithm without producing identical optimization trajectories. Our Nelder–Mead bounds and stopping rules also differ from lme4’s implementation. We compare final estimates and likelihoods and name the runtime implementation in each result. Unsupported R wrapper names are rejected; they do not silently select another optimizer. The existing fast random-intercept call keeps its specialized scalar profile search.</p>
-<p>The <a href="https://lme4.github.io/lme4/reference/lmerControl.html">lme4 control documentation</a> and <a href="https://lme4.github.io/lme4/reference/nloptwrap.html">wrapper documentation</a> describe their controls. Supporting all those controls and backends is still open.</p>
+<ul>
+<li>BOBYQA implementations can share an algorithm and still take different paths. phit’s Nelder–Mead bounds and stopping rules also differ from lme4’s.</li>
+<li>Comparisons use the final estimates and likelihoods. Each result names the optimizer implementation it used.</li>
+<li>An unsupported wrapper name is rejected. phit does not substitute another optimizer.</li>
+</ul>
 </section>
-<section id="evidence-and-tolerance-policy" class="level2">
-<h2 class="anchored" data-anchor-id="evidence-and-tolerance-policy">Evidence and tolerance policy</h2>
-<p>The <a href="./notebooks/r-compatibility.html">executed comparison notebook</a> fits 12 fixed-model cases and 15 mixed-model cases, including the published sleepstudy random-slope model under both ML and REML, plus three- and four-grouping-level nested designs. It checks coefficients, covariance, inference, every observation’s fitted/residual values, random effects/covariances, scale, likelihood and information criteria. Both native optimizers are compared against all four R wrappers. sleepstudy ML/REML also have independent statsmodels fits. Older fixtures and the four published random-intercept datasets remain tested.</p>
-<p>Fixed-model comparisons use <code>abs_error &lt;= 1e-7 + 1e-6 * abs(reference)</code>. Native BOBYQA versus R BOBYQA uses <code>1e-5 + 1e-5 * abs(reference)</code> for mixed estimates; cross-optimizer comparisons use <code>1e-3 + 3e-4 * abs(reference)</code>. <strong>All mixed likelihood/AIC/BIC comparisons</strong> use the stricter <code>5e-6 + 1e-9 * abs(reference)</code>. Shapes, sample metadata, grouping order, parameter counts and singular flags are exact where compared. The notebook reports actual errors, not only pass/fail.</p>
-<p>GLM covariances are the inverse Fisher information at the final coefficients. R’s <code>vcov()</code> and <code>summary()</code> for a <code>glm</code> use the working weights of the last IRLS iteration, which were computed from the coefficients one step before the final update. Newton steps converge quadratically, so R’s coefficients are already at the maximum to many digits, but its weights lag one step behind. Its covariance therefore differs from the information at its own coefficients by about the size of that last step. This is not a difference in the convergence tolerance, in Fisher versus observed information (they are equal for the canonical logit and log links), or in dispersion (fixed at one for the binomial and Poisson families).</p>
-<p>For <code>am ~ wt + hp</code> on <code>mtcars</code>, the coefficients agree to 12 digits. R’s last step changed them by 3.4e-8 relative. The variance of the <code>wt</code> coefficient is 9.41676694948 from <code>vcov()</code> and 9.41676794579 from phit, 1.1e-7 relative. Recomputing the information in R at <code>coef(fit)</code>, or refitting with <code>start = coef(fit)</code>, gives 9.41676794579. On designs near separation the last step is larger and the two can differ by about 1e-4 relative. phit’s R fixtures restart <code>glm()</code> from its own solution until the coefficients stop changing, so they compare against the information at the converged coefficients.</p>
-<p><code>fit_mixed_logistic()</code> evaluates the Laplace approximation with each group’s conditional mode solved to convergence. lme4’s <code>glmer()</code> finds the modes by penalized iteratively reweighted least squares (PIRLS) and stops at <code>glmerControl(tolPwrss = 1e-7)</code> by default. At that tolerance its objective is perturbed enough to move the estimates. For <code>cbind(incidence, size - incidence) ~ period + (1 | herd)</code> on lme4’s <code>cbpp</code> data, with BOBYQA at <code>rhoend = 1e-12</code>:</p>
+<section id="differences-from-r" class="level2">
+<h2 class="anchored" data-anchor-id="differences-from-r">Differences from R</h2>
+<p>These are the differences in results and inference. <a href="./formulas.html#differences-from-r">Model formulas</a> lists the differences in formula handling.</p>
+<ul>
+<li><strong>GLM covariance.</strong> phit reports the inverse information at the final coefficients. See <a href="#glm-covariance">GLM covariance</a>.</li>
+<li><strong>glmer Laplace modes.</strong> phit solves each conditional mode to convergence. lme4’s default <code>tolPwrss</code> stops earlier. See <a href="#glmer-conditional-modes">glmer conditional modes</a>.</li>
+<li><strong>Mixed-model inference.</strong> phit reports Wald z tests and p-values for fixed effects. lme4’s Gaussian summary reports t values without p-values. phit has no degrees-of-freedom correction (Satterthwaite or Kenward–Roger).</li>
+<li><strong>Group and term order.</strong> Groups follow first appearance after deletion, and random terms keep formula order. lme4 sorts levels and orders terms by their number of levels. Estimates do not depend on the order.</li>
+<li><strong>Rank deficiency.</strong> An aliased fixed column raises code 1004. R reports <code>NA</code> coefficients.</li>
+<li><strong>Zero weights and zero-column designs</strong> are rejected. R accepts them.</li>
+<li><strong>Nonconvergence</strong> raises an exception. R can return a fit object with a warning.</li>
+<li><strong>Sparse versus dense computation.</strong> lme4 uses a sparse Cholesky factor for every design. phit splits single and nested grouping terms into independent blocks, but crossed terms use a dense summary limited to 512 random coefficients and 50,000,000 entries in the initial augmented matrix.</li>
+<li><strong>Random numbers.</strong> Seeded sampling uses <a href="./rng.html">local ChaCha20 state</a>, so sequences differ from R’s generators.</li>
+<li><strong>Vector semantics.</strong> Distribution and descriptive functions do not implement R’s recycling, coercion, or vector names.</li>
+</ul>
+<section id="glm-covariance" class="level3">
+<h3 class="anchored" data-anchor-id="glm-covariance">GLM covariance</h3>
+<p>GLM covariances in phit are the inverse Fisher information at the final coefficients. R’s <code>vcov()</code> and <code>summary()</code> for a <code>glm</code> use the working weights of the last IRLS iteration, which come from the coefficients one step before the final update. R’s coefficients are already at the maximum to many digits, but its covariance differs from the information at those coefficients by about the size of the last step. The difference does not come from the convergence tolerance, from Fisher versus observed information (equal for the canonical logit and log links), or from dispersion (fixed at one).</p>
+<p>For <code>am ~ wt + hp</code> on <code>mtcars</code>:</p>
+<ul>
+<li>The coefficients agree to 12 digits. R’s last step changed them by 3.4e-8 relative.</li>
+<li>The variance of the <code>wt</code> coefficient is 9.41676694948 from <code>vcov()</code> and 9.41676794579 from phit, 1.1e-7 relative.</li>
+<li>Recomputing the information in R at <code>coef(fit)</code>, or refitting with <code>start = coef(fit)</code>, gives 9.41676794579.</li>
+</ul>
+<p>Near separation the last step is larger, and the two can differ by about 1e-4 relative. phit’s R fixtures restart <code>glm()</code> from its own solution until the coefficients stop changing.</p>
+</section>
+<section id="glmer-conditional-modes" class="level3">
+<h3 class="anchored" data-anchor-id="glmer-conditional-modes">glmer conditional modes</h3>
+<p><code>fit_mixed_logistic()</code> evaluates the Laplace approximation with each group’s conditional mode solved to convergence. lme4’s <code>glmer()</code> finds the modes by penalized iteratively reweighted least squares (PIRLS) and stops at <code>glmerControl(tolPwrss = 1e-7)</code> by default, which perturbs its objective enough to move the estimates. For <code>cbind(incidence, size - incidence) ~ period + (1 | herd)</code> on lme4’s <code>cbpp</code> data, with BOBYQA at <code>rhoend = 1e-12</code>:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -818,40 +857,110 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>At the default, lme4 converges on its own objective, and a tighter <code>rhoend</code> or another optimizer does not change the result. The Laplace approximation written independently in R, with exact conditional modes, is maximized at phit’s estimates. At lme4’s default estimates, it gives -92.0262862 where lme4 reports -92.0265664. phit’s lme4 fixtures, including this model, therefore fit <code>glmer()</code> with <code>tolPwrss = 1e-12</code>.</p>
-<p>Different optimizers can stop at slightly different variance estimates on a flat likelihood. The cross-optimizer tolerance accommodates that observed spread, particularly covariance entries and small residuals on sleepstudy. It does not replace the stricter BOBYQA check or likelihood check.</p>
-<p>The R fixtures record each wrapper’s controls and warnings. They use tightened optimization controls and <code>boundary.tol=1e-3</code>, with lme4 checking whether snapping near-boundary Cholesky parameters to zero improves the objective. At the default boundary tolerance, one singular REML case was left just above zero by nloptwrap and classified nonsingular. Tightening nlminb excessively also produced singular convergence warnings. <strong>These fixtures validate explicit controls, not identity under every package default.</strong> The saved reference runs have convergence code zero and no warnings. The multi-level BOBYQA references also use a local R-only restart (rhobeg=0.001, rhoend=1e-9) to improve variance-component precision on flat profiles; no native estimates are used to seed R. Published historical benchmark reports retain their original model/optimizer definitions; their timings do not describe the new general fitter.</p>
-</section>
-<section id="remaining-compatibility-work" class="level2">
-<h2 class="anchored" data-anchor-id="remaining-compatibility-work">Remaining compatibility work</h2>
-<p>The following items are not implemented and are not covered by a blanket parity claim:</p>
 <ul>
-<li>Native NLopt and PORT/nlminb backends, full optimizer controls, restart policies, gradient/Hessian convergence diagnostics, and an <code>allFit</code>-style runtime audit.</li>
-<li>Sparse general mixed-model computation and large-design verification.</li>
-<li>R-style handling of zero weights, aliased/rank-deficient fixed columns, zero-column designs, and fit objects retained after nonconvergence. We currently reject these or fail with an explicit error rather than returning unreliable inference.</li>
-<li>Configurable confidence levels; profile and bootstrap intervals; likelihood-ratio comparisons and fixed-effect degrees-of-freedom corrections. Mixed Wald p-values are an explicit extension; lme4’s default Gaussian summary does not supply them.</li>
-<li>Simulation on new observations, prediction standard errors and intervals for mixed models, residual diagnostics, leverage/influence, and model-object methods such as update/refit/anova. (<code>predict()</code> covers point predictions, standard errors and <code>lm</code> intervals for new data, as <a href="./formulas.html#prediction-predict">described with the formulas</a>; random-effect conditional variances are reported by the mixed fits.)</li>
-<li>Formula parsing, contrasts and factor encoding, subset/na.exclude semantics, multivariate <code>lm</code> responses, fractional binomial weights and additional GLM families/links.</li>
-<li>Broader generalized/nonlinear mixed models: binomial random slopes/multiple terms, mixed Poisson/probit/negative-binomial likelihoods, <code>nlmer</code>, and related methods. The new binomial random-intercept <code>glmer</code> counterpart is implemented separately, with Laplace/adaptive quadrature; it does not yet support the general Gaussian random-term designs.</li>
+<li>At the default, a tighter <code>rhoend</code> or another optimizer does not change lme4’s result.</li>
+<li>A Laplace approximation written independently in R, with exact conditional modes, is maximized at phit’s estimates. At lme4’s default estimates it gives -92.0262862, where lme4 reports -92.0265664.</li>
+<li>phit’s lme4 fixtures therefore fit <code>glmer()</code> with <code>tolPwrss = 1e-12</code>.</li>
 </ul>
-<p>Each addition needs an input/output contract, a mathematical walkthrough, saved R reference cases and PHP integration checks. This document is the compatibility ledger: move an item to implemented only when that evidence exists.</p>
+</section>
+</section>
+<section id="not-supported" class="level2">
+<h2 class="anchored" data-anchor-id="not-supported">Not supported</h2>
+<p>Each item below is outside the current parity claim.</p>
+<p><strong>Formulas</strong></p>
+<ul>
+<li><code>subset</code> and <code>na.exclude</code> arguments. Rows are deleted listwise, as <code>na.omit</code> does; see <a href="./missing-data.html">Missing values</a>.</li>
+<li>Contrasts other than treatment and <code>contr.poly</code>, and a <code>contrasts</code> argument.</li>
+<li>Functions outside the <a href="./formulas.html#inline-transforms">supported transforms</a>, such as <code>ns()</code>, <code>bs()</code>, <code>scale()</code>, and <code>C()</code>. They raise code 1007.</li>
+<li>Multivariate <code>lm</code> responses, such as <code>cbind(y1, y2) ~ x</code>.</li>
+</ul>
+<p><strong>Fixed-effect models</strong></p>
+<ul>
+<li>GLM families and links other than Gaussian identity, binomial logit and probit, and Poisson log.</li>
+<li>Fractional binomial weights.</li>
+<li>Configurable confidence levels for coefficient intervals, profile and bootstrap intervals, and likelihood-ratio tests.</li>
+<li>Residual diagnostics, leverage, and influence measures.</li>
+<li>Model-object methods such as <code>update()</code>, <code>anova()</code>, and <code>simulate()</code>.</li>
+</ul>
+<p><strong>Mixed models</strong></p>
+<ul>
+<li>Binomial random slopes or several random terms, and mixed Poisson, probit, or negative-binomial likelihoods. <code>fit_mixed_logistic()</code> supports one random intercept.</li>
+<li><code>nlmer()</code> and other nonlinear mixed models.</li>
+<li>Sparse computation for crossed designs beyond the dense limits.</li>
+<li>Native NLopt and PORT (<code>nlminb</code>) backends, the full lme4 optimizer controls, restart policies, gradient and Hessian convergence checks, and an <code>allFit()</code>-style audit.</li>
+<li>Prediction standard errors and intervals, and simulation of new observations.</li>
+<li>Fixed-effect degrees-of-freedom corrections, and intervals for variance components or random effects.</li>
+</ul>
+<p><code>predict()</code> covers point predictions, standard errors, and <code>lm</code> intervals for fixed-effect models, as <a href="./formulas.html#prediction-predict">described with the formulas</a>. Mixed fits report the conditional variances of the random effects.</p>
+<p>An item moves to Supported only with an input and output contract, a mathematical walkthrough, saved R reference cases, and PHP integration tests.</p>
+</section>
+<section id="evidence-and-tolerance-policy" class="level2">
+<h2 class="anchored" data-anchor-id="evidence-and-tolerance-policy">Evidence and tolerances</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Evidence</th>
+<th>Cases</th>
+<th>Tolerance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="./notebooks/r-compatibility.html">R compatibility notebook</a>: fixed models</td>
+<td>12, with and without intercepts</td>
+<td><code>1e-7 + 1e-6 * abs(reference)</code></td>
+</tr>
+<tr class="even">
+<td>Same notebook: Gaussian mixed models, both native optimizers against all four lme4 wrappers</td>
+<td>15, including sleepstudy under ML and REML, and three- and four-level nesting</td>
+<td>Estimates against R BOBYQA: <code>1e-5 + 1e-5 * abs(reference)</code>. Across optimizers: <code>1e-3 + 3e-4 * abs(reference)</code>. Likelihood, AIC, and BIC: <code>5e-6 + 1e-9 * abs(reference)</code></td>
+</tr>
+<tr class="odd">
+<td><a href="./notebooks/logistic-mixed-verification.html">Binomial mixed-model verification</a></td>
+<td>28 R comparisons, plus independent likelihood checks, QUADPACK error measurements, and a statsmodels GLM boundary case</td>
+<td>Per quantity, in the notebook</td>
+</tr>
+<tr class="even">
+<td><a href="./formulas.html#verification">Model formulas</a></td>
+<td>62 <code>model.matrix()</code>, <code>lm()</code>, and <code>glm()</code> references, 10 lme4 references, and 25 <code>predict()</code> references</td>
+<td>Matrix-suite tolerances</td>
+</tr>
+<tr class="odd">
+<td><a href="./verifications/distributions.html">Distribution verification</a></td>
+<td>R and 60-digit mpmath references</td>
+<td>Per operation</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The notebook compares coefficients, covariance, inference, every fitted value and residual, random effects and their covariances, scale, likelihood, and information criteria. It reports the actual errors.</li>
+<li>Shapes, sample metadata, grouping order, parameter counts, and singular flags must match exactly.</li>
+<li>The cross-optimizer tolerance allows for the spread of variance estimates on a flat likelihood, mostly in covariance entries and small residuals on sleepstudy. It does not replace the BOBYQA or likelihood checks.</li>
+<li>sleepstudy ML and REML are also compared with statsmodels.</li>
+<li>The R GLMM references use BOBYQA only. The four-optimizer audit covers Gaussian models.</li>
+</ul>
+<p>The R fixtures record each wrapper’s controls and warnings:</p>
+<ul>
+<li>They use tightened optimizer controls and <code>boundary.tol = 1e-3</code>. At the default boundary tolerance, <code>nloptwrap</code> left one singular REML case just above zero and classified it as nonsingular. Tightening <code>nlminb</code> too far produced singular-convergence warnings.</li>
+<li>Every saved reference run has convergence code zero and no warnings.</li>
+<li>The multi-level BOBYQA references restart R from its own first fit with <code>rhobeg = 0.001</code> and <code>rhoend = 1e-9</code>. No phit estimate seeds an R fit.</li>
+</ul>
+<p>These fixtures validate explicit controls, not agreement under every package default.</p>
 </section>
 <section id="reproduce" class="level2">
 <h2 class="anchored" data-anchor-id="reproduce">Reproduce</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> test <span class="at">--workspace</span> <span class="at">--locked</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> phit <span class="at">--release</span> <span class="at">--locked</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$PWD</span><span class="st">/target/release/libphit.dylib"</span> tests/r-compatibility.php</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$PWD</span><span class="st">/target/release/libphit.dylib"</span> tests/lmm-expanded.php</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">PHP</span><span class="op">=</span>/opt/homebrew/bin/php <span class="ex">.context/notebooks-venv/bin/python</span> docs/verifications/compare_r_compatibility.py</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Refresh expected R values explicitly (R and lme4 are development dependencies):</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> tests/generate-r-compatibility-fixtures.R</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> tests/generate-lmm-expanded-fixtures.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Use <code>.so</code> on Linux and select matching PHP/php-config as described in <a href="./development.html">development</a>. Normal Rust/PHP fixture tests need no installed R. The live Python comparison requires the pinned notebook environment.</p>
-</section>
-<section id="binomial-mixed-model-evidence" class="level2">
-<h2 class="anchored" data-anchor-id="binomial-mixed-model-evidence">Binomial mixed-model evidence</h2>
-<p>The <a href="./notebooks/logistic-mixed-verification.html">new executed verification</a> adds 28 R/PHP binomial random-intercept comparisons, independent normalized-likelihood checks, QUADPACK approximation-error measurements, an independently optimized cbpp marginal likelihood and statsmodels GLM boundary reduction. R GLMM references currently use BOBYQA; this does not extend the four-optimizer Gaussian audit into a claim about all GLMM optimizer controls.</p>
-<p>The <a href="./v0.1.html">v0.1 pass</a> stabilizes this tested subset; full R compatibility is not a v0.1 objective or promise. This ledger describes coverage, not a release guarantee.</p>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$PWD</span><span class="st">/target/release/libphit.dylib"</span> <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    tests/r-compatibility.php</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$PWD</span><span class="st">/target/release/libphit.dylib"</span> <span class="dt">\</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    tests/lmm-expanded.php</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="va">PHP</span><span class="op">=</span>/opt/homebrew/bin/php <span class="ex">.context/notebooks-venv/bin/python</span> <span class="dt">\</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    docs/verifications/compare_r_compatibility.py</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Refresh the R references (R and lme4 are development dependencies):</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> tests/generate-r-compatibility-fixtures.R</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> tests/generate-lmm-expanded-fixtures.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Use <code>.so</code> on Linux and the matching PHP and php-config, as described in <a href="./development.html">Development</a>. The Rust and PHP fixture tests do not need R. The live Python comparison needs the pinned notebook environment.</p>
 
 
 </section>

@@ -2,52 +2,86 @@
 title: "Model formulas"
 ---
 
-The formula functions accept an R model formula and a data set of named columns.
-They build R's model matrix in Rust and call the same estimation cores as the
-matrix functions. Results keep each matrix function's complete contract and add
-coefficient names.
+The formula functions take an R model formula and a data set of named columns. They build R's model matrix and fit it with the same estimators as the [matrix functions](reference-models.qmd). Each result has its matrix function's complete contract plus coefficient names.
 
 ```php
-Phit\model_matrix(string $formula, array|object $data, string $missing = 'drop'): array;
-Phit\fit_ols(string $formula, array|object $data, string $missing = 'drop', array|string|null $weights = null): array;
-Phit\fit_generalized_linear(string $formula, array|object $data, string $family = 'gaussian', string $link = '',
-    string $missing = 'drop', array|string|null $weights = null): array;
-Phit\fit_mixed_gaussian(string $formula, array|object $data, bool $reml = true, string $missing = 'drop',
-    array|string|null $weights = null, ?array $start = null, int $maxEvaluations = 20000,
-    float $tolerance = 1e-7, string $optimizer = 'bobyqa', float $objectiveTolerance = 1e-12): array;
-Phit\fit_mixed_logistic(string $formula, array|object $data, string $missing = 'drop',
-    array|string|null $weights = null, int $quadraturePoints = 1, int $maxEvaluations = 20000,
-    float $tolerance = 1e-7): array;
+Phit\model_matrix(
+    string $formula,
+    array|object $data,
+    string $missing = 'drop',
+): array;
+Phit\fit_ols(
+    string $formula,
+    array|object $data,
+    string $missing = 'drop',
+    array|string|null $weights = null,
+): array;
+Phit\fit_generalized_linear(
+    string $formula,
+    array|object $data,
+    string $family = 'gaussian',
+    string $link = '',
+    string $missing = 'drop',
+    array|string|null $weights = null,
+): array;
+Phit\fit_mixed_gaussian(
+    string $formula,
+    array|object $data,
+    bool $reml = true,
+    string $missing = 'drop',
+    array|string|null $weights = null,
+    ?array $start = null,
+    int $maxEvaluations = 20000,
+    float $tolerance = 1e-7,
+    string $optimizer = 'bobyqa',
+    float $objectiveTolerance = 1e-12,
+): array;
+Phit\fit_mixed_logistic(
+    string $formula,
+    array|object $data,
+    string $missing = 'drop',
+    array|string|null $weights = null,
+    int $quadraturePoints = 1,
+    int $maxEvaluations = 20000,
+    float $tolerance = 1e-7,
+): array;
 ```
 
-PHP reflection reports `$data` and `$weights` as `mixed`. The generated stubs
-document the accepted types.
+PHP reflection reports `$data` and `$weights` as `mixed`. The stubs in `stubs/phit.php` document the accepted types.
 
 ## Example
 
 ```php
+use function Phit\fit_ols;
+
 $data = [
-    'rent' => [1879.25, 1805.03, 2022.29, 1267.85, 1509.24, 2240.10, 959.51, 2386.54],
-    'area' => [74.4, 57.4, 66.4, 49.1, 45.7, 92.4, 37.0, 93.9],
-    'district' => ['north', 'south', 'north', 'east', 'south', 'north', 'east', 'south'],
+    'rent' => [
+        1879.25, 1805.03, 2022.29, 1267.85,
+        1509.24, 2240.10, 959.51, 2386.54,
+    ],
+    'area' => [
+        74.4, 57.4, 66.4, 49.1,
+        45.7, 92.4, 37.0, 93.9,
+    ],
+    'district' => [
+        'north', 'south', 'north', 'east',
+        'south', 'north', 'east', 'south',
+    ],
 ];
 
-$fit = Phit\fit_ols('log(rent) ~ log(area) + district', $data);
-$fit['columns'];  // ['(Intercept)', 'log(area)', 'districtnorth', 'districtsouth']
-$fit['named'];    // ['(Intercept)' => ..., 'log(area)' => ..., ...]
-$fit['p_values']; // Aligned with columns, as in Phit\fit_ols_matrix.
-
-$model = Phit\fit_generalized_linear('passed ~ study_hours * practice_score', $learning, family: 'binomial', link: 'probit');
-$mixed = Phit\fit_mixed_gaussian('score ~ study_hours + prior_score + (1 | school)', $schools);
+$fit = fit_ols('log(rent) ~ log(area) + district', $data);
+echo implode(', ', $fit['columns']), "\n";
 ```
+
+```
+(Intercept), log(area), districtnorth, districtsouth
+```
+
+`columns` names the coefficients in order. `named` maps each name to its coefficient, and every list key, such as `p_values`, follows `columns`.
 
 ## Data
 
-`$data` is an associative array of columns, `name => list of values`. An object
-is also accepted. The extension calls its public `toModelData()` method, or
-`toColumns()` when the first method is absent, and uses the returned array.
-Exceptions thrown by those methods propagate unchanged. phibble's
-`DataFrame::toModelData()` returns this shape.
+`$data` is an associative array of columns, `name => list of values`. An object is also accepted: phit calls its public `toModelData()` method, or `toColumns()` when that is absent, and uses the returned array. Exceptions from those methods propagate unchanged. phibble's `DataFrame::toModelData()` returns this shape.
 
 Each column is one of the following.
 
@@ -61,9 +95,9 @@ Each column is one of the following.
   (bool). Levels keep the caller's order and the first level is the reference.
 - Dates arrive as numbers, for example days or seconds since the epoch.
 
-Every column must have the same length (code 1002). Only the columns a formula uses
-are type-checked. An unknown column, a malformed factor descriptor, or a referenced
-list-column or mixed-type column raises 1001. A list of row arrays raises 1001.
+- Every column must have the same length (code 1002).
+- Only the columns a formula uses are type-checked.
+- An unknown column, a malformed factor descriptor, a referenced list-column or mixed-type column, or a list of row arrays raises 1001.
 
 ## Formula syntax
 
@@ -127,17 +161,11 @@ columns for formulas such as `y ~ 0 + f`, `y ~ x:f`, `y ~ f:g`, and `y ~ f * g -
 
 ## Missing values and unused levels
 
-Listwise deletion uses only the variables that the formula references. These
-include the response, transforms, offsets, weights, grouping factors, and
-random-effect columns. Other columns may contain missing values. As in the matrix
-functions, `missing: 'drop'` removes incomplete rows with one `E_WARNING`, and
-`missing: 'raise'` raises 1001. `retained_rows` and `dropped_rows` are original
-zero-based positions.
-
-`model_matrix` keeps unused factor levels, as R's `model.matrix()` does,
-and their indicator columns are all zero. The fitting functions drop levels that
-are absent after deletion, as `lm()`, `glm()`, `lmer()`, and `glmer()` do through
-`drop.unused.levels = TRUE`. Character levels always come from the retained rows.
+- Listwise deletion uses only the variables the formula references: the response, transforms, offsets, weights, grouping factors, and random-effect columns. Other columns may contain missing values.
+- `missing: 'drop'` removes incomplete rows with one `E_WARNING`. `missing: 'raise'` raises 1001. [Missing values](missing-data.qmd) describes the warning and the row accounting.
+- `model_matrix` keeps unused factor levels, as R's `model.matrix()` does. Their indicator columns are all zero.
+- The fitting functions drop levels that are absent after deletion, as `lm()`, `glm()`, `lmer()`, and `glmer()` do through `drop.unused.levels = TRUE`.
+- Character levels always come from the retained rows.
 
 ## model_matrix
 
@@ -154,18 +182,21 @@ The result has these keys.
 | `random` | One entry per random-effect term: `label`, `group`, `columns`, `correlated`, `z`, `groups`. |
 | `n_input`, `n_observations`, `n_dropped`, `retained_rows`, `dropped_rows` | Deletion accounting. |
 
-`x` includes the intercept column. Pass it to a matrix function with
-`intercept: false`. Each `random` entry has the shape that `fit_mixed_gaussian_matrix` expects:
+`x` includes the intercept column, so pass it to a matrix function with `intercept: false`. Each `random` entry has the shape that `fit_mixed_gaussian_matrix` expects:
 
 ```php
 $mm = Phit\model_matrix('y ~ x + (1 + x | g)', $data);
-$fit = Phit\fit_mixed_gaussian_matrix(x: $mm['x'], y: $mm['y'], random: $mm['random'], intercept: false);
+$fit = Phit\fit_mixed_gaussian_matrix(
+    x: $mm['x'],
+    y: $mm['y'],
+    random: $mm['random'],
+    intercept: false,
+);
 ```
 
 ## fit_ols and fit_generalized_linear
 
-`fit_ols` calls the `fit_ols_matrix` core and returns its full result. `fit_generalized_linear`
-supports four family and link combinations. An empty `link` selects the canonical link.
+`fit_ols` returns the full `fit_ols_matrix` result. `fit_generalized_linear` supports four family and link combinations. An empty `link` selects the canonical link.
 
 | Family | Links | Core |
 | --- | --- | --- |
@@ -173,42 +204,43 @@ supports four family and link combinations. An empty `link` selects the canonica
 | `binomial` | `logit`, `probit` | `fit_logistic_matrix`, `fit_probit_matrix` |
 | `poisson` | `log` | `fit_poisson_matrix` |
 
-Other families or links raise 1007. A binomial response can be 0/1 numbers,
-booleans, a factor or character column (the first level is failure and all other
-levels are success, as in R), proportions with integer trial weights, or
-`cbind(successes, failures)`.
+- Other families or links raise 1007.
+- A binomial response can be 0/1 numbers, booleans, a factor or character column (the first level is failure and every other level is success, as in R), proportions with integer trial weights, or `cbind(successes, failures)`.
+- `$weights` is an array aligned with the original rows, or the name of a numeric column. Weights must be positive, and a missing weight deletes its row.
+- Random-effect terms raise 1007 and name `fit_mixed_gaussian` and `fit_mixed_gaussian_matrix` as the alternatives.
 
-`$weights` is either an array aligned with the original rows or the name of a
-numeric column. Missing weights delete their rows. Weights must be positive.
+Every formula fit adds these keys to the matrix result:
 
-Formula fits add these keys to the matrix result: `formula`, `response`,
-`columns` (aligned with `coefficients`), `terms`, `assign`, `intercept`, and
-`named` (`column => coefficient`), and `predvars`. `predvars` holds the state that
-prediction must reuse: each factor's levels after deletion and each orthogonal
-`poly()` basis's recurrence coefficients (R's `xlevels` and `predvars`).
-`fit_generalized_linear` also returns `family` and `link`.
-All list keys of the matrix functions are unchanged.
-
-Random-effect terms in `fit_ols` or `fit_generalized_linear` raise 1007 and name
-`fit_mixed_gaussian` and `fit_mixed_gaussian_matrix` as the alternatives.
+| Key | Contents |
+| --- | --- |
+| `formula`, `response` | The deparsed formula and response expression |
+| `columns` | Coefficient names, aligned with `coefficients` |
+| `named` | `column => coefficient` |
+| `terms`, `assign`, `intercept` | R term labels, R's `assign` attribute, and whether an intercept is present |
+| `predvars` | State that prediction reuses: each factor's levels after deletion and each orthogonal `poly()` basis (R's `xlevels` and `predvars`) |
+| `family`, `link` | `fit_generalized_linear` and `fit_mixed_logistic` only |
 
 ## fit_mixed_gaussian and fit_mixed_logistic
 
-`fit_mixed_gaussian` maps lme4-style bars onto `fit_mixed_gaussian_matrix`. REML is the default, as in
-`lme4::lmer()`. Supported bars include `(1 | g)`, `(x | g)`, `(0 + x | g)`,
-`(x || g)` (diagonal covariance), several terms such as `(1 | g1) + (1 | g2)`,
-interaction groups `(1 | g1:g2)`, and nesting `(1 | g1/g2)`. Nesting expands to
-`(1 | g1) + (1 | g2:g1)`, with lme4's group name and `g2level:g1level` labels.
-The result is the `fit_mixed_gaussian_matrix` contract. Each `random` entry also has `label`,
-`group`, `columns`, and `correlated`. Its `effects_cond_var` lists one k×k
-conditional covariance per group, in `group_labels` order. These are the blocks that
-`ranef(fit, condVar = TRUE)` attaches as `postVar`. For `(x || g)`, lme4 reports only
-the diagonal of each block.
+`fit_mixed_gaussian` fits lme4-style bar terms with the `fit_mixed_gaussian_matrix` estimator. REML is the default, as in `lme4::lmer()`.
 
-`fit_mixed_logistic` supports exactly one random intercept `(1 | g)` with the binomial
-family and logit link, over the `fit_mixed_logistic_matrix` core. `quadraturePoints`
-corresponds to lme4's `nAGQ`. Responses follow `fit_generalized_linear`. `random_effects_cond_var`
-gives the conditional variance of each group's mode, as lme4's `postVar`.
+| Bar term | Meaning |
+| --- | --- |
+| `(1 | g)` | Random intercept |
+| `(x | g)`, `(0 + x | g)` | Correlated random intercept and slope; slope only |
+| `(x || g)` | Uncorrelated intercept and slope (diagonal covariance) |
+| `(1 | g1) + (1 | g2)` | Several independent terms |
+| `(1 | g1:g2)` | Interaction groups |
+| `(1 | g1/g2)` | Nesting: `(1 | g1) + (1 | g2:g1)`, with lme4's group name and `g2level:g1level` labels |
+
+- The result is the `fit_mixed_gaussian_matrix` contract. Each `random` entry also has `label`, `group`, `columns`, and `correlated`.
+- `effects_cond_var` lists one k×k conditional covariance per group, in `group_labels` order. These are the blocks that `ranef(fit, condVar = TRUE)` attaches as `postVar`. For `(x || g)`, lme4 reports only the diagonal of each block.
+
+`fit_mixed_logistic` supports exactly one random intercept `(1 | g)` with the binomial family and logit link, using the `fit_mixed_logistic_matrix` estimator.
+
+- `quadraturePoints` is lme4's `nAGQ`.
+- Responses follow `fit_generalized_linear`.
+- `random_effects_cond_var` is the conditional variance of each group's mode, as lme4's `postVar`.
 
 ## Prediction: predict
 
@@ -217,9 +249,18 @@ does for `lm`, `glm` and `merMod` objects. It rebuilds the fit's formula over
 `$newdata`, which needs the predictor columns but not the response.
 
 ```php
-$fit = Phit\fit_generalized_linear('am ~ wt + poly(hp, 2)', $cars, family: 'binomial');
-$p = Phit\predict($fit, ['wt' => [2.2, 3.4], 'hp' => [95, 180]], type: 'response', seFit: true);
-// $p['fit'] probabilities, $p['se_fit'] delta-method standard errors
+$fit = Phit\fit_generalized_linear(
+    'am ~ wt + poly(hp, 2)',
+    $cars,
+    family: 'binomial',
+);
+$p = Phit\predict(
+    $fit,
+    ['wt' => [2.2, 3.4], 'hp' => [95, 180]],
+    type: 'response',
+    seFit: true,
+);
+// $p['fit']: probabilities. $p['se_fit']: delta-method SEs.
 ```
 
 - Factors are coded with the levels the fit saw. A level the fit never saw raises
@@ -242,11 +283,7 @@ $p = Phit\predict($fit, ['wt' => [2.2, 3.4], 'hp' => [95, 180]], type: 'response
   predicts it at the population level. Mixed predictions have no standard errors,
   as in lme4.
 
-GLM standard errors use the covariance at the final coefficients. R's
-`predict.glm()` uses `vcov()`, which reuses the weights of the iteration before
-the final one. The two differ by about the size of R's last IRLS step: 1e-7
-relative for `am ~ wt + hp` on `mtcars`, and up to about 1e-4 near separation.
-See [R compatibility](r-compatibility.qmd#evidence-and-tolerance-policy).
+GLM standard errors use the covariance at the final coefficients. R's `predict.glm()` uses `vcov()`, which reuses the weights of the iteration before the final one, so the two differ by about the size of R's last IRLS step. See [GLM covariance](r-compatibility.qmd#glm-covariance).
 
 ## Differences from R
 
@@ -270,34 +307,14 @@ See [R compatibility](r-compatibility.qmd#evidence-and-tolerance-policy).
 
 ## Verification
 
-`tests/generate-formula-fixtures.R` saves 62 R references under
-`LC_COLLATE=C`: 33 `model.frame()`/`model.matrix()` designs, 14 `lm()` fits, and
-15 `glm()` fits. They use the repository's housing, schools, learning, clinic,
-and cbpp data and a seeded synthetic data frame with factors, unused and reordered
-levels, ordered factors, logicals, character columns, missing values, weights,
-offsets, transforms, and no-intercept models. `glm()` references are restarted
-from R's own solution until the coefficients stop changing, because the default
-deviance criterion fixes coefficients only to about the square root of its
-tolerance. `tests/formula.php` compares design columns, terms, and rows exactly,
-design values within 1e-12 relative, and fit quantities within the matrix suites'
-`1e-9 + 1e-7*abs(reference)`.
+| Generator | References | Test and tolerance |
+| --- | --- | --- |
+| `tests/generate-formula-fixtures.R` | 62 under `LC_COLLATE=C`: 33 `model.frame()`/`model.matrix()` designs, 14 `lm()` fits, 15 `glm()` fits | `tests/formula.php`: columns, terms, and rows exact; design values within 1e-12 relative; fits within `1e-9 + 1e-7*abs(reference)` |
+| `tests/generate-formula-lme4-fixtures.R` | 10 lme4 fits (7 `lmer()`, 3 `glmer()`), including `ranef(condVar = TRUE)` | `tests/formula-mixed.php`: the lme4 suites' tolerances |
+| `tests/generate-predict-fixtures.R` | 25 `predict()` cases for `lm()`, `glm()`, `lmer()`, and `glmer()` | `tests/predict.php`: GLM standard errors tight against R's final-coefficient value, 1e-3 relative against R's `se.fit` |
 
-`tests/generate-formula-lme4-fixtures.R` saves 10 lme4 references (7 `lmer()` and
-3 `glmer()` fits), including crossed, nested, correlated, and uncorrelated terms
-and adaptive quadrature. The references include the `ranef(condVar = TRUE)`
-conditional variances, which are also compared for `fit_mixed_gaussian_intercept_matrix` on the ML schools
-case. `tests/formula-mixed.php` uses the tolerances of the
-existing lme4 suites.
+- The formula data are the repository's housing, schools, learning, clinic, and cbpp data, plus a seeded synthetic set with factors, unused and reordered levels, ordered factors, logicals, character columns, missing values, weights, offsets, transforms, and no-intercept models.
+- `glm()` references are restarted from R's own solution until the coefficients stop changing, because R's default deviance criterion fixes coefficients only to about the square root of its tolerance.
+- The prediction data include values outside the fitted range, missing rows, an unseen group, and a factor whose level set differs from the fit. `tests/predict.php` also checks that predicting the training data reproduces the fitted values.
 
-`tests/generate-predict-fixtures.R` saves 25 `predict()` references: `lm()` with
-orthogonal `poly()`, factors, logicals, ordered interactions, offsets, weights,
-no intercept, standard errors, and confidence and prediction intervals; `glm()`
-on the link and response scales for every family and link (including
-`cbind()` responses and offsets); and `lmer()`/`glmer()` conditional, population
-and response-scale predictions with an unseen group. The new data include values
-outside the fitted range, missing rows and a factor whose level set differs from
-the fit. GLM standard errors are compared tightly with the final-coefficient value
-recomputed in R and loosely (1e-3 relative) with R's own `se.fit`.
-`tests/predict.php` also checks that predicting the training data reproduces the
-fitted values, and the error messages. All fixtures are indexed in the
-[reference manifest](verifications/reference-manifest.json).
+All fixtures are indexed in the [reference manifest](verifications/reference-manifest.json).

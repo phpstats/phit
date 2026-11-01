@@ -187,10 +187,9 @@ def manifest(benchmarks, verifications):
     return {
         'package': 'phit',
         'title': 'phit',
-        'tagline': 'Regression, mixed models and probability distributions for PHP.',
-        'summary': 'phit is a PHP extension, written in Rust, for regression and mixed models, probability '
-                   'distributions and descriptive statistics. Models are written as R formulas (fit_ols, fit_generalized_linear, '
-                   'fit_mixed_gaussian, fit_mixed_logistic, predict), and results are plain PHP arrays.',
+        'tagline': 'Regression, mixed models, and probability distributions for PHP.',
+        'summary': 'Fit statistical models, compute probability distributions, and summarize data in PHP. Model '
+                   'functions accept formulas or explicit designs and return PHP arrays.',
         'install': ['pie install phpstats/phit'],
         'php': ['8.3', '8.4', '8.5'],
         'requires': ['PIE', 'unzip or the PHP zip extension', 'NTS (non-thread-safe) PHP'],

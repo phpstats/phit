@@ -4,7 +4,7 @@ jupyter: python3
 ---
 
 ::: {.callout-note}
-This record was written from 2026-10-11 to 2026-10-17, before the first tagged release. It describes the code and evidence as they were then, and is kept as history. The [API overview](contracts.qmd) and [verification](verification.qmd) pages describe the current releases.
+**Historical report.** Version: the v0.1 stabilization pass, before v0.1.0 was tagged on 2026-10-20. Written: 2026-10-11 to 2026-10-17. Purpose: record what that pass changed and how it was checked. Function names, counts, and limits are those of the time. For current behavior, see the [API overview](contracts.qmd), [Names in phit 0.4](contracts.qmd#names-in-phit-0.4), and [Verification](verification.qmd).
 :::
 
 This pass stabilizes the existing estimators. It adds no model families, backend
@@ -25,7 +25,7 @@ If Python is installed, the gate also checks provenance hashes. A macOS/Linux
 GitHub workflow runs the same command; **a configured workflow is not evidence
 that those remote platforms have passed**.
 
-This workstation passed 49 Rust tests and nine PHP suites on Apple Silicon,
+The development machine passed 49 Rust tests and nine PHP suites on Apple Silicon,
 Rust 1.99 and Homebrew PHP 8.5.10. Seven independent R/Python audit scripts were also rerun successfully,
 including the logistic-mixed integrated-likelihood checks. The additional
 published-data mode verifies all four Gaussian datasets against lme4, nlme,
@@ -230,8 +230,8 @@ Before distribution:
 3. Review diagnostics, input tightening and the retained numerical limits against
    application requirements. Confirm FPM headers/build ABI and restart workers
    after installation; a CLI load does not verify web-server deployment.
-4. Choose release metadata/distribution packaging and publish through the project's
-   release workflow. This pass does not create a tag, commit, push or package release.
+4. Choose release metadata and distribution packaging, and publish through the
+   project's release workflow.
 
 No full R/lme4 compatibility promise is made. New families, inference methods,
 sparse general mixed computation and broader GLMM designs are outside this pass.

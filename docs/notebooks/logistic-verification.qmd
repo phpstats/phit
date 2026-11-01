@@ -61,16 +61,25 @@ fit.params, fit.bse, fit.conf_int()
 ```php
 $x = []; $y = [];
 foreach ($students as $student) {
-    $x[] = [1.0, $student['study_hours'], $student['practice_score']];
+    $x[] = [
+        1.0,
+        $student['study_hours'],
+        $student['practice_score'],
+    ];
     $y[] = $student['passed'];
 }
-$result = Phit\fit_logistic(x: $x, y: $y, intercept: false);
+$result = Phit\fit_logistic_matrix(
+    x: $x,
+    y: $y,
+    intercept: false,
+);
 ```
 
-Here `$students` contains already numeric records; see `examples/logistic.php`
-for the complete CSV conversion and call. The native interface uses no formula
-parser or model classes. The explicit-design example opts out of automatic
-fixed-intercept insertion.
+Here `$students` holds numeric records; `examples/logistic.php` has the complete CSV
+conversion. This comparison builds the design explicitly so all three
+implementations receive identical columns, and `intercept: false` stops phit
+adding a second intercept. Applications can use the formula interface instead:
+see [Linear and generalized linear models](../models.qmd).
 
 ## Missing rows and model statistics
 

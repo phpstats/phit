@@ -3,9 +3,8 @@ title: "Gaussian mixed models on four published datasets"
 jupyter: python3
 ---
 
-We verify the optimized random-intercept ML implementation on four published
-datasets, in addition to the synthetic fixtures, closed-form variance test and
-million-row benchmarks. Every model uses the same explicit fixed columns and
+This notebook checks phit's random-intercept ML fit on four published
+datasets. Every model uses the same explicit fixed columns and
 observations in **R lme4, R nlme, Python statsmodels and PHP**. Data provenance,
 original research references, CSV downloads and checksums are in the
 [data-source record](../data/lmm/index.qmd).
@@ -182,12 +181,11 @@ QUARTO_PYTHON="$PWD/.context/notebooks-venv/bin/python" PHP=/opt/homebrew/bin/ph
   quarto render docs/notebooks/lmm-public-verification.qmd
 ```
 
-Use matching PHP headers to build the extension first; use `.so` on Linux.
+Build the extension with matching PHP headers first, and use `.so` on Linux.
 The [saved live report](../verifications/lmm-public-results.json) records full
 outputs, source checksums, runtime versions, the extension hash, warnings,
-tolerances and score/error checks. Re-execute this page after statistical-code
-or source-data changes; merely rendering saved outputs is not new verification.
+tolerances and score/error checks. Rendering saved outputs is not new verification;
+re-execute this page after statistical-code or source-data changes.
 
-This strengthens evidence for the current Gaussian random-intercept ML model.
-It does not establish correctness for random slopes, REML, other response
+This evidence covers the Gaussian random-intercept ML model. It does not establish correctness for random slopes, REML, other response
 families, assumption checks, or finite-sample group-level inference.

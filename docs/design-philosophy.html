@@ -26,41 +26,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -110,6 +75,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -645,12 +611,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#a-plain-numerical-interface" id="toc-a-plain-numerical-interface" class="nav-link active" data-scroll-target="#a-plain-numerical-interface">A plain numerical interface</a></li>
-  <li><a href="#convenience-belongs-around-the-raw-call" id="toc-convenience-belongs-around-the-raw-call" class="nav-link" data-scroll-target="#convenience-belongs-around-the-raw-call">Convenience belongs around the raw call</a></li>
-  <li><a href="#implementation-boundaries" id="toc-implementation-boundaries" class="nav-link" data-scroll-target="#implementation-boundaries">Implementation boundaries</a></li>
-  <li><a href="#current-scope-and-change-decisions" id="toc-current-scope-and-change-decisions" class="nav-link" data-scroll-target="#current-scope-and-change-decisions">Current scope and change decisions</a></li>
-  <li><a href="#learning-examples-use-meaningful-simulated-data" id="toc-learning-examples-use-meaningful-simulated-data" class="nav-link" data-scroll-target="#learning-examples-use-meaningful-simulated-data">Learning examples use meaningful simulated data</a></li>
-  <li><a href="#performance-evidence" id="toc-performance-evidence" class="nav-link" data-scroll-target="#performance-evidence">Performance evidence</a></li>
+  <li><a href="#principles" id="toc-principles" class="nav-link active" data-scroll-target="#principles">Principles</a></li>
+  <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture">Architecture</a></li>
+  <li><a href="#scope" id="toc-scope" class="nav-link" data-scroll-target="#scope">Scope</a></li>
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">Data preparation</a></li>
+  <li><a href="#conventions-for-documentation-and-evidence" id="toc-conventions-for-documentation-and-evidence" class="nav-link" data-scroll-target="#conventions-for-documentation-and-evidence">Conventions for documentation and evidence</a></li>
   </ul>
 </nav>
     </div>
@@ -676,54 +641,74 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="a-plain-numerical-interface" class="level2">
-<h2 class="anchored" data-anchor-id="a-plain-numerical-interface">A plain numerical interface</h2>
-<p>The native interface should be as vanilla as possible: ordinary PHP arrays of numbers in, an associative array of numbers and numeric arrays out. A caller should be able to understand a fit from the function signature, the data shapes, and the documented statistical conventions. Loading the extension makes the functions available without application-specific imports or model classes.</p>
-<p>For all estimators, the raw interface is a supplied design matrix x and outcome vector y. Each row is an observation and each column is a predictor. The PHP binding adds a fixed intercept by default; <code>intercept: false</code> accepts a complete literal design. The Rust core and random-effect designs remain literal matrices. This small, explicit convenience keeps the usual application call simple. The extension checks those inputs and performs the estimation; it does not infer how the application’s source data should be interpreted. Invalid values produce errors. Missing null/NAN values use documented listwise deletion with a warning and sample metadata; callers can choose strict rejection.</p>
-<p>Use explicit numerical defaults and document them. Current inference is homoskedastic OLS with 95% t intervals, and logistic, probit and Poisson maximum likelihood with 95% normal Wald intervals; rank deficiency is rejected. Undefined statistics remain NAN/INF in the raw output. Missing-data handling is explicit in the contract and observable in every fit result. Keep the mathematical calculations visible and understandable in the Rust core.</p>
+<p>phit provides statistical models and numerical routines through PHP functions with explicit inputs and array results. Numerical behavior is checked against reference implementations on shared inputs.</p>
+<section id="principles" class="level2">
+<h2 class="anchored" data-anchor-id="principles">Principles</h2>
+<ul>
+<li><strong>Plain inputs and outputs.</strong> Functions take PHP arrays, or a table object with <code>toModelData()</code> or <code>toColumns()</code>, and return associative arrays. There are no model objects or services.</li>
+<li><strong>Two levels of input.</strong> The formula functions build a design from named columns as R does. The <code>*_matrix</code> functions take a literal design for code that builds its own. Both call the same estimators.</li>
+<li><strong>Documented defaults.</strong> OLS inference is homoskedastic with 95% t intervals. Logistic, probit, and Poisson fits use maximum likelihood with 95% normal Wald intervals. Rank-deficient designs are rejected, and undefined statistics are <code>NAN</code> or <code>INF</code>.</li>
+<li><strong>Visible missing-data handling.</strong> Incomplete rows are dropped with a warning and reported in every result, or rejected with <code>missing: 'raise'</code>. See <a href="./missing-data.html">Missing values</a>.</li>
+<li><strong>Evidence for each estimator.</strong> Each estimator has a mathematical walkthrough and a comparison with R, lme4, or statsmodels where they support it. Agreement is claimed only for the tested cases.</li>
+<li><strong>Simple implementation.</strong> Each model has a dedicated estimator. phit has no general GLM framework and no generic Model, Family, Link, or Optimizer traits for hypothetical future models.</li>
+</ul>
 </section>
-<section id="convenience-belongs-around-the-raw-call" class="level2">
-<h2 class="anchored" data-anchor-id="convenience-belongs-around-the-raw-call">Convenience belongs around the raw call</h2>
-<p>Other packages, application code, or optional helpers from this project can make input preparation easier. They might select columns from records, read CSV data, convert numeric strings under an explicit policy, handle missing observations, or attach coefficient labels. These are possible helper responsibilities, not features currently implemented or a commitment to build them.</p>
-<p>Whatever the source, preparation should finish with the same x and y arrays accepted by fit_ols_matrix(), fit_logistic_matrix(), fit_probit_matrix(), fit_poisson_matrix() or fit_mixed_gaussian_intercept_matrix(). A user can construct those arrays directly and get the same estimation behavior without a helper. Helpers must make choices visible, especially column order, intercept insertion, missing-value handling and row alignment. They should preserve the raw result or explain any transformation, such as replacing nonfinite values for JSON serialization.</p>
-<p>For example, application code can prepare observations with ordinary PHP:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">$x</span> <span class="op">=</span> []<span class="ot">;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">$y</span> <span class="op">=</span> []<span class="ot">;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$observations</span> <span class="kw">as</span> <span class="va">$observation</span>) {</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This example assumes these fields are already validated numeric values.</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">$x</span>[] <span class="op">=</span> [<span class="va">$observation</span>[<span class="st">'size'</span>]<span class="ot">,</span> <span class="va">$observation</span>[<span class="st">'bedrooms'</span>]]<span class="ot">;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">$y</span>[] <span class="op">=</span> <span class="va">$observation</span>[<span class="st">'price'</span>]<span class="ot">;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="va">$result</span> <span class="op">=</span> Phit\fit_ols_matrix(x<span class="ot">:</span> <span class="va">$x</span><span class="ot">,</span> y<span class="ot">:</span> <span class="va">$y</span>)<span class="ot">;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">$coefficientLabels</span> <span class="op">=</span> [<span class="st">'intercept'</span><span class="ot">,</span> <span class="st">'size'</span><span class="ot">,</span> <span class="st">'bedrooms'</span>]<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The native function has no knowledge of those field names or their origin.</p>
+<section id="architecture" class="level2">
+<h2 class="anchored" data-anchor-id="architecture">Architecture</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>stats-core</code></td>
+<td>Estimation, inference, and numerical validation. It takes Rust vectors and returns a dedicated result struct or a <code>StatsError</code>, with no PHP types.</td>
+</tr>
+<tr class="even">
+<td><code>php-extension</code></td>
+<td>PHP value inspection, formula parsing and design construction, numeric conversion, missing-row filtering with warnings and accounting, exceptions, result arrays, and the CSV reader.</td>
+</tr>
+<tr class="odd">
+<td>Rust crates</td>
+<td>Matrix decompositions, special functions, and optimizers. phit’s own code expresses the statistical formulas.</td>
+</tr>
+</tbody>
+</table>
+<p>phit uses Rust-native numerical crates. An external BLAS or LAPACK backend needs a demonstrated numerical, performance, or deployment benefit and must preserve the contract and reference agreement. An <a href="./benchmarks/ols.html#apple-accelerate-experiment">Apple Accelerate experiment</a> showed no speed advantage on the measured workloads and was removed.</p>
 </section>
-<section id="implementation-boundaries" class="level2">
-<h2 class="anchored" data-anchor-id="implementation-boundaries">Implementation boundaries</h2>
-<p>Use established Rust-native numerical crates by default. Keep the implementation and build straightforward until a concrete requirement calls for an external BLAS/LAPACK dependency. A backend change should address a demonstrated numerical, performance or deployment need and preserve the input/output contract and reference agreement. We tried Apple Accelerate without a speed advantage on our current workloads, then removed the experimental path. The <a href="./benchmarks/ols.html#apple-accelerate-experiment">benchmark evidence</a> remains documented.</p>
-<p>stats-core owns estimation, inference and numerical validation. It accepts Rust vectors and returns an a dedicated result struct or StatsError without PHP types. Established crates supply matrix decompositions and distributions; our code expresses the statistical formulas.</p>
-<p>php-extension owns PHP value inspection, numeric conversion, registration, exception conversion, missing-row filtering with warnings/accounting, and output construction. Keep it thin; missing-data handling does not change the estimator. Data ingestion and application presentation remain outside the statistical engine.</p>
-<p>Prefer the simplest correct solution, small focused functions, documented contracts and reference evidence. Numerical correctness, working software and educational clarity take priority over architecture or speculative extensibility.</p>
+<section id="scope" class="level2">
+<h2 class="anchored" data-anchor-id="scope">Scope</h2>
+<p>phit fits OLS, binomial logistic and probit regression, Poisson regression, Gaussian mixed models by ML or REML with random intercepts and slopes, and a binomial logistic model with one random intercept by Laplace or adaptive quadrature. It also provides probability distributions, descriptive statistics, seeded sampling, posterior-draw kernels, and a CSV reader. The <a href="./r-compatibility.html">R compatibility ledger</a> lists what is supported, what differs, and what is not supported.</p>
+<p>The posterior-draw functions are numerical kernels for CmdStanPHP’s moment matching: weighted moments, covariance maps, and affine transforms. They use literal row and parameter order, never insert an intercept, and never drop rows. Stan evaluation, PSIS, iteration control, and diagnostics belong to the consuming package. See <a href="./draw-numerics.html">Posterior draws</a>.</p>
+<p>Before a feature is added, decide whether it changes estimation or only prepares data:</p>
+<ul>
+<li>Data preparation belongs in packages such as phibble and phpolars, or in application code.</li>
+<li>A numerical feature needs a concrete use case, an explicit contract, and verification before it enters the engine.</li>
+<li>A new dependency or abstraction must solve a demonstrated problem.</li>
+</ul>
 </section>
-<section id="current-scope-and-change-decisions" class="level2">
-<h2 class="anchored" data-anchor-id="current-scope-and-change-decisions">Current scope and change decisions</h2>
-<p>The current scope is OLS, binomial logistic/probit regression, Poisson count regression, and Gaussian mixed ML/REML with explicit random-design terms, and binomial random-intercept marginal ML. The user has expanded the goal toward R/lme4 compatibility; <a href="./r-compatibility.html">the coverage ledger</a> records implemented and remaining functionality. Each fitter is a dedicated implementation, without a general GLM framework. Keep data preparation and presentation around the plain numerical API. Expand numerical functionality through explicit contracts and reference evidence. Additional optimization algorithms now address actual multivariate variance estimation; they do not justify a general statistical framework. Avoid speculative layers, backend interfaces or a large PHP object API. Do not introduce generic Model, Family, Link or Optimizer traits for hypothetical future work.</p>
-<p>For a proposed feature, first ask whether it changes estimation or merely makes application data easier to prepare. Preparation belongs in an optional layer. A numerical feature needs a concrete use case, an explicit contract and suitable verification before it expands the engine. Extra dependencies and abstractions must solve a demonstrated problem.</p>
-<p>Keep the <a href="./contracts.html">API overview</a> aligned with implementation and <a href="./verification.html">Verification</a> aligned with actual test evidence. Each implemented estimator should have a math walkthrough notebook and a verification document showing equivalent fits in R, statsmodels and this extension where supported. This philosophy governs future work; it does not imply that helpers or additional models already exist.</p>
-<p>The posterior-draw operations are explicit numerical kernels for a separate CmdStan interface’s moment matching: weighted moments, covariance maps and affine transforms. Literal row/parameter order and strict validation apply to all three; they never insert an intercept or drop missing rows. Stan evaluation, PSIS, iteration control and diagnostics remain the consuming package’s responsibility. See the <a href="./draw-numerics.html">numerical contract and reference evidence</a>.</p>
+<section id="data-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="data-preparation">Data preparation</h2>
+<p>phit reads CSV files and builds designs from formulas. Other preparation, such as selecting records, converting text under an explicit policy, or attaching labels, belongs to the caller or to table packages. Preparation code should make its choices visible: column order, intercept insertion, missing-value handling, and row alignment. It should preserve phit’s result or document any transformation, such as replacing nonfinite values for JSON.</p>
 </section>
-<section id="learning-examples-use-meaningful-simulated-data" class="level2">
-<h2 class="anchored" data-anchor-id="learning-examples-use-meaningful-simulated-data">Learning examples use meaningful simulated data</h2>
-<p>Use reproducible simulations with named variables, units, plausible ranges, noise, and intentional relationships for the main learning examples. Label them as synthetic, state the generating equation and seed, and save the observations so Rust, PHP, R and statsmodels fit exactly the same sample. Report observed sample correlations rather than treating the intended relationship as an empirical result. Explain that correlation does not establish causation.</p>
-<p>Distinguish observed inputs, constructed columns (such as intercept ones), true generating parameters, trial coefficients, and estimated coefficients. Display matrix dimensions and intermediate values beside the mathematical steps. Use small samples for readable matrix displays and explain their statistical limits. Keep simple sequences and hand-checkable arrays for focused numerical tests where they help expose an edge case; they should not be the main story in a walkthrough.</p>
-<p>The current shared teaching sample is simulated housing in <code>docs/data/housing.csv</code>, generated by <code>tests/generate-learning-data.R</code>. Its correlations are intentional, and both one-predictor and correlated two-predictor fits have R reference fixtures.</p>
-</section>
-<section id="performance-evidence" class="level2">
-<h2 class="anchored" data-anchor-id="performance-evidence">Performance evidence</h2>
-<p>Maintain a reproducible API-level benchmark against R and Python statsmodels for each implemented estimator where reference support exists. Verify numerical agreement on identical simulated inputs before publishing timings. Use release builds, materialize inference and observation-level outputs, and record versions, machine details, thread settings, raw measurements and timing boundaries. Separate fitting from loading and runtime startup; record process memory where available. Benchmarks are explicit development commands rather than unit tests. See the <a href="./benchmarks/ols.html">OLS report</a> and <a href="./benchmarks/logistic.html">logistic report</a>. Measurements inform decisions; they do not justify speculative optimizations or additional runtime dependencies.</p>
-<p>The logistic teaching sample is saved in <code>docs/data/learning.csv</code>, generated by <code>tests/generate-logistic-fixtures.R</code>. It uses correlated study hours and practice scores, with Bernoulli pass/fail draws from explicitly stated generating probabilities.</p>
-<p>Mixed models begin with one Gaussian random intercept, a continuous outcome and explicit group labels. Keep marginal likelihood, variance components and conditional group estimates visible in code. REML, random slopes and multiple grouping factors now have separate contracts, R optimizer fixtures and an executed math walkthrough. Native BOBYQA and Nelder–Mead use established pinned Rust crates; exact NLopt/PORT backend support remains open.</p>
-<p>For non-Gaussian mixed models, distinguish implementation agreement from integration accuracy. Document the likelihood approximation, compare like methods against R, and assess node-count sensitivity with an independent integrator. The binomial random-intercept milestone makes this explicit before expanding Poisson likelihoods or general random-term designs.</p>
+<section id="conventions-for-documentation-and-evidence" class="level2">
+<h2 class="anchored" data-anchor-id="conventions-for-documentation-and-evidence">Conventions for documentation and evidence</h2>
+<p>These conventions apply to contributors writing walkthroughs, verifications, and benchmarks.</p>
+<ul>
+<li><strong>Teaching data.</strong> Main examples use reproducible simulations with named variables, units, plausible ranges, and noise. Pages label the data as simulated, state the generating equation and seed, and save the observations so that Rust, PHP, R, and statsmodels fit the same sample. They report observed correlations rather than the intended relationship.</li>
+<li><strong>Walkthroughs.</strong> They distinguish observed inputs, constructed columns such as the intercept, generating parameters, trial values, and estimates. Matrix dimensions and intermediate values appear beside the steps. Small samples keep matrices readable, and their statistical limits are stated.</li>
+<li><strong>Shared samples.</strong> <code>docs/data/housing.csv</code> comes from <code>tests/generate-learning-data.R</code>, and <code>docs/data/learning.csv</code> from <code>tests/generate-logistic-fixtures.R</code>.</li>
+<li><strong>Benchmarks.</strong> Each estimator with reference support has an API-level benchmark against R and statsmodels. Numerical agreement on identical inputs is checked before timings are published. Reports record versions, machine, threads, raw measurements, and timing boundaries, and separate fitting from startup. Benchmarks are development commands, not unit tests.</li>
+<li><strong>Mixed models.</strong> Gaussian mixed models keep the marginal likelihood, variance components, and conditional group estimates visible in the code. BOBYQA and Nelder–Mead come from pinned Rust crates. The NLopt and PORT backends that lme4 can use are not available.</li>
+<li><strong>Approximate likelihoods.</strong> For non-Gaussian mixed models, pages separate agreement with R from integration accuracy. They state the approximation, compare like methods, and check node-count sensitivity with an independent integrator.</li>
+</ul>
 
 
 </section>

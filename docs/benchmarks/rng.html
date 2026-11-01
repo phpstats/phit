@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -645,7 +646,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#independent-verification-first" id="toc-independent-verification-first" class="nav-link active" data-scroll-target="#independent-verification-first">Independent verification first</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link active" data-scroll-target="#methods">Methods</a></li>
+  <li><a href="#independent-verification-first" id="toc-independent-verification-first" class="nav-link" data-scroll-target="#independent-verification-first">Independent verification first</a></li>
   <li><a href="#timing-interpretation" id="toc-timing-interpretation" class="nav-link" data-scroll-target="#timing-interpretation">Timing interpretation</a></li>
   <li><a href="#reproduction" id="toc-reproduction" class="nav-link" data-scroll-target="#reproduction">Reproduction</a></li>
   </ul>
@@ -673,7 +675,52 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The <a href="../rng.html">sampling API</a> uses local ChaCha20 state and inverse CDFs. This benchmark times full PHP batches for normal, beta and Poisson at 1,000, 100,000 and one million draws. Every call reinitializes the explicit seed and allocates the complete numeric output. <a href="rng-results.json">Raw results</a> retain the seed, input hashes, numerical evidence, PHP version, binary hash, all timing samples, process elapsed time and peak RSS.</p>
+<p>This benchmark times <a href="../rng.html">seeded sampling</a> for the normal, beta, and Poisson families. <a href="rng-results.json">Raw results</a> keep the seed, input hashes, numerical evidence, PHP version, binary hash, all timing samples, process elapsed time, and peak RSS.</p>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Setting</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Workloads</td>
+<td><code>dist_normal_rng</code>, <code>dist_beta_rng</code>, and <code>dist_poisson_rng</code> at 1,000, 100,000, and 1,000,000 draws, seed 42</td>
+</tr>
+<tr class="even">
+<td>Machine</td>
+<td>macOS 27.0.1 arm64, PHP 8.5.10, recorded 2026-10-12</td>
+</tr>
+<tr class="odd">
+<td>Repetitions</td>
+<td>One untimed warm-up, then five measurements</td>
+</tr>
+<tr class="even">
+<td>Statistic</td>
+<td>Median milliseconds per full call</td>
+</tr>
+<tr class="odd">
+<td>Timed</td>
+<td>ChaCha setup from the seed, quantile evaluation, PHP result allocation, and reclamation of earlier results</td>
+</tr>
+<tr class="even">
+<td>Excluded</td>
+<td>JSON input and output, and numerical summaries</td>
+</tr>
+<tr class="odd">
+<td>Memory</td>
+<td>Peak RSS of the whole worker process</td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="independent-verification-first" class="level2">
 <h2 class="anchored" data-anchor-id="independent-verification-first">Independent verification first</h2>
 <p>Before any timing phase, Python independently computes the ChaCha blocks at 17 evenly spaced indices, with the pinned PCG seed expansion/Open01 mapping. Base-R quantiles transform those exact probabilities. PHP’s sampled points must match at <code>1e-15 + 1e-12*abs(reference)</code>; discrete values match the integer quantiles. The full output is consumed by mean/variance calculations and checked against theoretical moments within eight standard errors (using the distribution’s fourth central moment for variance). Fixed seeds make these checks deterministic.</p>
@@ -756,8 +803,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="timing-interpretation" class="level2">
 <h2 class="anchored" data-anchor-id="timing-interpretation">Timing interpretation</h2>
-<p>Five measurements follow one untimed warm-up. Timing includes ChaCha setup, quantile evaluation, PHP result allocation and ordinary reclamation of previous results. JSON I/O and numerical summaries are outside the timed call. Peak RSS covers the whole worker, including summaries and inputs; it is not isolated RNG state memory. These are API-level times on the recorded machine, not universal throughput guarantees or a comparison with optimized rejection samplers.</p>
-<p>The normal/Poisson/beta cases show differing inverse-CDF costs. The method retains one numerical quantile path for every family. A future optimized sampler should be justified by measured demand and independent distribution/reproducibility tests.</p>
+<p>Peak RSS covers the whole worker, including summaries and inputs, not only the generator state. These are API-level times on the recorded machine, not throughput guarantees or a comparison with optimized rejection samplers. Every family uses inverse-CDF sampling, so the cost differences between families come from their quantile functions.</p>
 </section>
 <section id="reproduction" class="level2">
 <h2 class="anchored" data-anchor-id="reproduction">Reproduction</h2>
@@ -765,7 +811,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> phit <span class="at">--release</span> <span class="at">--locked</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">PHP</span><span class="op">=</span>/path/to/matching/php <span class="ex">python3</span> tests/benchmarks/run-rng.py</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/distribution-docs.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The independent ChaCha equations are shared with the fixture generator; they read no native uniforms or samples. The sampling API and these benchmarks add no R/Python runtime dependency or shared application RNG state.</p>
+<p>The independent ChaCha equations are shared with the fixture generator and read no native uniforms or samples.</p>
 
 
 </section>

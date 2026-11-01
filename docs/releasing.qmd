@@ -2,95 +2,68 @@
 title: "Releasing"
 ---
 
-This page is for maintainers. It describes how release artifacts are built
-and checked.
+Build, check, and publish a phit release. This page is for maintainers.
+
+## Before tagging
+
+1. Set the same version in `crates/stats-core/Cargo.toml` and `crates/php-extension/Cargo.toml`, and update `Cargo.lock`.
+2. Run `./scripts/check` on the exact commit, and wait for CI on main to pass.
+3. Tag the version commit with an annotated `vX.Y.Z` tag and push the tag.
+
+## Release workflow
+
+The packaging workflow (`packaging.yml`) builds and tests the extension on Linux x86_64 and arm64 at PHP 8.3, 8.4, and 8.5, and prepares the binary archives. Pushing a `vX.Y.Z` tag starts `release.yml`:
+
+1. It runs the packaging matrix.
+2. It checks that the tag matches both crate versions and the MIT license, creates the source archive and its checksum, and tests installing from the extracted archive.
+3. It creates the GitHub release with the source archive, the six binary archives, their checksums, and `SHA256SUMS`.
+4. It downloads the published assets and installs each binary in the matching PHP image, by hand and with `pie install`. In an image without Rust, PIE must pick the prebuilt archive.
+
+Packagist reads the tag through the repository's GitHub webhook.
+
+The source archive's export rules remove generated website caches and figures. They keep the source, locked dependencies, model fixtures, test data, and their notices.
 
 ## Binary artifacts
 
-Create the tested Linux binary bundle locally:
+Build the tested Linux binaries locally with:
 
 ```sh
-docker build --target binaries --output type=local,dest=.context/binaries \
+docker build --target binaries \
+  --output type=local,dest=.context/binaries \
   -f docker/Dockerfile .
 ```
 
-From the release after v0.3.0, each archive is named as PIE's prebuilt-binary
-download expects, `php_phit-vX.Y.Z_php8.4-arm64-linux-glibc-nts.zip`, and
-composer.json lists `pre-packaged-binary` first in `download-url-method`.
-`pie install phpstats/phit` on Linux then downloads the matching archive and
-builds from source only when none matches. Releases up to v0.3.0 used
-`phit-X.Y.Z-php8.4-aarch64-nts-bookworm.tar.gz`, which PIE does not recognize.
-The zip holds `phit.so` at its root, installation instructions, a manifest
-that records the ABI and the minimum glibc, the project MIT license and
-dependency notices. A separate SHA-256
-file checks archive integrity. Dependency notices include the Cargo dependency
-closure and build dependencies; exact upstream MIT notices missing from published
-crate archives are preserved under `third-party/` with provenance hashes.
+- Archives are named as PIE expects for prebuilt binaries, for example `php_phit-vX.Y.Z_php8.4-arm64-linux-glibc-nts.zip`.
+- `composer.json` lists `pre-packaged-binary` first in `download-url-method`. On Linux, `pie install phpstats/phit` downloads the matching archive and builds from source only when none matches.
+- Each zip holds `phit.so` at its root, installation instructions, a manifest of the ABI and minimum glibc, the MIT license, and dependency notices. A separate SHA-256 file checks the archive.
+- The dependency notices cover the Cargo dependency closure and build dependencies. MIT notices missing from published crate archives are kept under `third-party/` with provenance hashes.
 
-Treat a binary as matching the manifest's build environment. It is not a universal
-Linux file. Verify its checksum, use the matching PHP extension directory, enable
-it for the required SAPIs, restart workers and execute a real fit.
+A binary matches the build environment in its manifest. It is not a universal Linux file. To install one by hand, verify its checksum, copy it to the matching PHP extension directory, enable it for each SAPI that needs it, restart the workers, and run a real fit.
 
-## Versioned release process
-
-The installer and FPM workflow (`packaging.yml`) builds and tests the extension
-on Linux x86_64 and arm64 at PHP 8.3, 8.4 and 8.5, and prepares the binary
-archives. Pushing a `vX.Y.Z` tag starts the release workflow (`release.yml`):
-
-1. It runs the packaging matrix.
-2. It checks that the tag matches both crate versions and the MIT license,
-   creates the source archive and its checksum, and tests installation from the
-   extracted archive.
-3. It creates the GitHub release with the source archive, the six binary
-   archives, their checksums and `SHA256SUMS`.
-4. It downloads the published assets and installs each binary in the matching
-   PHP image, by hand and with `pie install`, which must pick the prebuilt
-   archive in an image without Rust.
-
-Export rules remove generated website caches and figures from the source
-archive, and keep the source, locked dependencies, model fixtures, test data
-and their notices. Packagist reads the tag through the repository's GitHub
-webhook.
-
-Before tagging:
-
-1. Run `./scripts/check` on the exact commit, and wait for CI on main.
-2. Set the same version in `crates/stats-core/Cargo.toml` and
-   `crates/php-extension/Cargo.toml`, and update `Cargo.lock`.
-3. Tag the version commit with an annotated tag and push the tag.
+Releases up to v0.3.0 used archive names such as `phit-X.Y.Z-php8.4-aarch64-nts-bookworm.tar.gz`, which PIE does not recognize.
 
 ## Deployment verification
 
-`tests/deployment.php` verifies extension identity/version, automatic-intercept OLS,
-and a closed-form Poisson log-exposure model. `scripts/check-fpm` sends an isolated
-FastCGI request; `scripts/check-container` checks the final runtime image using
-its normal FPM pool. The scripts compare CLI/FPM version, coefficients and fitted
-rate. They fail on a loader error or wrong output instead of trusting `php -m`.
+| Check | What it does |
+| --- | --- |
+| `tests/deployment.php` | Checks the extension's identity and version, OLS with an automatic intercept, and a closed-form Poisson model with a log-exposure offset |
+| `scripts/check-fpm` | Sends a FastCGI request to an isolated PHP-FPM |
+| `scripts/check-container` | Checks the final runtime image through its normal FPM pool |
 
-### Packaging record of 2026-10-12
+The scripts compare the CLI and FPM versions, coefficients, and fitted rates. They fail on a loader error or wrong output, instead of trusting `php -m`.
 
-This record predates the first tagged release. The
-[packaging verification](verifications/packaging-results.json) states which
-local image, PHP version and architecture passed on 2026-10-12.
+## History: packaging record of 2026-10-12
+
+This record predates the first tagged release. The [packaging verification](verifications/packaging-results.json) lists the local image, PHP version, and architecture that passed.
 
 | Environment | PHP | Verified paths |
 | --- | --- | --- |
-| Linux aarch64, Debian Bookworm/glibc | 8.3.35 | PIE install; complete gate; CLI/FPM in production image; extracted binary; extracted source archive |
-| Linux aarch64, Debian Bookworm/glibc | 8.4.26 | PIE install; complete gate; CLI/FPM in production image; extracted binary |
-| Linux aarch64, Debian Bookworm/glibc | 8.5.11 | PIE install; complete gate; CLI/FPM in production image; extracted binary |
-| macOS arm64 | 8.5.10 | phpize/make/staged installation; native load; complete gate |
+| Linux aarch64, Debian Bookworm, glibc | 8.3.35 | PIE install; full checks; CLI and FPM in the production image; extracted binary; extracted source archive |
+| Linux aarch64, Debian Bookworm, glibc | 8.4.26 | PIE install; full checks; CLI and FPM in the production image; extracted binary |
+| Linux aarch64, Debian Bookworm, glibc | 8.5.11 | PIE install; full checks; CLI and FPM in the production image; extracted binary |
+| macOS arm64 | 8.5.10 | phpize, make, and staged installation; native load; full checks |
 
-Each complete gate passed **56 Rust tests, 11 PHP suites and 8 examples**. The
-binary bundles preserve 107 dependency notices and their ABI/library hashes.
-Linux amd64 was configured in CI but had no remote result at the time.
-macOS FPM, ZTS, Windows, musl, and other PHP versions are not covered by this evidence.
-
-The distribution gate added in that pass checked 8,618 points. It preserves the
-original tolerances, using the stored high-precision reference for 25 cases where
-R and that reference disagree. It retains 43 documented boundary-convention
-exceptions with separate semantic assertions. The gate exposed normal/log-normal
-PDF underflow before scale adjustment, which that pass fixed with regression cases. Four
-independent reference endpoints for degenerate count distributions were also
-corrected in their generator. Numerical changes and evidence are recorded in the
-[packaging record](verifications/packaging-results.json) and
-[refreshed distribution comparison](verifications/distributions-results.json).
+- Each full run passed 56 Rust tests, 11 PHP suites, and 8 examples. The binary bundles kept 107 dependency notices with their ABI and library hashes.
+- Linux amd64 was configured in CI but had no result at the time. macOS FPM, ZTS, Windows, musl, and other PHP versions were not covered.
+- The distribution check added then compared 8,618 points at the original tolerances. For 25 cases where R and the high-precision reference disagree, it used the high-precision reference, and it kept 43 documented boundary-convention exceptions with separate assertions.
+- That pass fixed a normal and lognormal density underflow before scale adjustment, with regression cases, and corrected four reference endpoints for degenerate count distributions in their generator. See the [refreshed distribution comparison](verifications/distributions-results.json).

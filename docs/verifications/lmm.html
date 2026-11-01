@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -640,8 +641,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#compared" id="toc-compared" class="nav-link active" data-scroll-target="#compared">Compared</a></li>
+  <li><a href="#inputs-and-scope" id="toc-inputs-and-scope" class="nav-link" data-scroll-target="#inputs-and-scope">Inputs and scope</a></li>
+  <li><a href="#reference-and-versions" id="toc-reference-and-versions" class="nav-link" data-scroll-target="#reference-and-versions">Reference and versions</a></li>
+  <li><a href="#metric-and-tolerance" id="toc-metric-and-tolerance" class="nav-link" data-scroll-target="#metric-and-tolerance">Metric and tolerance</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#known-exceptions-and-limits" id="toc-known-exceptions-and-limits" class="nav-link" data-scroll-target="#known-exceptions-and-limits">Known exceptions and limits</a></li>
+  <li><a href="#reproduction" id="toc-reproduction" class="nav-link" data-scroll-target="#reproduction">Reproduction</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -665,22 +678,115 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The <a href="../notebooks/lmm-verification.html">executed comparison</a> fits identical observations in R lme4 ML, Python statsmodels MixedLM ML and PHP fit_mixed_gaussian_intercept_matrix. The <a href="lmm-results.json">saved report</a> records versions, full outputs, Python warnings/backend, covariance convention and differences from R.</p>
-<p>Six saved R fixtures cover simulated schools with correlated predictors, a single predictor, no fixed intercept, intercept only, a singleton group and an exact zero-group-variance boundary. Three-way verification adds missingness in predictors, outcomes and group IDs. Independent Rust tests also check a balanced intercept-only sample with analytically known variances and shrinkage. The deterministic tests run without R/Python installed.</p>
-<p>Four additional published datasets—sleepstudy, Orthodont, Machines and Hsb82— are checked against <strong>both lme4 and nlme saved ML outputs</strong> in Rust and PHP. The <a href="../notebooks/lmm-public-verification.html">published-data notebook</a> executes fresh fits in both R packages, statsmodels and PHP and checks every row. See <a href="../data/lmm/index.html">source provenance</a>, <code>tests/fixtures/lmm-public-r.json</code> and the <a href="lmm-public-results.json">live report</a>. Published-data tolerances retain 1e-7 absolute + 1e-6 relative for ordinary quantities, use 1e-6 absolute + 1e-6 relative for observation-length outputs, and 1e-7 absolute + 1e-10 relative for likelihood/AIC. The notebook documents the measured R optimizer precision limit for near-zero Hsb82 residuals. A separate native-versus-statsmodels check keeps the strict original uniform tolerance.</p>
-<p>All fixed-effect inference, covariance, population/conditional fitted values, both residual definitions, group effects, variances, ICC, marginal likelihood and AIC are compared at 1e-7 + 1e-6 × abs(reference). Labels/order and missing positions are exact. Python uses statsmodels estimates with plug-in GLS covariance to match lme4; its native joint-Hessian covariance is a different convention. The boundary fixture’s Python reference is explicitly the NumPy OLS ML limit, not a statsmodels mixed optimizer result.</p>
-<p>PHP tests check integer/string group identity, null group deletion, invalid float/boolean labels before deletion, missing warnings and strict rejection. Rust tests check units, row/group order, invalid shapes, unidentified grouping, rank deficiency, perfect fits and unsupported zero-residual-variance limits. An independent observation-level GLS test checks the cached QR reduction at several variance ratios, with correlated predictors and large outcome offsets; it verifies both optimized and arbitrary-coefficient residual norms. The profile search has a finite log-ratio range/grid and is not an exhaustive global optimization proof. The first model has no REML, random slopes, multiple grouping factors, finite-sample df adjustments or variance-component tests. Normal inference with few groups can be unreliable.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PHP</span><span class="op">=</span>/opt/homebrew/bin/php</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PHP_CONFIG</span><span class="op">=</span>/opt/homebrew/bin/php-config</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> test <span class="at">--workspace</span> <span class="at">--locked</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> phit <span class="at">--locked</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$PWD</span><span class="st">/target/debug/libphit.dylib"</span> tests/lmm.php</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">.context/notebooks-venv/bin/python</span> docs/verifications/compare_lmm.py</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="va">QUARTO_PYTHON</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/.context/notebooks-venv/bin/python"</span> <span class="ex">quarto</span> render docs/notebooks/lmm-verification.qmd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>For the published comparisons, run the same command with <code>--public</code>. Regenerate public expectations from the pinned snapshots with <code>.context/notebooks-venv/bin/python tests/generate-lmm-public-fixtures.py</code>; add <code>--export</code> only when intentionally refreshing upstream data.</p>
-<p>Use matching PHP tools and <code>.so</code> on Linux. Regenerate intentionally with <code>Rscript tests/generate-lmm-fixtures.R</code>; lme4 is a development dependency. See the <a href="../reference-models.html#gaussian-random-intercept-mixed-model">contract</a>, <a href="../notebooks/lmm-math.html">math</a> and <a href="../benchmarks/lmm.html">benchmark</a>. Linux/PHP-FPM and broader mixed-model structures are not established by this evidence.</p>
+<p>phit’s <code>fit_mixed_gaussian_intercept_matrix()</code> is compared with lme4 and statsmodels <code>MixedLM</code>, all fitted by ML, on identical observations. The <a href="../notebooks/lmm-verification.html">executed comparison</a> shows the calls and results side by side. Four published datasets are also checked against lme4 and nlme. Shared metrics are described in <a href="../verification.html">Verification</a>.</p>
+<section id="compared" class="level2">
+<h2 class="anchored" data-anchor-id="compared">Compared</h2>
+<p>Fixed-effect estimates and inference, covariance, population and conditional fitted values, both residual definitions, group effects, variance components, ICC, marginal likelihood, and AIC. Group labels, their order, and missing-row positions must match exactly.</p>
+</section>
+<section id="inputs-and-scope" class="level2">
+<h2 class="anchored" data-anchor-id="inputs-and-scope">Inputs and scope</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Set</th>
+<th>Cases</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Saved R fixtures</td>
+<td>Simulated schools with correlated predictors, a single predictor, no fixed intercept, intercept only, a singleton group, and an exact zero group-variance boundary</td>
+</tr>
+<tr class="even">
+<td>Three-way comparison</td>
+<td>The fixtures plus missing values in predictors, outcomes, and group IDs</td>
+</tr>
+<tr class="odd">
+<td>Published data</td>
+<td>sleepstudy, Orthodont, Machines, and Hsb82 (<a href="../data/lmm/index.html">provenance</a>), checked in the <a href="../notebooks/lmm-public-verification.html">published-data notebook</a></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="reference-and-versions" class="level2">
+<h2 class="anchored" data-anchor-id="reference-and-versions">Reference and versions</h2>
+<p>R 4.6.1 with lme4 2.0.6 and nlme 3.1.169, statsmodels 0.15.0 on Python 3.14.7, and phit on PHP 8.5.10, on the development Mac. Linux, PHP-FPM, and other mixed-model structures are not covered by this report.</p>
+<ul>
+<li>statsmodels estimates are combined with plug-in GLS covariance to match lme4. statsmodels’ own joint-Hessian covariance is a different convention.</li>
+<li>For the boundary fixture, the Python reference is the NumPy OLS ML limit, since the statsmodels mixed optimizer is not an exact-boundary reference.</li>
+</ul>
+</section>
+<section id="metric-and-tolerance" class="level2">
+<h2 class="anchored" data-anchor-id="metric-and-tolerance">Metric and tolerance</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Quantities</th>
+<th>Tolerance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>All compared quantities, simulated fixtures</td>
+<td>1e-7 absolute + 1e-6 relative</td>
+</tr>
+<tr class="even">
+<td>Published data, ordinary quantities</td>
+<td>1e-7 absolute + 1e-6 relative</td>
+</tr>
+<tr class="odd">
+<td>Published data, observation-length outputs</td>
+<td>1e-6 absolute + 1e-6 relative</td>
+</tr>
+<tr class="even">
+<td>Published data, likelihood and AIC</td>
+<td>1e-7 absolute + 1e-10 relative</td>
+</tr>
+</tbody>
+</table>
+<p>The published-data notebook documents R’s optimizer precision limit for the near-zero Hsb82 residuals. A separate phit-versus-statsmodels check keeps the uniform 1e-7 + 1e-6 tolerance.</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>All quantities pass in every case. The <a href="lmm-results.json">saved report</a> and the <a href="lmm-public-results.json">published-data report</a> record versions, full outputs, Python warnings and backend, the covariance convention, and differences from R.</p>
+<p>Further tests outside the comparison:</p>
+<ul>
+<li>PHP: integer and string group identity, deletion of null groups, rejection of float and boolean labels before deletion, missing-value warnings, and strict rejection.</li>
+<li>Rust: units, row and group order, invalid shapes, unidentified grouping, rank deficiency, perfect fits, and unsupported zero residual variance.</li>
+<li>Rust: a balanced intercept-only sample with analytically known variances and shrinkage.</li>
+<li>Rust: an observation-level GLS check of the cached QR reduction at several variance ratios, with correlated predictors and large outcome offsets, for both optimized and arbitrary coefficients.</li>
+</ul>
+</section>
+<section id="known-exceptions-and-limits" class="level2">
+<h2 class="anchored" data-anchor-id="known-exceptions-and-limits">Known exceptions and limits</h2>
+<ul>
+<li>The profile search uses a finite log-ratio range and grid. It is not a proof of global optimality.</li>
+<li>This record covers one random intercept fitted by ML. REML, random slopes, and several grouping terms are verified separately in <a href="../r-compatibility.html">R compatibility</a>.</li>
+<li>No finite-sample df adjustment or variance-component test is offered. Normal inference with few groups can be unreliable.</li>
+</ul>
+</section>
+<section id="reproduction" class="level2">
+<h2 class="anchored" data-anchor-id="reproduction">Reproduction</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> test <span class="at">--workspace</span> <span class="at">--locked</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> phit <span class="at">--locked</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$PWD</span><span class="st">/target/debug/libphit.dylib"</span> tests/lmm.php</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">.context/notebooks-venv/bin/python</span> docs/verifications/compare_lmm.py</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">QUARTO_PYTHON</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/.context/notebooks-venv/bin/python"</span> <span class="dt">\</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">quarto</span> render docs/notebooks/lmm-verification.qmd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Add <code>--public</code> to <code>compare_lmm.py</code> for the published-data comparison.</li>
+<li>Regenerate published-data expectations from the pinned snapshots with <code>.context/notebooks-venv/bin/python tests/generate-lmm-public-fixtures.py</code>. Add <code>--export</code> only to refresh the upstream data.</li>
+<li>Regenerate the simulated fixtures with <code>Rscript tests/generate-lmm-fixtures.R</code>. lme4 is a development dependency, and the Rust and PHP tests need no R.</li>
+<li>Use <code>.so</code> on Linux.</li>
+</ul>
+<p>See also: <a href="../reference-models.html#gaussian-random-intercept-mixed-model">contract</a> · <a href="../notebooks/lmm-math.html">math</a> · <a href="../benchmarks/lmm.html">benchmark</a></p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

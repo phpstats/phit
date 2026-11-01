@@ -2,153 +2,159 @@
 title: "Descriptive statistics"
 ---
 
-These ten functions summarize ordinary PHP numeric arrays. They are deterministic,
-stateless native calculations; no intercept, model fitting or retained sample
-object is involved. Array keys are ignored and iteration order aligns pairs and
-weights. Results are floats except `stat_quantile_array`, which returns a packed
-list in probability-array iteration order.
-
-## Calls and conventions
-
-```php
-Phit\stat_mean(array $values, string $missing = 'raise'): float;
-Phit\stat_var(array $values, string $type = 'sample', string $missing = 'raise'): float;
-Phit\stat_sd(array $values, string $type = 'sample', string $missing = 'raise'): float;
-Phit\stat_cov(array $x, array $y, string $type = 'sample', string $missing = 'raise'): float;
-Phit\stat_cor(array $x, array $y, string $missing = 'raise'): float;
-Phit\stat_quantile(array $values, float $p, string $missing = 'raise'): float;
-Phit\stat_quantile_array(array $values, array $probabilities, string $missing = 'raise'): array;
-Phit\stat_median(array $values, string $missing = 'raise'): float;
-Phit\stat_weighted_mean(array $values, array $weights, string $missing = 'raise'): float;
-Phit\stat_weighted_var(array $values, array $weights, string $type = 'frequency', string $missing = 'raise'): float;
-```
-
-`type: 'sample'` variance/SD/covariance divides by n−1; `'population'` divides by n.
-Population variance/SD permits one value and returns zero. Covariance/correlation
-requires at least two aligned retained pairs under either normalization. Other
-summaries require one retained value. Correlation with a constant input is NAN,
-an explicitly undefined statistic. An empty requested probability array returns
-`[]` after validating the supplied values.
-
-Quantiles use R's default **type 7** interpolation. For sorted values x, index
-$h=1+(n-1)p$; interpolate between adjacent values using the fractional part of h.
-p must be in `[0,1]`. Endpoints are the minimum and maximum. Median is the type-7
-quantile at p=0.5. The batch function sorts once for all requested probabilities;
-it returns exactly the same values as scalar calls.
-
-## Weight definitions
-
-Let $W=\sum_i w_i$, $m=\sum_i w_i x_i/W$, and $SS=\sum_i w_i(x_i-m)^2$.
-Weights must be nonnegative and finite; the retained total must be positive.
-
-| Weighted variance type | Definition | Interpretation |
-| --- | --- | --- |
-| `frequency` (default) | $SS/(W-1)$ | Replication/count weights; requires W > 1 |
-| `reliability` | $SS/(W-\sum_i w_i^2/W)$ | Reliability/precision weights; requires a positive denominator |
-| `population` | $SS/W$ | Weighted population second moment |
-
-Frequency and reliability weighting differ. Integer frequency weights reproduce
-the sample variance of an expanded sample. Reliability/population results are
-invariant to multiplying all weights by a positive constant. Zero weights are
-allowed. One effective value has zero population variance but undefined reliability
-variance. Negative weights are rejected even when the paired value is missing.
-Weights are aligned to original input positions before pairwise deletion.
-The separate [draw moments](draw-numerics.qmd) API always normalizes weights and
-calls reliability normalization `'unbiased'`; it never treats weights as counts.
-
-## Missing values and errors
-
-Null and NAN are missing values. The default `missing: 'raise'` rejects them with
-1001. `missing: 'drop'` explicitly removes them, **pairwise** for covariance,
-correlation and weighted functions. No warning or retained-row metadata is returned;
-dropping is opt-in. Infinity always raises 1003, including an element paired with
-a missing value. Strings, booleans, objects and nested arrays raise 1001. All
-aligned arrays must have equal original lengths, or 1002 is raised.
-
-Unsupported type/missing options, insufficient retained values, invalid weights
-or invalid probability domains raise 1001. NAN probability raises 1003. Nonfinite
-arithmetic results also raise 1003, including an overflowing weight sum or squared
-deviation. The explicit NAN for constant-input correlation remains valid. This
-release fixed a case where an overflowing variance had been hidden as zero by
-floating-point `max(NAN, 0)`.
-
-Sums use Neumaier compensation; variances/covariances use corrected two-pass
-centered moments. This improves accuracy with large common offsets. These are
-binary64 calculations and do not promise arbitrary-scale extended precision.
-
-## Example and verification
+Summarize PHP numeric arrays: means, variances, covariance and correlation, quantiles, weighted moments, kernel density estimates, interpolation, and the empirical CDF. The functions are stateless and return floats or packed lists.
 
 ```php
 $values = [2.5, 3.1, 4.7, 1.2, 9.8, 5.5, 3.3];
-$mean = Phit\stat_mean($values);                     // 4.3
-$sampleVariance = Phit\stat_var($values);       // About 7.85667
-$quartiles = Phit\stat_quantile_array($values, [.25, .5, .75]);
-$explicitDrop = Phit\stat_mean([1, null, 3], missing: 'drop'); // 2
+
+Phit\stat_mean($values);                         // 4.3
+Phit\stat_var($values);                          // 7.85667
+// [2.8, 3.3, 5.1]
+Phit\stat_quantile_array($values, [.25, .5, .75]);
+Phit\stat_mean([1, null, 3], missing: 'drop');   // 2.0
 ```
 
-`tests/descriptive.php` checks 145 R reference quantities plus scalar/batch
-consistency, missing policies, pairwise deletion, weights, boundaries, malformed
-inputs and arithmetic overflow. `crates/stats-core/tests/descriptive.rs` checks
-the same stored R cases independently of PHP and adds core failure/degeneracy
-checks. The eight univariate samples, three paired samples and two weighted samples
-include large offsets, tiny values, constant data and reproducible simulations.
-Reference tolerance is relative `1e-12`, with exact zeros. R is not required by
-the ordinary test suites.
+- Array keys are ignored. Iteration order aligns pairs and weights.
+- Every function except `stat_quantile_array`, `stat_density`, `stat_approx`, and `stat_ecdf` returns a float.
 
-Regenerate intentionally with `Rscript tests/generate-distribution-fixtures.R`;
-this also regenerates the distribution R fixture. The [provenance manifest](verifications/reference-manifest.json)
-records inputs, versions, generators and hashes. The [release gate](verification.qmd)
-includes the PHP suite and the runnable `examples/distributions.php`.
+## Summaries
+
+```php
+Phit\stat_mean(array $values, string $missing = 'raise'): float;
+Phit\stat_var(array $values, string $type = 'sample',
+    string $missing = 'raise'): float;
+Phit\stat_sd(array $values, string $type = 'sample',
+    string $missing = 'raise'): float;
+Phit\stat_cov(array $x, array $y, string $type = 'sample',
+    string $missing = 'raise'): float;
+Phit\stat_cor(array $x, array $y,
+    string $missing = 'raise'): float;
+Phit\stat_quantile(array $values, float $p,
+    string $missing = 'raise'): float;
+Phit\stat_quantile_array(array $values, array $probabilities,
+    string $missing = 'raise'): array;
+Phit\stat_median(
+    array $values,
+    string $missing = 'raise',
+): float;
+Phit\stat_weighted_mean(array $values, array $weights,
+    string $missing = 'raise'): float;
+Phit\stat_weighted_var(array $values, array $weights,
+    string $type = 'frequency', string $missing = 'raise'): float;
+```
+
+| `type` | Divisor | Minimum retained values |
+| --- | --- | --- |
+| `sample` (default) | n − 1 | Two |
+| `population` | n | One for variance and SD, which return 0; two for covariance |
+
+- Correlation needs at least two retained pairs. If either input is constant, it returns `NAN`, which marks the statistic as undefined.
+- Other summaries need at least one retained value.
+
+### Quantiles
+
+Quantiles use R's default **type 7**. For sorted values x, let h = 1 + (n − 1)p and interpolate between the adjacent values using the fractional part of h.
+
+- p must be in `[0, 1]`. p = 0 and p = 1 give the minimum and maximum.
+- The median is the type-7 quantile at p = 0.5.
+- `stat_quantile_array` sorts once and returns the same values as scalar calls, in the order of the probability array. An empty probability array returns `[]` after the values are validated.
+
+## Weights
+
+Let $W=\sum_i w_i$, $m=\sum_i w_i x_i/W$, and $SS=\sum_i w_i(x_i-m)^2$. Weights must be finite and nonnegative, and the retained total must be positive.
+
+| `stat_weighted_var` type | Definition | Use |
+| --- | --- | --- |
+| `frequency` (default) | $SS/(W-1)$ | Counts or replication weights; needs W > 1 |
+| `reliability` | $SS/(W-\sum_i w_i^2/W)$ | Precision weights; needs a positive denominator |
+| `population` | $SS/W$ | Weighted population second moment |
+
+- Integer frequency weights give the sample variance of the expanded sample.
+- Reliability and population results do not change when all weights are multiplied by a positive constant.
+- Zero weights are allowed. With one effective value, the population variance is 0 and the reliability variance is undefined.
+- A negative weight is rejected even when its paired value is missing. Weights align to original positions before deletion.
+- The [draw moments](draw-numerics.qmd) API always normalizes weights and calls reliability normalization `'unbiased'`. It never treats weights as counts.
+
+## Missing values
+
+| Value | Default `missing: 'raise'` | `missing: 'drop'` |
+| --- | --- | --- |
+| `null`, `NAN` | Exception 1001 | Dropped; pairwise for covariance, correlation, and weighted functions |
+| `±INF` | Exception 1003 | Exception 1003, even when paired with a missing value |
+| String, boolean, object, nested array | Exception 1001 | Exception 1001 |
+
+Dropping is opt-in. Unlike the model functions, these functions return no warning and no row accounting.
+
+## Errors
+
+| Condition | Exception code |
+| --- | --- |
+| Aligned arrays of different original lengths | 1002 |
+| Unknown `type` or `missing`, too few retained values, invalid weights, or p outside `[0, 1]` | 1001 |
+| `NAN` probability | 1003 |
+| Nonfinite arithmetic result, such as an overflowing weight sum or squared deviation | 1003 |
+
+Correlation of a constant input returns `NAN` and does not throw.
+
+Sums use Neumaier compensation, and variances and covariances use corrected two-pass centered moments. This keeps accuracy with large common offsets. The calculations are binary64 and have no extended precision.
 
 ## Density estimation, interpolation, and the ECDF
 
-Five functions follow R's `density()`, `bw.nrd0()`, `bw.nrd()`, `approx()`, and
-`ecdf()`. Argument names match R's.
-
-```php
-Phit\stat_density(array $x, string|float $bw = 'nrd0', float $adjust = 1.0, string $kernel = 'gaussian',
-    int $n = 512, ?float $from = null, ?float $to = null, float $cut = 3.0, ?array $weights = null,
-    string $missing = 'raise'): array; // ['x' => list, 'y' => list, 'bw' => float, 'n' => int]
-Phit\stat_bw_nrd0(array $x, string $missing = 'raise'): float;
-Phit\stat_bw_nrd(array $x, string $missing = 'raise'): float;
-Phit\stat_approx(array $x, array $y, array $xout, string $method = 'linear', int $rule = 1,
-    string $ties = 'mean', float $f = 0.0, string $missing = 'raise'): array;
-Phit\stat_ecdf(array $x, array $q, string $missing = 'raise'): array;
-```
-
-`stat_density` reproduces R's algorithm. The data are binned linearly onto a grid
-of at least 512 points (the next power of two above `n`), convolved with the kernel
-by FFT, and interpolated onto `n` points from `from` to `to`. The grid ends default
-to the data range extended by `cut` bandwidths. The bandwidth is `'nrd0'`
-(Silverman's rule, the default), `'nrd'` (Scott's variation), or a positive
-number, and is multiplied by `adjust`. The kernels are `gaussian`, `epanechnikov`,
-`rectangular`, `triangular`, `biweight`, `cosine`, and `optcosine`. Weights are
-used as given, as in R. Weights that sum to one are renormalized after missing
-values are dropped. The automatic bandwidths ignore weights, as R's do. R's
-`ucv`, `bcv`, and `SJ` bandwidths are not available.
-
-`stat_approx` sorts the points by x and collapses tied x values by `ties`
-(`'mean'`, `'min'`, or `'max'`). It then interpolates linearly or, with
-`method: 'constant'`, by a step function in which `f` weights the right-hand value.
-Outside the data range, `rule: 1` returns NAN and `rule: 2` returns the value at
-the nearer end. `stat_ecdf` returns the proportion of x at or below each q.
-
-The data arrays (`x`, `y`, and `weights`) follow the missing-value policy above.
-Pairs are dropped together. Evaluation points (`xout` and `q`) may be infinite,
-and a null or NAN point returns NAN, as R returns NA.
+Five functions follow R's `density()`, `bw.nrd0()`, `bw.nrd()`, `approx()`, and `ecdf()`, with R's argument names.
 
 ```php
 $draws = Phit\dist_normal_rng(4000, 7, 0.3, 0.05);
 $d = Phit\stat_density($draws);
-$heights = Phit\stat_approx($d['x'], $d['y'], [0.25, 0.3, 0.35]);
-$below = Phit\stat_ecdf($draws, [0.0]); // share of draws at or below zero
+$at = [0.25, 0.3, 0.35];
+$heights = Phit\stat_approx($d['x'], $d['y'], $at);
+$below = Phit\stat_ecdf($draws, [0.0]); // Share at or below 0.
 ```
 
-`tests/smoothing.php` compares 15,639 quantities with R. The 16 density cases
-cover every kernel, both bandwidth rules, fixed bandwidths, weights, explicit
-ranges, grids larger than 512 points, and the zero-IQR and constant-data
-bandwidth fallbacks. The approx and ECDF cases cover both rules, both methods,
-each ties option, and reading density heights at quantiles of posterior draws.
-Bandwidths, grids, and interpolated values agree with R to relative `1e-12`.
-Density heights agree to `1e-12` times the peak height, and ECDF proportions
-agree exactly. Regenerate the fixture with `Rscript tests/generate-smoothing-fixtures.R`.
+```php
+Phit\stat_density(array $x, string|float $bw = 'nrd0',
+    float $adjust = 1.0, string $kernel = 'gaussian',
+    int $n = 512, ?float $from = null, ?float $to = null,
+    float $cut = 3.0, ?array $weights = null,
+    string $missing = 'raise'): array;
+Phit\stat_bw_nrd0(array $x, string $missing = 'raise'): float;
+Phit\stat_bw_nrd(array $x, string $missing = 'raise'): float;
+Phit\stat_approx(array $x, array $y, array $xout,
+    string $method = 'linear', int $rule = 1,
+    string $ties = 'mean', float $f = 0.0,
+    string $missing = 'raise'): array;
+Phit\stat_ecdf(array $x, array $q,
+    string $missing = 'raise'): array;
+```
+
+`stat_density()` returns `['x' => list, 'y' => list, 'bw' => float, 'n' => int]`. It follows R's algorithm: the data are binned linearly onto a grid of at least 512 points (the next power of two above `n`), convolved with the kernel by FFT, and interpolated onto `n` points from `from` to `to`.
+
+| Option | Values |
+| --- | --- |
+| `bw` | `'nrd0'` (Silverman's rule, default), `'nrd'` (Scott's variation), or a positive number; multiplied by `adjust` |
+| `kernel` | `gaussian`, `epanechnikov`, `rectangular`, `triangular`, `biweight`, `cosine`, `optcosine` |
+| `from`, `to` | Default to the data range extended by `cut` bandwidths |
+| `weights` | Used as given, as in R; weights that sum to one are renormalized after missing values are dropped |
+
+- The automatic bandwidths ignore weights, as R's do.
+- R's `ucv`, `bcv`, and `SJ` bandwidths are not available.
+
+`stat_approx()` sorts the points by x and collapses tied x values by `ties` (`'mean'`, `'min'`, or `'max'`).
+
+- `method: 'linear'` interpolates linearly. `method: 'constant'` uses a step function in which `f` weights the right-hand value.
+- Outside the data range, `rule: 1` returns `NAN` and `rule: 2` returns the value at the nearer end.
+
+`stat_ecdf()` returns the proportion of x at or below each q.
+
+- `x`, `y`, and `weights` follow the missing-value policy above, and pairs are dropped together.
+- Evaluation points (`xout` and `q`) may be infinite. A `null` or `NAN` evaluation point returns `NAN`, as R returns `NA`.
+
+## Evidence
+
+| Test | Compares | Tolerance |
+| --- | --- | --- |
+| `tests/descriptive.php`, `crates/stats-core/tests/descriptive.rs` | 145 R reference quantities on 13 samples (large offsets, tiny values, constant data, simulations), plus missing policies, weights, boundaries, malformed inputs, and overflow | Relative `1e-12`; exact zeros |
+| `tests/smoothing.php` | 15,639 quantities from 16 density cases and the approx and ECDF cases | Relative `1e-12`; density heights `1e-12` × peak; ECDF exact |
+
+- R is not needed to run the tests.
+- Regenerate the fixtures with `Rscript tests/generate-distribution-fixtures.R`, which also writes the distribution fixture, and `Rscript tests/generate-smoothing-fixtures.R`.
+- The [provenance manifest](verifications/reference-manifest.json) records the inputs, versions, generators, and hashes.

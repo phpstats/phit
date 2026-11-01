@@ -3,7 +3,7 @@ title: "v0.2 numerical API assessment (historical)"
 ---
 
 ::: {.callout-note}
-This record was written from 2026-10-12 to 2026-10-17, before the first tagged release. It describes the code and evidence as they were then, and is kept as history. The [API overview](contracts.qmd) and [verification](verification.qmd) pages describe the current releases.
+**Historical report.** Version: the v0.2 numerical API work, before v0.2.0 was tagged on 2026-10-30. Written: 2026-10-12 to 2026-10-17. Purpose: record the distribution, descriptive, draw, and sampling work and its evidence. Function names, counts, and limits are those of the time. For current behavior, see the [API overview](contracts.qmd), [Names in phit 0.4](contracts.qmd#names-in-phit-0.4), and [Verification](verification.qmd).
 :::
 
 The distribution and statistical utility implementation includes probability
@@ -11,10 +11,8 @@ evaluation, descriptive/draw kernels and explicitly seeded batch sampling.
 The native release gate passes on this Apple Silicon/macOS
 workstation with PHP 8.5.10 and matching headers: **68 Rust tests, 14 PHP suites
 and eleven executed examples passed**, along with clippy, signatures, provenance and
-evidence-table checks. This is a source/readiness record;
-no tag, registry submission, binary publication or deployment was performed.
-Cargo/PIE version metadata still identifies the existing 0.1.0 baseline until the
-project's separate release/versioning step.
+evidence-table checks. Cargo and PIE version metadata still identified the
+0.1.0 baseline at the time.
 
 ## Delivered scope
 
@@ -59,8 +57,8 @@ numerical paths are preserved.
 The executable [reuse experiment](verifications/distributions-reuse.json) found
 that the new Student-t quantile improves R agreement for the six tested OLS critical
 values, but changes their rounding. The public normal log-CDF differs at 17 saved
-points from the established probit calculation. This task also requires preserving
-regression behavior, so neither path is replaced in this release. A future refactor
+points from the established probit calculation. Regression behavior had to be
+preserved, so neither path was replaced. A future refactor
 can use this evidence to make an explicit model compatibility decision.
 
 Random sampling is implemented with `dist_{family}_rng(n, seed, ...parameters)`.
@@ -84,8 +82,7 @@ The gate runs formatting, clippy with warnings denied, all Rust tests, the relea
 extension build, reflected signature/default/stub checks, every PHP integration
 suite, examples and offline provenance/documentation checks. The benchmark and
 independent-reference generation commands are separate and documented alongside
-their reports. Quarto renders the new guides, contracts, comparison and benchmark
-pages into the local `_site` output without publishing them.
+their reports.
 
 ## Release and platform limits
 
@@ -98,5 +95,5 @@ the separate release process. Windows/ZTS remain outside the supported package
 matrix. Benchmarks do not establish performance bounds on other machines or all
 finite/extreme arguments.
 
-Version/tag selection, Packagist registration and release/binary publication remain
-external release steps. No commit, push, PR or publication is part of this work.
+Version and tag selection, Packagist registration, and binary publication were
+left to the release process.

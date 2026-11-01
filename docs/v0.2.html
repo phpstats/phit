@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -685,10 +686,10 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This record was written from 2026-10-12 to 2026-10-17, before the first tagged release. It describes the code and evidence as they were then, and is kept as history. The <a href="./contracts.html">API overview</a> and <a href="./verification.html">verification</a> pages describe the current releases.</p>
+<p><strong>Historical report.</strong> Version: the v0.2 numerical API work, before v0.2.0 was tagged on 2026-10-30. Written: 2026-10-12 to 2026-10-17. Purpose: record the distribution, descriptive, draw, and sampling work and its evidence. Function names, counts, and limits are those of the time. For current behavior, see the <a href="./contracts.html">API overview</a>, <a href="./contracts.html#names-in-phit-0.4">Names in phit 0.4</a>, and <a href="./verification.html">Verification</a>.</p>
 </div>
 </div>
-<p>The distribution and statistical utility implementation includes probability evaluation, descriptive/draw kernels and explicitly seeded batch sampling. The native release gate passes on this Apple Silicon/macOS workstation with PHP 8.5.10 and matching headers: <strong>68 Rust tests, 14 PHP suites and eleven executed examples passed</strong>, along with clippy, signatures, provenance and evidence-table checks. This is a source/readiness record; no tag, registry submission, binary publication or deployment was performed. Cargo/PIE version metadata still identifies the existing 0.1.0 baseline until the project’s separate release/versioning step.</p>
+<p>The distribution and statistical utility implementation includes probability evaluation, descriptive/draw kernels and explicitly seeded batch sampling. The native release gate passes on this Apple Silicon/macOS workstation with PHP 8.5.10 and matching headers: <strong>68 Rust tests, 14 PHP suites and eleven executed examples passed</strong>, along with clippy, signatures, provenance and evidence-table checks. Cargo and PIE version metadata still identified the 0.1.0 baseline at the time.</p>
 <section id="delivered-scope" class="level2">
 <h2 class="anchored" data-anchor-id="delivered-scope">Delivered scope</h2>
 <table class="caption-top table">
@@ -758,7 +759,7 @@ Note
 </section>
 <section id="reuse-and-rng-decisions" class="level2">
 <h2 class="anchored" data-anchor-id="reuse-and-rng-decisions">Reuse and RNG decisions</h2>
-<p>The executable <a href="verifications/distributions-reuse.json">reuse experiment</a> found that the new Student-t quantile improves R agreement for the six tested OLS critical values, but changes their rounding. The public normal log-CDF differs at 17 saved points from the established probit calculation. This task also requires preserving regression behavior, so neither path is replaced in this release. A future refactor can use this evidence to make an explicit model compatibility decision.</p>
+<p>The executable <a href="verifications/distributions-reuse.json">reuse experiment</a> found that the new Student-t quantile improves R agreement for the six tested OLS critical values, but changes their rounding. The public normal log-CDF differs at 17 saved points from the established probit calculation. Regression behavior had to be preserved, so neither path was replaced. A future refactor can use this evidence to make an explicit model compatibility decision.</p>
 <p>Random sampling is implemented with <code>dist_{family}_rng(n, seed, ...parameters)</code>. Each call owns a pinned ChaCha20 stream and transforms open-interval uniforms through the existing inverse CDF. The <a href="./rng.html">sampling contract</a> defines seed ownership, count/type/range policies and reproducibility limits. Independent Python ChaCha/PCG/Open01 equations and base-R quantiles verify the stream and samples; <a href="./benchmarks/rng.html">benchmarks</a> verify sampled points and full-vector moments before recording seeded-call timings. The earlier handoff recommendation to defer RNG has been superseded by this implementation.</p>
 </section>
 <section id="verification-and-maintenance" class="level2">
@@ -766,12 +767,12 @@ Note
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">PHP</span><span class="op">=</span>/path/to/matching/php <span class="va">PHP_CONFIG</span><span class="op">=</span>/path/to/php-config <span class="ex">./scripts/check</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/reference-manifest.py <span class="at">--check</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/distribution-docs.py <span class="at">--check</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The gate runs formatting, clippy with warnings denied, all Rust tests, the release extension build, reflected signature/default/stub checks, every PHP integration suite, examples and offline provenance/documentation checks. The benchmark and independent-reference generation commands are separate and documented alongside their reports. Quarto renders the new guides, contracts, comparison and benchmark pages into the local <code>_site</code> output without publishing them.</p>
+<p>The gate runs formatting, clippy with warnings denied, all Rust tests, the release extension build, reflected signature/default/stub checks, every PHP integration suite, examples and offline provenance/documentation checks. The benchmark and independent-reference generation commands are separate and documented alongside their reports.</p>
 </section>
 <section id="release-and-platform-limits" class="level2">
 <h2 class="anchored" data-anchor-id="release-and-platform-limits">Release and platform limits</h2>
 <p>The new completion run verifies macOS arm64/PHP 8.5.10. Earlier packaging evidence in <a href="./releasing.html#deployment-verification">deployment</a> covers Linux arm64 PHP 8.3/8.4/8.5 for the preceding source snapshot. That historical evidence does not establish that the latest hardening changes passed those environments. The configured remote amd64/PHP matrix and updated binary/container builds must run as part of the separate release process. Windows/ZTS remain outside the supported package matrix. Benchmarks do not establish performance bounds on other machines or all finite/extreme arguments.</p>
-<p>Version/tag selection, Packagist registration and release/binary publication remain external release steps. No commit, push, PR or publication is part of this work.</p>
+<p>Version and tag selection, Packagist registration, and binary publication were left to the release process.</p>
 
 
 </section>

@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -645,11 +646,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#executed-reference-comparison" id="toc-executed-reference-comparison" class="nav-link active" data-scroll-target="#executed-reference-comparison">Executed reference comparison</a></li>
-  <li><a href="#reference-generation-and-limitations" id="toc-reference-generation-and-limitations" class="nav-link" data-scroll-target="#reference-generation-and-limitations">Reference generation and limitations</a></li>
-  <li><a href="#release-gate-tolerances-and-checks" id="toc-release-gate-tolerances-and-checks" class="nav-link" data-scroll-target="#release-gate-tolerances-and-checks">Release-gate tolerances and checks</a></li>
-  <li><a href="#documented-reference-differences" id="toc-documented-reference-differences" class="nav-link" data-scroll-target="#documented-reference-differences">Documented reference differences</a></li>
-  <li><a href="#backend-and-model-path-audit" id="toc-backend-and-model-path-audit" class="nav-link" data-scroll-target="#backend-and-model-path-audit">Backend and model-path audit</a></li>
+  <li><a href="#compared" id="toc-compared" class="nav-link active" data-scroll-target="#compared">Compared</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#inputs-and-references" id="toc-inputs-and-references" class="nav-link" data-scroll-target="#inputs-and-references">Inputs and references</a></li>
+  <li><a href="#tolerance-and-checks" id="toc-tolerance-and-checks" class="nav-link" data-scroll-target="#tolerance-and-checks">Tolerance and checks</a></li>
+  <li><a href="#known-exceptions" id="toc-known-exceptions" class="nav-link" data-scroll-target="#known-exceptions">Known exceptions</a></li>
+  <li><a href="#reproduction" id="toc-reproduction" class="nav-link" data-scroll-target="#reproduction">Reproduction</a></li>
+  <li><a href="#implementation-history-backend-and-model-path-audit" id="toc-implementation-history-backend-and-model-path-audit" class="nav-link" data-scroll-target="#implementation-history-backend-and-model-path-audit">Implementation history: backend and model-path audit</a></li>
   </ul>
 </nav>
     </div>
@@ -675,9 +678,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The <a href="../distributions.html">probability API</a> has independent base-R, SciPy and 60-digit mpmath reference evidence. This page reads no runtime models; its tables are generated from the <a href="distributions-results.json">saved comparison report</a> by <code>python3 scripts/distribution-docs.py</code>. The report records the native refresh date, versions, per-point errors and unavailable reference points. Tests use immutable expected values and never select a reference by looking at the native result.</p>
-<section id="executed-reference-comparison" class="level2">
-<h2 class="anchored" data-anchor-id="executed-reference-comparison">Executed reference comparison</h2>
+<p>phit’s <a href="../distributions.html">distribution functions</a> are compared with base R, SciPy, and 60-digit mpmath values. The table below is generated from the <a href="distributions-results.json">saved comparison report</a> by <code>python3 scripts/distribution-docs.py</code>. Shared metrics are described in <a href="../verification.html">Verification</a>.</p>
+<section id="compared" class="level2">
+<h2 class="anchored" data-anchor-id="compared">Compared</h2>
+<p>Densities and masses, CDFs, survival functions, their logs, and quantiles for 13 families, at saved parameter sets and evaluation points that include tiny probabilities, large counts and shapes, support boundaries, and point masses. Expected values are fixed in advance and are never chosen by looking at the native result.</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
 <!-- BEGIN REFERENCE EVIDENCE -->
 <p>Native refresh: <strong>2026-10-12T15:18:49.923101+00:00</strong>. PHP 8.5.10; R version 4.6.1 (2026-06-24); SciPy 1.18.1; mpmath 1.4.1 at 60 digits.</p>
 <p>553 cases, 8,661 points, 27 unavailable independent reference points.</p>
@@ -773,10 +780,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <!-- END REFERENCE EVIDENCE -->
 <p>The table uses finite, nonzero mpmath reference values and excludes quantile endpoints. Logs use error divided by max(1, |reference|), ordinary densities and probabilities use relative error (a normal-range floor for subnormal references), and quantiles use relative error with a <code>1e-300</code> floor. Zero/support/degenerate endpoints are checked separately below, rather than exaggerated by dividing a small absolute difference by an artificial tiny scale.</p>
-<p>Typical native errors are below <code>1e-13</code>. The worst saved native case is about <code>8.34e-13</code>, in a large-df chi-square log tail; cdflib’s large-shape regime sets the tested accuracy there. R is somewhat better on that case. These are observed errors on specified inputs, not a guarantee for every shape/scale or tail.</p>
+<p>Typical native errors are below <code>1e-13</code>. The worst saved native case is about <code>8.34e-13</code>, in a large-df chi-square log tail, where cdflib’s large-shape regime sets the accuracy. R is somewhat better on that case. These are observed errors on the tested inputs, not a bound for every shape, scale, or tail.</p>
 </section>
-<section id="reference-generation-and-limitations" class="level2">
-<h2 class="anchored" data-anchor-id="reference-generation-and-limitations">Reference generation and limitations</h2>
+<section id="inputs-and-references" class="level2">
+<h2 class="anchored" data-anchor-id="inputs-and-references">Inputs and references</h2>
 <p><code>tests/generate-distribution-fixtures.R</code> produces 553 distribution cases: R d/p/q functions at saved explicit parameter sets and evaluation points, including tiny probabilities, large counts/shapes, support boundaries and point masses. The same generator writes eight univariate, three paired and two weighted descriptive cases using seed 20261012. Numeric JSON inputs are parsed with serde_json float-roundtrip support so that Rust and PHP use the intended binary64 values.</p>
 <p><code>docs/verifications/compare_distributions.py</code> evaluates closed-form densities and regularized incomplete-beta/gamma tails using mpmath at 60 digits. Continuous reference quantiles use independently evaluated log-tail Newton iterations, starting from native/R/SciPy candidates but accepting only a high-precision tail residual. Discrete references verify the CDF-step inequality. Values are rounded once to binary64. A computation timeout or unavailable reference is recorded as null, never replaced by the native value. The 27 unavailable points remain visible in the report; their ordinary tests use the saved R reference and explicit identities. Subnormal values have fewer significant bits, so relative-error claims are limited.</p>
 <p>The <a href="reference-manifest.json">provenance manifest</a> indexes all R/SciPy/mpmath and descriptive inputs, quantities, versions, generators, tolerance policies and hashes. The independent reference fixture SHA-256 values are also recorded in the native refresh report. <code>--stored-references</code> re-evaluates PHP without changing those values.</p>
@@ -789,8 +796,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/distribution-docs.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The optional Python environment needs NumPy, SciPy and mpmath; pins are in <code>tests/benchmarks/distribution-requirements.txt</code>. None are extension runtime or offline-test dependencies.</p>
 </section>
-<section id="release-gate-tolerances-and-checks" class="level2">
-<h2 class="anchored" data-anchor-id="release-gate-tolerances-and-checks">Release-gate tolerances and checks</h2>
+<section id="tolerance-and-checks" class="level2">
+<h2 class="anchored" data-anchor-id="tolerance-and-checks">Tolerance and checks</h2>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -818,11 +825,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><code>tests/distributions.php</code> performs 8,618 comparisons under these original tolerances. When saved R and mpmath differ beyond tolerance, it uses the immutable mpmath value (25 independently adjudicated points). Forty-three documented boundary differences have separate conventions/identity checks. Scalar/batch values must be identical, including NAN/INF conventions where applicable. The suite also checks CDF/SF sums, quantile inverses and monotonicity, direct log functions, degenerate cases, argument names/defaults, array order and invalid input/error categories. An overflowing size-plus-mean NB conversion is checked to avoid a false point mass.</p>
-<p>Rust independently checks extreme Student-t quantiles against mpmath, probability identities, validation and scaled-density underflow. The diagnostic R-comparison test reports raw worst errors including intended differences; it is not the sole correctness gate. PHP’s strict reference/identity suite is required as well.</p>
-<p><code>tests/descriptive.php</code> adds 145 R comparisons and missing/error checks. <code>crates/stats-core/tests/descriptive.rs</code> covers the same stored examples plus overflow and degenerate cases. The release gate includes both PHP suites, the Rust tests and the runnable distribution example. <a href="../descriptive.html">Descriptive conventions</a> explain sample/population and frequency/reliability definitions.</p>
+<p>Rust independently checks extreme Student-t quantiles against mpmath, probability identities, validation and scaled-density underflow. A diagnostic Rust test reports raw worst errors against R, including the intended differences listed below.</p>
+<p><code>tests/descriptive.php</code> adds 145 R comparisons and missing/error checks. <code>crates/stats-core/tests/descriptive.rs</code> covers the same stored examples plus overflow and degenerate cases. <a href="../descriptive.html">Descriptive statistics</a> explains the sample, population, frequency, and reliability definitions.</p>
 </section>
-<section id="documented-reference-differences" class="level2">
-<h2 class="anchored" data-anchor-id="documented-reference-differences">Documented reference differences</h2>
+<section id="known-exceptions" class="level2">
+<h2 class="anchored" data-anchor-id="known-exceptions">Known exceptions</h2>
 <ul>
 <li>Discrete quantile p=1 for a point mass returns its mass location. R/SciPy may instead return the generic upper-support bound, including infinity.</li>
 <li>R’s F density at +INF is NAN; the native API returns zero there.</li>
@@ -832,15 +839,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>R’s mean-form negative-binomial mass approximation for size much larger than the observed count differs from the independent high-precision calculation.</li>
 <li>SciPy’s large-df chi-square CDF has about <code>8.16e-9</code> relative error at the saved five-standard-deviation lower-tail point. The native and R results match mpmath much more closely. The <a href="../benchmarks/distributions.html">benchmark</a> records the same peer discrepancy without weakening native comparison tolerances.</li>
 </ul>
-<p>Raw values and per-point errors remain in the fixtures/report. Intentional conventions and peer-library errors are distinct from unsupported reference points.</p>
+<p>Raw values and per-point errors remain in the fixtures and the report. Intentional conventions and peer-library errors are kept separate from unavailable reference points.</p>
 </section>
-<section id="backend-and-model-path-audit" class="level2">
-<h2 class="anchored" data-anchor-id="backend-and-model-path-audit">Backend and model-path audit</h2>
-<p>The <a href="distributions-audit.json">raw statrs report</a> and executable <code>crates/stats-core/examples/statrs_audit.rs</code> document why statrs alone is not used for the new distribution API. The <a href="distributions-reuse.json">reuse experiment</a> compares the public Normal log-CDF and Student-t quantile with the existing probit and OLS formulas. Candidate t quantiles improve large-df reference error, but all six tested critical values and 17 tested normal log-CDF values differ in rounding. The current release retains the established regression paths and their behavior. This is an evaluated compatibility decision, not an untested refactor.</p>
+<section id="reproduction" class="level2">
+<h2 class="anchored" data-anchor-id="reproduction">Reproduction</h2>
+<p>See the commands under <a href="#inputs-and-references">Inputs and references</a> and run <code>./scripts/check</code> with a matching PHP for the full suite.</p>
+</section>
+<section id="implementation-history-backend-and-model-path-audit" class="level2">
+<h2 class="anchored" data-anchor-id="implementation-history-backend-and-model-path-audit">Implementation history: backend and model-path audit</h2>
+<p>The <a href="distributions-audit.json">raw statrs report</a> and executable <code>crates/stats-core/examples/statrs_audit.rs</code> document why statrs alone is not used for the new distribution API. The <a href="distributions-reuse.json">reuse experiment</a> compares the public Normal log-CDF and Student-t quantile with the existing probit and OLS formulas. Candidate t quantiles improve large-df reference error, but all six tested critical values and 17 tested normal log-CDF values differ in rounding, so the regression code keeps its existing paths.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> run <span class="at">-p</span> stats-core <span class="at">--release</span> <span class="at">--locked</span> <span class="at">--example</span> statrs_audit</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> run <span class="at">-p</span> stats-core <span class="at">--release</span> <span class="at">--locked</span> <span class="at">--example</span> distribution_reuse_audit</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">PHP</span><span class="op">=</span>/path/to/matching/php <span class="va">PHP_CONFIG</span><span class="op">=</span>/path/to/php-config <span class="ex">./scripts/check</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The <a href="../v0.2.html">v0.2 assessment</a> records completed scope, RNG deferral and the remaining external release/platform gates.</p>
+<p>The <a href="../v0.2.html">v0.2 assessment</a> is the historical record of that release’s scope.</p>
 
 
 </section>

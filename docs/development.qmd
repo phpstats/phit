@@ -2,15 +2,13 @@
 title: "Development"
 ---
 
-This page is for working on phit itself: building from a checkout, running the
-tests, and changing the implementation. To use phit in an application, see
-[Installation](installation.qmd). Run the commands below from the repository
-root, which holds Cargo.toml, crates/ and examples/.
+Build phit from a checkout, run its tests, and change the implementation. To use
+phit in an application, see [Installation](installation.qmd). Run the commands
+from the repository root.
 
 ## Environment
 
-
-Following the official [ext-php-rs installation guide](https://ext-php.rs/getting-started/installation.html)
+The setup follows the official [ext-php-rs installation guide](https://ext-php.rs/getting-started/installation.html)
 and [Hello World build workflow](https://ext-php.rs/getting-started/hello_world.html):
 
 ```sh
@@ -34,18 +32,19 @@ export PHP="$(command -v php)"
 export PHP_CONFIG="$(command -v php-config)"
 ```
 
-Check `php -v`, `php-config --version`, and `rustc --version`. PHP and php-config
-must belong to the same installation (including architecture, ZTS/NTS and debug
-mode). `scripts/check` and `scripts/check-fpm` take PHP from `php-config
---php-binary` unless `PHP` is set, so a different `php` earlier on PATH, such as
-Herd's, does not matter to them. Commands you run by hand still need the
-matching `php`.
-The macOS linker configuration permits symbols resolved by PHP when it loads the
-extension; Linux needs no macOS linker flags.
+- Check `php -v`, `php-config --version`, and `rustc --version`.
+- `php` and `php-config` must come from the same installation, with the same
+  architecture, thread safety, and debug mode.
+- `scripts/check` and `scripts/check-fpm` take PHP from `php-config
+  --php-binary` unless `PHP` is set, so another `php` earlier on PATH, such as
+  Herd's, does not affect them. Commands you run by hand still need the matching
+  `php`.
+- On macOS, the linker configuration lets PHP resolve symbols when it loads the
+  extension. Linux needs no extra linker flags.
 
-When using Homebrew LLVM's libclang on macOS, select the matching compiler and
-builtin header directory as well. Mixing Xcode's older arm_neon.h with a newer
-libclang can fail before any statistical tests run:
+With Homebrew LLVM's libclang on macOS, also select the matching compiler and
+header directory. Xcode's older `arm_neon.h` with a newer libclang fails to
+build:
 
 ```sh
 export LIBCLANG_PATH="$(brew --prefix llvm)/lib"
@@ -54,45 +53,28 @@ export CXX="$(brew --prefix llvm)/bin/clang++"
 export BINDGEN_EXTRA_CLANG_ARGS="-resource-dir=$($CC -print-resource-dir) -isysroot=$(xcrun --show-sdk-path)"
 ```
 
-The CI matrix disables fail-fast so a macOS failure does not cancel Linux evidence.
-
 ## Build and run
-
-Run from the repository root with the environment above:
 
 ```sh
 cargo test --workspace --locked
 cargo build -p phit --locked
-# macOS:
+# macOS; on Linux the file is libphit.so.
 export STATS_EXTENSION="$PWD/target/debug/libphit.dylib"
-# Linux instead:
-# export STATS_EXTENSION="$PWD/target/debug/libphit.so"
-php -n -d "extension=$STATS_EXTENSION" -m
 php -n -d "extension=$STATS_EXTENSION" -r 'echo phpversion("phit"), PHP_EOL;'
 php -n -d "extension=$STATS_EXTENSION" tests/ols.php
-php -n -d "extension=$STATS_EXTENSION" tests/logistic.php
-php -n -d "extension=$STATS_EXTENSION" tests/probit.php
-php -n -d "extension=$STATS_EXTENSION" tests/poisson.php
-php -n -d "extension=$STATS_EXTENSION" tests/lmm.php
-php -n -d "extension=$STATS_EXTENSION" tests/r-compatibility.php
-php -n -d "extension=$STATS_EXTENSION" tests/lmm-expanded.php
-php -n -d "extension=$STATS_EXTENSION" tests/logistic-mixed.php
 php -n -d "extension=$STATS_EXTENSION" examples/ols.php
-php -n -d "extension=$STATS_EXTENSION" examples/logistic.php
-php -n -d "extension=$STATS_EXTENSION" examples/probit.php
-php -n -d "extension=$STATS_EXTENSION" examples/poisson.php
-php -n -d "extension=$STATS_EXTENSION" examples/lmm.php
-php -n -d "extension=$STATS_EXTENSION" examples/lmm-slopes.php
-php -n -d "extension=$STATS_EXTENSION" examples/logistic-mixed.php
 ```
 
-For persistent installation, the official optional [cargo-php workflow](https://ext-php.rs/getting-started/cargo-php.html)
-is `cargo install cargo-php --locked`, then from `crates/php-extension`,
-`cargo php install --release`. Back up php.ini first. Alternatively build with
-`cargo build -p phit --release --locked` and add
-`extension=/absolute/path/to/target/release/libphit.dylib` (Linux: `.so`)
-to the CLI php.ini shown by `php --ini`. Then `php examples/ols.php` runs directly.
-Rebuild for each PHP version; `-n` skips ini files for isolated development tests.
+- Each suite in `tests/` and each script in `examples/` runs the same way.
+  `./scripts/check` runs all of them.
+- `-n` skips the ini files, so the tests run against this build only.
+- To load the build permanently, run `cargo build -p phit --release --locked`
+  and add `extension=/absolute/path/to/target/release/libphit.dylib` (Linux:
+  `.so`) to the php.ini that `php --ini` shows. The optional
+  [cargo-php workflow](https://ext-php.rs/getting-started/cargo-php.html)
+  (`cargo install cargo-php --locked`, then `cargo php install --release` from
+  `crates/php-extension`) edits php.ini for you, so back it up first.
+- Rebuild for each PHP version.
 
 [Installation](installation.qmd) covers PIE and the prebuilt binaries.
 [Deploying to servers](deployment.qmd) covers containers and PHP-FPM, and
@@ -100,35 +82,32 @@ Rebuild for each PHP version; `-n` skips ini files for isolated development test
 
 ## Numerical dependency policy
 
-The engine uses nalgebra's Rust-native SVD and QR. There is one maintained numerical
-path, with no BLAS/LAPACK dependency or backend selection. We defer external
-numerical backends until a concrete requirement justifies the additional build
-and deployment work. The earlier Accelerate trial is retained as
-[historical benchmark evidence](benchmarks/ols.qmd#apple-accelerate-experiment);
-its Cargo feature and foreign-call wrapper have been removed.
-
-The posterior-draw kernels also use nalgebra Cholesky, triangular solves and
-pivoted LU. Their [numerical notes](draw-numerics.qmd) document covariance/rank
-tolerances and independent fixtures; `tests/draws.php` is included in `scripts/check`.
+- Linear algebra uses nalgebra's Rust-native SVD, QR, Cholesky, triangular
+  solves, and pivoted LU. There is one numerical path, with no BLAS or LAPACK
+  dependency and no backend selection.
+- The general mixed fitter uses the pinned Rust-native `bobyqa` and `argmin`
+  (Nelder–Mead) crates, which add no C, Fortran, BLAS, or LAPACK requirement.
+- An external numerical backend needs a concrete requirement that justifies the
+  extra build and deployment work. An earlier Apple Accelerate trial was removed;
+  its results are kept as
+  [historical benchmark evidence](benchmarks/ols.qmd#apple-accelerate-experiment).
 
 ## Changing the implementation
 
-Keep statistical calculations in crates/stats-core and PHP conversion in
-crates/php-extension. Work in small increments with established numerical crates.
-Check APIs against the dependency versions in Cargo.lock. Explain important
-mathematical steps near the code, and update contracts and reference tests when
-behavior changes. Do not add abstractions for hypothetical models.
+- Keep statistical calculations in `crates/stats-core` and PHP conversion in
+  `crates/php-extension`.
+- Use established numerical crates, and check their APIs against the versions
+  in `Cargo.lock`.
+- Explain important mathematical steps next to the code.
+- Update the contracts and reference tests when behavior changes.
+- Do not add abstractions for hypothetical models.
 
-Follow [Verification](verification.qmd) for the checks appropriate to a change.
-The tested baseline is Apple Silicon, Rust 1.99 and Homebrew PHP 8.5.10. CI runs
-the checks on macOS and Ubuntu, and the packaging workflow tests Linux x86_64
-and aarch64 at PHP 8.3, 8.4 and 8.5.
+`./scripts/check` runs the offline checks: Rust tests and clippy, every PHP
+suite and example, the stub and signature checks, the reference manifest, and
+the site export. Run it before pushing. [Verification](verification.qmd) lists
+the further checks for each kind of change, and
+[R compatibility](r-compatibility.qmd) covers regenerating R references.
 
-The general mixed fitter also uses pinned Rust-native `bobyqa` and `argmin`
-(Nelder–Mead). These add no C/Fortran, BLAS or LAPACK runtime requirements.
-See [R compatibility](r-compatibility.qmd) for reference regeneration and the
-remaining native optimizer backend work.
-
-`./scripts/check` runs the complete offline gate: Rust tests and clippy, every
-PHP suite and example, the stub and signature checks, the reference manifest,
-and the site export. Run it before pushing.
+CI runs the checks on macOS and Ubuntu, with fail-fast disabled so one platform's
+failure does not cancel the other's. The packaging workflow tests Linux x86_64
+and aarch64 at PHP 8.3, 8.4, and 8.5.

@@ -2,14 +2,13 @@
 title: "Distribution and utility verification"
 ---
 
-The [probability API](../distributions.qmd) has independent base-R, SciPy and
-60-digit mpmath reference evidence. This page reads no runtime models; its tables
-are generated from the [saved comparison report](distributions-results.json) by
-`python3 scripts/distribution-docs.py`. The report records the native refresh date,
-versions, per-point errors and unavailable reference points. Tests use immutable
-expected values and never select a reference by looking at the native result.
+phit's [distribution functions](../distributions.qmd) are compared with base R, SciPy, and 60-digit mpmath values. The table below is generated from the [saved comparison report](distributions-results.json) by `python3 scripts/distribution-docs.py`. Shared metrics are described in [Verification](../verification.qmd).
 
-## Executed reference comparison
+## Compared
+
+Densities and masses, CDFs, survival functions, their logs, and quantiles for 13 families, at saved parameter sets and evaluation points that include tiny probabilities, large counts and shapes, support boundaries, and point masses. Expected values are fixed in advance and are never chosen by looking at the native result.
+
+## Results
 
 <!-- BEGIN REFERENCE EVIDENCE -->
 
@@ -43,11 +42,11 @@ endpoints are checked separately below, rather than exaggerated by dividing a
 small absolute difference by an artificial tiny scale.
 
 Typical native errors are below `1e-13`. The worst saved native case is about
-`8.34e-13`, in a large-df chi-square log tail; cdflib's large-shape regime sets
-the tested accuracy there. R is somewhat better on that case. These are observed
-errors on specified inputs, not a guarantee for every shape/scale or tail.
+`8.34e-13`, in a large-df chi-square log tail, where cdflib's large-shape regime
+sets the accuracy. R is somewhat better on that case. These are observed errors on
+the tested inputs, not a bound for every shape, scale, or tail.
 
-## Reference generation and limitations
+## Inputs and references
 
 `tests/generate-distribution-fixtures.R` produces 553 distribution cases: R d/p/q
 functions at saved explicit parameter sets and evaluation points, including tiny
@@ -85,7 +84,7 @@ The optional Python environment needs NumPy, SciPy and mpmath; pins are in
 `tests/benchmarks/distribution-requirements.txt`. None are extension runtime or
 offline-test dependencies.
 
-## Release-gate tolerances and checks
+## Tolerance and checks
 
 | Quantity | Absolute/relative test tolerance |
 | --- | --- |
@@ -104,17 +103,15 @@ cases, argument names/defaults, array order and invalid input/error categories.
 An overflowing size-plus-mean NB conversion is checked to avoid a false point mass.
 
 Rust independently checks extreme Student-t quantiles against mpmath, probability
-identities, validation and scaled-density underflow. The diagnostic R-comparison
-test reports raw worst errors including intended differences; it is not the sole
-correctness gate. PHP's strict reference/identity suite is required as well.
+identities, validation and scaled-density underflow. A diagnostic Rust test
+reports raw worst errors against R, including the intended differences listed below.
 
 `tests/descriptive.php` adds 145 R comparisons and missing/error checks.
 `crates/stats-core/tests/descriptive.rs` covers the same stored examples plus
-overflow and degenerate cases. The release gate includes both PHP suites,
-the Rust tests and the runnable distribution example. [Descriptive conventions](../descriptive.qmd)
-explain sample/population and frequency/reliability definitions.
+overflow and degenerate cases. [Descriptive statistics](../descriptive.qmd)
+explains the sample, population, frequency, and reliability definitions.
 
-## Documented reference differences
+## Known exceptions
 
 - Discrete quantile p=1 for a point mass returns its mass location. R/SciPy may
   instead return the generic upper-support bound, including infinity.
@@ -133,19 +130,23 @@ explain sample/population and frequency/reliability definitions.
   much more closely. The [benchmark](../benchmarks/distributions.qmd) records the
   same peer discrepancy without weakening native comparison tolerances.
 
-Raw values and per-point errors remain in the fixtures/report. Intentional
-conventions and peer-library errors are distinct from unsupported reference points.
+Raw values and per-point errors remain in the fixtures and the report. Intentional
+conventions and peer-library errors are kept separate from unavailable reference points.
 
-## Backend and model-path audit
+## Reproduction
+
+See the commands under [Inputs and references](#inputs-and-references) and run
+`./scripts/check` with a matching PHP for the full suite.
+
+## Implementation history: backend and model-path audit
 
 The [raw statrs report](distributions-audit.json) and executable
 `crates/stats-core/examples/statrs_audit.rs` document why statrs alone is not used
 for the new distribution API. The [reuse experiment](distributions-reuse.json)
 compares the public Normal log-CDF and Student-t quantile with the existing probit
 and OLS formulas. Candidate t quantiles improve large-df reference error, but all
-six tested critical values and 17 tested normal log-CDF values differ in rounding.
-The current release retains the established regression paths and their behavior.
-This is an evaluated compatibility decision, not an untested refactor.
+six tested critical values and 17 tested normal log-CDF values differ in rounding,
+so the regression code keeps its existing paths.
 
 ```sh
 cargo run -p stats-core --release --locked --example statrs_audit
@@ -153,5 +154,4 @@ cargo run -p stats-core --release --locked --example distribution_reuse_audit
 PHP=/path/to/matching/php PHP_CONFIG=/path/to/php-config ./scripts/check
 ```
 
-The [v0.2 assessment](../v0.2.qmd) records completed scope, RNG deferral and the
-remaining external release/platform gates.
+The [v0.2 assessment](../v0.2.qmd) is the historical record of that release's scope.

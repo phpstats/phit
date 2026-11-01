@@ -3,11 +3,10 @@ title: "Probit: a normal latent variable and Fisher scoring"
 jupyter: python3
 ---
 
-## 1. Meaningful simulated observations
+## 1. Simulated observations
 
 We observe **simulated students**, with study hours, a practice score and a
-binary pass/fail outcome. Inputs are observed data, not guesses. The column of
-ones is constructed to estimate an intercept. R seed 20261013 generates 120
+binary pass/fail outcome. The column of ones estimates an intercept. R seed 20261013 generates 120
 students: hours are uniform between 1 and 12, scores are clipped to 20–95 from
 45 + 3 × hours + normal noise with standard deviation 8. Both are rounded to two decimals.
 
@@ -26,14 +25,11 @@ of $a$. The density is $\phi(a)=e^{-a^2/2}/\sqrt{2\pi}$, and $\Phi'(a)=\phi(a)$.
 Unlike a logit coefficient, $e^{\beta_j}$ is **not** a constant odds multiplier.
 The local probability slope is $\phi(\eta_i)\beta_j$, so it varies by observation.
 
-The hand-worked iteration below deliberately uses zero starting coefficients to
-make the first weights and dot products easy to inspect. Since the v0.1
-stabilization, the native implementation uses a finite marginal intercept start
-for extreme inputs when a ones column is present, which cancels a large common offset.
-Ordinary inputs retain the original zero start; the finite intercept fallback
-is used only for extreme offsets/counts described in the release notes.
-Starting values change the iteration path, not the declared likelihood or
-converged estimates. See [the release notes](../v0.1.qmd).
+The hand-worked iteration below starts from zero coefficients so the first
+weights and dot products are easy to inspect. phit also starts from zero, except
+for extreme inputs with a ones column, where it uses a finite marginal intercept
+start. Starting values change the iteration path, not the likelihood or the
+converged estimates.
 
 ```{python}
 from pathlib import Path
@@ -120,8 +116,9 @@ covariance can differ without either calculation being erroneous.
 
 ## 3. Scoring, weighted matrices and SVD
 
-Fisher scoring solves $I\Delta\beta=g$ and updates coefficients. For Poisson
-this is also the Newton step, since information equals negative Hessian. To avoid
+Fisher scoring solves $I\Delta\beta=g$ and updates coefficients. For probit
+this is not Newton's method, because expected information differs from the
+observed negative Hessian (section 2). To avoid
 forming and inverting the cross-product for fitting, define column scales $D$,
 $A=XD^{-1}$ and $\theta=D\beta$. Solve
 

@@ -2,173 +2,153 @@
 title: "Seeded batch sampling"
 ---
 
-Every supported distribution has a `dist_{family}_rng()` function that returns
-ordinary PHP numeric arrays. Sampling uses mature Rust RNG libraries already in
-the dependency graph: pinned `rand 0.9.5` and `rand_chacha 0.9.0`, now explicit
-stats-core dependencies. No package versions were upgraded. Each call owns and
-restarts its own ChaCha20 state from the supplied seed.
-
-## API and state ownership
-
-The signature is `dist_{family}_rng(int $n, int $seed, ...distribution parameters): array`.
-The family parameters and defaults are exactly those of the corresponding
-[probability API](distributions.qmd#families-and-parameterizations).
+Generate reproducible samples with `dist_{family}_rng()`. Each call starts a new random stream from the supplied seed and returns a PHP array.
 
 ```php
-$normal = Phit\dist_normal_rng(n: 5, seed: 42); // Default mean 0, SD 1.
-$measurements = Phit\dist_normal_rng(n: 8, seed: 20261012, mean: 10, sd: .5);
-$counts = Phit\dist_poisson_rng(n: 8, seed: 20261013, lambda: 3.2);
+// Default mean 0 and SD 1.
+$normal = Phit\dist_normal_rng(n: 5, seed: 42);
+$measurements = Phit\dist_normal_rng(
+    n: 8,
+    seed: 20261012,
+    mean: 10,
+    sd: .5,
+);
+$counts = Phit\dist_poisson_rng(
+    n: 8,
+    seed: 20261013,
+    lambda: 3.2,
+);
 $beta = Phit\dist_beta_rng(n: 8, seed: 17, alpha: 2, beta: 5);
 ```
 
-| Function | Parameters after n and seed |
+## Signature and parameters
+
+`dist_{family}_rng(int $n, int $seed, ...parameters): array`. The parameters and defaults are those of the [probability functions](distributions.qmd#families-and-parameterizations).
+
+| Function | Parameters after `n` and `seed` |
 | --- | --- |
-| `dist_normal_rng` | mean = 0, sd = 1 |
-| `dist_t_rng` | df |
-| `dist_chisquare_rng` | df |
-| `dist_f_rng` | df1, df2 |
-| `dist_beta_rng` | alpha, beta |
-| `dist_gamma_rng` | shape, scale = 1 |
-| `dist_exponential_rng` | rate = 1 |
-| `dist_lognormal_rng` | meanlog = 0, sdlog = 1 |
-| `dist_logistic_rng` | location = 0, scale = 1 |
-| `dist_binomial_rng` | size, prob |
-| `dist_poisson_rng` | lambda |
-| `dist_nbinom_rng` | size, prob |
-| `dist_nbinom_mu_rng` | size, mu |
+| `dist_normal_rng` | `mean = 0`, `sd = 1` |
+| `dist_t_rng` | `df` |
+| `dist_chisquare_rng` | `df` |
+| `dist_f_rng` | `df1`, `df2` |
+| `dist_beta_rng` | `alpha`, `beta` |
+| `dist_gamma_rng` | `shape`, `scale = 1` |
+| `dist_exponential_rng` | `rate = 1` |
+| `dist_lognormal_rng` | `meanlog = 0`, `sdlog = 1` |
+| `dist_logistic_rng` | `location = 0`, `scale = 1` |
+| `dist_binomial_rng` | `size`, `prob` |
+| `dist_poisson_rng` | `lambda` |
+| `dist_nbinom_rng` | `size`, `prob` |
+| `dist_nbinom_mu_rng` | `size`, `mu` |
 
-`n` is an integer in `[0,1000000]`; `seed` is a nonnegative PHP integer, including
-zero, up to PHP_INT_MAX (2^63−1 on the supported 64-bit platforms). Both arguments
-are required. Every successful result is a packed `list<float>` of exactly n
-finite values; discrete counts are also floats. There is no scalar sampling form
-or additional `_array` suffix because sampling is already a batch operation.
+- `n` is an integer in `[0, 1000000]`. Both `n` and `seed` are required.
+- `seed` is a nonnegative PHP integer, from 0 to `PHP_INT_MAX` (2^63 − 1 on the supported 64-bit platforms).
+- The result is a packed `list<float>` of exactly `n` finite values. Discrete counts are floats too.
+- Sampling is already a batch operation, so there is no scalar form and no `_array` suffix.
 
-The same seed and parameters reproduce exactly the same result within the same
-build. Asking for fewer samples returns the prefix of a longer call. Calls for
-other families or seeds do not advance a shared stream. PHP's `mt_srand()` and
-application RNG state are not read or changed.
+## Reproducibility and state
 
-Because a seed selects the same underlying uniform sequence across families,
-reusing it deliberately couples results through their quantiles. Use distinct
-seeds for separate batches when independent streams are intended. There is no
-implicit time-based seed, OS entropy lookup, retained RNG object or hidden global
-state. The runnable `examples/rng.php` verifies repeatability and prefix behavior.
+- The same seed and parameters give the same result within the same build.
+- A shorter request returns the prefix of a longer one.
+- Calls do not share a stream, so one call never advances another.
+- PHP's `mt_srand()` and other application RNG state are neither read nor changed.
+- There is no time-based seed, no OS entropy, no retained RNG object, and no hidden global state.
+- A seed selects the same uniform sequence for every family, so reusing a seed couples the results through their quantiles. Use different seeds for batches that should be independent.
+- Seeds are not designed to match R's or NumPy's generators.
+- Results can change between phit versions when a dependency or quantile algorithm changes. Bitwise agreement across library versions, compilers, or platform math libraries is not promised.
 
-## Uniform, categorical and permutation sampling
+`examples/rng.php` checks repeatability and the prefix property.
 
-Four samplers have no probability API. They take the same `n` and `seed`
-arguments, have the same limits, and consume one uniform from the same stream
-per draw.
+## Uniform, categorical, and permutation sampling
+
+Four samplers have no probability functions. They take the same `n` and `seed` arguments, have the same limits, and use one uniform from the same stream per draw.
 
 | Function | R equivalent | Returns |
 | --- | --- | --- |
 | `dist_uniform_rng(n, seed, min = 0, max = 1)` | `runif(n, min, max)` | `list<float>` |
 | `dist_categorical_rng(n, seed, prob)` | `sample(length(prob), n, replace = TRUE, prob = prob) - 1` | `list<int>` |
-| `dist_categorical_rows_rng(seed, prob)` | one `sample(K, 1, prob = prob[i, ]) - 1` per row | `list<int>` |
+| `dist_categorical_rows_rng(seed, prob)` | One `sample(K, 1, prob = prob[i, ]) - 1` per row | `list<int>` |
 | `permutation_rng(n, seed, size = null)` | `sample(n, size) - 1` | `list<int>` |
 
 ```php
 $x = Phit\dist_uniform_rng(n: 5, seed: 1, min: -1, max: 1);
+
 $categories = ['returns', 'sizing', 'quality'];
-$picked = array_map(fn ($k) => $categories[$k],
-    Phit\dist_categorical_rng(n: 5, seed: 2, prob: [.2, .5, .3]));
+$picked = array_map(
+    fn ($k) => $categories[$k],
+    Phit\dist_categorical_rng(
+        n: 5,
+        seed: 2,
+        prob: [.2, .5, .3],
+    ),
+);
+
 // One rating per review, each from its own probabilities.
-$ratings = Phit\dist_categorical_rows_rng(seed: 3, prob: [[.1, .6, .3], [.7, .2, .1]]);
-$shuffled = Phit\permutation_rng(n: 10, seed: 4); // All of 0..9.
-$subset = Phit\permutation_rng(n: 10, seed: 4, size: 3); // Its first three.
+$ratings = Phit\dist_categorical_rows_rng(
+    seed: 3,
+    prob: [[.1, .6, .3], [.7, .2, .1]],
+);
+
+// All of 0..9.
+$shuffled = Phit\permutation_rng(n: 10, seed: 4);
+// The first three.
+$subset = Phit\permutation_rng(n: 10, seed: 4, size: 3);
 ```
 
-Indices are 0-based positions, so they index PHP lists directly. Add one for
-R's 1-based categories.
+Indices are 0-based, so they index PHP lists directly. Add one for R's 1-based categories.
 
-- **Uniform.** Each draw is `min + (max - min) * u`, as in R's `runif()`. `min`
-  must not exceed `max`, and `min == max` gives `min`.
-- **Categorical.** `prob` is a list of finite, nonnegative weights with a
-  positive sum. As in R's `sample()`, the weights are divided by their sum. The
-  draw for `u` is the first index `k` with `u * sum(prob) < prob[0] + ... +
-  prob[k]`. A zero weight is never drawn. If rounding puts `u * sum(prob)` at or
-  above the sum, the last positive weight is drawn.
-- **Rows.** `dist_categorical_rows_rng()` takes a list of up to one million
-  such vectors and returns one draw per row. Rows may have different lengths.
-  Draw `i` uses the `i`th uniform, so a list of equal rows gives
-  `dist_categorical_rng()`'s result for the same seed.
-- **Permutation.** `permutation_rng()` runs a partial Fisher–Yates shuffle of
-  `0..n-1`. Step `i` swaps position `i` with `i + floor(u * (n - i))`, capped at
-  `n - 1`. `size` is in `[0, n]` and defaults to `n`. A smaller `size` returns
-  the prefix of the full permutation.
+- **Uniform.** Each draw is `min + (max - min) * u`, as in R's `runif()`. `min` must not exceed `max`, and `min == max` gives `min`.
+- **Categorical.** `prob` is a list of finite, nonnegative weights with a positive sum, divided by their sum as in R's `sample()`. The draw for `u` is the first index `k` with `u * sum(prob) < prob[0] + ... + prob[k]`. A zero weight is never drawn. If rounding puts `u * sum(prob)` at or above the sum, the last positive weight is drawn.
+- **Rows.** `dist_categorical_rows_rng()` takes up to one million weight vectors and returns one draw per row. Rows may differ in length. Draw `i` uses the `i`th uniform, so equal rows give `dist_categorical_rng()`'s result for the same seed.
+- **Permutation.** `permutation_rng()` runs a partial Fisher–Yates shuffle of `0..n-1`. Step `i` swaps position `i` with `i + floor(u * (n - i))`, capped at `n - 1`. `size` is in `[0, n]` and defaults to `n`. A smaller `size` returns the prefix of the full permutation.
 
-These samplers use the same ChaCha20 uniforms as the other families. Their
-results therefore differ from R's for the same seed, as the other families'
-results do. A non-list `prob`, a negative weight, a zero sum, `min > max`, or
-`size > n` raises 1001. A nonfinite weight, weight sum, bound, or uniform draw
-raises 1003. More than one million draws or rows, or `n` above one million for
-a permutation, raises 1007.
+These samplers use the same uniforms as the other families, so their results also differ from R's for the same seed.
 
-## Numerical method and reproducibility
+## Errors
 
-For every output, ChaCha20 provides a 64-bit word; rand's `Open01<f64>` maps its
-upper 52 bits to a midpoint strictly inside `(0,1)`. The value is transformed by
-the existing validated inverse CDF. The algorithm consumes one uniform per sample,
-including point masses. This uses the established numerical quantile kernels for
-all 13 parameterizations, without introducing a separate distribution backend.
+| Condition | Exception code |
+| --- | --- |
+| Negative `n` or `seed`, a parameter outside its domain, a non-list `prob`, a negative weight, a zero weight sum, `min > max`, or `size > n` | 1001 |
+| Nonfinite parameter, weight, weight sum, or bound; a sample beyond the binary64 range | 1003 |
+| More than one million draws or rows, or a permutation `n` above one million | 1007 |
+| Wrong PHP argument type | PHP runtime error (code 0) |
 
-The open interval excludes infinite support endpoints. The finite uniform grid
-also limits represented tail probabilities: its minimum is 2^-53 and its maximum
-is 1−2^-53. This implementation favors a small, consistent numerical path over
-distribution-specific rejection samplers; [benchmarks](benchmarks/rng.qmd) record
-the cost for normal, beta and Poisson batches.
+- Parameters are validated even when `n` is 0. A valid empty request returns `[]`.
+- A sample beyond the binary64 range rejects the whole batch. No partial results, dropped samples, or infinities are returned. Very heavy tails or extreme scales can therefore fail with finite parameters.
+- The one-million limit bounds one allocation. Callers control the total workload.
 
-The pinned rand_core `seed_from_u64` expands the integer with its documented PCG32
-mapping into the 256-bit ChaCha key. Exact uniform vectors are checked independently
-in Python. Dependency or quantile-algorithm changes can change seeded samples and
-must be reviewed as reproducibility changes. Bitwise transformed-sample agreement
-across different library versions, compilers or platform math libraries is not
-promised; seeds are not claimed to match R or NumPy's unrelated default engines.
-The full dependency lock and algorithm are recorded for reproducible runs.
+## Implementation and reproducibility
 
-## Validation
+Each output takes a 64-bit word from ChaCha20. rand's `Open01<f64>` maps its upper 52 bits to a midpoint strictly inside (0, 1), and the family's validated inverse CDF transforms it.
 
-Distribution parameter domains match probability evaluation. They are validated
-even when n is zero; valid empty requests return `[]`. Negative n/seed raises
-1001, a request above one million raises 1007, and nonfinite distribution parameters
-raise 1003. Scalar argument conversion/type failures follow the repository's
-runtime-error convention (code zero) rather than StatsError categories.
+- One uniform per sample, including point masses.
+- The open interval excludes infinite support endpoints. The smallest and largest representable tail probabilities are 2^-53 and 1 − 2^-53.
+- Inverse-CDF sampling keeps one numerical path for all 13 parameterizations, at some cost against family-specific samplers. The [sampling benchmarks](benchmarks/rng.qmd) measure normal, beta, and Poisson batches.
+- The pinned rand_core `seed_from_u64` expands the integer seed into the 256-bit ChaCha key with its documented PCG32 mapping.
+- Dependencies: `rand 0.9.5` and `rand_chacha 0.9.0`, pinned in the lock file. Their MIT license notices are under `third-party/`. A change to either, or to a quantile algorithm, is reviewed as a reproducibility change.
 
-A quantile that exceeds binary64 range raises 1003 and rejects the entire batch;
-no partial results, dropped samples or replacement infinities are returned. Very
-heavy tails/extreme scales can therefore fail even with finite parameters. Count
-precision follows the existing discrete-quantile convention and binary64 limits.
-The sampling limit bounds a single output allocation; callers retain control of
-overall workload and parameter coordinates.
+### Independent verification
 
-## Independent verification
+`tests/generate-rng-fixtures.py` implements the ChaCha20 block function, the PCG seed expansion, and the Open01 mapping independently, without calling the extension or rand. `tests/generate-rng-fixtures.R` maps those uniforms through base R's quantile functions.
 
-`tests/generate-rng-fixtures.py` independently implements the ChaCha20 block
-equations, PCG seed expansion and Open01 mapping. It never calls the extension or
-rand. `tests/generate-rng-fixtures.R` maps those saved uniforms through base-R
-quantiles. Python preserves full integer seeds and exact uniform bits while R
-supplies the independent transformed reference values.
+| Fixture content (`tests/fixtures/rng-python-r.json`) | Values |
+| --- | --- |
+| Exact uniforms at four seeds, including 0 and `PHP_INT_MAX` | 384 |
+| Transformed values for all 13 parameterizations, three extra normal seeds, and five point masses | 1,616 |
+| Total, in 25 cases | 2,000 |
 
-The saved `tests/fixtures/rng-python-r.json` contains **25 cases, 2,000 values**:
-384 exact uniform values at four seeds (including zero and PHP_INT_MAX), all 13
-families, three additional normal seed cases, and five point masses. Rust checks
-all values; PHP checks the 1,616 transformed references. Uniform/discrete values
-match exactly; continuous reference tolerance is `1e-15 + 1e-12*abs(reference)`.
-Both suites check repeatability, prefixes, state isolation, domains/limits and
-nonfinite samples. The uniform, categorical and permutation samplers are checked
-against the documented maps applied to the fixture's Python uniforms. Deterministic normal/Poisson moment checks complement the
-reference vectors. PHP additionally verifies parameter names/defaults and strict
-seed/count types.
+- Rust checks all values, and PHP checks the 1,616 transformed values.
+- Uniform and discrete values match exactly. The continuous tolerance is `1e-15 + 1e-12 * abs(reference)`.
+- The uniform, categorical, and permutation samplers are checked against the documented maps applied to the fixture's uniforms.
+- Both suites also check repeatability, prefixes, state isolation, domains and limits, nonfinite samples, and normal and Poisson moments. PHP checks parameter names, defaults, and strict argument types.
 
 ```sh
-python3 tests/generate-rng-fixtures.py # Intentional Python/R reference refresh
+# Refresh the Python and R references deliberately.
+python3 tests/generate-rng-fixtures.py
 python3 scripts/reference-manifest.py
 cargo test -p stats-core --locked --test rng
 php -n -d "extension=$STATS_EXTENSION" tests/rng.php
-PHP=/path/to/matching/php PHP_CONFIG=/path/to/php-config ./scripts/check
+PHP=/path/to/php PHP_CONFIG=/path/to/php-config ./scripts/check
 ```
 
-The offline release gate needs neither Python RNG packages nor R for sampling
-tests. Fixture provenance includes the Python and R generators, versions, seeds,
-uniform inputs, expected quantities and hashes. The MIT license notices for the
-new direct dependencies are retained under `third-party/`.
+The regular test suites need neither Python nor R. The fixture provenance records the generators, versions, seeds, uniform inputs, expected values, and hashes.

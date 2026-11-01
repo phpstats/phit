@@ -5,8 +5,7 @@ jupyter: python3
 
 ## 1. Students within schools
 
-These are **synthetic observations**, not real student records. R seed 20261015
-generates 250 students in 12 schools with different group sizes. Study hours are
+R seed 20261015 generates 250 students in 12 schools with different group sizes. Study hours are
 uniform from 1 to 12; prior scores are clipped 40 + 3 × hours + normal noise with
 standard deviation 8, then rounded. Assessment scores follow
 
@@ -16,8 +15,8 @@ $$y_i=50+1.8\,\mathrm{hours}_i+0.2\,\mathrm{prior}_i+b_{g(i)}+\epsilon_i,
 The school effect is shared by students in that school. Conditional on school
 effects, residual errors are independent. Integrating over those effects makes
 students within the same school correlated. Scores are continuous, unlike the
-binary outcomes in logistic/probit or counts in Poisson. Known simulation
-parameters and estimated parameters are different objects.
+binary outcomes in logistic/probit or counts in Poisson. The estimates differ
+from the simulation parameters because they vary with the sample.
 
 ```{python}
 from pathlib import Path
@@ -235,11 +234,11 @@ np.testing.assert_allclose(compressed_beta,full_beta,atol=1e-9,rtol=1e-10)
 show_matrix(r'\hat\beta(\rho=1)\text{ from compact solve}',compressed_beta)
 ```
 
-Production caches R_w and M once, then uses SVD on the compact weighted fixed
+phit caches R_w and M once, then uses SVD on the compact weighted fixed
 design. Covariance is computed only at the selected fit. The later Python
 profile deliberately uses the full whitening formulation as an independent
 check of the same mathematics. For a million observations and 100 groups with
-three coefficients, each trial now factors 104 rows instead of a million.
+three coefficients, each trial factors 104 rows instead of a million.
 
 This borrows **elimination and reuse** from lme4; it does not copy lme4 source
 code or introduce its sparse Cholesky/CHOLMOD backend. Using QR/SVD square roots

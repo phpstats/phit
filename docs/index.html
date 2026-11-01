@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -645,7 +646,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-phit-provides" id="toc-what-phit-provides" class="nav-link active" data-scroll-target="#what-phit-provides">What phit provides</a></li>
+  <li><a href="#capabilities" id="toc-capabilities" class="nav-link active" data-scroll-target="#capabilities">Capabilities</a></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
   <li><a href="#requirements" id="toc-requirements" class="nav-link" data-scroll-target="#requirements">Requirements</a></li>
   </ul>
@@ -673,38 +674,91 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>phit is a PHP extension, written in Rust, for statistical models. It fits linear, logistic, probit, Poisson and mixed-effects regression models, and evaluates probability distributions and descriptive statistics. Data go in as ordinary PHP arrays and results come back as associative arrays, with no model objects or services.</p>
-<p>Models are written as R formulas: <code>rent ~ area + district</code> models rent from floor area and district. Factors, interactions and transformations such as <code>log(area)</code> are written in the formula, and phit builds the numeric design from named columns.</p>
+<p>Fit statistical models, compute probability distributions, and summarize data in PHP. Model functions accept formulas or explicit designs and return PHP arrays.</p>
+<p>Formulas follow R: <code>rent ~ area + district</code> models rent from floor area and district. phit builds the numeric design from named columns, including factors, interactions, and transformations such as <code>log(area)</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_ols<span class="ot">,</span> predict}<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_ols(<span class="st">'rent ~ area + district'</span><span class="ot">,</span> <span class="va">$flats</span>)<span class="ot">;</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span>[<span class="st">'named'</span>]<span class="ot">;</span>     <span class="co">// ['(Intercept)' =&gt; 352.64, 'area' =&gt; 19.18, 'districtnorth' =&gt; 203.64, ...]</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span>[<span class="st">'p_values'</span>]<span class="ot">;</span>  <span class="co">// One per coefficient, in the same order</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span>[<span class="st">'r_squared'</span>]<span class="ot">;</span> <span class="co">// 0.927</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> predict(<span class="va">$fit</span><span class="ot">,</span> [<span class="st">'area'</span> =&gt; [<span class="fl">55.0</span>]<span class="ot">,</span> <span class="st">'district'</span> =&gt; [<span class="st">'east'</span>]]<span class="ot">,</span> interval<span class="ot">:</span> <span class="st">'prediction'</span>)<span class="ot">;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span>[<span class="st">'fit'</span>]<span class="ot">;</span>         <span class="co">// [1407.55], with $p['lower'] and $p['upper']</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><a href="./getting-started.html">A first model</a> runs this example with its data and explains each part of the result.</p>
-<section id="what-phit-provides" class="level2">
-<h2 class="anchored" data-anchor-id="what-phit-provides">What phit provides</h2>
-<ul>
-<li><strong>Regression models</strong>: <code>fit_ols()</code> and <code>fit_generalized_linear()</code> for linear, logistic, probit and Poisson regression, with weights and offsets. See <a href="./models.html">Linear and generalized linear models</a>.</li>
-<li><strong>Mixed models</strong>: <code>fit_mixed_gaussian()</code> for Gaussian models with random intercepts and slopes, and <code>fit_mixed_logistic()</code> for a binomial model with a random intercept. See <a href="./mixed-models.html">Mixed models</a>.</li>
-<li><strong>Prediction</strong> on new data with confidence and prediction intervals.</li>
-<li><strong>Probability distributions</strong>: densities, CDFs, survival functions and quantiles for 12 families (13 parameterizations), and seeded random samples, including uniform, categorical and permutation sampling. See <a href="./distributions.html">Probability distributions</a> and <a href="./rng.html">Seeded sampling</a>.</li>
-<li><strong>Descriptive statistics</strong>: means, variances, quantiles, weighted statistics, kernel density estimates and the ECDF. See <a href="./descriptive.html">Descriptive statistics</a>.</li>
-<li><strong>Posterior draws</strong>: weighted moments and transforms for MCMC output. See <a href="./draw-numerics.html">Posterior draws</a>.</li>
-<li><strong>CSV input</strong>: a native reader used by phibble. See <a href="./io.html">Reading CSV files</a>.</li>
-</ul>
-<p>Each model also has a function over numeric matrices, such as <code>fit_ols_matrix()</code> and <code>fit_logistic_matrix()</code>, for code that builds its own design matrix. See <a href="./reference-models.html">Matrix model functions</a>.</p>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">// ['(Intercept)' =&gt; 352.64, 'area' =&gt; 19.18, ...]</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span>[<span class="st">'named'</span>]<span class="ot">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span>[<span class="st">'p_values'</span>]<span class="ot">;</span>  <span class="co">// One per coefficient, in the same order</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span>[<span class="st">'r_squared'</span>]<span class="ot">;</span> <span class="co">// 0.927</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> predict(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span><span class="ot">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'area'</span> =&gt; [<span class="fl">55.0</span>]<span class="ot">,</span> <span class="st">'district'</span> =&gt; [<span class="st">'east'</span>]]<span class="ot">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    interval<span class="ot">:</span> <span class="st">'prediction'</span><span class="ot">,</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">// [1407.55], with $p['lower'] and $p['upper']</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span>[<span class="st">'fit'</span>]<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="./getting-started.html">A first model</a> runs this example with its data.</p>
+<section id="capabilities" class="level2">
+<h2 class="anchored" data-anchor-id="capabilities">Capabilities</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Area</th>
+<th>Functions</th>
+<th>Guide</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Linear and generalized linear models</td>
+<td><code>fit_ols()</code>, <code>fit_generalized_linear()</code>: linear, logistic, probit, and Poisson regression with weights and offsets</td>
+<td><a href="./models.html">Models</a></td>
+</tr>
+<tr class="even">
+<td>Mixed models</td>
+<td><code>fit_mixed_gaussian()</code> with random intercepts and slopes; <code>fit_mixed_logistic()</code> with one random intercept</td>
+<td><a href="./mixed-models.html">Mixed models</a></td>
+</tr>
+<tr class="odd">
+<td>Prediction</td>
+<td><code>predict()</code> on new data, with confidence and prediction intervals</td>
+<td><a href="./formulas.html#prediction-predict">Model formulas</a></td>
+</tr>
+<tr class="even">
+<td>Distributions</td>
+<td>Densities, CDFs, survival functions, and quantiles for 12 families (13 parameterizations)</td>
+<td><a href="./distributions.html">Probability distributions</a></td>
+</tr>
+<tr class="odd">
+<td>Seeded sampling</td>
+<td>Reproducible draws, including uniform, categorical, and permutation sampling</td>
+<td><a href="./rng.html">Seeded sampling</a></td>
+</tr>
+<tr class="even">
+<td>Descriptive statistics</td>
+<td>Means, variances, quantiles, weighted statistics, kernel densities, and the ECDF</td>
+<td><a href="./descriptive.html">Descriptive statistics</a></td>
+</tr>
+<tr class="odd">
+<td>Posterior draws</td>
+<td>Weighted moments and transforms for MCMC output</td>
+<td><a href="./draw-numerics.html">Posterior draws</a></td>
+</tr>
+<tr class="even">
+<td>CSV input</td>
+<td>A native reader, used by phibble</td>
+<td><a href="./io.html">Reading CSV files</a></td>
+</tr>
+</tbody>
+</table>
+<p>Each model also has a matrix function, such as <code>fit_ols_matrix()</code>, for code that builds its own design. See <a href="./reference-models.html">Matrix model functions</a>.</p>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
-<p>Results follow R’s conventions: coefficient names, treatment contrasts, the order of terms, deviance and AIC as <code>glm()</code> reports them, and lme4’s REML estimates. Rows with missing values are dropped with a warning, and every result reports which rows it used. Errors are PHP exceptions with stable numeric codes. The <a href="./verification.html">verification</a> pages compare each model with R, lme4 and statsmodels, and record the tolerances.</p>
+<ul>
+<li>Coefficient names, treatment contrasts, term order, deviance, and AIC follow R’s <code>lm()</code> and <code>glm()</code>. Mixed models follow lme4.</li>
+<li>Rows with missing values are dropped with a warning, and every result reports which rows it used.</li>
+<li>Errors are PHP exceptions with stable numeric codes.</li>
+<li>The <a href="./verification.html">verification</a> pages compare each model with R, lme4, and statsmodels and record the tolerances.</li>
+</ul>
 </section>
 <section id="requirements" class="level2">
 <h2 class="anchored" data-anchor-id="requirements">Requirements</h2>
-<p>phit runs on PHP 8.3, 8.4 and 8.5 (non-thread-safe builds) on Linux and macOS. It installs with PIE, or from prebuilt Linux binaries. See <a href="./installation.html">Installation</a>. The pure-PHP <a href="./extension-or-polyfill.html">polyfill</a> provides the same functions, except the CSV reader, where the extension cannot be installed. It runs more slowly.</p>
+<p>phit runs on non-thread-safe PHP 8.3, 8.4, and 8.5 on Linux and macOS. It installs with PIE or from prebuilt Linux binaries (<a href="./installation.html">Installation</a>). Where the extension cannot be installed, the plain-PHP <a href="./extension-or-polyfill.html">polyfill</a> provides every function except the CSV reader, and runs more slowly.</p>
 
 
 </section>

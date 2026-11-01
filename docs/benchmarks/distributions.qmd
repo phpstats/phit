@@ -2,13 +2,22 @@
 title: "Distribution performance and regression preservation"
 ---
 
-The distribution benchmark compares a PHP scalar loop, one native PHP batch
-call, an internal Rust loop, vectorized R and SciPy on identical saved temporary
-inputs. It covers 1,000, 100,000 and one million values for normal CDF/SF, Student-t
-quantile, binomial/Poisson log-PMF, mean/variance, beta quantile and chi-square CDF
-with df one million. [Raw results](distributions-results.json) retain every
-measurement, numerical summary, input hash, runtime version, thread setting and
-peak resident memory.
+This benchmark times distribution and descriptive functions in five ways on identical inputs: a PHP loop of scalar calls, one PHP batch call, an internal Rust loop, vectorized R, and SciPy. [Raw results](distributions-results.json) keep every measurement, numerical summary, input hash, runtime version, thread setting, and peak RSS.
+
+## Methods
+
+| Item | Setting |
+| --- | --- |
+| Workloads | Normal CDF and SF, Student-t quantile, binomial and Poisson log-PMF, mean, variance, beta quantile, and chi-square CDF with df one million |
+| Sizes | 1,000, 100,000, and 1,000,000 values |
+| Data | Generated with seed 20261012 and saved as JSON; SHA-256 hashes are recorded |
+| Machine | Apple M5 Ultra, macOS 27, recorded 2026-10-12 |
+| Threads | OpenBLAS, OpenMP, MKL, Accelerate, and BLIS thread variables set to 1 |
+| Repetitions | One untimed warm-up, then five measurements; small cases batch calls (see [Timing boundaries](#timing-boundaries-and-interpretation)) |
+| Statistic | Median milliseconds per call |
+| Timed | The call, including PHP input and output conversion and validation |
+| Excluded | Startup, JSON input and output, and output summaries |
+| Memory | Peak RSS of the whole worker process |
 
 ## Numerical comparisons before timings
 
@@ -21,11 +30,7 @@ outputs are checked directly. R is the benchmark reference; the separate
 [R/SciPy/mpmath record](../verifications/distributions.qmd) adjudicates reference
 differences and tests extreme/boundary values more broadly.
 
-Native comparisons must pass. SciPy peer discrepancies are retained and labeled;
-they do not silently relax the native gate. Every timed output summary is checked
-again. This benchmark does not compare every individual element of the large
-vectors; the complete-vector aggregates and sampled values complement the strict
-small reference/identity suite.
+phit's comparisons must pass. SciPy discrepancies are recorded and labeled without relaxing phit's tolerance. Every timed output summary is checked again. Individual elements of the large vectors are not all compared; the aggregates and sampled values complement the small reference suite.
 
 <!-- BEGIN BENCHMARK EVIDENCE -->
 
@@ -69,8 +74,7 @@ Whole-process peak RSS across these workers reached 268.1 MiB; per-worker memory
 
 ## Timing boundaries and interpretation
 
-Each worker loads/parses inputs once, performs one untimed warm-up, and measures
-five repetitions. Distribution calls allocate and populate the complete output
+Distribution calls allocate and populate the complete output
 vector. The PHP scalar loop constructs a distribution and crosses the PHP/native
 boundary for each value; batch calls construct it once and stream values natively.
 The internal Rust loop uses the same validation and an allocated result vector.
@@ -87,22 +91,17 @@ Process elapsed time and input loading time are recorded separately.
 R's timer has millisecond resolution. Small distribution cases batch 100 calls;
 mean/variance batch enough calls to process at least ten million input values per
 measurement, with a minimum of ten calls. Per-call times divide by the batch count.
-All raw timings must be positive. Thread environment variables are fixed to one
-for OpenBLAS, OpenMP, MKL, Accelerate and BLIS; they do not make different numerical
-implementations identical. PHP scalar/batch worker order alternates by case.
-Machine load, timer precision and GC make these measurements evidence for these
-workloads rather than universal speed claims.
+All raw timings must be positive. The thread settings do not make different numerical implementations equivalent. PHP scalar and batch worker order alternates by case. Machine load, timer precision, and garbage collection affect the measurements, which describe these workloads only.
 
-## Seven-model preservation
+## Seven-model preservation (v0.2 release check)
 
-The [preservation report](v02-preservation-results.json) compares the current
+This check was recorded for the v0.2 release. The [preservation report](v02-preservation-results.json) compares the current
 extension with a rebuilt pre-v0.2 baseline at `6342562`, using the same PHP 8.5
 headers/compiler. Both receive identical complete designs with intercept insertion
 disabled where supported. It exercises all seven existing fitters. Reference
 tolerance is `1e-7 + 1e-6*abs(reference)` for the compared inference/scalar outputs,
 group effects and ten sampled observation outputs. Fits materialize their complete
-public results before summarization. This is separate from fitting all independent
-R fixtures in the release gate.
+public results before summarization.
 
 <!-- BEGIN PRESERVATION EVIDENCE -->
 
@@ -158,6 +157,4 @@ PHP=/path/to/matching/php .context/v02/python/bin/python tests/benchmarks/run-v0
 python3 scripts/distribution-docs.py
 ```
 
-The worker uses reflected function parameters, so the older module name and API
-remain loadable without importing current stubs into the baseline runtime.
-No benchmark changes a user's PHP configuration or needs network/model services.
+The worker reflects function parameters, so the older module name and API load without the current stubs.

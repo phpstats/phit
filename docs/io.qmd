@@ -2,48 +2,101 @@
 title: "Reading CSV files"
 ---
 
-`read_csv()` reads a delimited text file into typed columns. It is the
-native reader behind phibble's `DataFrame::fromCsv()`. Its records, names, guessed
-types, values, and problem messages match phibble's PHP reader, which follows
-readr 2 (`readr::read_delim()`). phibble keeps name repair, `col_select`, factor
-and `parse_number()` columns, and the problems warning in PHP.
+Read a delimited text file into typed columns with `read_csv()`, or a chunk of rows at a time with `CsvReader`. The parsing rules follow readr 2 (`readr::read_delim()`) as phibble's PHP reader implements them. These are the native readers behind phibble's `DataFrame::fromCsv()`, `csvChunks()`, and `fromCsvChunked()`.
 
-`Phit\read_csv()` is the narrower of the two readers. It has no `select` or
-`name_repair` option, its `col_names` takes a boolean rather than a list of
-names, and the readr letters `f` (factor) and `n` (number) have no type code
-here. `DataFrame::fromCsv()` supplies all of these in PHP around the native
-call.
+```php
+$data = Phit\read_csv('housing.csv');
+$data['names'];   // ['area_m2', 'bedrooms', 'monthly_rent']
+$data['columns']; // Typed float, int, and float.
+```
+
+The CSV readers need the extension. The [polyfill](extension-or-polyfill.qmd) does not provide them.
+
+`read_csv()` is narrower than `DataFrame::fromCsv()`, which adds these in PHP around the native call:
+
+- `select` and `name_repair` options
+- a list of names for `col_names` (`read_csv()` takes a boolean)
+- the readr type codes `f` (factor) and `n` (number), read here as `c` and parsed in PHP
+- the problems warning
+
+## Options
 
 ```php
 Phit\read_csv(string $path, array $options = []): array;
 ```
 
-## Options
-
-Every option is optional. The defaults are readr's.
+Every option is optional, and the defaults are readr's.
 
 | Option | Default | Meaning |
 |---|---|---|
-| `delimiter` | `','` | One byte. |
-| `quote` | `'"'` | One byte, or `''` for no quoting. |
-| `escape_double` | `true` | `""` inside quotes is one `"`. |
-| `escape_backslash` | `false` | `\x` is `x`, inside and outside quotes. |
-| `na` | `['', 'NA']` | Strings read as NA, compared after trimming. A quoted `"NA"` is also NA. |
-| `trim_ws` | `true` | Trim spaces and tabs from values (and PHP `trim()` from header names). |
-| `skip` | `0` | Raw lines skipped before the header. |
-| `n_max` | `null` | Maximum number of data rows. |
-| `comment` | `''` | Text from this prefix to the end of the line is ignored. A line that starts with it is dropped. |
-| `skip_empty_rows` | `true` | Blank lines are skipped. When false, each is read as an ordinary record. |
-| `col_names` | `true` | When false, the first record is data and the names are `X1`..`Xn`. |
-| `types` | `[]` | Type codes keyed by 0-based column position. Missing positions are guessed. |
-| `guess_max` | `1000` | Rows sampled for guessing. |
-| `decimal_mark` | `'.'` | One byte. |
-| `grouping_mark` | `null` | `null` uses `.` when the decimal mark is `,` and `,` otherwise. `''` means none. |
-| `block_size` | `4194304` | Bytes read from the file at a time. The result does not depend on it; tests use small values. |
+| `delimiter` | `','` | One byte |
+| `quote` | `'"'` | One byte, or `''` for no quoting |
+| `escape_double` | `true` | `""` inside quotes is one `"` |
+| `escape_backslash` | `false` | `\x` is `x`, inside and outside quotes |
+| `na` | `['', 'NA']` | Strings read as missing; see [Missing values](#missing-values) |
+| `trim_ws` | `true` | Trim spaces and tabs from values, and PHP `trim()` from header names |
+| `skip` | `0` | Raw lines skipped before the header |
+| `n_max` | `null` | Maximum number of data rows |
+| `comment` | `''` | Text from this prefix to the end of the line is ignored; a line that starts with it is dropped |
+| `skip_empty_rows` | `true` | Skip blank lines; when false, each is read as a record |
+| `col_names` | `true` | When false, the first record is data and the names are `X1`..`Xn` |
+| `types` | `[]` | Type codes keyed by 0-based column position; other columns are guessed |
+| `guess_max` | `1000` | Rows sampled for guessing |
+| `decimal_mark` | `'.'` | One byte |
+| `grouping_mark` | `null` | `null` means `.` when the decimal mark is `,`, and `,` otherwise; `''` means none |
+| `block_size` | `4194304` | Bytes read at a time; the result does not depend on it |
 
-The type codes are `?` (guess), `l` (bool), `i` (int), `d` (double), `c`
-(string), `D` (date), `T` (datetime), and `_` (skip). phibble reads `f`
-(factor) and `n` (number) columns by requesting `c` and parsing in PHP.
+## Types
+
+| Code | Type | Stored as |
+|---|---|---|
+| `?` | Guess | |
+| `l` | bool | PHP bool |
+| `i` | int | PHP int |
+| `d` | double | PHP float |
+| `c` | string | PHP string |
+| `D` | date | int: days since 1970-01-01 |
+| `T` | datetime | int: microseconds since the epoch, UTC |
+| `_` | Skip | The column is `null` |
+
+### Guessing
+
+Values are trimmed and mapped to missing first. The guess uses every row when there are at most `guess_max`. Otherwise it uses `guess_max - 1` evenly spaced rows (`step = intdiv(rows, guess_max)`: rows 0, step, 2·step, and so on) plus the last row, as vroom does. The first rule that fits every sampled value wins.
+
+1. **bool**: `T F TRUE FALSE True False true false t f`.
+2. **int**: an optional sign, then digits with optional grouping marks between them, that fits in 64 bits. An unsigned leading zero (`007`) stays text, while `0` and `-07` are ints.
+3. **double**: `[+-]inf` or `[+-]nan` in any case, or a decimal number with an optional decimal mark, exponent, and grouping marks. `1.` and `1,` qualify. The leading-zero rule applies, so `0e5` and `00.5` stay text.
+4. **date**: `YYYY-MM-DD` or `YYYY/MM/DD`. The two separators may differ.
+5. **datetime**: `YYYY-MM-DD[(T| )HH[:MM[:SS[.fraction]]]][Z|±HH[[:]MM]]`.
+6. Otherwise **string**.
+
+- A column that is entirely missing, with at least one data row, is bool.
+- Whole numbers guess as int, where readr guesses double.
+- The date and datetime rules check only the shape. A column of date-shaped values guesses date even if one is not a calendar date, and that value then fails to parse.
+
+### Parsing
+
+The column's type applies to every row. A guessed numeric column allows the grouping mark. An explicitly typed one does not, as in phibble.
+
+| Type | Accepts |
+|---|---|
+| bool | The guessing values, plus `1` and `0` |
+| int | Leading zeros and a `+` sign |
+| double | PHP numeric strings (when the decimal mark is `.`), `inf`, `nan`, and the guessing grammar |
+| date | A valid calendar date in years 0001 to 9999 |
+| datetime | A valid date, hours up to 23, minutes and seconds up to 59 |
+
+For datetimes:
+
+- Fractions are truncated to microseconds.
+- An offset converts to UTC, and no offset means UTC. Offsets up to ±24:59 are accepted, as PHP's `DateTimeImmutable` accepts them.
+- A date alone is midnight UTC.
+
+## Missing values
+
+- A value that matches an `na` string after trimming is missing and becomes `null`. A quoted `"NA"` is also missing.
+- A value that does not parse as its column's type also becomes `null`, and it is counted in the column's `failed`.
+- Short rows are padded with missing values.
 
 ## Result
 
@@ -59,34 +112,31 @@ The type codes are `?` (guess), `l` (bool), `i` (int), `d` (double), `c`
 ]
 ```
 
-Values use phibble's storage form. Bools, ints, and floats are PHP scalars and
-strings are strings. A date is an int count of days since 1970-01-01. A
-datetime is an int count of microseconds since the epoch in UTC. NA is `null`.
-A skipped column is `null`. `failed` counts values that did not parse under the
-column's explicit or guessed type; those values are `null`. phibble turns
-nonzero counts into its `column 'x': n values could not be parsed as type`
-problems.
+- Values use phibble's storage forms, listed under [Types](#types). A skipped column is `null`.
+- `failed` counts values that did not parse under the column's type. phibble turns nonzero counts into `column 'x': n values could not be parsed as type` problems.
+- `problems` holds one entry per ragged row, such as `row 7: expected 5 columns, got 4`. A file that ends inside a quoted field adds `row N: unterminated quoted field at end of file`.
+- A problem's row number is the record's position in the file, counting skipped lines and the header. A multi-line quoted field counts as one record.
 
-`read_csv()` reads the file in blocks of 65,536 rows and converts each block
-to PHP values before reading the next, so it holds one block of the file's
-text at a time. When a column's type is guessed, it first reads the file twice
-more: once to count the rows, and once to keep the rows it guesses from, which
-are spread across the whole file as readr spreads them. Giving every column's
-type in `types` skips those two passes. A string value repeated in a column is
-one shared PHP string.
+## Records
 
-`problems` holds one entry per ragged row, such as
-`row 7: expected 5 columns, got 4`. The row number is the record's position in
-the file, counting skipped lines and the header. A multi-line quoted field
-counts as one record. A file that ends inside a quoted field adds
-`row N: unterminated quoted field at end of file`.
+- Long rows put the extra fields, joined by the delimiter, into the last column.
+- A UTF-8 byte order mark at the start of the file is removed before tokenizing when `skip` is 0, so a quoted first header loses its quotes. A mark at the start of the first record after skipped lines is also removed.
+- LF and CRLF line endings are accepted. CR is the line ending when the first line break falls in a 4 MiB stretch of the file (counted from the first byte after skipped lines) that holds no LF. Otherwise a lone CR is data. phibble decides from its first 4 MiB block with a line break, so the two readers agree.
+- Quoted fields can hold delimiters and line breaks, which are kept as written.
+- An unterminated quote at the end of the file closes the field there.
+- Bytes pass through unchanged. There is no encoding validation.
+
+A line is **blank** when its raw text holds only spaces, tabs, and carriage returns.
+
+- The test uses the raw line, not the parsed fields. A quoted empty string is data, and the result does not depend on `trim_ws` or the delimiter: a line of spaces is blank even when the delimiter is a space.
+- With `skip_empty_rows`, a blank line is dropped. Otherwise it is tokenized like any other line, so an empty line is one empty field, and in a wider file the record is reported as one column short.
+- An unterminated last line is never dropped, so `a\n ` is two rows and `a\n \n` is one.
+
+An empty file, or one with only empty lines, returns no names and no columns. When the header is read but no data rows are, the names come back with empty columns typed string, as readr reads a header-only file as text. That happens with `n_max: 0`, a header-only file, a `skip` that leaves no row after the header, and every row blank under `skip_empty_rows`. An explicit code in `types` still applies.
 
 ## Reading in chunks
 
-`Phit\CsvReader` reads a file a chunk of rows at a time. It is the native
-reader behind phibble's `DataFrame::csvChunks()` and `fromCsvChunked()`, which
-follow readr's `read_delim_chunked()`. It holds the text of one chunk and one
-read block, so its memory follows the chunk size and not the file size.
+`Phit\CsvReader` reads a file a chunk of rows at a time, as readr's `read_delim_chunked()` does. Its memory follows the chunk size, not the file size.
 
 ```php
 $reader = new Phit\CsvReader(string $path, array $options = []);
@@ -94,181 +144,68 @@ $reader->names(): array;           // list<string>
 $reader->next(int $rows): ?array;  // the next chunk, or null
 ```
 
-The options are `read_csv()`'s. The constructor reads the header, so
-`names()` is available before the first chunk. It returns the header's names,
-`X1`..`Xn` when `col_names` is false, or `[]` for an empty file. `next()`
-returns at most `$rows` rows in `read_csv()`'s result shape, with two more
-keys: `position`, the 1-based index of the chunk's first row, and `rows`, the
-chunk's row count. It returns `null` once no rows remain.
-
-Chunks follow phibble's chunked reader:
-
-- Types not given in `types` are guessed from the first chunk, from
-  `guess_max` of its rows sampled as above. Every later chunk is parsed as
-  those types. phibble sets `guess_max` to the chunk size by default, as readr
-  does. A value in a later chunk that does not fit its column's type counts in
-  that chunk's `failed`.
-- Problem rows are numbered from the start of the file. Each chunk carries the
-  problems of its own rows.
-- The unterminated-quote problem goes with the last chunk. After each chunk
-  the reader looks past blank lines to see whether records remain.
+- The options are `read_csv()`'s.
+- The constructor reads the header, so `names()` works before the first chunk. It returns the header's names, `X1`..`Xn` when `col_names` is false, or `[]` for an empty file.
+- `next()` returns at most `$rows` rows in `read_csv()`'s result shape, plus `position` (the 1-based index of the chunk's first row) and `rows` (the chunk's row count). It returns `null` once no rows remain.
+- Types not given in `types` are guessed from the first chunk, from `guess_max` of its rows sampled as above. Later chunks use those types, and a value that does not fit counts in that chunk's `failed`. phibble sets `guess_max` to the chunk size by default, as readr does.
+- Problem rows are numbered from the start of the file, and each chunk carries the problems of its own rows.
+- The unterminated-quote problem goes with the last chunk. After each chunk, the reader looks past blank lines to see whether records remain.
 - `n_max` caps the rows across all chunks.
-- A file with no data rows gives no chunks. The one exception is an
-  unterminated quote in the header: `next()` then returns a chunk with no rows
-  that carries the problem.
-
-## Records
-
-- Short rows are padded with NA. Long rows put the extra fields, joined by the
-  delimiter, into the last column.
-- A UTF-8 byte order mark at the start of the file is removed before
-  tokenizing (when `skip` is 0), so a quoted first header loses its quotes.
-  One at the start of the first record after skipped lines is also removed.
-- LF and CRLF line endings are accepted. CR is read as the line ending when
-  the first line break falls in a 4 MiB stretch of the file (counted from the
-  first byte after skipped lines) that holds no LF. phibble reads 4 MiB blocks
-  and decides from the first block with a line break, so the two agree.
-  Otherwise a lone CR is data. Quoted fields can hold delimiters and
-  line breaks, which are kept as written.
-- A line is blank when its raw text holds nothing but spaces, tabs and
-  carriage returns. That is the raw line and not the parsed fields, so a quoted
-  empty string is a field holding data, and it does not depend on `trim_ws` or
-  on the delimiter: a line of spaces is blank even when the delimiter is a
-  space. Under `skip_empty_rows` a blank line is dropped; otherwise it is
-  tokenized like any other line, so an empty line is one empty field and a
-  wider data frame records it as one column short. A last line the file left
-  unterminated is never dropped, so `a\n ` is two rows and `a\n \n` is one.
-- An unterminated quote at the end of the file closes the field there.
-- Bytes are passed through unchanged. There is no encoding validation.
-- An empty file, or one with only empty lines, returns no names and no columns.
-  When the header is read and no data rows are, the names come back with empty
-  columns typed string, following readr, which reads a header-only file as
-  text. Four cases reach that state: `n_max: 0`, a header-only file, a `skip`
-  that leaves no row after the header, and every row empty under
-  `skip_empty_rows`. An explicit code in `types` still applies.
-
-phibble tokenizes by vroom's (readr 2's) quote rules with a fast reader when
-it can (no comment, `""` escapes, no backslash escapes, and a quote character)
-and with its own character-level reader otherwise. The native reader
-reproduces both. The two differ in small ways:
-
-- In the fast reader, a field is quoted when its first byte is the quote.
-  Inside it, every lone quote toggles quoting and is dropped, and a doubled
-  quote is a literal quote, so `"x "y" z"` reads as `x y z`. Quotes in an
-  unquoted field are literal.
-- The character-level reader folds CRLF to LF everywhere, including inside
-  quotes. A quote opens a quoted section only when the field so far is
-  whitespace. Text after the comment prefix ends the record, so a line holding
-  only spaces and a comment is a one-field record holding those spaces, unless
-  no record has been read yet: before the first one, a comment prefix with only
-  whitespace in front of it drops the line, as readr drops it.
-
-## Guessing
-
-Values are trimmed and NA-mapped first. The guess uses every row when there are
-at most `guess_max`. Otherwise it uses `guess_max - 1` evenly spaced rows
-(`step = intdiv(rows, guess_max)`: rows 0, step, 2·step, and so on) plus the
-last row, as vroom does. The first rule that fits every sampled value wins.
-
-1. **bool**: `T F TRUE FALSE True False true false t f`.
-2. **int**: an optional sign, then digits with optional grouping marks between
-   them, that fits in 64 bits. An unsigned leading zero (`007`) stays text;
-   `0` and `-07` are ints.
-3. **double**: `[+-]inf` or `[+-]nan` (any case), or a decimal number with an
-   optional decimal mark, exponent, and grouping marks. `1.` and `1,` qualify.
-   The leading-zero rule applies: `0e5` and `00.5` stay text.
-4. **date**: `YYYY-MM-DD` or `YYYY/MM/DD` (the separators may differ).
-5. **datetime**: `YYYY-MM-DD[(T| )HH[:MM[:SS[.fraction]]]][Z|±HH[[:]MM]]`.
-6. Otherwise **string**.
-
-An all-NA column with at least one data row is bool. phibble differs from readr
-in one rule: whole numbers guess as int, where readr guesses double. The date
-and datetime rules check only the shape. A column whose values look like dates
-guesses date even when a value is not a calendar date, and that value then
-fails to parse.
-
-## Parsing
-
-The column's type is applied to every row. A guessed numeric column allows the
-grouping mark. An explicitly typed one does not, as in phibble.
-
-- **bool** also accepts `1` and `0`.
-- **int** accepts leading zeros and a `+` sign.
-- **double** accepts PHP numeric strings (when the decimal mark is `.`),
-  `inf` and `nan`, and the guessing grammar.
-- **date** needs a valid calendar date in years 0001 to 9999.
-- **datetime** needs a valid date, hours up to 23, and minutes and seconds up
-  to 59. Fractions are truncated to microseconds. An offset converts to UTC
-  and no offset means UTC. Offsets up to ±24:59 are accepted, as by PHP's
-  `DateTimeImmutable`. A date alone is midnight UTC.
+- A file with no data rows gives no chunks. The exception is an unterminated quote in the header: `next()` then returns a chunk with no rows that carries the problem.
 
 ## Errors
 
-A missing or unreadable file and invalid options throw `\ValueError` (not the
-statistical exception). Invalid options include an unknown key, a wrong value
-type, a multi-byte delimiter, quote, decimal mark, or grouping mark, an unknown
-type code, and a negative `skip` or `n_max`. The decimal and grouping marks
-must differ and cannot be a digit, sign, `e`, `E`, or newline.
+A missing or unreadable file, or an invalid option, throws `\ValueError`, not the statistical exception. Invalid options include:
+
+- an unknown key or a wrong value type
+- a multi-byte delimiter, quote, decimal mark, or grouping mark
+- an unknown type code
+- a negative `skip` or `n_max`
+- decimal and grouping marks that are equal, or that are a digit, sign, `e`, `E`, or newline
 
 ## Differences from readr
 
 These follow phibble's reader:
 
 - Whole numbers guess as int.
-- With a comment prefix, a value followed by a comment is trimmed (`2 # x`
-  reads as `2`).
+- With a comment prefix, a value followed by a comment is trimmed, so `2 # x` reads as `2`.
 - Date and datetime guessing checks the shape only.
-- In a file whose only line ending is CR, readr skips a blank line only before
-  the first record and keeps the interior and trailing ones; both readers read
-  CR as the line ending and then apply the blank-line rule throughout.
+- In a file whose only line ending is CR, readr skips a blank line only before the first record and keeps interior and trailing ones. Both phit and phibble read CR as the line ending and apply the blank-line rule throughout.
 
-## Performance
+## Implementation notes
 
-On an Apple Silicon Mac with PHP 8.5, a 1,000,000-row file with int, float,
-string, date, and datetime columns (59 MB) reads in about 0.11 seconds,
-including building the PHP arrays. phibble's `csv_guess` benchmark (1,000,000
-rows) takes 0.12 seconds through `DataFrame::fromCsv()` with the extension and
-1.0 seconds with phibble's PHP reader.
+### Tokenizers
+
+phibble tokenizes with vroom's (readr 2's) quote rules. It uses a fast reader when it can (no comment, `""` escapes, no backslash escapes, and a quote character) and its own character-level reader otherwise. The native reader reproduces both, including their differences:
+
+- In the fast reader, a field is quoted when its first byte is the quote. Inside it, every lone quote toggles quoting and is dropped, and a doubled quote is a literal quote, so `"x "y" z"` reads as `x y z`. Quotes in an unquoted field are literal.
+- The character-level reader folds CRLF to LF everywhere, including inside quotes. A quote opens a quoted section only when the field so far is whitespace. Text after the comment prefix ends the record, so a line holding only spaces and a comment is a one-field record holding those spaces. Before the first record, a comment prefix with only whitespace before it drops the line, as in readr.
+
+### Memory and passes
+
+- `read_csv()` reads 65,536 rows at a time and converts each block to PHP values before reading the next, so it holds one block of the file's text at a time.
+- When any column's type is guessed, it first reads the file twice more: once to count the rows, and once to collect the rows it guesses from, which are spread across the whole file. Giving every column's type in `types` skips those two passes.
+- A string repeated in a column is stored as one shared PHP string.
+- `CsvReader` holds the text of one chunk and one read block.
+
+### Timing
+
+On an Apple M5 Ultra with PHP 8.5 and phit 0.4.3, a 1,000,000-row, 57 MB file with int, float, string, date, and datetime columns reads in about 0.28 seconds with guessed types and 0.16 seconds with every type given. Both include building the PHP arrays.
 
 ## Verification
 
-`tests/csv.php` checks quoting, escapes, NA handling, trimming, every option,
-every type code, the guessing rules, datetimes, ragged rows, chunks, and the
-error cases.
+| Suite | Checks |
+|---|---|
+| `tests/csv.php` | Quoting, escapes, missing values, trimming, every option and type code, guessing, datetimes, ragged rows, chunks, and errors |
+| `tests/csv-conformance.php` | `read_csv()` and `CsvReader` against phibble's reader on a fixed corpus, without a phibble checkout |
+| `tests/csv-phibble.php` | Both readers through phibble on the corpus and on random files; runs when `PHIBBLE_AUTOLOAD` is set |
 
-`tests/csv-conformance.php` checks `read_csv()` against phibble's reader
-without a phibble checkout. phibble generates `tests/fixtures/csv-conformance.json`
-from its own PHP reader with `bin/generate-csv-conformance`, and this repository
-commits a byte-identical copy. The file holds 108 cases: every option at its
-default and at one other value, all eight type codes, ragged rows, a BOM, CRLF
-and CR line endings, an unterminated quote, comments, an empty file, bytes that
-are not valid UTF-8, the four ways to read no data rows, and the blank-line
-rule in its eighteen shapes. Each case records
-the input, the options, and the names, types, values, failure counts, and
-problems phibble produces. The suite requires `read_csv()` to reproduce all of
-it, so a change in either reader fails in its own repository. It reads every
-case again at block sizes of 1, 2, 3, 5, 8, and 64 bytes, and through
-`CsvReader` in one chunk and in chunks of 1, 2, and 3 rows. One chunk must
-equal the whole read. Small chunks must give the same problems in order and,
-read as text, the same values.
+**Conformance corpus.** phibble generates `tests/fixtures/csv-conformance.json` from its PHP reader with `bin/generate-csv-conformance`, and this repository commits a byte-identical copy.
 
-The copy is pinned. `tests/fixtures/PHIBBLE_REFERENCE` names the phibble commit
-it came from, and `bin/fetch-csv-fixtures` copies the file from that commit,
-either from a local checkout given as its first argument or in `PHIBBLE_REPO`,
-or from a clone of the repository named in the pin. Refreshing the corpus means
-regenerating it in phibble, moving the pin, and running that script.
+- The 108 cases cover every option at its default and one other value, all eight type codes, ragged rows, a byte order mark, CRLF and CR endings, an unterminated quote, comments, an empty file, invalid UTF-8, the four ways to read no data rows, and eighteen shapes of the blank-line rule.
+- Each case records the input, options, names, types, values, failure counts, and problems. `read_csv()` must reproduce all of it, so a change in either reader fails in its own repository.
+- Every case is read again at block sizes of 1, 2, 3, 5, 8, and 64 bytes, and through `CsvReader` in one chunk and in chunks of 1, 2, and 3 rows. One chunk must equal the whole read. Small chunks must give the same problems in order and, read as text, the same values.
+- phibble does not report an unterminated quoted field, and `read_csv()` does. Each case lists the extra problems `read_csv()` may add, and the suite compares against that union, so any other problem fails.
+- `tests/fixtures/PHIBBLE_REFERENCE` pins the phibble commit. `bin/fetch-csv-fixtures` copies the file from that commit, using a local checkout given as its first argument or in `PHIBBLE_REPO`, or a clone of the pinned repository. To refresh, regenerate the corpus in phibble, move the pin, and run the script.
 
-phibble's reader does not report an unterminated quoted field and `read_csv()`
-does. Each case therefore carries a closed list of the extra problems
-`read_csv()` is expected to add, and the suite compares its problems with the
-union rather than filtering by pattern, so an unexpected problem fails.
-
-`tests/csv-phibble.php` is the deep tier and runs when `PHIBBLE_AUTOLOAD` points
-at phibble's `vendor/autoload.php`. It compares both readers through
-`DataFrame::fromCsv()` on the fixtures and on thousands of random files and
-option combinations, with the case count and the seed taken from
-`CSV_FUZZ_CASES` and `CSV_FUZZ_SEED`. It requires identical names, types,
-values, and warnings. With a phibble that has `DataFrame::csvChunks()`, it also
-compares `CsvReader` with phibble's PHP chunked reader on random files, chunk
-sizes, and native block sizes (`CSV_CHUNK_CASES` of them). It requires the same
-chunks, positions, types, values, and per-chunk warnings, in the same order.
+**phibble tier.** `tests/csv-phibble.php` compares both readers through `DataFrame::fromCsv()` on the corpus and on random files and options. `CSV_FUZZ_CASES` and `CSV_FUZZ_SEED` set the count and seed. Names, types, values, and warnings must be identical. With a phibble that has `DataFrame::csvChunks()`, it also compares `CsvReader` with phibble's chunked reader over random files, chunk sizes, and block sizes (`CSV_CHUNK_CASES` of them). Chunks, positions, types, values, and per-chunk warnings must match in order.

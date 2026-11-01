@@ -5,8 +5,7 @@ jupyter: python3
 
 The [random-intercept walkthrough](lmm-math.qmd) introduces clustering. Here we
 allow each subject both a different starting reaction time and a different
-response to days of sleep deprivation. We use the published sleepstudy data,
-not synthetic row numbers. The [optimizer audit](r-compatibility.qmd) verifies
+response to days of sleep deprivation, using the published sleepstudy data. The [optimizer audit](r-compatibility.qmd) verifies
 this model against R lme4 and statsmodels under ML and REML.
 
 ## Observations and matrices
@@ -89,7 +88,7 @@ print('Slope SD (ms/day):',np.sqrt(Sigma[1,1]))
 print('Intercept/slope correlation:',Sigma[0,1]/np.sqrt(Sigma[0,0]*Sigma[1,1]))
 ```
 
-These are estimated quantities from the full sample. They are not initial guesses.
+These are estimates from the full sample.
 The off-diagonal dot product `a*c + 0*d` produces the covariance after multiplying
 by sigma². Variances have different physical units because the second coefficient
 is measured in milliseconds per day.
@@ -218,7 +217,7 @@ The implementation is `crates/stats-core/src/lmm.rs`. Owned Vec inputs become
 nalgebra matrices; term/result structs preserve the array shapes and term order.
 `Result` propagates invalid designs, failed controls and nonconvergence to the
 PHP binding as exceptions. The binding validates and filters all aligned inputs,
-then returns plain arrays. No R process participates in application fitting.
+then returns plain arrays.
 
 
 ## Four grouping levels: which observations share variation?

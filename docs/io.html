@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -646,14 +647,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#options" id="toc-options" class="nav-link active" data-scroll-target="#options">Options</a></li>
-  <li><a href="#result" id="toc-result" class="nav-link" data-scroll-target="#result">Result</a></li>
-  <li><a href="#reading-in-chunks" id="toc-reading-in-chunks" class="nav-link" data-scroll-target="#reading-in-chunks">Reading in chunks</a></li>
-  <li><a href="#records" id="toc-records" class="nav-link" data-scroll-target="#records">Records</a></li>
+  <li><a href="#types" id="toc-types" class="nav-link" data-scroll-target="#types">Types</a>
+  <ul class="collapse">
   <li><a href="#guessing" id="toc-guessing" class="nav-link" data-scroll-target="#guessing">Guessing</a></li>
   <li><a href="#parsing" id="toc-parsing" class="nav-link" data-scroll-target="#parsing">Parsing</a></li>
+  </ul></li>
+  <li><a href="#missing-values" id="toc-missing-values" class="nav-link" data-scroll-target="#missing-values">Missing values</a></li>
+  <li><a href="#result" id="toc-result" class="nav-link" data-scroll-target="#result">Result</a></li>
+  <li><a href="#records" id="toc-records" class="nav-link" data-scroll-target="#records">Records</a></li>
+  <li><a href="#reading-in-chunks" id="toc-reading-in-chunks" class="nav-link" data-scroll-target="#reading-in-chunks">Reading in chunks</a></li>
   <li><a href="#errors" id="toc-errors" class="nav-link" data-scroll-target="#errors">Errors</a></li>
   <li><a href="#differences-from-readr" id="toc-differences-from-readr" class="nav-link" data-scroll-target="#differences-from-readr">Differences from readr</a></li>
-  <li><a href="#performance" id="toc-performance" class="nav-link" data-scroll-target="#performance">Performance</a></li>
+  <li><a href="#implementation-notes" id="toc-implementation-notes" class="nav-link" data-scroll-target="#implementation-notes">Implementation notes</a>
+  <ul class="collapse">
+  <li><a href="#tokenizers" id="toc-tokenizers" class="nav-link" data-scroll-target="#tokenizers">Tokenizers</a></li>
+  <li><a href="#memory-and-passes" id="toc-memory-and-passes" class="nav-link" data-scroll-target="#memory-and-passes">Memory and passes</a></li>
+  <li><a href="#timing" id="toc-timing" class="nav-link" data-scroll-target="#timing">Timing</a></li>
+  </ul></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
   </ul>
 </nav>
@@ -680,18 +690,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><code>read_csv()</code> reads a delimited text file into typed columns. It is the native reader behind phibble’s <code>DataFrame::fromCsv()</code>. Its records, names, guessed types, values, and problem messages match phibble’s PHP reader, which follows readr 2 (<code>readr::read_delim()</code>). phibble keeps name repair, <code>col_select</code>, factor and <code>parse_number()</code> columns, and the problems warning in PHP.</p>
-<p><code>Phit\read_csv()</code> is the narrower of the two readers. It has no <code>select</code> or <code>name_repair</code> option, its <code>col_names</code> takes a boolean rather than a list of names, and the readr letters <code>f</code> (factor) and <code>n</code> (number) have no type code here. <code>DataFrame::fromCsv()</code> supplies all of these in PHP around the native call.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\read_csv(<span class="dt">string</span> <span class="va">$path</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$options</span> <span class="op">=</span> [])<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Read a delimited text file into typed columns with <code>read_csv()</code>, or a chunk of rows at a time with <code>CsvReader</code>. The parsing rules follow readr 2 (<code>readr::read_delim()</code>) as phibble’s PHP reader implements them. These are the native readers behind phibble’s <code>DataFrame::fromCsv()</code>, <code>csvChunks()</code>, and <code>fromCsvChunked()</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span> <span class="op">=</span> Phit\read_csv(<span class="st">'housing.csv'</span>)<span class="ot">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span>[<span class="st">'names'</span>]<span class="ot">;</span>   <span class="co">// ['area_m2', 'bedrooms', 'monthly_rent']</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span>[<span class="st">'columns'</span>]<span class="ot">;</span> <span class="co">// Typed float, int, and float.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The CSV readers need the extension. The <a href="./extension-or-polyfill.html">polyfill</a> does not provide them.</p>
+<p><code>read_csv()</code> is narrower than <code>DataFrame::fromCsv()</code>, which adds these in PHP around the native call:</p>
+<ul>
+<li><code>select</code> and <code>name_repair</code> options</li>
+<li>a list of names for <code>col_names</code> (<code>read_csv()</code> takes a boolean)</li>
+<li>the readr type codes <code>f</code> (factor) and <code>n</code> (number), read here as <code>c</code> and parsed in PHP</li>
+<li>the problems warning</li>
+</ul>
 <section id="options" class="level2">
 <h2 class="anchored" data-anchor-id="options">Options</h2>
-<p>Every option is optional. The defaults are readr’s.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Phit\read_csv(<span class="dt">string</span> <span class="va">$path</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$options</span> <span class="op">=</span> [])<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Every option is optional, and the defaults are readr’s.</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>Option</th>
@@ -703,184 +718,344 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td><code>delimiter</code></td>
 <td><code>','</code></td>
-<td>One byte.</td>
+<td>One byte</td>
 </tr>
 <tr class="even">
 <td><code>quote</code></td>
 <td><code>'"'</code></td>
-<td>One byte, or <code>''</code> for no quoting.</td>
+<td>One byte, or <code>''</code> for no quoting</td>
 </tr>
 <tr class="odd">
 <td><code>escape_double</code></td>
 <td><code>true</code></td>
-<td><code>""</code> inside quotes is one <code>"</code>.</td>
+<td><code>""</code> inside quotes is one <code>"</code></td>
 </tr>
 <tr class="even">
 <td><code>escape_backslash</code></td>
 <td><code>false</code></td>
-<td><code>\x</code> is <code>x</code>, inside and outside quotes.</td>
+<td><code>\x</code> is <code>x</code>, inside and outside quotes</td>
 </tr>
 <tr class="odd">
 <td><code>na</code></td>
 <td><code>['', 'NA']</code></td>
-<td>Strings read as NA, compared after trimming. A quoted <code>"NA"</code> is also NA.</td>
+<td>Strings read as missing; see <a href="#missing-values">Missing values</a></td>
 </tr>
 <tr class="even">
 <td><code>trim_ws</code></td>
 <td><code>true</code></td>
-<td>Trim spaces and tabs from values (and PHP <code>trim()</code> from header names).</td>
+<td>Trim spaces and tabs from values, and PHP <code>trim()</code> from header names</td>
 </tr>
 <tr class="odd">
 <td><code>skip</code></td>
 <td><code>0</code></td>
-<td>Raw lines skipped before the header.</td>
+<td>Raw lines skipped before the header</td>
 </tr>
 <tr class="even">
 <td><code>n_max</code></td>
 <td><code>null</code></td>
-<td>Maximum number of data rows.</td>
+<td>Maximum number of data rows</td>
 </tr>
 <tr class="odd">
 <td><code>comment</code></td>
 <td><code>''</code></td>
-<td>Text from this prefix to the end of the line is ignored. A line that starts with it is dropped.</td>
+<td>Text from this prefix to the end of the line is ignored; a line that starts with it is dropped</td>
 </tr>
 <tr class="even">
 <td><code>skip_empty_rows</code></td>
 <td><code>true</code></td>
-<td>Blank lines are skipped. When false, each is read as an ordinary record.</td>
+<td>Skip blank lines; when false, each is read as a record</td>
 </tr>
 <tr class="odd">
 <td><code>col_names</code></td>
 <td><code>true</code></td>
-<td>When false, the first record is data and the names are <code>X1</code>..<code>Xn</code>.</td>
+<td>When false, the first record is data and the names are <code>X1</code>..<code>Xn</code></td>
 </tr>
 <tr class="even">
 <td><code>types</code></td>
 <td><code>[]</code></td>
-<td>Type codes keyed by 0-based column position. Missing positions are guessed.</td>
+<td>Type codes keyed by 0-based column position; other columns are guessed</td>
 </tr>
 <tr class="odd">
 <td><code>guess_max</code></td>
 <td><code>1000</code></td>
-<td>Rows sampled for guessing.</td>
+<td>Rows sampled for guessing</td>
 </tr>
 <tr class="even">
 <td><code>decimal_mark</code></td>
 <td><code>'.'</code></td>
-<td>One byte.</td>
+<td>One byte</td>
 </tr>
 <tr class="odd">
 <td><code>grouping_mark</code></td>
 <td><code>null</code></td>
-<td><code>null</code> uses <code>.</code> when the decimal mark is <code>,</code> and <code>,</code> otherwise. <code>''</code> means none.</td>
+<td><code>null</code> means <code>.</code> when the decimal mark is <code>,</code>, and <code>,</code> otherwise; <code>''</code> means none</td>
 </tr>
 <tr class="even">
 <td><code>block_size</code></td>
 <td><code>4194304</code></td>
-<td>Bytes read from the file at a time. The result does not depend on it; tests use small values.</td>
+<td>Bytes read at a time; the result does not depend on it</td>
 </tr>
 </tbody>
 </table>
-<p>The type codes are <code>?</code> (guess), <code>l</code> (bool), <code>i</code> (int), <code>d</code> (double), <code>c</code> (string), <code>D</code> (date), <code>T</code> (datetime), and <code>_</code> (skip). phibble reads <code>f</code> (factor) and <code>n</code> (number) columns by requesting <code>c</code> and parsing in PHP.</p>
+</section>
+<section id="types" class="level2">
+<h2 class="anchored" data-anchor-id="types">Types</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Code</th>
+<th>Type</th>
+<th>Stored as</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>?</code></td>
+<td>Guess</td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>l</code></td>
+<td>bool</td>
+<td>PHP bool</td>
+</tr>
+<tr class="odd">
+<td><code>i</code></td>
+<td>int</td>
+<td>PHP int</td>
+</tr>
+<tr class="even">
+<td><code>d</code></td>
+<td>double</td>
+<td>PHP float</td>
+</tr>
+<tr class="odd">
+<td><code>c</code></td>
+<td>string</td>
+<td>PHP string</td>
+</tr>
+<tr class="even">
+<td><code>D</code></td>
+<td>date</td>
+<td>int: days since 1970-01-01</td>
+</tr>
+<tr class="odd">
+<td><code>T</code></td>
+<td>datetime</td>
+<td>int: microseconds since the epoch, UTC</td>
+</tr>
+<tr class="even">
+<td><code>_</code></td>
+<td>Skip</td>
+<td>The column is <code>null</code></td>
+</tr>
+</tbody>
+</table>
+<section id="guessing" class="level3">
+<h3 class="anchored" data-anchor-id="guessing">Guessing</h3>
+<p>Values are trimmed and mapped to missing first. The guess uses every row when there are at most <code>guess_max</code>. Otherwise it uses <code>guess_max - 1</code> evenly spaced rows (<code>step = intdiv(rows, guess_max)</code>: rows 0, step, 2·step, and so on) plus the last row, as vroom does. The first rule that fits every sampled value wins.</p>
+<ol type="1">
+<li><strong>bool</strong>: <code>T F TRUE FALSE True False true false t f</code>.</li>
+<li><strong>int</strong>: an optional sign, then digits with optional grouping marks between them, that fits in 64 bits. An unsigned leading zero (<code>007</code>) stays text, while <code>0</code> and <code>-07</code> are ints.</li>
+<li><strong>double</strong>: <code>[+-]inf</code> or <code>[+-]nan</code> in any case, or a decimal number with an optional decimal mark, exponent, and grouping marks. <code>1.</code> and <code>1,</code> qualify. The leading-zero rule applies, so <code>0e5</code> and <code>00.5</code> stay text.</li>
+<li><strong>date</strong>: <code>YYYY-MM-DD</code> or <code>YYYY/MM/DD</code>. The two separators may differ.</li>
+<li><strong>datetime</strong>: <code>YYYY-MM-DD[(T| )HH[:MM[:SS[.fraction]]]][Z|±HH[[:]MM]]</code>.</li>
+<li>Otherwise <strong>string</strong>.</li>
+</ol>
+<ul>
+<li>A column that is entirely missing, with at least one data row, is bool.</li>
+<li>Whole numbers guess as int, where readr guesses double.</li>
+<li>The date and datetime rules check only the shape. A column of date-shaped values guesses date even if one is not a calendar date, and that value then fails to parse.</li>
+</ul>
+</section>
+<section id="parsing" class="level3">
+<h3 class="anchored" data-anchor-id="parsing">Parsing</h3>
+<p>The column’s type applies to every row. A guessed numeric column allows the grouping mark. An explicitly typed one does not, as in phibble.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Accepts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>bool</td>
+<td>The guessing values, plus <code>1</code> and <code>0</code></td>
+</tr>
+<tr class="even">
+<td>int</td>
+<td>Leading zeros and a <code>+</code> sign</td>
+</tr>
+<tr class="odd">
+<td>double</td>
+<td>PHP numeric strings (when the decimal mark is <code>.</code>), <code>inf</code>, <code>nan</code>, and the guessing grammar</td>
+</tr>
+<tr class="even">
+<td>date</td>
+<td>A valid calendar date in years 0001 to 9999</td>
+</tr>
+<tr class="odd">
+<td>datetime</td>
+<td>A valid date, hours up to 23, minutes and seconds up to 59</td>
+</tr>
+</tbody>
+</table>
+<p>For datetimes:</p>
+<ul>
+<li>Fractions are truncated to microseconds.</li>
+<li>An offset converts to UTC, and no offset means UTC. Offsets up to ±24:59 are accepted, as PHP’s <code>DateTimeImmutable</code> accepts them.</li>
+<li>A date alone is midnight UTC.</li>
+</ul>
+</section>
+</section>
+<section id="missing-values" class="level2">
+<h2 class="anchored" data-anchor-id="missing-values">Missing values</h2>
+<ul>
+<li>A value that matches an <code>na</code> string after trimming is missing and becomes <code>null</code>. A quoted <code>"NA"</code> is also missing.</li>
+<li>A value that does not parse as its column’s type also becomes <code>null</code>, and it is counted in the column’s <code>failed</code>.</li>
+<li>Short rows are padded with missing values.</li>
+</ul>
 </section>
 <section id="result" class="level2">
 <h2 class="anchored" data-anchor-id="result">Result</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>[</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'names'</span> =&gt; <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'columns'</span> =&gt; <span class="kw">list</span><span class="op">&lt;</span><span class="kw">null</span><span class="op">|</span><span class="dt">array</span>{</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        type<span class="ot">:</span> <span class="st">'bool'</span><span class="op">|</span><span class="st">'int'</span><span class="op">|</span><span class="st">'float'</span><span class="op">|</span><span class="st">'string'</span><span class="op">|</span><span class="st">'date'</span><span class="op">|</span><span class="st">'datetime'</span><span class="ot">,</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">bool</span><span class="op">|</span><span class="dt">int</span><span class="op">|</span><span class="dt">float</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        failed<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    }<span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'problems'</span> =&gt; <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Values use phibble’s storage form. Bools, ints, and floats are PHP scalars and strings are strings. A date is an int count of days since 1970-01-01. A datetime is an int count of microseconds since the epoch in UTC. NA is <code>null</code>. A skipped column is <code>null</code>. <code>failed</code> counts values that did not parse under the column’s explicit or guessed type; those values are <code>null</code>. phibble turns nonzero counts into its <code>column 'x': n values could not be parsed as type</code> problems.</p>
-<p><code>read_csv()</code> reads the file in blocks of 65,536 rows and converts each block to PHP values before reading the next, so it holds one block of the file’s text at a time. When a column’s type is guessed, it first reads the file twice more: once to count the rows, and once to keep the rows it guesses from, which are spread across the whole file as readr spreads them. Giving every column’s type in <code>types</code> skips those two passes. A string value repeated in a column is one shared PHP string.</p>
-<p><code>problems</code> holds one entry per ragged row, such as <code>row 7: expected 5 columns, got 4</code>. The row number is the record’s position in the file, counting skipped lines and the header. A multi-line quoted field counts as one record. A file that ends inside a quoted field adds <code>row N: unterminated quoted field at end of file</code>.</p>
-</section>
-<section id="reading-in-chunks" class="level2">
-<h2 class="anchored" data-anchor-id="reading-in-chunks">Reading in chunks</h2>
-<p><code>Phit\CsvReader</code> reads a file a chunk of rows at a time. It is the native reader behind phibble’s <code>DataFrame::csvChunks()</code> and <code>fromCsvChunked()</code>, which follow readr’s <code>read_delim_chunked()</code>. It holds the text of one chunk and one read block, so its memory follows the chunk size and not the file size.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">$reader</span> <span class="op">=</span> <span class="kw">new</span> Phit\CsvReader(<span class="dt">string</span> <span class="va">$path</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$options</span> <span class="op">=</span> [])<span class="ot">;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">$reader</span>-&gt;names()<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span>           <span class="co">// list&lt;string&gt;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="va">$reader</span>-&gt;<span class="fu">next</span>(<span class="dt">int</span> <span class="va">$rows</span>)<span class="ot">:</span> <span class="ot">?</span><span class="dt">array</span><span class="ot">;</span>  <span class="co">// the next chunk, or null</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The options are <code>read_csv()</code>’s. The constructor reads the header, so <code>names()</code> is available before the first chunk. It returns the header’s names, <code>X1</code>..<code>Xn</code> when <code>col_names</code> is false, or <code>[]</code> for an empty file. <code>next()</code> returns at most <code>$rows</code> rows in <code>read_csv()</code>’s result shape, with two more keys: <code>position</code>, the 1-based index of the chunk’s first row, and <code>rows</code>, the chunk’s row count. It returns <code>null</code> once no rows remain.</p>
-<p>Chunks follow phibble’s chunked reader:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>[</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'names'</span> =&gt; <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'columns'</span> =&gt; <span class="kw">list</span><span class="op">&lt;</span><span class="kw">null</span><span class="op">|</span><span class="dt">array</span>{</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        type<span class="ot">:</span> <span class="st">'bool'</span><span class="op">|</span><span class="st">'int'</span><span class="op">|</span><span class="st">'float'</span><span class="op">|</span><span class="st">'string'</span><span class="op">|</span><span class="st">'date'</span><span class="op">|</span><span class="st">'datetime'</span><span class="ot">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">bool</span><span class="op">|</span><span class="dt">int</span><span class="op">|</span><span class="dt">float</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        failed<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    }<span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'problems'</span> =&gt; <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li>Types not given in <code>types</code> are guessed from the first chunk, from <code>guess_max</code> of its rows sampled as above. Every later chunk is parsed as those types. phibble sets <code>guess_max</code> to the chunk size by default, as readr does. A value in a later chunk that does not fit its column’s type counts in that chunk’s <code>failed</code>.</li>
-<li>Problem rows are numbered from the start of the file. Each chunk carries the problems of its own rows.</li>
-<li>The unterminated-quote problem goes with the last chunk. After each chunk the reader looks past blank lines to see whether records remain.</li>
-<li><code>n_max</code> caps the rows across all chunks.</li>
-<li>A file with no data rows gives no chunks. The one exception is an unterminated quote in the header: <code>next()</code> then returns a chunk with no rows that carries the problem.</li>
+<li>Values use phibble’s storage forms, listed under <a href="#types">Types</a>. A skipped column is <code>null</code>.</li>
+<li><code>failed</code> counts values that did not parse under the column’s type. phibble turns nonzero counts into <code>column 'x': n values could not be parsed as type</code> problems.</li>
+<li><code>problems</code> holds one entry per ragged row, such as <code>row 7: expected 5 columns, got 4</code>. A file that ends inside a quoted field adds <code>row N: unterminated quoted field at end of file</code>.</li>
+<li>A problem’s row number is the record’s position in the file, counting skipped lines and the header. A multi-line quoted field counts as one record.</li>
 </ul>
 </section>
 <section id="records" class="level2">
 <h2 class="anchored" data-anchor-id="records">Records</h2>
 <ul>
-<li>Short rows are padded with NA. Long rows put the extra fields, joined by the delimiter, into the last column.</li>
-<li>A UTF-8 byte order mark at the start of the file is removed before tokenizing (when <code>skip</code> is 0), so a quoted first header loses its quotes. One at the start of the first record after skipped lines is also removed.</li>
-<li>LF and CRLF line endings are accepted. CR is read as the line ending when the first line break falls in a 4 MiB stretch of the file (counted from the first byte after skipped lines) that holds no LF. phibble reads 4 MiB blocks and decides from the first block with a line break, so the two agree. Otherwise a lone CR is data. Quoted fields can hold delimiters and line breaks, which are kept as written.</li>
-<li>A line is blank when its raw text holds nothing but spaces, tabs and carriage returns. That is the raw line and not the parsed fields, so a quoted empty string is a field holding data, and it does not depend on <code>trim_ws</code> or on the delimiter: a line of spaces is blank even when the delimiter is a space. Under <code>skip_empty_rows</code> a blank line is dropped; otherwise it is tokenized like any other line, so an empty line is one empty field and a wider data frame records it as one column short. A last line the file left unterminated is never dropped, so <code>a\n</code> is two rows and <code>a\n \n</code> is one.</li>
+<li>Long rows put the extra fields, joined by the delimiter, into the last column.</li>
+<li>A UTF-8 byte order mark at the start of the file is removed before tokenizing when <code>skip</code> is 0, so a quoted first header loses its quotes. A mark at the start of the first record after skipped lines is also removed.</li>
+<li>LF and CRLF line endings are accepted. CR is the line ending when the first line break falls in a 4 MiB stretch of the file (counted from the first byte after skipped lines) that holds no LF. Otherwise a lone CR is data. phibble decides from its first 4 MiB block with a line break, so the two readers agree.</li>
+<li>Quoted fields can hold delimiters and line breaks, which are kept as written.</li>
 <li>An unterminated quote at the end of the file closes the field there.</li>
-<li>Bytes are passed through unchanged. There is no encoding validation.</li>
-<li>An empty file, or one with only empty lines, returns no names and no columns. When the header is read and no data rows are, the names come back with empty columns typed string, following readr, which reads a header-only file as text. Four cases reach that state: <code>n_max: 0</code>, a header-only file, a <code>skip</code> that leaves no row after the header, and every row empty under <code>skip_empty_rows</code>. An explicit code in <code>types</code> still applies.</li>
+<li>Bytes pass through unchanged. There is no encoding validation.</li>
 </ul>
-<p>phibble tokenizes by vroom’s (readr 2’s) quote rules with a fast reader when it can (no comment, <code>""</code> escapes, no backslash escapes, and a quote character) and with its own character-level reader otherwise. The native reader reproduces both. The two differ in small ways:</p>
+<p>A line is <strong>blank</strong> when its raw text holds only spaces, tabs, and carriage returns.</p>
 <ul>
-<li>In the fast reader, a field is quoted when its first byte is the quote. Inside it, every lone quote toggles quoting and is dropped, and a doubled quote is a literal quote, so <code>"x "y" z"</code> reads as <code>x y z</code>. Quotes in an unquoted field are literal.</li>
-<li>The character-level reader folds CRLF to LF everywhere, including inside quotes. A quote opens a quoted section only when the field so far is whitespace. Text after the comment prefix ends the record, so a line holding only spaces and a comment is a one-field record holding those spaces, unless no record has been read yet: before the first one, a comment prefix with only whitespace in front of it drops the line, as readr drops it.</li>
+<li>The test uses the raw line, not the parsed fields. A quoted empty string is data, and the result does not depend on <code>trim_ws</code> or the delimiter: a line of spaces is blank even when the delimiter is a space.</li>
+<li>With <code>skip_empty_rows</code>, a blank line is dropped. Otherwise it is tokenized like any other line, so an empty line is one empty field, and in a wider file the record is reported as one column short.</li>
+<li>An unterminated last line is never dropped, so <code>a\n</code> is two rows and <code>a\n \n</code> is one.</li>
 </ul>
+<p>An empty file, or one with only empty lines, returns no names and no columns. When the header is read but no data rows are, the names come back with empty columns typed string, as readr reads a header-only file as text. That happens with <code>n_max: 0</code>, a header-only file, a <code>skip</code> that leaves no row after the header, and every row blank under <code>skip_empty_rows</code>. An explicit code in <code>types</code> still applies.</p>
 </section>
-<section id="guessing" class="level2">
-<h2 class="anchored" data-anchor-id="guessing">Guessing</h2>
-<p>Values are trimmed and NA-mapped first. The guess uses every row when there are at most <code>guess_max</code>. Otherwise it uses <code>guess_max - 1</code> evenly spaced rows (<code>step = intdiv(rows, guess_max)</code>: rows 0, step, 2·step, and so on) plus the last row, as vroom does. The first rule that fits every sampled value wins.</p>
-<ol type="1">
-<li><strong>bool</strong>: <code>T F TRUE FALSE True False true false t f</code>.</li>
-<li><strong>int</strong>: an optional sign, then digits with optional grouping marks between them, that fits in 64 bits. An unsigned leading zero (<code>007</code>) stays text; <code>0</code> and <code>-07</code> are ints.</li>
-<li><strong>double</strong>: <code>[+-]inf</code> or <code>[+-]nan</code> (any case), or a decimal number with an optional decimal mark, exponent, and grouping marks. <code>1.</code> and <code>1,</code> qualify. The leading-zero rule applies: <code>0e5</code> and <code>00.5</code> stay text.</li>
-<li><strong>date</strong>: <code>YYYY-MM-DD</code> or <code>YYYY/MM/DD</code> (the separators may differ).</li>
-<li><strong>datetime</strong>: <code>YYYY-MM-DD[(T| )HH[:MM[:SS[.fraction]]]][Z|±HH[[:]MM]]</code>.</li>
-<li>Otherwise <strong>string</strong>.</li>
-</ol>
-<p>An all-NA column with at least one data row is bool. phibble differs from readr in one rule: whole numbers guess as int, where readr guesses double. The date and datetime rules check only the shape. A column whose values look like dates guesses date even when a value is not a calendar date, and that value then fails to parse.</p>
-</section>
-<section id="parsing" class="level2">
-<h2 class="anchored" data-anchor-id="parsing">Parsing</h2>
-<p>The column’s type is applied to every row. A guessed numeric column allows the grouping mark. An explicitly typed one does not, as in phibble.</p>
+<section id="reading-in-chunks" class="level2">
+<h2 class="anchored" data-anchor-id="reading-in-chunks">Reading in chunks</h2>
+<p><code>Phit\CsvReader</code> reads a file a chunk of rows at a time, as readr’s <code>read_delim_chunked()</code> does. Its memory follows the chunk size, not the file size.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">$reader</span> <span class="op">=</span> <span class="kw">new</span> Phit\CsvReader(<span class="dt">string</span> <span class="va">$path</span><span class="ot">,</span> <span class="dt">array</span> <span class="va">$options</span> <span class="op">=</span> [])<span class="ot">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">$reader</span>-&gt;names()<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span>           <span class="co">// list&lt;string&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">$reader</span>-&gt;<span class="fu">next</span>(<span class="dt">int</span> <span class="va">$rows</span>)<span class="ot">:</span> <span class="ot">?</span><span class="dt">array</span><span class="ot">;</span>  <span class="co">// the next chunk, or null</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li><strong>bool</strong> also accepts <code>1</code> and <code>0</code>.</li>
-<li><strong>int</strong> accepts leading zeros and a <code>+</code> sign.</li>
-<li><strong>double</strong> accepts PHP numeric strings (when the decimal mark is <code>.</code>), <code>inf</code> and <code>nan</code>, and the guessing grammar.</li>
-<li><strong>date</strong> needs a valid calendar date in years 0001 to 9999.</li>
-<li><strong>datetime</strong> needs a valid date, hours up to 23, and minutes and seconds up to 59. Fractions are truncated to microseconds. An offset converts to UTC and no offset means UTC. Offsets up to ±24:59 are accepted, as by PHP’s <code>DateTimeImmutable</code>. A date alone is midnight UTC.</li>
+<li>The options are <code>read_csv()</code>’s.</li>
+<li>The constructor reads the header, so <code>names()</code> works before the first chunk. It returns the header’s names, <code>X1</code>..<code>Xn</code> when <code>col_names</code> is false, or <code>[]</code> for an empty file.</li>
+<li><code>next()</code> returns at most <code>$rows</code> rows in <code>read_csv()</code>’s result shape, plus <code>position</code> (the 1-based index of the chunk’s first row) and <code>rows</code> (the chunk’s row count). It returns <code>null</code> once no rows remain.</li>
+<li>Types not given in <code>types</code> are guessed from the first chunk, from <code>guess_max</code> of its rows sampled as above. Later chunks use those types, and a value that does not fit counts in that chunk’s <code>failed</code>. phibble sets <code>guess_max</code> to the chunk size by default, as readr does.</li>
+<li>Problem rows are numbered from the start of the file, and each chunk carries the problems of its own rows.</li>
+<li>The unterminated-quote problem goes with the last chunk. After each chunk, the reader looks past blank lines to see whether records remain.</li>
+<li><code>n_max</code> caps the rows across all chunks.</li>
+<li>A file with no data rows gives no chunks. The exception is an unterminated quote in the header: <code>next()</code> then returns a chunk with no rows that carries the problem.</li>
 </ul>
 </section>
 <section id="errors" class="level2">
 <h2 class="anchored" data-anchor-id="errors">Errors</h2>
-<p>A missing or unreadable file and invalid options throw <code>\ValueError</code> (not the statistical exception). Invalid options include an unknown key, a wrong value type, a multi-byte delimiter, quote, decimal mark, or grouping mark, an unknown type code, and a negative <code>skip</code> or <code>n_max</code>. The decimal and grouping marks must differ and cannot be a digit, sign, <code>e</code>, <code>E</code>, or newline.</p>
+<p>A missing or unreadable file, or an invalid option, throws <code>\ValueError</code>, not the statistical exception. Invalid options include:</p>
+<ul>
+<li>an unknown key or a wrong value type</li>
+<li>a multi-byte delimiter, quote, decimal mark, or grouping mark</li>
+<li>an unknown type code</li>
+<li>a negative <code>skip</code> or <code>n_max</code></li>
+<li>decimal and grouping marks that are equal, or that are a digit, sign, <code>e</code>, <code>E</code>, or newline</li>
+</ul>
 </section>
 <section id="differences-from-readr" class="level2">
 <h2 class="anchored" data-anchor-id="differences-from-readr">Differences from readr</h2>
 <p>These follow phibble’s reader:</p>
 <ul>
 <li>Whole numbers guess as int.</li>
-<li>With a comment prefix, a value followed by a comment is trimmed (<code>2 # x</code> reads as <code>2</code>).</li>
+<li>With a comment prefix, a value followed by a comment is trimmed, so <code>2 # x</code> reads as <code>2</code>.</li>
 <li>Date and datetime guessing checks the shape only.</li>
-<li>In a file whose only line ending is CR, readr skips a blank line only before the first record and keeps the interior and trailing ones; both readers read CR as the line ending and then apply the blank-line rule throughout.</li>
+<li>In a file whose only line ending is CR, readr skips a blank line only before the first record and keeps interior and trailing ones. Both phit and phibble read CR as the line ending and apply the blank-line rule throughout.</li>
 </ul>
 </section>
-<section id="performance" class="level2">
-<h2 class="anchored" data-anchor-id="performance">Performance</h2>
-<p>On an Apple Silicon Mac with PHP 8.5, a 1,000,000-row file with int, float, string, date, and datetime columns (59 MB) reads in about 0.11 seconds, including building the PHP arrays. phibble’s <code>csv_guess</code> benchmark (1,000,000 rows) takes 0.12 seconds through <code>DataFrame::fromCsv()</code> with the extension and 1.0 seconds with phibble’s PHP reader.</p>
+<section id="implementation-notes" class="level2">
+<h2 class="anchored" data-anchor-id="implementation-notes">Implementation notes</h2>
+<section id="tokenizers" class="level3">
+<h3 class="anchored" data-anchor-id="tokenizers">Tokenizers</h3>
+<p>phibble tokenizes with vroom’s (readr 2’s) quote rules. It uses a fast reader when it can (no comment, <code>""</code> escapes, no backslash escapes, and a quote character) and its own character-level reader otherwise. The native reader reproduces both, including their differences:</p>
+<ul>
+<li>In the fast reader, a field is quoted when its first byte is the quote. Inside it, every lone quote toggles quoting and is dropped, and a doubled quote is a literal quote, so <code>"x "y" z"</code> reads as <code>x y z</code>. Quotes in an unquoted field are literal.</li>
+<li>The character-level reader folds CRLF to LF everywhere, including inside quotes. A quote opens a quoted section only when the field so far is whitespace. Text after the comment prefix ends the record, so a line holding only spaces and a comment is a one-field record holding those spaces. Before the first record, a comment prefix with only whitespace before it drops the line, as in readr.</li>
+</ul>
+</section>
+<section id="memory-and-passes" class="level3">
+<h3 class="anchored" data-anchor-id="memory-and-passes">Memory and passes</h3>
+<ul>
+<li><code>read_csv()</code> reads 65,536 rows at a time and converts each block to PHP values before reading the next, so it holds one block of the file’s text at a time.</li>
+<li>When any column’s type is guessed, it first reads the file twice more: once to count the rows, and once to collect the rows it guesses from, which are spread across the whole file. Giving every column’s type in <code>types</code> skips those two passes.</li>
+<li>A string repeated in a column is stored as one shared PHP string.</li>
+<li><code>CsvReader</code> holds the text of one chunk and one read block.</li>
+</ul>
+</section>
+<section id="timing" class="level3">
+<h3 class="anchored" data-anchor-id="timing">Timing</h3>
+<p>On an Apple M5 Ultra with PHP 8.5 and phit 0.4.3, a 1,000,000-row, 57 MB file with int, float, string, date, and datetime columns reads in about 0.28 seconds with guessed types and 0.16 seconds with every type given. Both include building the PHP arrays.</p>
+</section>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
-<p><code>tests/csv.php</code> checks quoting, escapes, NA handling, trimming, every option, every type code, the guessing rules, datetimes, ragged rows, chunks, and the error cases.</p>
-<p><code>tests/csv-conformance.php</code> checks <code>read_csv()</code> against phibble’s reader without a phibble checkout. phibble generates <code>tests/fixtures/csv-conformance.json</code> from its own PHP reader with <code>bin/generate-csv-conformance</code>, and this repository commits a byte-identical copy. The file holds 108 cases: every option at its default and at one other value, all eight type codes, ragged rows, a BOM, CRLF and CR line endings, an unterminated quote, comments, an empty file, bytes that are not valid UTF-8, the four ways to read no data rows, and the blank-line rule in its eighteen shapes. Each case records the input, the options, and the names, types, values, failure counts, and problems phibble produces. The suite requires <code>read_csv()</code> to reproduce all of it, so a change in either reader fails in its own repository. It reads every case again at block sizes of 1, 2, 3, 5, 8, and 64 bytes, and through <code>CsvReader</code> in one chunk and in chunks of 1, 2, and 3 rows. One chunk must equal the whole read. Small chunks must give the same problems in order and, read as text, the same values.</p>
-<p>The copy is pinned. <code>tests/fixtures/PHIBBLE_REFERENCE</code> names the phibble commit it came from, and <code>bin/fetch-csv-fixtures</code> copies the file from that commit, either from a local checkout given as its first argument or in <code>PHIBBLE_REPO</code>, or from a clone of the repository named in the pin. Refreshing the corpus means regenerating it in phibble, moving the pin, and running that script.</p>
-<p>phibble’s reader does not report an unterminated quoted field and <code>read_csv()</code> does. Each case therefore carries a closed list of the extra problems <code>read_csv()</code> is expected to add, and the suite compares its problems with the union rather than filtering by pattern, so an unexpected problem fails.</p>
-<p><code>tests/csv-phibble.php</code> is the deep tier and runs when <code>PHIBBLE_AUTOLOAD</code> points at phibble’s <code>vendor/autoload.php</code>. It compares both readers through <code>DataFrame::fromCsv()</code> on the fixtures and on thousands of random files and option combinations, with the case count and the seed taken from <code>CSV_FUZZ_CASES</code> and <code>CSV_FUZZ_SEED</code>. It requires identical names, types, values, and warnings. With a phibble that has <code>DataFrame::csvChunks()</code>, it also compares <code>CsvReader</code> with phibble’s PHP chunked reader on random files, chunk sizes, and native block sizes (<code>CSV_CHUNK_CASES</code> of them). It requires the same chunks, positions, types, values, and per-chunk warnings, in the same order.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Suite</th>
+<th>Checks</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tests/csv.php</code></td>
+<td>Quoting, escapes, missing values, trimming, every option and type code, guessing, datetimes, ragged rows, chunks, and errors</td>
+</tr>
+<tr class="even">
+<td><code>tests/csv-conformance.php</code></td>
+<td><code>read_csv()</code> and <code>CsvReader</code> against phibble’s reader on a fixed corpus, without a phibble checkout</td>
+</tr>
+<tr class="odd">
+<td><code>tests/csv-phibble.php</code></td>
+<td>Both readers through phibble on the corpus and on random files; runs when <code>PHIBBLE_AUTOLOAD</code> is set</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Conformance corpus.</strong> phibble generates <code>tests/fixtures/csv-conformance.json</code> from its PHP reader with <code>bin/generate-csv-conformance</code>, and this repository commits a byte-identical copy.</p>
+<ul>
+<li>The 108 cases cover every option at its default and one other value, all eight type codes, ragged rows, a byte order mark, CRLF and CR endings, an unterminated quote, comments, an empty file, invalid UTF-8, the four ways to read no data rows, and eighteen shapes of the blank-line rule.</li>
+<li>Each case records the input, options, names, types, values, failure counts, and problems. <code>read_csv()</code> must reproduce all of it, so a change in either reader fails in its own repository.</li>
+<li>Every case is read again at block sizes of 1, 2, 3, 5, 8, and 64 bytes, and through <code>CsvReader</code> in one chunk and in chunks of 1, 2, and 3 rows. One chunk must equal the whole read. Small chunks must give the same problems in order and, read as text, the same values.</li>
+<li>phibble does not report an unterminated quoted field, and <code>read_csv()</code> does. Each case lists the extra problems <code>read_csv()</code> may add, and the suite compares against that union, so any other problem fails.</li>
+<li><code>tests/fixtures/PHIBBLE_REFERENCE</code> pins the phibble commit. <code>bin/fetch-csv-fixtures</code> copies the file from that commit, using a local checkout given as its first argument or in <code>PHIBBLE_REPO</code>, or a clone of the pinned repository. To refresh, regenerate the corpus in phibble, move the pin, and run the script.</li>
+</ul>
+<p><strong>phibble tier.</strong> <code>tests/csv-phibble.php</code> compares both readers through <code>DataFrame::fromCsv()</code> on the corpus and on random files and options. <code>CSV_FUZZ_CASES</code> and <code>CSV_FUZZ_SEED</code> set the count and seed. Names, types, values, and warnings must be identical. With a phibble that has <code>DataFrame::csvChunks()</code>, it also compares <code>CsvReader</code> with phibble’s chunked reader over random files, chunk sizes, and block sizes (<code>CSV_CHUNK_CASES</code> of them). Chunks, positions, types, values, and per-chunk warnings must match in order.</p>
 
 
 </section>

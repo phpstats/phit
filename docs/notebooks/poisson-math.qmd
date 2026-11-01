@@ -3,7 +3,7 @@ title: "Poisson: count likelihood, log link and IRLS"
 jupyter: python3
 ---
 
-## 1. Meaningful simulated observations
+## 1. Simulated observations
 
 We observe **simulated clinic days**, with daily visitors, a staffing measure
 and the number of calls received. These are synthetic counts, not patient records.
@@ -14,8 +14,8 @@ clipped to 2–10 and rounded to two decimals. Counts are independent draws from
 $$y_i\sim\operatorname{Poisson}(\mu_i),\qquad
 \log\mu_i=0.1+0.005\,\mathrm{visitors}_i-0.12\,\mathrm{staff}_i.$$
 
-Inputs and outcomes are data. The supplied ones column estimates the intercept.
-Known generating parameters are distinct from fitted estimates, which vary by sample.
+The supplied ones column estimates the intercept. The estimates differ from the
+generating parameters because they vary with the sample.
 The outcome is a nonnegative integer; the fitted mean $\mu_i$ is a positive real
 number, not a rounded count or a probability. Under the model,
 $E[y_i\mid x_i]=\operatorname{Var}(y_i\mid x_i)=\mu_i$.
@@ -23,17 +23,16 @@ $E[y_i\mid x_i]=\operatorname{Var}(y_i\mid x_i)=\mu_i$.
 The **log link** is $\eta_i=x_i^\top\beta=\log\mu_i$, so $\mu_i=e^{\eta_i}$.
 Holding other predictors fixed, a one-unit increase multiplies the mean by
 $e^{\beta_j}$. A negative staffing coefficient here describes a conditional
-association, not a causal staffing effect. This first API has no exposure/offset
-argument: a constant exposure is implicit, and these are daily counts, not rates.
+association, not a causal staffing effect. These are daily counts with a constant
+exposure, so the walkthrough uses no offset. Current fits accept an offset, such as
+`offset(log(exposure))` in a formula, which adds a known term to $\eta_i$; see
+[Linear and generalized linear models](../models.qmd).
 
-The hand-worked iteration below deliberately uses zero starting coefficients to
-make the first weights and dot products easy to inspect. Since the v0.1
-stabilization, the native implementation uses a finite marginal intercept start
-for extreme inputs when a ones column is present, which cancels a large common offset.
-Ordinary inputs retain the original zero start; the finite intercept fallback
-is used only for extreme offsets/counts described in the release notes.
-Starting values change the iteration path, not the declared likelihood or
-converged estimates. See [the release notes](../v0.1.qmd).
+The hand-worked iteration below starts from zero coefficients so the first
+weights and dot products are easy to inspect. phit also starts from zero, except
+for extreme inputs with a ones column, where it uses a finite marginal intercept
+start. Starting values change the iteration path, not the likelihood or the
+converged estimates.
 
 ```{python}
 from pathlib import Path
@@ -261,13 +260,13 @@ print("Every statistical field agrees with the saved R fixture.")
 ## 6. Assumptions, failure modes and experiments
 
 Counts must be finite nonnegative integers and at least one must be positive.
-An all-zero sample is rejected, including no-intercept designs, as a conservative
-first-version restriction. Certain predictor patterns have a boundary MLE with
+An all-zero sample is rejected, including no-intercept designs. Certain predictor patterns have a boundary MLE with
 coefficients diverging; the fitter rejects nonconvergence or singular information
 rather than returning a partial fit. It has no exhaustive boundary-existence test.
 Independent outcomes, equal conditional mean/variance and linear log mean are
-model assumptions. There are no offsets, exposures, sample weights, grouped trials,
-robust errors, zero-inflation or negative-binomial alternatives. Try doubling every
+model assumptions. Offsets and prior weights are supported (see
+[Matrix model functions](../reference-models.qmd)); robust errors, zero-inflation
+and negative-binomial alternatives are not. Try doubling every
 count while retaining the design: which coefficient should shift, and why?
 
 For both methods the retained design must have n > p and full numerical rank.

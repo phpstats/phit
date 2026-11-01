@@ -2,8 +2,7 @@
 title: "API overview"
 ---
 
-The extension registers the PHP module `phit` (`extension=phit`, Composer
-`ext-phit`). Every function is in the `Phit` namespace and is named by prefix.
+The extension registers the PHP module `phit` (`extension=phit`, Composer `ext-phit`). Every function is in the `Phit` namespace and is named by prefix. The polyfill defines the same functions except the CSV reader; see [Extension or polyfill](extension-or-polyfill.qmd).
 
 | Prefix or name | Purpose | Reference |
 | --- | --- | --- |
@@ -46,72 +45,71 @@ them.
 | `fit_mixed_intercept` | `fit_mixed_gaussian_intercept_matrix` | Matrix |
 | `fit_logistic_mixed` | `fit_mixed_logistic_matrix` | Matrix |
 
-`fit_ols` is the one name that 0.3 and 0.4 both use, so during 0.4 it accepts
-both forms and dispatches on its first argument. A string, or the named
-arguments `formula:` and `data:`, is the formula fit. An array, or the named
-arguments `x:` and `y:`, is the 0.3 matrix fit. It returns `fit_ols_matrix()`'s
-result and raises one deprecation. A call never changes meaning. In phit 0.5,
-an array passed to `fit_ols` will be an error that names `fit_ols_matrix()`.
+`fit_ols` is the one name that 0.3 and 0.4 both use, so during 0.4 it accepts both forms and dispatches on its first argument:
+
+- A string, or the named arguments `formula:` and `data:`, is the formula fit.
+- An array, or the named arguments `x:` and `y:`, is the 0.3 matrix fit. It returns `fit_ols_matrix()`'s result and raises one deprecation.
+- In phit 0.5, an array passed to `fit_ols` will be an error that names `fit_ols_matrix()`.
 
 ```php
-Phit\fit_ols(mixed $formula = null, mixed $data = null, string $missing = 'drop', mixed $weights = null,
-    ?array $offset = null, bool $intercept = true, ?array $x = null, ?array $y = null): array;
+Phit\fit_ols(
+    mixed $formula = null,
+    mixed $data = null,
+    string $missing = 'drop',
+    mixed $weights = null,
+    ?array $offset = null,
+    bool $intercept = true,
+    ?array $x = null,
+    ?array $y = null,
+): array;
 ```
 
-`offset` and `intercept` belong to the matrix form. A formula writes them as
-`offset()` and `- 1`. Mixing the two forms, such as a formula with `x:`, throws
-code 1001.
+- `offset` and `intercept` belong to the matrix form. A formula writes them as `offset()` and `- 1`.
+- Mixing the two forms, such as a formula with `x:`, throws code 1001.
+- `fit_mixed_logistic` has no `family` or `link` arguments. The deprecated `fit_glmer` still accepts them and throws code 1007 for anything but the binomial family with the logit link.
 
-`fit_mixed_logistic` has no `family` or `link` arguments. The deprecated
-`fit_glmer` still accepts them and throws code 1007 for anything but the
-binomial family with the logit link.
+## Signatures
 
-## PHP entry points
+The formula functions are listed in [Model formulas](formulas.qmd). The four fixed-effect matrix functions share one signature:
 
 ```php
-Phit\fit_ols_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
-Phit\fit_logistic_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
-Phit\fit_probit_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
-Phit\fit_poisson_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = null, ?array $offset = null, bool $intercept = true): array;
-
-// Formula interfaces over the same cores; $data is named columns or an object with toModelData()/toColumns().
-Phit\model_matrix(string $formula, array|object $data, string $missing = 'drop'): array;
-Phit\fit_ols(string $formula, array|object $data, string $missing = 'drop', array|string|null $weights = null): array;
-Phit\fit_generalized_linear(string $formula, array|object $data, string $family = 'gaussian', string $link = '', string $missing = 'drop', array|string|null $weights = null): array;
-Phit\fit_mixed_gaussian(string $formula, array|object $data, bool $reml = true, string $missing = 'drop', array|string|null $weights = null, ...): array;
-Phit\fit_mixed_logistic(string $formula, array|object $data, string $missing = 'drop', array|string|null $weights = null, ...): array;
+// fit_ols_matrix, fit_logistic_matrix,
+// fit_probit_matrix, fit_poisson_matrix
+Phit\fit_ols_matrix(
+    array $x,
+    array $y,
+    string $missing = 'drop',
+    ?array $weights = null,
+    ?array $offset = null,
+    bool $intercept = true,
+): array;
 ```
 
-All estimators are synchronous and stateless: each returns a complete fit without
-retaining a model handle, input data or mutable configuration. It does not mutate
-the caller's arrays. Repeated fits are independent.
+[Matrix model functions](reference-models.qmd) lists the mixed-model matrix signatures.
+
+Every estimator is synchronous and stateless:
+
+- It returns a complete fit and keeps no model handle, input data, or configuration.
+- It does not modify the caller's arrays.
+- Repeated fits are independent.
 
 ## Formula interfaces
 
-The formula functions parse an R model formula, build R's `model.matrix()` over
-named columns, and call the estimation cores of `fit_ols_matrix`, `fit_logistic_matrix`,
-`fit_probit_matrix`, `fit_poisson_matrix`, `fit_mixed_gaussian_matrix`, and `fit_mixed_logistic_matrix`.
-Each fit returns the complete result contract of its matrix function. It adds
-`formula`, `response`, `columns` (coefficient names in coefficient order), `terms`,
-`assign`, `intercept`, and `named` (`column => coefficient`). `fit_generalized_linear` and
-`fit_mixed_logistic` also return `family` and `link`. `model_matrix` returns `y`,
-`x` (including the `(Intercept)` column), the naming keys, `offset`, `random` designs
-in the shape `fit_mixed_gaussian_matrix` accepts, and the deletion accounting.
+The formula functions build R's `model.matrix()` over named columns and fit it with the estimator of the matching matrix function. Each result has that matrix function's complete contract plus naming keys (`formula`, `response`, `columns`, `terms`, `assign`, `intercept`, `named`, `predvars`, and, for `fit_generalized_linear` and `fit_mixed_logistic`, `family` and `link`).
 
-Missing-value deletion covers only the variables a formula uses, with the same
-warning, `missing: 'raise'` behavior, and row accounting as the matrix functions.
-`model_matrix` keeps unused factor levels, as `model.matrix()` does. The
-fitting functions drop them, as `lm()`, `glm()`, and lme4 do. Unknown columns,
-malformed factor descriptors, referenced list-columns, and invalid formulas raise
-1001. Column-length mismatch raises 1002. Infinite transform results raise 1003.
-Unsupported functions, families, links, and random-effect structures raise 1007.
-Rank deficiency raises 1004. The [formula guide](formulas.qmd) defines the syntax,
-contrasts, data shapes, verification, and every known difference from R.
+| Failure | Code |
+| --- | --- |
+| Unknown column, malformed factor descriptor, referenced list-column, or invalid formula | 1001 |
+| Columns of different lengths | 1002 |
+| Infinite transform result | 1003 |
+| Rank-deficient design | 1004 |
+| Unsupported function, family, link, or random-effect structure | 1007 |
+
+[Model formulas](formulas.qmd) defines the syntax, data shapes, contrasts, missing-value handling, and differences from R.
 
 ## Matrix model contracts
 
-[Matrix model functions](reference-models.qmd) defines the inputs, results,
-convergence rules and failure cases of each matrix function:
+[Matrix model functions](reference-models.qmd) defines the inputs, results, convergence rules, and failure cases of each matrix function:
 
 - [OLS](reference-models.qmd#ols-input-and-output)
 - []{#binary-logistic-regression}[Binary logistic regression](reference-models.qmd#binary-logistic-regression)
@@ -124,120 +122,85 @@ convergence rules and failure cases of each matrix function:
 
 ## Fixed intercept {#fixed-intercept-convention-and-migration}
 
-The seven matrix estimators take `bool $intercept = true`. Supply predictor columns only: the binding prepends an exact ones
-column and the estimated intercept is coefficient 0, followed by predictors in
-supplied column order. Covariance, standard errors, tests and intervals follow
-that same order. Parameter counts and residual degrees of freedom include the
-added coefficient. No input array is mutated.
+The seven matrix functions take `bool $intercept = true`.
 
-`intercept: false` passes the supplied x matrix literally. It is both the opt-out
-for a through-origin model and the compatibility option for callers already
-supplying a complete design with ones. There is **no automatic detection** of
-existing constant columns: leaving ones in x with the default creates a duplicate
-intercept and a rank-deficiency error, rather than silently guessing intent.
+- With the default, supply predictor columns only. phit prepends an exact ones column, and the intercept is coefficient 0, followed by the predictors in column order. Covariance, standard errors, tests, and intervals follow the same order.
+- Parameter counts and residual degrees of freedom include the added coefficient.
+- `intercept: false` uses `x` exactly. Use it for a model through the origin, or for a design that already contains a ones column.
+- phit does not detect existing constant columns. Leaving a ones column in `x` with the default creates a duplicate intercept and raises a rank-deficiency error.
+- For an intercept-only fit, supply one empty predictor row per outcome, such as `x: array_fill(0, count($y), [])`. Empty predictor rows require `intercept: true`.
+- Random-effect designs (`random[*].z`) are not affected. A random intercept and slope still needs `[1, slope]` rows.
 
-For an intercept-only fit, supply one empty predictor row per outcome, such as
-`x: array_fill(0, count($y), [])`. An empty sample or ragged matrix is still invalid;
-empty predictor rows require `intercept: true`. Missing-row validation and deletion
-still apply to outcomes, predictors, groups, weights and offsets before fitting.
+## Input conversion
 
-The Rust core takes the design literally.
+- Numeric elements must be PHP integers or floats. Values are not coerced from strings.
+- PHP integers are converted to 64-bit floats, so integers beyond 2^53 can lose precision.
+- Arrays are read in iteration order, and keys are ignored. Row order aligns `x` with `y`, and column order aligns every coefficient result. Keep labels separately.
+- `null` and `NAN` are missing. By default, rows with missing values are deleted with one `E_WARNING`, and `missing: 'raise'` rejects them. `fitted` and `residuals` follow `retained_rows`. See [Missing values](missing-data.qmd).
+- phit does not add columns or remove aliased predictors.
+- Arithmetic is 64-bit floating point. Extreme input scales can exceed its range.
 
-Random-effect designs `random[*].z` remain explicit; this option only constructs
-the fixed design. For a random intercept/slope, z still needs `[1, slope]` rows.
+## Diagnostics and error codes {#v01-diagnostics-and-errors}
 
-## Errors and conversion
+### Exceptions
 
-The binding accepts actual integers and floats as numeric elements, with null
-and NAN representing missingness. PHP
-integers are converted to f64, so integers beyond the exact range of double
-precision may lose precision. Array keys and names do not label coefficients:
-row order aligns x with y, and column order aligns all coefficient results.
-Callers should normally supply packed lists and keep labels separately.
+Statistical and input failures throw a PHP `Exception` with a numeric `getCode()`:
 
-Missing values use listwise deletion by default, with one E_WARNING on a
-successful fit that omits rows. missing: 'raise' rejects missingness. Values are
-not coerced from strings, columns are not added, and aliased predictors are not
-removed. fitted and residuals follow retained_rows order. See
-[Missing data](missing-data.qmd) for validation order, warnings, accounting and
-application handling. Applications can promote PHP warnings to exceptions.
+| Code | Category | Meaning |
+|---|---|---|
+| 1001 | Invalid input | Type, domain, or control error; `missing: 'raise'`; invalid groups, weights, or counts |
+| 1002 | Dimension mismatch | Shape or alignment error, or too few residual observations |
+| 1003 | Nonfinite | Nonfinite values, or arithmetic beyond floating-point range, including nonzero residual variance that underflows |
+| 1004 | Rank deficiency | Numerical rank failure of the design or information |
+| 1005 | Factorization failure | A required linear solve or positive-definite factorization fails |
+| 1006 | Nonconvergence | Iteration budget, line search, optimizer, or score failure; separation; an optimum at a search boundary |
+| 1007 | Unsupported | An explicit size or count limit, or an unimplemented configuration |
+| 1008 | Internal | A required decomposition output is missing, or an internal invariant fails |
 
-Statistical and input failures use PHP Exception with stable numeric codes
-1001–1008; see [the diagnostic/error contract](#v01-diagnostics-and-errors).
-There are no estimator-specific exception classes. Callers can inspect getCode()
-and should handle Throwable at their application boundary, since PHP argument
-and runtime errors use their own types. Message text may change. If the extension is absent, the functions themselves are unavailable;
-that is an installation failure rather than an invalid-data result.
+- There are no estimator-specific exception classes. Handle `Throwable` at the application boundary, since PHP argument and runtime errors use their own types.
+- Message text can change. Use the code, not the message.
+- When several checks fail, the exception can report the first, or the most relevant category.
+- Invalid data are checked before missing-value deletion.
+- Zend `TypeError`, result-conversion errors, and caught Rust panics are runtime errors, not statistical codes.
+- If neither the extension nor the polyfill is loaded, the functions do not exist. That is an installation failure.
 
-NAN/INF are floating-point values in successful results, not failure sentinels.
-Serialization helpers may map them to null using a documented policy, while the
-native result preserves them. Current arithmetic uses f64; it is not arbitrary
-precision, and extreme input scales can exceed its range.
+### Diagnostics
 
-## Rust boundary
+Every successful estimator returns `diagnostics`:
+
+| Key | Contents |
+|---|---|
+| `converged` | `true` on every returned fit, including direct OLS. A failed fit throws. |
+| `solver` | `scaled_svd`, `newton_irls`, `fisher_scoring`, `profile_variance_search`, `bobyqa`, or `nelder_mead` |
+| `iterations`, `evaluations` | Present when the result has the top-level key of the same name, with the same value |
+| `gradient_max` | Binomial mixed model only; the same value as its top-level key |
+| `boundary`, `singular` | Present when the estimator reports that flag. A zero variance is a valid fit. |
+| `warnings` | `list<string>`: missing-row deletion, a near-singular covariance, or the binomial mixed model's Laplace advisory |
+
+- The warnings are interpretation notices. Only missing-row deletion also raises a PHP `E_WARNING`.
+- Diagnostics that do not apply are omitted. phit does not invent an iteration count or a gradient.
+- General Gaussian mixed fits check optimizer termination, parameter bounds, valid factors, and finite output. They have no final gradient or Hessian check on the variance parameters.
+- Wald inference and local convergence do not establish model adequacy or quadrature accuracy.
+
+### Undefined values and limits
+
+- `NAN` and `INF` in a successful result are values, not failure markers. An exact zero-residual OLS fit keeps its documented `NAN` and `INF` statistics, while nonzero variance that underflows raises 1003.
+- PHP's `json_encode()` with `JSON_THROW_ON_ERROR` rejects `NAN` and `INF`, so JSON consumers must handle them explicitly.
+- Binomial models allow at most 1,000,000 trials per original row. Accepted success counts are rounded with `round(y*trials)/trials`.
+
+## Implementation notes
+
+The Rust core takes the design literally and has no PHP dependency:
 
 ```rust
-pub fn fit_ols_matrix(
+pub fn fit_ols(
     x: Vec<Vec<f64>>,
     y: Vec<f64>,
 ) -> Result<OlsResult, StatsError>
 ```
 
-The core owns its inputs and has no PHP dependency. OlsResult exposes the same
-statistical fields as the PHP array (sample-deletion metadata is PHP-only), with Vec<f64> for numeric lists,
-Vec<Vec<f64>> for covariance, Vec<[f64; 2]> for confidence intervals, f64 for
-scalars, and usize for residual degrees of freedom. StatsError implements
-Display and Error. The binding converts errors and values without implementing
-statistical formulas.
+- `OlsResult` has the statistical fields of the PHP array, with `Vec<f64>` for lists, `Vec<Vec<f64>>` for covariance, `Vec<[f64; 2]>` for confidence intervals, `f64` for scalars, and `usize` for residual degrees of freedom. Missing-value deletion and its metadata exist only in the PHP binding.
+- `StatsError::new(kind, message)` carries an explicit `ErrorKind`. `kind()` returns the category, and `.0` the message. The binding maps each `ErrorKind` to the codes above.
+- The binding converts values and errors. It does not implement statistical formulas.
 
-See [Design philosophy](design-philosophy.qmd) for the boundary between this
-raw API and optional convenience layers.
-
-## Diagnostics and error codes {#v01-diagnostics-and-errors}
-
-Every successful estimator returns `diagnostics`:
-
-| Diagnostic key | Contract |
-|---|---|
-| converged | true on successful return, including direct OLS; failed fitting throws |
-| solver | scaled_svd, newton_irls, fisher_scoring, profile_variance_search, bobyqa or nelder_mead |
-| iterations, evaluations | Present only when the corresponding historical top-level key exists; same value, not a second counter |
-| gradient_max | Present for logistic mixed only; same scaled-coordinate finite-difference score as its top-level key |
-| boundary, singular | Present when the estimator already reports that flag; legitimate zero variance is permitted |
-| warnings | list<string>; missing-row deletion, a reported near-singular covariance, or the logistic-mixed Laplace approximation advisory |
-
-Warnings in this array are interpretation notices. Only listwise deletion also
-emits the existing single PHP E_WARNING. Missing/undefined diagnostics are omitted;
-there is no fabricated iteration count or universal score. General Gaussian
-convergence still uses optimizer termination, parameter bounds, valid factors and
-finite output; it does not have a final variance-parameter gradient/Hessian gate.
-OLS has no iterative optimizer. Normal/Wald inference and local convergence do
-not guarantee model adequacy or quadrature accuracy.
-
-Statistical and input failures throw PHP `Exception` with a numeric `getCode()`:
-
-| Code | Rust ErrorKind | Meaning |
-|---|---|---|
-| 1001 | InvalidInput | Type/domain/control error, missing='raise', invalid groups/weights/counts |
-| 1002 | DimensionMismatch | Shape/alignment or insufficient residual observations |
-| 1003 | Nonfinite | Nonfinite values or arithmetic beyond floating-point range, including nonzero residual variance underflow |
-| 1004 | RankDeficiency | Numerical design/information rank failure |
-| 1005 | FactorizationFailure | Required linear solve or positive-definite information factor fails |
-| 1006 | Nonconvergence | Budget/line-search/optimizer/score failure, separation or unsupported finite optimum at a search boundary |
-| 1007 | Unsupported | Explicit size/count limit or unimplemented configuration |
-| 1008 | Internal | Required decomposition output missing or an internal mathematical invariant fails |
-
-Messages remain explanatory, not stable machine identifiers. Validation can
-report the first failed check when multiple problems exist; combined validation
-checks may use the most relevant category. Zend argument `TypeError`, result
-conversion/runtime errors, and caught Rust panics are runtime errors rather
-than statistical codes. Invalid data are checked before listwise deletion.
-Rust `StatsError::new(kind, message)` carries the explicit enum without classifying
-message text; `.0` remains the display message and `kind()` exposes its category.
-
-Binomial calls limit trials to 1,000,000 per original row, and accepted
-success-count rounding is canonicalized with `round(y*trials)/trials`.
-For exact zero-variance OLS, the existing NaN/INF conventions remain; nonzero
-variance underflow instead throws 1003. JSON consumers must handle documented
-undefined OLS quantities explicitly; PHP's JSON_THROW_ON_ERROR rejects NaN/INF.
-See the [v0.1 assessment](v0.1.qmd) for compatibility notes and tested stress ranges.
+See [Design philosophy](design-philosophy.qmd) for the boundary between this API and optional convenience layers, and the [v0.1 assessment](v0.1.qmd) for the tested stress ranges.

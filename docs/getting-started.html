@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -676,36 +677,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This page fits a linear model to a small table of flats, reads the estimates, and predicts rents for flats that are not in the table. The data are simulated. The first eight rows are the teaching sample in <a href="https://github.com/phpstats/phit/blob/main/docs/data/housing.csv"><code>docs/data/housing.csv</code></a>, and the last two rows and the <code>district</code> column were added for this page. <code>rent</code> is the monthly rent in an unnamed currency, and <code>area</code> is the floor area in square meters. It assumes the extension is <a href="./installation.html">installed</a>.</p>
+<p>Fit a linear model to ten flats, read the estimates, and predict rents for flats that are not in the data.</p>
+<p>The page runs with the <a href="./installation.html">extension</a> or the plain-PHP <a href="./extension-or-polyfill.html">polyfill</a>. The data are simulated: <code>rent</code> is the monthly rent in an unnamed currency, <code>area</code> is the floor area in square meters, and <code>district</code> is one of three districts.</p>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
-<p>The formula functions take a data set as named columns: an associative array of <code>column =&gt; list of values</code>, with every column the same length. phibble’s <code>DataFrame</code> is also accepted, through its <code>toModelData()</code> method.</p>
+<p>The formula functions take named columns: an associative array of <code>column =&gt; list of values</code>, with every column the same length. A table object with <code>toModelData()</code> or <code>toColumns()</code>, such as a phibble <code>DataFrame</code>, is also accepted.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_ols<span class="ot">,</span> predict}<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$flats</span> <span class="op">=</span> [</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rent'</span> =&gt; [<span class="fl">1879.25</span><span class="ot">,</span> <span class="fl">1805.03</span><span class="ot">,</span> <span class="fl">2022.29</span><span class="ot">,</span> <span class="fl">1267.85</span><span class="ot">,</span> <span class="fl">1509.24</span><span class="ot">,</span> <span class="fl">2240.10</span><span class="ot">,</span> <span class="fl">959.51</span><span class="ot">,</span> <span class="fl">2386.54</span><span class="ot">,</span> <span class="fl">1655.80</span><span class="ot">,</span> <span class="fl">1420.00</span>]<span class="ot">,</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'area'</span> =&gt; [<span class="fl">74.4</span><span class="ot">,</span> <span class="fl">57.4</span><span class="ot">,</span> <span class="fl">66.4</span><span class="ot">,</span> <span class="fl">49.1</span><span class="ot">,</span> <span class="fl">45.7</span><span class="ot">,</span> <span class="fl">92.4</span><span class="ot">,</span> <span class="fl">37.0</span><span class="ot">,</span> <span class="fl">93.9</span><span class="ot">,</span> <span class="fl">61.2</span><span class="ot">,</span> <span class="fl">52.3</span>]<span class="ot">,</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'district'</span> =&gt; [<span class="st">'north'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span>]<span class="ot">,</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Numbers are numeric columns. Strings become a factor whose levels are sorted in byte order, so <code>east</code> is the reference level here. <a href="./formulas.html#data">Model formulas</a> lists every accepted column type.</p>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rent'</span> =&gt; [</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="fl">1879.25</span><span class="ot">,</span> <span class="fl">1805.03</span><span class="ot">,</span> <span class="fl">2022.29</span><span class="ot">,</span> <span class="fl">1267.85</span><span class="ot">,</span> <span class="fl">1509.24</span><span class="ot">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="fl">2240.10</span><span class="ot">,</span> <span class="fl">959.51</span><span class="ot">,</span> <span class="fl">2386.54</span><span class="ot">,</span> <span class="fl">1655.80</span><span class="ot">,</span> <span class="fl">1420.00</span><span class="ot">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'area'</span> =&gt; [</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="fl">74.4</span><span class="ot">,</span> <span class="fl">57.4</span><span class="ot">,</span> <span class="fl">66.4</span><span class="ot">,</span> <span class="fl">49.1</span><span class="ot">,</span> <span class="fl">45.7</span><span class="ot">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="fl">92.4</span><span class="ot">,</span> <span class="fl">37.0</span><span class="ot">,</span> <span class="fl">93.9</span><span class="ot">,</span> <span class="fl">61.2</span><span class="ot">,</span> <span class="fl">52.3</span><span class="ot">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'district'</span> =&gt; [</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">'north'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Numeric values make a numeric column.</li>
+<li>Strings make a factor whose levels sort in byte order, so <code>east</code> is the reference level.</li>
+<li><a href="./formulas.html#data">Model formulas</a> lists every accepted column type.</li>
+</ul>
 </section>
 <section id="fit" class="level2">
 <h2 class="anchored" data-anchor-id="fit">Fit</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_ols(<span class="st">'rent ~ area + district'</span><span class="ot">,</span> <span class="va">$flats</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The formula follows R: <code>rent</code> is the response, and <code>area + district</code> adds a slope for floor area and treatment-coded indicators for the districts. An intercept is included unless the formula removes it with <code>- 1</code> or <code>+ 0</code>.</p>
+<p><code>rent</code> is the response. <code>area + district</code> adds a slope for floor area and treatment-coded indicators for the districts. The intercept is included unless the formula removes it with <code>- 1</code> or <code>+ 0</code>.</p>
 </section>
 <section id="read-the-result" class="level2">
 <h2 class="anchored" data-anchor-id="read-the-result">Read the result</h2>
-<p>The result is a plain PHP array. Every coefficient list follows the order of <code>columns</code>.</p>
+<p>The result is a PHP array. Every per-coefficient list follows the order of <code>columns</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$fit</span>[<span class="st">'columns'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$name</span>) {</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%-14s %9.2f %8.2f %7.4f  [%8.2f, %8.2f]</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$name</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'coefficients'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">$fit</span>[<span class="st">'std_errors'</span>][<span class="va">$i</span>]<span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'p_values'</span>][<span class="va">$i</span>]<span class="ot">,</span> ...<span class="va">$fit</span>[<span class="st">'conf_int'</span>][<span class="va">$i</span>])<span class="ot">;</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>(Intercept)       352.64   179.87  0.0976  [  -87.49,   792.77]
-area               19.18     3.23  0.0010  [   11.27,    27.09]
-districtnorth     203.64   151.14  0.2265  [ -166.19,   573.47]
-districtsouth     232.16   119.64  0.1004  [  -60.58,   524.90]</code></pre>
-<p>Among flats in the same district, each additional square meter of floor area is associated with a monthly rent about 19.18 currency units higher. The district coefficients are differences in expected rent from <code>east</code> for flats of the same area.</p>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"%-14s %8.2f %7.2f %7.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">$name</span><span class="ot">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">$fit</span>[<span class="st">'coefficients'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">$fit</span>[<span class="st">'std_errors'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">$fit</span>[<span class="st">'p_values'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>(Intercept)      352.64  179.87  0.0976
+area              19.18    3.23  0.0010
+districtnorth    203.64  151.14  0.2265
+districtsouth    232.16  119.64  0.1004</code></pre>
+<ul>
+<li>The <code>area</code> coefficient is the difference in rent associated with one more square meter, among flats in the same district.</li>
+<li>Each district coefficient is the difference from <code>east</code> for flats of the same area.</li>
+</ul>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -748,38 +771,87 @@ districtsouth     232.16   119.64  0.1004  [  -60.58,   524.90]</code></pre>
 </tr>
 <tr class="even">
 <td><code>diagnostics</code></td>
-<td>Solver, convergence and warnings</td>
+<td>Solver, convergence, and warnings</td>
 </tr>
 </tbody>
 </table>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"R-squared %.4f, sigma %.2f, %d residual df, %d of %d rows</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'r_squared'</span>]<span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'sigma'</span>]<span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'df_residual'</span>]<span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'n_observations'</span>]<span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'n_input'</span>])<span class="ot">;</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="fu">json_encode</span>(<span class="va">$fit</span>[<span class="st">'diagnostics'</span>])<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>R-squared 0.9270, sigma 146.29, 6 residual df, 10 of 10 rows
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R-squared %.4f, sigma %.2f, %d residual df</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'r_squared'</span>]<span class="ot">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'sigma'</span>]<span class="ot">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'df_residual'</span>]<span class="ot">,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="fu">json_encode</span>(<span class="va">$fit</span>[<span class="st">'diagnostics'</span>])<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>R-squared 0.9270, sigma 146.29, 6 residual df
 {"converged":true,"solver":"scaled_svd","warnings":[]}</code></pre>
-<p><code>fit_generalized_linear</code>, <code>fit_mixed_gaussian</code> and <code>fit_mixed_logistic</code> return the same naming and accounting keys, with the statistics of their model. <a href="./models.html">Linear and generalized linear models</a> and <a href="./mixed-models.html">mixed models</a> list them.</p>
+<p><code>fit_generalized_linear()</code>, <code>fit_mixed_gaussian()</code>, and <code>fit_mixed_logistic()</code> return the same naming and accounting keys with the statistics of their model. See <a href="./models.html">Linear and generalized linear models</a> and <a href="./mixed-models.html">Mixed models</a>.</p>
 </section>
 <section id="predict" class="level2">
 <h2 class="anchored" data-anchor-id="predict">Predict</h2>
-<p><code>predict()</code> rebuilds the formula over new data. The response column is not needed, and the factor levels are the ones the fit saw.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">$new</span> <span class="op">=</span> [<span class="st">'area'</span> =&gt; [<span class="fl">55.0</span><span class="ot">,</span> <span class="fl">80.0</span>]<span class="ot">,</span> <span class="st">'district'</span> =&gt; [<span class="st">'east'</span><span class="ot">,</span> <span class="st">'north'</span>]]<span class="ot">;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> predict(<span class="va">$fit</span><span class="ot">,</span> <span class="va">$new</span><span class="ot">,</span> interval<span class="ot">:</span> <span class="st">'prediction'</span>)<span class="ot">;</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$p</span>[<span class="st">'fit'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$value</span>) {</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%.2f [%.2f, %.2f]</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$value</span><span class="ot">,</span> <span class="va">$p</span>[<span class="st">'lower'</span>][<span class="va">$i</span>]<span class="ot">,</span> <span class="va">$p</span>[<span class="st">'upper'</span>][<span class="va">$i</span>])<span class="ot">;</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>predict()</code> rebuilds the formula over new data. The response column is not needed, and factor levels are those the fit saw.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="va">$new</span> <span class="op">=</span> [</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'area'</span> =&gt; [<span class="fl">55.0</span><span class="ot">,</span> <span class="fl">80.0</span>]<span class="ot">,</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'district'</span> =&gt; [<span class="st">'east'</span><span class="ot">,</span> <span class="st">'north'</span>]<span class="ot">,</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> predict(<span class="va">$fit</span><span class="ot">,</span> <span class="va">$new</span><span class="ot">,</span> interval<span class="ot">:</span> <span class="st">'prediction'</span>)<span class="ot">;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$p</span>[<span class="st">'fit'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$value</span>) {</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"%.2f [%.2f, %.2f]</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">$value</span><span class="ot">,</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">$p</span>[<span class="st">'lower'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">$p</span>[<span class="st">'upper'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>1407.55 [991.59, 1823.51]
 2090.69 [1676.97, 2504.41]</code></pre>
-<p><code>interval: 'confidence'</code> gives intervals for the mean instead. A district the fit never saw raises an exception with code 1001. <a href="./formulas.html#prediction-predict">Prediction</a> covers GLM and mixed-model predictions.</p>
+<ul>
+<li><code>interval: 'prediction'</code> covers one new flat’s rent. <code>interval: 'confidence'</code> covers the mean rent.</li>
+<li>A district the fit never saw throws an exception with code 1001.</li>
+<li><a href="./formulas.html#prediction-predict">Prediction</a> covers generalized linear and mixed-model predictions.</li>
+</ul>
 </section>
 <section id="missing-values" class="level2">
 <h2 class="anchored" data-anchor-id="missing-values">Missing values</h2>
-<p><code>null</code> and <code>NAN</code> are missing. By default, a row with a missing value in any column the formula uses is dropped, and the fit emits one <code>E_WARNING</code>. With <code>rent</code> set to <code>null</code> in the third row:</p>
-<pre><code>Warning: Phit\fit_ols(): Phit\fit_ols dropped 1 of 10 observations with missing values (listwise deletion)</code></pre>
-<p>The result then reports <code>n_observations</code> 9, <code>n_input</code> 10 and <code>dropped_rows</code> <code>[2]</code>, and <code>diagnostics.warnings</code> holds the same notice. Pass <code>missing: 'raise'</code> to reject missing values instead. The call then throws an <code>Exception</code> with code 1001 and the message <code>missing values found with missing='raise'</code>. <a href="./missing-data.html">Missing data</a> defines which values count as missing and how rows are counted.</p>
+<p><code>null</code> and <code>NAN</code> are missing. By default, a row with a missing value in any column the formula uses is dropped, and the fit emits one <code>E_WARNING</code>. With <code>rent</code> set to <code>null</code> in the third row, the warning reads:</p>
+<pre><code>Phit\fit_ols(): Phit\fit_ols dropped 1 of 10 observations with missing values (listwise deletion)</code></pre>
+<ul>
+<li>The result reports <code>n_observations</code> 9, <code>n_input</code> 10, and <code>dropped_rows</code> <code>[2]</code>.</li>
+<li><code>diagnostics.warnings</code> records <code>listwise deletion removed 1 of 10 original rows</code>.</li>
+<li><code>missing: 'raise'</code> rejects missing values. The call throws an <code>Exception</code> with code 1001 and the message <code>missing values found with missing='raise'</code>.</li>
+</ul>
+<p><a href="./missing-data.html">Missing values</a> defines which values count as missing and how rows are counted.</p>
 </section>
 <section id="errors" class="level2">
 <h2 class="anchored" data-anchor-id="errors">Errors</h2>
-<p>Invalid input and failed fits throw a PHP <code>Exception</code>. Its <code>getCode()</code> gives the category: 1001 for invalid input, 1002 for mismatched lengths, 1004 for a rank-deficient design, 1006 for nonconvergence, and so on. The full table is in the <a href="./contracts.html#v01-diagnostics-and-errors">API overview</a>.</p>
+<p>Invalid input and failed fits throw a PHP <code>Exception</code>. <code>getCode()</code> gives the category, for example:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1001</td>
+<td>Invalid input</td>
+</tr>
+<tr class="even">
+<td>1002</td>
+<td>Mismatched lengths</td>
+</tr>
+<tr class="odd">
+<td>1004</td>
+<td>Rank-deficient design</td>
+</tr>
+<tr class="even">
+<td>1006</td>
+<td>Nonconvergence</td>
+</tr>
+</tbody>
+</table>
+<p>The full table is in the <a href="./contracts.html#v01-diagnostics-and-errors">API overview</a>.</p>
 
 
 </section>

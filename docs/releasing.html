@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -645,12 +646,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#binary-artifacts" id="toc-binary-artifacts" class="nav-link active" data-scroll-target="#binary-artifacts">Binary artifacts</a></li>
-  <li><a href="#versioned-release-process" id="toc-versioned-release-process" class="nav-link" data-scroll-target="#versioned-release-process">Versioned release process</a></li>
-  <li><a href="#deployment-verification" id="toc-deployment-verification" class="nav-link" data-scroll-target="#deployment-verification">Deployment verification</a>
-  <ul class="collapse">
-  <li><a href="#packaging-record-of-2026-10-12" id="toc-packaging-record-of-2026-10-12" class="nav-link" data-scroll-target="#packaging-record-of-2026-10-12">Packaging record of 2026-10-12</a></li>
-  </ul></li>
+  <li><a href="#before-tagging" id="toc-before-tagging" class="nav-link active" data-scroll-target="#before-tagging">Before tagging</a></li>
+  <li><a href="#release-workflow" id="toc-release-workflow" class="nav-link" data-scroll-target="#release-workflow">Release workflow</a></li>
+  <li><a href="#binary-artifacts" id="toc-binary-artifacts" class="nav-link" data-scroll-target="#binary-artifacts">Binary artifacts</a></li>
+  <li><a href="#deployment-verification" id="toc-deployment-verification" class="nav-link" data-scroll-target="#deployment-verification">Deployment verification</a></li>
+  <li><a href="#history-packaging-record-of-2026-10-12" id="toc-history-packaging-record-of-2026-10-12" class="nav-link" data-scroll-target="#history-packaging-record-of-2026-10-12">History: packaging record of 2026-10-12</a></li>
   </ul>
 </nav>
     </div>
@@ -676,38 +676,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This page is for maintainers. It describes how release artifacts are built and checked.</p>
-<section id="binary-artifacts" class="level2">
-<h2 class="anchored" data-anchor-id="binary-artifacts">Binary artifacts</h2>
-<p>Create the tested Linux binary bundle locally:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">--target</span> binaries <span class="at">--output</span> type=local,dest=.context/binaries <span class="dt">\</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-f</span> docker/Dockerfile .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>From the release after v0.3.0, each archive is named as PIE’s prebuilt-binary download expects, <code>php_phit-vX.Y.Z_php8.4-arm64-linux-glibc-nts.zip</code>, and composer.json lists <code>pre-packaged-binary</code> first in <code>download-url-method</code>. <code>pie install phpstats/phit</code> on Linux then downloads the matching archive and builds from source only when none matches. Releases up to v0.3.0 used <code>phit-X.Y.Z-php8.4-aarch64-nts-bookworm.tar.gz</code>, which PIE does not recognize. The zip holds <code>phit.so</code> at its root, installation instructions, a manifest that records the ABI and the minimum glibc, the project MIT license and dependency notices. A separate SHA-256 file checks archive integrity. Dependency notices include the Cargo dependency closure and build dependencies; exact upstream MIT notices missing from published crate archives are preserved under <code>third-party/</code> with provenance hashes.</p>
-<p>Treat a binary as matching the manifest’s build environment. It is not a universal Linux file. Verify its checksum, use the matching PHP extension directory, enable it for the required SAPIs, restart workers and execute a real fit.</p>
+<p>Build, check, and publish a phit release. This page is for maintainers.</p>
+<section id="before-tagging" class="level2">
+<h2 class="anchored" data-anchor-id="before-tagging">Before tagging</h2>
+<ol type="1">
+<li>Set the same version in <code>crates/stats-core/Cargo.toml</code> and <code>crates/php-extension/Cargo.toml</code>, and update <code>Cargo.lock</code>.</li>
+<li>Run <code>./scripts/check</code> on the exact commit, and wait for CI on main to pass.</li>
+<li>Tag the version commit with an annotated <code>vX.Y.Z</code> tag and push the tag.</li>
+</ol>
 </section>
-<section id="versioned-release-process" class="level2">
-<h2 class="anchored" data-anchor-id="versioned-release-process">Versioned release process</h2>
-<p>The installer and FPM workflow (<code>packaging.yml</code>) builds and tests the extension on Linux x86_64 and arm64 at PHP 8.3, 8.4 and 8.5, and prepares the binary archives. Pushing a <code>vX.Y.Z</code> tag starts the release workflow (<code>release.yml</code>):</p>
+<section id="release-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="release-workflow">Release workflow</h2>
+<p>The packaging workflow (<code>packaging.yml</code>) builds and tests the extension on Linux x86_64 and arm64 at PHP 8.3, 8.4, and 8.5, and prepares the binary archives. Pushing a <code>vX.Y.Z</code> tag starts <code>release.yml</code>:</p>
 <ol type="1">
 <li>It runs the packaging matrix.</li>
-<li>It checks that the tag matches both crate versions and the MIT license, creates the source archive and its checksum, and tests installation from the extracted archive.</li>
-<li>It creates the GitHub release with the source archive, the six binary archives, their checksums and <code>SHA256SUMS</code>.</li>
-<li>It downloads the published assets and installs each binary in the matching PHP image, by hand and with <code>pie install</code>, which must pick the prebuilt archive in an image without Rust.</li>
+<li>It checks that the tag matches both crate versions and the MIT license, creates the source archive and its checksum, and tests installing from the extracted archive.</li>
+<li>It creates the GitHub release with the source archive, the six binary archives, their checksums, and <code>SHA256SUMS</code>.</li>
+<li>It downloads the published assets and installs each binary in the matching PHP image, by hand and with <code>pie install</code>. In an image without Rust, PIE must pick the prebuilt archive.</li>
 </ol>
-<p>Export rules remove generated website caches and figures from the source archive, and keep the source, locked dependencies, model fixtures, test data and their notices. Packagist reads the tag through the repository’s GitHub webhook.</p>
-<p>Before tagging:</p>
-<ol type="1">
-<li>Run <code>./scripts/check</code> on the exact commit, and wait for CI on main.</li>
-<li>Set the same version in <code>crates/stats-core/Cargo.toml</code> and <code>crates/php-extension/Cargo.toml</code>, and update <code>Cargo.lock</code>.</li>
-<li>Tag the version commit with an annotated tag and push the tag.</li>
-</ol>
+<p>Packagist reads the tag through the repository’s GitHub webhook.</p>
+<p>The source archive’s export rules remove generated website caches and figures. They keep the source, locked dependencies, model fixtures, test data, and their notices.</p>
+</section>
+<section id="binary-artifacts" class="level2">
+<h2 class="anchored" data-anchor-id="binary-artifacts">Binary artifacts</h2>
+<p>Build the tested Linux binaries locally with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">--target</span> binaries <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output</span> type=local,dest=.context/binaries <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-f</span> docker/Dockerfile .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Archives are named as PIE expects for prebuilt binaries, for example <code>php_phit-vX.Y.Z_php8.4-arm64-linux-glibc-nts.zip</code>.</li>
+<li><code>composer.json</code> lists <code>pre-packaged-binary</code> first in <code>download-url-method</code>. On Linux, <code>pie install phpstats/phit</code> downloads the matching archive and builds from source only when none matches.</li>
+<li>Each zip holds <code>phit.so</code> at its root, installation instructions, a manifest of the ABI and minimum glibc, the MIT license, and dependency notices. A separate SHA-256 file checks the archive.</li>
+<li>The dependency notices cover the Cargo dependency closure and build dependencies. MIT notices missing from published crate archives are kept under <code>third-party/</code> with provenance hashes.</li>
+</ul>
+<p>A binary matches the build environment in its manifest. It is not a universal Linux file. To install one by hand, verify its checksum, copy it to the matching PHP extension directory, enable it for each SAPI that needs it, restart the workers, and run a real fit.</p>
+<p>Releases up to v0.3.0 used archive names such as <code>phit-X.Y.Z-php8.4-aarch64-nts-bookworm.tar.gz</code>, which PIE does not recognize.</p>
 </section>
 <section id="deployment-verification" class="level2">
 <h2 class="anchored" data-anchor-id="deployment-verification">Deployment verification</h2>
-<p><code>tests/deployment.php</code> verifies extension identity/version, automatic-intercept OLS, and a closed-form Poisson log-exposure model. <code>scripts/check-fpm</code> sends an isolated FastCGI request; <code>scripts/check-container</code> checks the final runtime image using its normal FPM pool. The scripts compare CLI/FPM version, coefficients and fitted rate. They fail on a loader error or wrong output instead of trusting <code>php -m</code>.</p>
-<section id="packaging-record-of-2026-10-12" class="level3">
-<h3 class="anchored" data-anchor-id="packaging-record-of-2026-10-12">Packaging record of 2026-10-12</h3>
-<p>This record predates the first tagged release. The <a href="verifications/packaging-results.json">packaging verification</a> states which local image, PHP version and architecture passed on 2026-10-12.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Check</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tests/deployment.php</code></td>
+<td>Checks the extension’s identity and version, OLS with an automatic intercept, and a closed-form Poisson model with a log-exposure offset</td>
+</tr>
+<tr class="even">
+<td><code>scripts/check-fpm</code></td>
+<td>Sends a FastCGI request to an isolated PHP-FPM</td>
+</tr>
+<tr class="odd">
+<td><code>scripts/check-container</code></td>
+<td>Checks the final runtime image through its normal FPM pool</td>
+</tr>
+</tbody>
+</table>
+<p>The scripts compare the CLI and FPM versions, coefficients, and fitted rates. They fail on a loader error or wrong output, instead of trusting <code>php -m</code>.</p>
+</section>
+<section id="history-packaging-record-of-2026-10-12" class="level2">
+<h2 class="anchored" data-anchor-id="history-packaging-record-of-2026-10-12">History: packaging record of 2026-10-12</h2>
+<p>This record predates the first tagged release. The <a href="verifications/packaging-results.json">packaging verification</a> lists the local image, PHP version, and architecture that passed.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -723,32 +760,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>Linux aarch64, Debian Bookworm/glibc</td>
+<td>Linux aarch64, Debian Bookworm, glibc</td>
 <td>8.3.35</td>
-<td>PIE install; complete gate; CLI/FPM in production image; extracted binary; extracted source archive</td>
+<td>PIE install; full checks; CLI and FPM in the production image; extracted binary; extracted source archive</td>
 </tr>
 <tr class="even">
-<td>Linux aarch64, Debian Bookworm/glibc</td>
+<td>Linux aarch64, Debian Bookworm, glibc</td>
 <td>8.4.26</td>
-<td>PIE install; complete gate; CLI/FPM in production image; extracted binary</td>
+<td>PIE install; full checks; CLI and FPM in the production image; extracted binary</td>
 </tr>
 <tr class="odd">
-<td>Linux aarch64, Debian Bookworm/glibc</td>
+<td>Linux aarch64, Debian Bookworm, glibc</td>
 <td>8.5.11</td>
-<td>PIE install; complete gate; CLI/FPM in production image; extracted binary</td>
+<td>PIE install; full checks; CLI and FPM in the production image; extracted binary</td>
 </tr>
 <tr class="even">
 <td>macOS arm64</td>
 <td>8.5.10</td>
-<td>phpize/make/staged installation; native load; complete gate</td>
+<td>phpize, make, and staged installation; native load; full checks</td>
 </tr>
 </tbody>
 </table>
-<p>Each complete gate passed <strong>56 Rust tests, 11 PHP suites and 8 examples</strong>. The binary bundles preserve 107 dependency notices and their ABI/library hashes. Linux amd64 was configured in CI but had no remote result at the time. macOS FPM, ZTS, Windows, musl, and other PHP versions are not covered by this evidence.</p>
-<p>The distribution gate added in that pass checked 8,618 points. It preserves the original tolerances, using the stored high-precision reference for 25 cases where R and that reference disagree. It retains 43 documented boundary-convention exceptions with separate semantic assertions. The gate exposed normal/log-normal PDF underflow before scale adjustment, which that pass fixed with regression cases. Four independent reference endpoints for degenerate count distributions were also corrected in their generator. Numerical changes and evidence are recorded in the <a href="verifications/packaging-results.json">packaging record</a> and <a href="verifications/distributions-results.json">refreshed distribution comparison</a>.</p>
+<ul>
+<li>Each full run passed 56 Rust tests, 11 PHP suites, and 8 examples. The binary bundles kept 107 dependency notices with their ABI and library hashes.</li>
+<li>Linux amd64 was configured in CI but had no result at the time. macOS FPM, ZTS, Windows, musl, and other PHP versions were not covered.</li>
+<li>The distribution check added then compared 8,618 points at the original tolerances. For 25 cases where R and the high-precision reference disagree, it used the high-precision reference, and it kept 43 documented boundary-convention exceptions with separate assertions.</li>
+<li>That pass fixed a normal and lognormal density underflow before scale adjustment, with regression cases, and corrected four reference endpoints for degenerate count distributions in their generator. See the <a href="verifications/distributions-results.json">refreshed distribution comparison</a>.</li>
+</ul>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

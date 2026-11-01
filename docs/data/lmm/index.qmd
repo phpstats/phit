@@ -3,8 +3,8 @@ title: "Published mixed-model verification data: provenance"
 jupyter: python3
 ---
 
-These are published observations distributed with R packages, separate from our
-synthetic teaching and benchmark data. The repository keeps CSV snapshots so
+These are published observations distributed with R packages, separate from the
+simulated teaching and benchmark data. The repository keeps CSV snapshots so
 verification never depends on a network download. SHA-256 checksums, exported
 package versions, column selection, formulas and original references are recorded
 in [sources.json](sources.json).
@@ -69,9 +69,9 @@ writes UTF-8 CSVs with original row order and no row-name column. The fixture
 generator `tests/generate-lmm-public-fixtures.py` constructs the numeric designs
 listed above, maps first-appearance group labels to integer core IDs, and saves
 lme4 and nlme ML reference outputs. The PHP verification also exercises original
-string labels. No rows are sampled or silently removed. The matrix-building code
-is an explicit test helper; the native API still accepts vanilla arrays and adds
-no categorical encoder or formula parser.
+string labels. No rows are sampled or silently removed. The fixtures use explicit
+numeric designs so every implementation receives identical columns. Applications
+can pass the same data to `fit_mixed_gaussian()` with a formula instead.
 
 The snapshots are distributed from packages declaring GPL (>= 2); package source
 links and study citations are in sources.json, and [COPYING](COPYING) contains

@@ -2,12 +2,19 @@
 title: "Seeded sampling verification and performance"
 ---
 
-The [sampling API](../rng.qmd) uses local ChaCha20 state and inverse CDFs. This
-benchmark times full PHP batches for normal, beta and Poisson at 1,000, 100,000
-and one million draws. Every call reinitializes the explicit seed and allocates
-the complete numeric output. [Raw results](rng-results.json) retain the seed,
-input hashes, numerical evidence, PHP version, binary hash, all timing samples,
-process elapsed time and peak RSS.
+This benchmark times [seeded sampling](../rng.qmd) for the normal, beta, and Poisson families. [Raw results](rng-results.json) keep the seed, input hashes, numerical evidence, PHP version, binary hash, all timing samples, process elapsed time, and peak RSS.
+
+## Methods
+
+| Item | Setting |
+| --- | --- |
+| Workloads | `dist_normal_rng`, `dist_beta_rng`, and `dist_poisson_rng` at 1,000, 100,000, and 1,000,000 draws, seed 42 |
+| Machine | macOS 27.0.1 arm64, PHP 8.5.10, recorded 2026-10-12 |
+| Repetitions | One untimed warm-up, then five measurements |
+| Statistic | Median milliseconds per full call |
+| Timed | ChaCha setup from the seed, quantile evaluation, PHP result allocation, and reclamation of earlier results |
+| Excluded | JSON input and output, and numerical summaries |
+| Memory | Peak RSS of the whole worker process |
 
 ## Independent verification first
 
@@ -43,16 +50,7 @@ Recorded: **2026-10-12T15:50:48.801124+00:00**; macOS-27.0.1-arm64-arm-64bit-Mac
 
 ## Timing interpretation
 
-Five measurements follow one untimed warm-up. Timing includes ChaCha setup,
-quantile evaluation, PHP result allocation and ordinary reclamation of previous
-results. JSON I/O and numerical summaries are outside the timed call. Peak RSS
-covers the whole worker, including summaries and inputs; it is not isolated RNG
-state memory. These are API-level times on the recorded machine, not universal
-throughput guarantees or a comparison with optimized rejection samplers.
-
-The normal/Poisson/beta cases show differing inverse-CDF costs. The method retains
-one numerical quantile path for every family. A future optimized sampler should
-be justified by measured demand and independent distribution/reproducibility tests.
+Peak RSS covers the whole worker, including summaries and inputs, not only the generator state. These are API-level times on the recorded machine, not throughput guarantees or a comparison with optimized rejection samplers. Every family uses inverse-CDF sampling, so the cost differences between families come from their quantile functions.
 
 ## Reproduction
 
@@ -65,6 +63,4 @@ PHP=/path/to/matching/php python3 tests/benchmarks/run-rng.py
 python3 scripts/distribution-docs.py
 ```
 
-The independent ChaCha equations are shared with the fixture generator; they
-read no native uniforms or samples. The sampling API and these benchmarks add
-no R/Python runtime dependency or shared application RNG state.
+The independent ChaCha equations are shared with the fixture generator and read no native uniforms or samples.

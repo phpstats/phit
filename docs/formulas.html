@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -684,46 +685,86 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The formula functions accept an R model formula and a data set of named columns. They build R’s model matrix in Rust and call the same estimation cores as the matrix functions. Results keep each matrix function’s complete contract and add coefficient names.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\model_matrix(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Phit\fit_generalized_linear(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$family</span> <span class="op">=</span> <span class="st">'gaussian'</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$link</span> <span class="op">=</span> <span class="st">''</span><span class="ot">,</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_gaussian(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">bool</span> <span class="va">$reml</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="ot">?</span><span class="dt">array</span> <span class="va">$start</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">int</span> <span class="va">$maxEvaluations</span> <span class="op">=</span> <span class="dv">20000</span><span class="ot">,</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$tolerance</span> <span class="op">=</span> <span class="fl">1e-7</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$optimizer</span> <span class="op">=</span> <span class="st">'bobyqa'</span><span class="ot">,</span> <span class="dt">float</span> <span class="va">$objectiveTolerance</span> <span class="op">=</span> <span class="fl">1e-12</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_logistic(<span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span> <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span> <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span> <span class="dt">int</span> <span class="va">$quadraturePoints</span> <span class="op">=</span> <span class="dv">1</span><span class="ot">,</span> <span class="dt">int</span> <span class="va">$maxEvaluations</span> <span class="op">=</span> <span class="dv">20000</span><span class="ot">,</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$tolerance</span> <span class="op">=</span> <span class="fl">1e-7</span>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>PHP reflection reports <code>$data</code> and <code>$weights</code> as <code>mixed</code>. The generated stubs document the accepted types.</p>
+<p>The formula functions take an R model formula and a data set of named columns. They build R’s model matrix and fit it with the same estimators as the <a href="./reference-models.html">matrix functions</a>. Each result has its matrix function’s complete contract plus coefficient names.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\model_matrix(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>Phit\fit_generalized_linear(</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$family</span> <span class="op">=</span> <span class="st">'gaussian'</span><span class="ot">,</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$link</span> <span class="op">=</span> <span class="st">''</span><span class="ot">,</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_gaussian(</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="va">$reml</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$start</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$maxEvaluations</span> <span class="op">=</span> <span class="dv">20000</span><span class="ot">,</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$tolerance</span> <span class="op">=</span> <span class="fl">1e-7</span><span class="ot">,</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$optimizer</span> <span class="op">=</span> <span class="st">'bobyqa'</span><span class="ot">,</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$objectiveTolerance</span> <span class="op">=</span> <span class="fl">1e-12</span><span class="ot">,</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_logistic(</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$quadraturePoints</span> <span class="op">=</span> <span class="dv">1</span><span class="ot">,</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$maxEvaluations</span> <span class="op">=</span> <span class="dv">20000</span><span class="ot">,</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$tolerance</span> <span class="op">=</span> <span class="fl">1e-7</span><span class="ot">,</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>PHP reflection reports <code>$data</code> and <code>$weights</code> as <code>mixed</code>. The stubs in <code>stubs/phit.php</code> document the accepted types.</p>
 <section id="example" class="level2">
 <h2 class="anchored" data-anchor-id="example">Example</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span> <span class="op">=</span> [</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rent'</span> =&gt; [<span class="fl">1879.25</span><span class="ot">,</span> <span class="fl">1805.03</span><span class="ot">,</span> <span class="fl">2022.29</span><span class="ot">,</span> <span class="fl">1267.85</span><span class="ot">,</span> <span class="fl">1509.24</span><span class="ot">,</span> <span class="fl">2240.10</span><span class="ot">,</span> <span class="fl">959.51</span><span class="ot">,</span> <span class="fl">2386.54</span>]<span class="ot">,</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'area'</span> =&gt; [<span class="fl">74.4</span><span class="ot">,</span> <span class="fl">57.4</span><span class="ot">,</span> <span class="fl">66.4</span><span class="ot">,</span> <span class="fl">49.1</span><span class="ot">,</span> <span class="fl">45.7</span><span class="ot">,</span> <span class="fl">92.4</span><span class="ot">,</span> <span class="fl">37.0</span><span class="ot">,</span> <span class="fl">93.9</span>]<span class="ot">,</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'district'</span> =&gt; [<span class="st">'north'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span>]<span class="ot">,</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> Phit\fit_ols(<span class="st">'log(rent) ~ log(area) + district'</span><span class="ot">,</span> <span class="va">$data</span>)<span class="ot">;</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span>[<span class="st">'columns'</span>]<span class="ot">;</span>  <span class="co">// ['(Intercept)', 'log(area)', 'districtnorth', 'districtsouth']</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span>[<span class="st">'named'</span>]<span class="ot">;</span>    <span class="co">// ['(Intercept)' =&gt; ..., 'log(area)' =&gt; ..., ...]</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span>[<span class="st">'p_values'</span>]<span class="ot">;</span> <span class="co">// Aligned with columns, as in Phit\fit_ols_matrix.</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="va">$model</span> <span class="op">=</span> Phit\fit_generalized_linear(<span class="st">'passed ~ study_hours * practice_score'</span><span class="ot">,</span> <span class="va">$learning</span><span class="ot">,</span> family<span class="ot">:</span> <span class="st">'binomial'</span><span class="ot">,</span> <span class="fu">link</span><span class="ot">:</span> <span class="st">'probit'</span>)<span class="ot">;</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="va">$mixed</span> <span class="op">=</span> Phit\fit_mixed_gaussian(<span class="st">'score ~ study_hours + prior_score + (1 | school)'</span><span class="ot">,</span> <span class="va">$schools</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\fit_ols<span class="ot">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span> <span class="op">=</span> [</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rent'</span> =&gt; [</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="fl">1879.25</span><span class="ot">,</span> <span class="fl">1805.03</span><span class="ot">,</span> <span class="fl">2022.29</span><span class="ot">,</span> <span class="fl">1267.85</span><span class="ot">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="fl">1509.24</span><span class="ot">,</span> <span class="fl">2240.10</span><span class="ot">,</span> <span class="fl">959.51</span><span class="ot">,</span> <span class="fl">2386.54</span><span class="ot">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'area'</span> =&gt; [</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="fl">74.4</span><span class="ot">,</span> <span class="fl">57.4</span><span class="ot">,</span> <span class="fl">66.4</span><span class="ot">,</span> <span class="fl">49.1</span><span class="ot">,</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="fl">45.7</span><span class="ot">,</span> <span class="fl">92.4</span><span class="ot">,</span> <span class="fl">37.0</span><span class="ot">,</span> <span class="fl">93.9</span><span class="ot">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'district'</span> =&gt; [</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">'north'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_ols(<span class="st">'log(rent) ~ log(area) + district'</span><span class="ot">,</span> <span class="va">$data</span>)<span class="ot">;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="fu">implode</span>(<span class="st">', '</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'columns'</span>])<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>(Intercept), log(area), districtnorth, districtsouth</code></pre>
+<p><code>columns</code> names the coefficients in order. <code>named</code> maps each name to its coefficient, and every list key, such as <code>p_values</code>, follows <code>columns</code>.</p>
 </section>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
-<p><code>$data</code> is an associative array of columns, <code>name =&gt; list of values</code>. An object is also accepted. The extension calls its public <code>toModelData()</code> method, or <code>toColumns()</code> when the first method is absent, and uses the returned array. Exceptions thrown by those methods propagate unchanged. phibble’s <code>DataFrame::toModelData()</code> returns this shape.</p>
+<p><code>$data</code> is an associative array of columns, <code>name =&gt; list of values</code>. An object is also accepted: phit calls its public <code>toModelData()</code> method, or <code>toColumns()</code> when that is absent, and uses the returned array. Exceptions from those methods propagate unchanged. phibble’s <code>DataFrame::toModelData()</code> returns this shape.</p>
 <p>Each column is one of the following.</p>
 <ul>
-<li>Numbers: integers and floats. <code>null</code> and <code>NAN</code> are missing. Infinity raises 1003.</li>
-<li>Booleans: a logical column. R codes it as a two-level factor named <code>{col}TRUE</code>.</li>
-<li>Strings: a character column. It becomes a factor whose levels are the distinct retained values in byte (C-locale) order, which is R’s order under <code>LC_COLLATE=C</code>. Other R locales can sort mixed-case or accented strings differently.</li>
-<li>A factor descriptor: an array with exactly the keys <code>levels</code> (list of unique strings), <code>codes</code> (list of 0-based integers, <code>null</code> for missing), and <code>ordered</code> (bool). Levels keep the caller’s order and the first level is the reference.</li>
-<li>Dates arrive as numbers, for example days or seconds since the epoch.</li>
+<li><p>Numbers: integers and floats. <code>null</code> and <code>NAN</code> are missing. Infinity raises 1003.</p></li>
+<li><p>Booleans: a logical column. R codes it as a two-level factor named <code>{col}TRUE</code>.</p></li>
+<li><p>Strings: a character column. It becomes a factor whose levels are the distinct retained values in byte (C-locale) order, which is R’s order under <code>LC_COLLATE=C</code>. Other R locales can sort mixed-case or accented strings differently.</p></li>
+<li><p>A factor descriptor: an array with exactly the keys <code>levels</code> (list of unique strings), <code>codes</code> (list of 0-based integers, <code>null</code> for missing), and <code>ordered</code> (bool). Levels keep the caller’s order and the first level is the reference.</p></li>
+<li><p>Dates arrive as numbers, for example days or seconds since the epoch.</p></li>
+<li><p>Every column must have the same length (code 1002).</p></li>
+<li><p>Only the columns a formula uses are type-checked.</p></li>
+<li><p>An unknown column, a malformed factor descriptor, a referenced list-column or mixed-type column, or a list of row arrays raises 1001.</p></li>
 </ul>
-<p>Every column must have the same length (code 1002). Only the columns a formula uses are type-checked. An unknown column, a malformed factor descriptor, or a referenced list-column or mixed-type column raises 1001. A list of row arrays raises 1001.</p>
 </section>
 <section id="formula-syntax" class="level2">
 <h2 class="anchored" data-anchor-id="formula-syntax">Formula syntax</h2>
@@ -803,8 +844,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="missing-values-and-unused-levels" class="level2">
 <h2 class="anchored" data-anchor-id="missing-values-and-unused-levels">Missing values and unused levels</h2>
-<p>Listwise deletion uses only the variables that the formula references. These include the response, transforms, offsets, weights, grouping factors, and random-effect columns. Other columns may contain missing values. As in the matrix functions, <code>missing: 'drop'</code> removes incomplete rows with one <code>E_WARNING</code>, and <code>missing: 'raise'</code> raises 1001. <code>retained_rows</code> and <code>dropped_rows</code> are original zero-based positions.</p>
-<p><code>model_matrix</code> keeps unused factor levels, as R’s <code>model.matrix()</code> does, and their indicator columns are all zero. The fitting functions drop levels that are absent after deletion, as <code>lm()</code>, <code>glm()</code>, <code>lmer()</code>, and <code>glmer()</code> do through <code>drop.unused.levels = TRUE</code>. Character levels always come from the retained rows.</p>
+<ul>
+<li>Listwise deletion uses only the variables the formula references: the response, transforms, offsets, weights, grouping factors, and random-effect columns. Other columns may contain missing values.</li>
+<li><code>missing: 'drop'</code> removes incomplete rows with one <code>E_WARNING</code>. <code>missing: 'raise'</code> raises 1001. <a href="./missing-data.html">Missing values</a> describes the warning and the row accounting.</li>
+<li><code>model_matrix</code> keeps unused factor levels, as R’s <code>model.matrix()</code> does. Their indicator columns are all zero.</li>
+<li>The fitting functions drop levels that are absent after deletion, as <code>lm()</code>, <code>glm()</code>, <code>lmer()</code>, and <code>glmer()</code> do through <code>drop.unused.levels = TRUE</code>.</li>
+<li>Character levels always come from the retained rows.</li>
+</ul>
 </section>
 <section id="model_matrix" class="level2">
 <h2 class="anchored" data-anchor-id="model_matrix">model_matrix</h2>
@@ -855,13 +901,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p><code>x</code> includes the intercept column. Pass it to a matrix function with <code>intercept: false</code>. Each <code>random</code> entry has the shape that <code>fit_mixed_gaussian_matrix</code> expects:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">$mm</span> <span class="op">=</span> Phit\model_matrix(<span class="st">'y ~ x + (1 + x | g)'</span><span class="ot">,</span> <span class="va">$data</span>)<span class="ot">;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> Phit\fit_mixed_gaussian_matrix(x<span class="ot">:</span> <span class="va">$mm</span>[<span class="st">'x'</span>]<span class="ot">,</span> y<span class="ot">:</span> <span class="va">$mm</span>[<span class="st">'y'</span>]<span class="ot">,</span> random<span class="ot">:</span> <span class="va">$mm</span>[<span class="st">'random'</span>]<span class="ot">,</span> intercept<span class="ot">:</span> <span class="kw">false</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>x</code> includes the intercept column, so pass it to a matrix function with <code>intercept: false</code>. Each <code>random</code> entry has the shape that <code>fit_mixed_gaussian_matrix</code> expects:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">$mm</span> <span class="op">=</span> Phit\model_matrix(<span class="st">'y ~ x + (1 + x | g)'</span><span class="ot">,</span> <span class="va">$data</span>)<span class="ot">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> Phit\fit_mixed_gaussian_matrix(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    x<span class="ot">:</span> <span class="va">$mm</span>[<span class="st">'x'</span>]<span class="ot">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    y<span class="ot">:</span> <span class="va">$mm</span>[<span class="st">'y'</span>]<span class="ot">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    random<span class="ot">:</span> <span class="va">$mm</span>[<span class="st">'random'</span>]<span class="ot">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    intercept<span class="ot">:</span> <span class="kw">false</span><span class="ot">,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="fit_ols-and-fit_generalized_linear" class="level2">
 <h2 class="anchored" data-anchor-id="fit_ols-and-fit_generalized_linear">fit_ols and fit_generalized_linear</h2>
-<p><code>fit_ols</code> calls the <code>fit_ols_matrix</code> core and returns its full result. <code>fit_generalized_linear</code> supports four family and link combinations. An empty <code>link</code> selects the canonical link.</p>
+<p><code>fit_ols</code> returns the full <code>fit_ols_matrix</code> result. <code>fit_generalized_linear</code> supports four family and link combinations. An empty <code>link</code> selects the canonical link.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -893,22 +944,119 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>Other families or links raise 1007. A binomial response can be 0/1 numbers, booleans, a factor or character column (the first level is failure and all other levels are success, as in R), proportions with integer trial weights, or <code>cbind(successes, failures)</code>.</p>
-<p><code>$weights</code> is either an array aligned with the original rows or the name of a numeric column. Missing weights delete their rows. Weights must be positive.</p>
-<p>Formula fits add these keys to the matrix result: <code>formula</code>, <code>response</code>, <code>columns</code> (aligned with <code>coefficients</code>), <code>terms</code>, <code>assign</code>, <code>intercept</code>, and <code>named</code> (<code>column =&gt; coefficient</code>), and <code>predvars</code>. <code>predvars</code> holds the state that prediction must reuse: each factor’s levels after deletion and each orthogonal <code>poly()</code> basis’s recurrence coefficients (R’s <code>xlevels</code> and <code>predvars</code>). <code>fit_generalized_linear</code> also returns <code>family</code> and <code>link</code>. All list keys of the matrix functions are unchanged.</p>
-<p>Random-effect terms in <code>fit_ols</code> or <code>fit_generalized_linear</code> raise 1007 and name <code>fit_mixed_gaussian</code> and <code>fit_mixed_gaussian_matrix</code> as the alternatives.</p>
+<ul>
+<li>Other families or links raise 1007.</li>
+<li>A binomial response can be 0/1 numbers, booleans, a factor or character column (the first level is failure and every other level is success, as in R), proportions with integer trial weights, or <code>cbind(successes, failures)</code>.</li>
+<li><code>$weights</code> is an array aligned with the original rows, or the name of a numeric column. Weights must be positive, and a missing weight deletes its row.</li>
+<li>Random-effect terms raise 1007 and name <code>fit_mixed_gaussian</code> and <code>fit_mixed_gaussian_matrix</code> as the alternatives.</li>
+</ul>
+<p>Every formula fit adds these keys to the matrix result:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>formula</code>, <code>response</code></td>
+<td>The deparsed formula and response expression</td>
+</tr>
+<tr class="even">
+<td><code>columns</code></td>
+<td>Coefficient names, aligned with <code>coefficients</code></td>
+</tr>
+<tr class="odd">
+<td><code>named</code></td>
+<td><code>column =&gt; coefficient</code></td>
+</tr>
+<tr class="even">
+<td><code>terms</code>, <code>assign</code>, <code>intercept</code></td>
+<td>R term labels, R’s <code>assign</code> attribute, and whether an intercept is present</td>
+</tr>
+<tr class="odd">
+<td><code>predvars</code></td>
+<td>State that prediction reuses: each factor’s levels after deletion and each orthogonal <code>poly()</code> basis (R’s <code>xlevels</code> and <code>predvars</code>)</td>
+</tr>
+<tr class="even">
+<td><code>family</code>, <code>link</code></td>
+<td><code>fit_generalized_linear</code> and <code>fit_mixed_logistic</code> only</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="fit_mixed_gaussian-and-fit_mixed_logistic" class="level2">
 <h2 class="anchored" data-anchor-id="fit_mixed_gaussian-and-fit_mixed_logistic">fit_mixed_gaussian and fit_mixed_logistic</h2>
-<p><code>fit_mixed_gaussian</code> maps lme4-style bars onto <code>fit_mixed_gaussian_matrix</code>. REML is the default, as in <code>lme4::lmer()</code>. Supported bars include <code>(1 | g)</code>, <code>(x | g)</code>, <code>(0 + x | g)</code>, <code>(x || g)</code> (diagonal covariance), several terms such as <code>(1 | g1) + (1 | g2)</code>, interaction groups <code>(1 | g1:g2)</code>, and nesting <code>(1 | g1/g2)</code>. Nesting expands to <code>(1 | g1) + (1 | g2:g1)</code>, with lme4’s group name and <code>g2level:g1level</code> labels. The result is the <code>fit_mixed_gaussian_matrix</code> contract. Each <code>random</code> entry also has <code>label</code>, <code>group</code>, <code>columns</code>, and <code>correlated</code>. Its <code>effects_cond_var</code> lists one k×k conditional covariance per group, in <code>group_labels</code> order. These are the blocks that <code>ranef(fit, condVar = TRUE)</code> attaches as <code>postVar</code>. For <code>(x || g)</code>, lme4 reports only the diagonal of each block.</p>
-<p><code>fit_mixed_logistic</code> supports exactly one random intercept <code>(1 | g)</code> with the binomial family and logit link, over the <code>fit_mixed_logistic_matrix</code> core. <code>quadraturePoints</code> corresponds to lme4’s <code>nAGQ</code>. Responses follow <code>fit_generalized_linear</code>. <code>random_effects_cond_var</code> gives the conditional variance of each group’s mode, as lme4’s <code>postVar</code>.</p>
+<p><code>fit_mixed_gaussian</code> fits lme4-style bar terms with the <code>fit_mixed_gaussian_matrix</code> estimator. REML is the default, as in <code>lme4::lmer()</code>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Bar term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>(1 | g)</code></td>
+<td>Random intercept</td>
+</tr>
+<tr class="even">
+<td><code>(x | g)</code>, <code>(0 + x | g)</code></td>
+<td>Correlated random intercept and slope; slope only</td>
+</tr>
+<tr class="odd">
+<td><code>(x || g)</code></td>
+<td>Uncorrelated intercept and slope (diagonal covariance)</td>
+</tr>
+<tr class="even">
+<td><code>(1 | g1) + (1 | g2)</code></td>
+<td>Several independent terms</td>
+</tr>
+<tr class="odd">
+<td><code>(1 | g1:g2)</code></td>
+<td>Interaction groups</td>
+</tr>
+<tr class="even">
+<td><code>(1 | g1/g2)</code></td>
+<td>Nesting: <code>(1 | g1) + (1 | g2:g1)</code>, with lme4’s group name and <code>g2level:g1level</code> labels</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The result is the <code>fit_mixed_gaussian_matrix</code> contract. Each <code>random</code> entry also has <code>label</code>, <code>group</code>, <code>columns</code>, and <code>correlated</code>.</li>
+<li><code>effects_cond_var</code> lists one k×k conditional covariance per group, in <code>group_labels</code> order. These are the blocks that <code>ranef(fit, condVar = TRUE)</code> attaches as <code>postVar</code>. For <code>(x || g)</code>, lme4 reports only the diagonal of each block.</li>
+</ul>
+<p><code>fit_mixed_logistic</code> supports exactly one random intercept <code>(1 | g)</code> with the binomial family and logit link, using the <code>fit_mixed_logistic_matrix</code> estimator.</p>
+<ul>
+<li><code>quadraturePoints</code> is lme4’s <code>nAGQ</code>.</li>
+<li>Responses follow <code>fit_generalized_linear</code>.</li>
+<li><code>random_effects_cond_var</code> is the conditional variance of each group’s mode, as lme4’s <code>postVar</code>.</li>
+</ul>
 </section>
 <section id="prediction-predict" class="level2">
 <h2 class="anchored" data-anchor-id="prediction-predict">Prediction: predict</h2>
 <p><code>predict($fit, $newdata)</code> predicts from any formula fit, as R’s <code>predict()</code> does for <code>lm</code>, <code>glm</code> and <code>merMod</code> objects. It rebuilds the fit’s formula over <code>$newdata</code>, which needs the predictor columns but not the response.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> Phit\fit_generalized_linear(<span class="st">'am ~ wt + poly(hp, 2)'</span><span class="ot">,</span> <span class="va">$cars</span><span class="ot">,</span> family<span class="ot">:</span> <span class="st">'binomial'</span>)<span class="ot">;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> Phit\predict(<span class="va">$fit</span><span class="ot">,</span> [<span class="st">'wt'</span> =&gt; [<span class="fl">2.2</span><span class="ot">,</span> <span class="fl">3.4</span>]<span class="ot">,</span> <span class="st">'hp'</span> =&gt; [<span class="dv">95</span><span class="ot">,</span> <span class="dv">180</span>]]<span class="ot">,</span> type<span class="ot">:</span> <span class="st">'response'</span><span class="ot">,</span> seFit<span class="ot">:</span> <span class="kw">true</span>)<span class="ot">;</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">// $p['fit'] probabilities, $p['se_fit'] delta-method standard errors</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> Phit\fit_generalized_linear(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'am ~ wt + poly(hp, 2)'</span><span class="ot">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">$cars</span><span class="ot">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    family<span class="ot">:</span> <span class="st">'binomial'</span><span class="ot">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> Phit\predict(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span><span class="ot">,</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'wt'</span> =&gt; [<span class="fl">2.2</span><span class="ot">,</span> <span class="fl">3.4</span>]<span class="ot">,</span> <span class="st">'hp'</span> =&gt; [<span class="dv">95</span><span class="ot">,</span> <span class="dv">180</span>]]<span class="ot">,</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    type<span class="ot">:</span> <span class="st">'response'</span><span class="ot">,</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    seFit<span class="ot">:</span> <span class="kw">true</span><span class="ot">,</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">// $p['fit']: probabilities. $p['se_fit']: delta-method SEs.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>Factors are coded with the levels the fit saw. A level the fit never saw raises 1001 with R’s message (<code>factor g has new level z</code>). Logical and character columns work the same way.</li>
 <li><code>poly(x, k)</code> evaluates the fitted orthogonal basis at the new values, as R’s <code>predict.poly()</code> does. It is not refitted to the new data.</li>
@@ -918,7 +1066,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>interval: 'confidence'</code> or <code>'prediction'</code> adds <code>lower</code> and <code>upper</code> for <code>fit_ols</code> fits, using t with <code>df_residual</code> at <code>level</code>. A prediction interval adds the residual variance; as in R, it assumes constant variance for a weighted fit.</li>
 <li>For <code>fit_mixed_gaussian</code> and <code>fit_mixed_logistic</code> fits, predictions add each known group’s random effects (lme4’s default <code>re.form = NULL</code>). <code>random: false</code> gives population predictions (<code>re.form = NA</code>), and the grouping columns can then be absent. An unseen group raises 1001 unless <code>allowNewLevels: true</code>, which predicts it at the population level. Mixed predictions have no standard errors, as in lme4.</li>
 </ul>
-<p>GLM standard errors use the covariance at the final coefficients. R’s <code>predict.glm()</code> uses <code>vcov()</code>, which reuses the weights of the iteration before the final one. The two differ by about the size of R’s last IRLS step: 1e-7 relative for <code>am ~ wt + hp</code> on <code>mtcars</code>, and up to about 1e-4 near separation. See <a href="./r-compatibility.html#evidence-and-tolerance-policy">R compatibility</a>.</p>
+<p>GLM standard errors use the covariance at the final coefficients. R’s <code>predict.glm()</code> uses <code>vcov()</code>, which reuses the weights of the iteration before the final one, so the two differ by about the size of R’s last IRLS step. See <a href="./r-compatibility.html#glm-covariance">GLM covariance</a>.</p>
 </section>
 <section id="differences-from-r" class="level2">
 <h2 class="anchored" data-anchor-id="differences-from-r">Differences from R</h2>
@@ -937,9 +1085,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
-<p><code>tests/generate-formula-fixtures.R</code> saves 62 R references under <code>LC_COLLATE=C</code>: 33 <code>model.frame()</code>/<code>model.matrix()</code> designs, 14 <code>lm()</code> fits, and 15 <code>glm()</code> fits. They use the repository’s housing, schools, learning, clinic, and cbpp data and a seeded synthetic data frame with factors, unused and reordered levels, ordered factors, logicals, character columns, missing values, weights, offsets, transforms, and no-intercept models. <code>glm()</code> references are restarted from R’s own solution until the coefficients stop changing, because the default deviance criterion fixes coefficients only to about the square root of its tolerance. <code>tests/formula.php</code> compares design columns, terms, and rows exactly, design values within 1e-12 relative, and fit quantities within the matrix suites’ <code>1e-9 + 1e-7*abs(reference)</code>.</p>
-<p><code>tests/generate-formula-lme4-fixtures.R</code> saves 10 lme4 references (7 <code>lmer()</code> and 3 <code>glmer()</code> fits), including crossed, nested, correlated, and uncorrelated terms and adaptive quadrature. The references include the <code>ranef(condVar = TRUE)</code> conditional variances, which are also compared for <code>fit_mixed_gaussian_intercept_matrix</code> on the ML schools case. <code>tests/formula-mixed.php</code> uses the tolerances of the existing lme4 suites.</p>
-<p><code>tests/generate-predict-fixtures.R</code> saves 25 <code>predict()</code> references: <code>lm()</code> with orthogonal <code>poly()</code>, factors, logicals, ordered interactions, offsets, weights, no intercept, standard errors, and confidence and prediction intervals; <code>glm()</code> on the link and response scales for every family and link (including <code>cbind()</code> responses and offsets); and <code>lmer()</code>/<code>glmer()</code> conditional, population and response-scale predictions with an unseen group. The new data include values outside the fitted range, missing rows and a factor whose level set differs from the fit. GLM standard errors are compared tightly with the final-coefficient value recomputed in R and loosely (1e-3 relative) with R’s own <code>se.fit</code>. <code>tests/predict.php</code> also checks that predicting the training data reproduces the fitted values, and the error messages. All fixtures are indexed in the <a href="verifications/reference-manifest.json">reference manifest</a>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Generator</th>
+<th>References</th>
+<th>Test and tolerance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tests/generate-formula-fixtures.R</code></td>
+<td>62 under <code>LC_COLLATE=C</code>: 33 <code>model.frame()</code>/<code>model.matrix()</code> designs, 14 <code>lm()</code> fits, 15 <code>glm()</code> fits</td>
+<td><code>tests/formula.php</code>: columns, terms, and rows exact; design values within 1e-12 relative; fits within <code>1e-9 + 1e-7*abs(reference)</code></td>
+</tr>
+<tr class="even">
+<td><code>tests/generate-formula-lme4-fixtures.R</code></td>
+<td>10 lme4 fits (7 <code>lmer()</code>, 3 <code>glmer()</code>), including <code>ranef(condVar = TRUE)</code></td>
+<td><code>tests/formula-mixed.php</code>: the lme4 suites’ tolerances</td>
+</tr>
+<tr class="odd">
+<td><code>tests/generate-predict-fixtures.R</code></td>
+<td>25 <code>predict()</code> cases for <code>lm()</code>, <code>glm()</code>, <code>lmer()</code>, and <code>glmer()</code></td>
+<td><code>tests/predict.php</code>: GLM standard errors tight against R’s final-coefficient value, 1e-3 relative against R’s <code>se.fit</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The formula data are the repository’s housing, schools, learning, clinic, and cbpp data, plus a seeded synthetic set with factors, unused and reordered levels, ordered factors, logicals, character columns, missing values, weights, offsets, transforms, and no-intercept models.</li>
+<li><code>glm()</code> references are restarted from R’s own solution until the coefficients stop changing, because R’s default deviance criterion fixes coefficients only to about the square root of its tolerance.</li>
+<li>The prediction data include values outside the fitted range, missing rows, an unseen group, and a factor whose level set differs from the fit. <code>tests/predict.php</code> also checks that predicting the training data reproduces the fitted values.</li>
+</ul>
+<p>All fixtures are indexed in the <a href="verifications/reference-manifest.json">reference manifest</a>.</p>
 
 
 </section>

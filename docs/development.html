@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -674,10 +675,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This page is for working on phit itself: building from a checkout, running the tests, and changing the implementation. To use phit in an application, see <a href="./installation.html">Installation</a>. Run the commands below from the repository root, which holds Cargo.toml, crates/ and examples/.</p>
+<p>Build phit from a checkout, run its tests, and change the implementation. To use phit in an application, see <a href="./installation.html">Installation</a>. Run the commands from the repository root.</p>
 <section id="environment" class="level2">
 <h2 class="anchored" data-anchor-id="environment">Environment</h2>
-<p>Following the official <a href="https://ext-php.rs/getting-started/installation.html">ext-php-rs installation guide</a> and <a href="https://ext-php.rs/getting-started/hello_world.html">Hello World build workflow</a>:</p>
+<p>The setup follows the official <a href="https://ext-php.rs/getting-started/installation.html">ext-php-rs installation guide</a> and <a href="https://ext-php.rs/getting-started/hello_world.html">Hello World build workflow</a>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS: Xcode command-line tools, Rust, PHP (includes headers), libclang</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">xcode-select</span> <span class="at">--install</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install rust php llvm</span>
@@ -692,54 +693,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Install stable Rust using https://rustup.rs, then source ~/.cargo/env.</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PHP</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="bu">command</span> <span class="at">-v</span> php<span class="va">)</span><span class="st">"</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PHP_CONFIG</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="bu">command</span> <span class="at">-v</span> php-config<span class="va">)</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Check <code>php -v</code>, <code>php-config --version</code>, and <code>rustc --version</code>. PHP and php-config must belong to the same installation (including architecture, ZTS/NTS and debug mode). <code>scripts/check</code> and <code>scripts/check-fpm</code> take PHP from <code>php-config --php-binary</code> unless <code>PHP</code> is set, so a different <code>php</code> earlier on PATH, such as Herd’s, does not matter to them. Commands you run by hand still need the matching <code>php</code>. The macOS linker configuration permits symbols resolved by PHP when it loads the extension; Linux needs no macOS linker flags.</p>
-<p>When using Homebrew LLVM’s libclang on macOS, select the matching compiler and builtin header directory as well. Mixing Xcode’s older arm_neon.h with a newer libclang can fail before any statistical tests run:</p>
+<ul>
+<li>Check <code>php -v</code>, <code>php-config --version</code>, and <code>rustc --version</code>.</li>
+<li><code>php</code> and <code>php-config</code> must come from the same installation, with the same architecture, thread safety, and debug mode.</li>
+<li><code>scripts/check</code> and <code>scripts/check-fpm</code> take PHP from <code>php-config --php-binary</code> unless <code>PHP</code> is set, so another <code>php</code> earlier on PATH, such as Herd’s, does not affect them. Commands you run by hand still need the matching <code>php</code>.</li>
+<li>On macOS, the linker configuration lets PHP resolve symbols when it loads the extension. Linux needs no extra linker flags.</li>
+</ul>
+<p>With Homebrew LLVM’s libclang on macOS, also select the matching compiler and header directory. Xcode’s older <code>arm_neon.h</code> with a newer libclang fails to build:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">LIBCLANG_PATH</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="ex">brew</span> <span class="at">--prefix</span> llvm<span class="va">)</span><span class="st">/lib"</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">CC</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="ex">brew</span> <span class="at">--prefix</span> llvm<span class="va">)</span><span class="st">/bin/clang"</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">CXX</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="ex">brew</span> <span class="at">--prefix</span> llvm<span class="va">)</span><span class="st">/bin/clang++"</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">BINDGEN_EXTRA_CLANG_ARGS</span><span class="op">=</span><span class="st">"-resource-dir=</span><span class="va">$($CC</span> <span class="at">-print-resource-dir</span><span class="va">)</span><span class="st"> -isysroot=</span><span class="va">$(</span><span class="ex">xcrun</span> <span class="at">--show-sdk-path</span><span class="va">)</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The CI matrix disables fail-fast so a macOS failure does not cancel Linux evidence.</p>
 </section>
 <section id="build-and-run" class="level2">
 <h2 class="anchored" data-anchor-id="build-and-run">Build and run</h2>
-<p>Run from the repository root with the environment above:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> test <span class="at">--workspace</span> <span class="at">--locked</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> phit <span class="at">--locked</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS; on Linux the file is libphit.so.</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">STATS_EXTENSION</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/target/debug/libphit.dylib"</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux instead:</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># export STATS_EXTENSION="$PWD/target/debug/libphit.so"</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> <span class="at">-m</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> <span class="at">-r</span> <span class="st">'echo phpversion("phit"), PHP_EOL;'</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/ols.php</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/logistic.php</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/probit.php</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/poisson.php</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/lmm.php</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/r-compatibility.php</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/lmm-expanded.php</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/logistic-mixed.php</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> examples/ols.php</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> examples/logistic.php</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> examples/probit.php</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> examples/poisson.php</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> examples/lmm.php</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> examples/lmm-slopes.php</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> examples/logistic-mixed.php</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>For persistent installation, the official optional <a href="https://ext-php.rs/getting-started/cargo-php.html">cargo-php workflow</a> is <code>cargo install cargo-php --locked</code>, then from <code>crates/php-extension</code>, <code>cargo php install --release</code>. Back up php.ini first. Alternatively build with <code>cargo build -p phit --release --locked</code> and add <code>extension=/absolute/path/to/target/release/libphit.dylib</code> (Linux: <code>.so</code>) to the CLI php.ini shown by <code>php --ini</code>. Then <code>php examples/ols.php</code> runs directly. Rebuild for each PHP version; <code>-n</code> skips ini files for isolated development tests.</p>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> <span class="at">-r</span> <span class="st">'echo phpversion("phit"), PHP_EOL;'</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> tests/ols.php</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$STATS_EXTENSION</span><span class="st">"</span> examples/ols.php</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Each suite in <code>tests/</code> and each script in <code>examples/</code> runs the same way. <code>./scripts/check</code> runs all of them.</li>
+<li><code>-n</code> skips the ini files, so the tests run against this build only.</li>
+<li>To load the build permanently, run <code>cargo build -p phit --release --locked</code> and add <code>extension=/absolute/path/to/target/release/libphit.dylib</code> (Linux: <code>.so</code>) to the php.ini that <code>php --ini</code> shows. The optional <a href="https://ext-php.rs/getting-started/cargo-php.html">cargo-php workflow</a> (<code>cargo install cargo-php --locked</code>, then <code>cargo php install --release</code> from <code>crates/php-extension</code>) edits php.ini for you, so back it up first.</li>
+<li>Rebuild for each PHP version.</li>
+</ul>
 <p><a href="./installation.html">Installation</a> covers PIE and the prebuilt binaries. <a href="./deployment.html">Deploying to servers</a> covers containers and PHP-FPM, and <a href="./releasing.html">Releasing</a> covers release artifacts.</p>
 </section>
 <section id="numerical-dependency-policy" class="level2">
 <h2 class="anchored" data-anchor-id="numerical-dependency-policy">Numerical dependency policy</h2>
-<p>The engine uses nalgebra’s Rust-native SVD and QR. There is one maintained numerical path, with no BLAS/LAPACK dependency or backend selection. We defer external numerical backends until a concrete requirement justifies the additional build and deployment work. The earlier Accelerate trial is retained as <a href="./benchmarks/ols.html#apple-accelerate-experiment">historical benchmark evidence</a>; its Cargo feature and foreign-call wrapper have been removed.</p>
-<p>The posterior-draw kernels also use nalgebra Cholesky, triangular solves and pivoted LU. Their <a href="./draw-numerics.html">numerical notes</a> document covariance/rank tolerances and independent fixtures; <code>tests/draws.php</code> is included in <code>scripts/check</code>.</p>
+<ul>
+<li>Linear algebra uses nalgebra’s Rust-native SVD, QR, Cholesky, triangular solves, and pivoted LU. There is one numerical path, with no BLAS or LAPACK dependency and no backend selection.</li>
+<li>The general mixed fitter uses the pinned Rust-native <code>bobyqa</code> and <code>argmin</code> (Nelder–Mead) crates, which add no C, Fortran, BLAS, or LAPACK requirement.</li>
+<li>An external numerical backend needs a concrete requirement that justifies the extra build and deployment work. An earlier Apple Accelerate trial was removed; its results are kept as <a href="./benchmarks/ols.html#apple-accelerate-experiment">historical benchmark evidence</a>.</li>
+</ul>
 </section>
 <section id="changing-the-implementation" class="level2">
 <h2 class="anchored" data-anchor-id="changing-the-implementation">Changing the implementation</h2>
-<p>Keep statistical calculations in crates/stats-core and PHP conversion in crates/php-extension. Work in small increments with established numerical crates. Check APIs against the dependency versions in Cargo.lock. Explain important mathematical steps near the code, and update contracts and reference tests when behavior changes. Do not add abstractions for hypothetical models.</p>
-<p>Follow <a href="./verification.html">Verification</a> for the checks appropriate to a change. The tested baseline is Apple Silicon, Rust 1.99 and Homebrew PHP 8.5.10. CI runs the checks on macOS and Ubuntu, and the packaging workflow tests Linux x86_64 and aarch64 at PHP 8.3, 8.4 and 8.5.</p>
-<p>The general mixed fitter also uses pinned Rust-native <code>bobyqa</code> and <code>argmin</code> (Nelder–Mead). These add no C/Fortran, BLAS or LAPACK runtime requirements. See <a href="./r-compatibility.html">R compatibility</a> for reference regeneration and the remaining native optimizer backend work.</p>
-<p><code>./scripts/check</code> runs the complete offline gate: Rust tests and clippy, every PHP suite and example, the stub and signature checks, the reference manifest, and the site export. Run it before pushing.</p>
+<ul>
+<li>Keep statistical calculations in <code>crates/stats-core</code> and PHP conversion in <code>crates/php-extension</code>.</li>
+<li>Use established numerical crates, and check their APIs against the versions in <code>Cargo.lock</code>.</li>
+<li>Explain important mathematical steps next to the code.</li>
+<li>Update the contracts and reference tests when behavior changes.</li>
+<li>Do not add abstractions for hypothetical models.</li>
+</ul>
+<p><code>./scripts/check</code> runs the offline checks: Rust tests and clippy, every PHP suite and example, the stub and signature checks, the reference manifest, and the site export. Run it before pushing. <a href="./verification.html">Verification</a> lists the further checks for each kind of change, and <a href="./r-compatibility.html">R compatibility</a> covers regenerating R references.</p>
+<p>CI runs the checks on macOS and Ubuntu, with fail-fast disabled so one platform’s failure does not cancel the other’s. The packaging workflow tests Linux x86_64 and aarch64 at PHP 8.3, 8.4, and 8.5.</p>
 
 
 </section>

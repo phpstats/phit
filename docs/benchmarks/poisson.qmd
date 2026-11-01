@@ -3,10 +3,24 @@ title: "Poisson regression scale validation and performance"
 jupyter: python3
 ---
 
-The standard benchmark compares the release PHP extension, R `glm(poisson)`
-and statsmodels `GLM` on identical synthetic observations. The
-[raw report](poisson-results.json) preserves all timing samples, machine and
-runtime versions, input hashes, numerical outputs and differences from R.
+phit's `fit_poisson_matrix()`, R `glm(poisson)`, and statsmodels `GLM` with the Poisson family fit identical simulated observations at four sizes. The [raw report](poisson-results.json) keeps every timing sample, machine and runtime versions, input hashes, numerical outputs, and differences from R.
+
+## Methods
+
+| Item | Setting |
+| --- | --- |
+| Workloads | 1,000, 100,000, and 1,000,000 rows with 3 coefficients; 100,000 rows with 11 coefficients (counts include the intercept) |
+| Data | Simulated with NumPy seed `20261011` (see [Simulation and agreement](#simulation-and-agreement)); all runtimes read the same 17-significant-digit CSV |
+| Machine | Apple M5 Ultra, macOS 27, recorded 2026-10-16 |
+| Builds | phit release build; runtime versions are printed below |
+| Threads | Common BLAS and OpenMP thread variables set to 1 |
+| Repetitions | One untimed warm-up, then five timed fits per worker; workers run separately and alternate order between cases |
+| Statistic | Median and minimum in-process wall-clock time |
+| Timed | One complete fit with every output materialized, including PHP input and output conversion |
+| Excluded | Startup, CSV loading, data generation, and JSON serialization |
+| Memory | Peak RSS of the whole worker process |
+
+The harness is shared with the [OLS benchmark](ols.qmd#timing-boundaries), which describes the boundaries in more detail.
 
 ## Recorded results
 
@@ -44,10 +58,7 @@ for case in report["cases"]:
 display(ordered_table(rows))
 ```
 
-The cases include 1,000, 100,000 and one million observations with three
-coefficients, and 100,000 observations with eleven coefficients. Counts include
-the intercept. These measurements describe this workload and environment, not a universal
-ranking. The raw report preserves each repetition.
+R's elapsed timer has millisecond resolution, so the smallest fits are coarse. These measurements describe this workload on this machine.
 
 ## Visual comparison
 
@@ -63,64 +74,36 @@ render_charts(report, "poisson")
 
 ![Peak whole-process memory for R, statsmodels and PHP in four workloads.](figures/poisson-memory.svg)
 
-R, statsmodels and PHP use the same order and colors throughout. Each panel has
-its own linear scale so small workloads remain readable; compare labeled values
-across panels. Memory covers the entire worker process. It is not the solver's
-allocation count. All workloads passed the numerical checks described below.
+Each panel has its own linear scale, so compare labeled values across panels. Download the timing [SVG](figures/poisson-fit-time.svg) or [PNG](figures/poisson-fit-time.png) and memory [SVG](figures/poisson-memory.svg) or [PNG](figures/poisson-memory.png).
 
-Download the timing [SVG](figures/poisson-fit-time.svg) or [PNG](figures/poisson-fit-time.png),
-and memory [SVG](figures/poisson-memory.svg) or [PNG](figures/poisson-memory.png).
-Charts refresh from saved measurements when this page is executed; they do not
-rerun the benchmarks.
+## Timing boundaries
 
-## What is timed?
+Each timed fit materializes coefficients, covariance, standard errors, normal z tests, p-values, Wald intervals, every fitted mean count and response residual, likelihood, deviance, null deviance, AIC, and residual df.
 
-Workers load the same CSV once, perform one untimed warm-up, and measure five
-full fits. Each timed fit materializes coefficients, covariance, standard errors,
-normal z tests, p-values, Wald intervals, every fitted mean count and response
-residual, likelihood, deviance, null deviance, AIC and residual degrees of freedom.
-PHP also converts inputs and all outputs and constructs row metadata within the
-timer. Startup, CSV loading, data generation and final JSON serialization are excluded.
+| Implementation | Fitting |
+| --- | --- |
+| phit | Weighted SVD Newton updates, with phit's convergence rules |
+| R | Formula and model construction, then QR-based IRLS with epsilon 1e-16 |
+| statsmodels | IRLS with parameter tolerance 1e-11 |
 
-R uses formula/model construction and QR-based IRLS, with epsilon 1e-16 to stabilize
-covariance agreement. Python uses GLM IRLS with parameter tolerance 1e-11; PHP uses
-weighted SVD Newton updates and its documented convergence rules. Starting values,
-linear solves and stopping criteria differ. This is a comparison of complete
-public API calls, not equal iteration counts or isolated decomposition speeds.
-Common numerical-library thread variables are set to one; installed backends
-and requested settings are recorded. Workers run separately with order alternated
-between cases. Other machine activity can affect measurements. R's elapsed timer
-has coarse millisecond resolution for small cases.
+Starting values, linear solves, and stopping criteria differ, so iteration counts differ too. This compares complete public API calls, not decomposition speed.
 
 ```{python}
 display(ordered_table(memory))
 ```
 
-Whole-process time includes loading, imports, warm-up and every measured fit.
-Peak resident memory covers the entire worker, not just the numerical solver.
-PHP memory_limit is disabled for this experiment because large nested PHP arrays
-can exceed typical application limits. See the [OLS benchmark](ols.qmd) for the
-shared harness and further interpretation of these boundaries.
+Whole-process time includes loading, imports, the warm-up, and every timed fit. Peak RSS covers the whole worker, not only the solver. PHP's `memory_limit` is disabled, because large nested PHP arrays can exceed typical application limits.
 
 ## Simulation and agreement
 
-NumPy RNG seed 20261011 first draws the common benchmark setup, then generates
-integer visitor counts uniformly from 80 to 300 and staffing as clipped visitors/50
-plus normal noise with standard deviation 0.8. Wider models add independent
-standard-normal scores. Count outcomes are draws from
+After the common benchmark setup, visitor counts are integers uniform from 80 to 300, and staffing is visitors/50 plus normal noise with standard deviation 0.8, clipped. The wider case adds independent standard-normal scores. Outcomes are draws from
 
 $$\mu_i=\exp(0.1+0.005\,\mathrm{visitors}_i-0.12\,\mathrm{staff}_i
 +0.1\sum_j\mathrm{extra}_{ij}),\qquad y_i\sim\operatorname{Poisson}(\mu_i).$$
 
-This simulation is separate from the small R-generated teaching sample; its
-scores are unrounded and its seed is different. Every runtime reads identical
-17-significant-digit CSV values. Data hashes, generating coefficients and sample
-correlations are recorded. All coefficient-level quantities and scalar statistics
-are compared with R at tolerance 1e-9 + 1e-7 × abs(reference). Full fitted/residual
-vectors are materialized; cross-runtime comparison samples ten evenly spaced
-rows, while small fixtures check complete vectors. PHP convergence must be true
-and its update count must be between one and 100. Wald intervals use R
-confint.default(), and the null baseline follows the documented intercept convention. Poisson deviance uses the saturated count likelihood, not -2 log-likelihood.
+This simulation is separate from the small teaching sample. Data hashes, generating coefficients, and sample correlations are recorded.
+
+Coefficient-level quantities and scalar statistics are compared with R at `1e-9 + 1e-7 * abs(reference)`. Fitted values and residuals are computed in full and compared at ten evenly spaced rows; the small fixtures compare full vectors. phit must report convergence within 1 to 100 updates. Wald intervals follow R `confint.default()`, and the null baseline follows the documented intercept convention. Poisson deviance uses the saturated count likelihood, not −2 log-likelihood.
 
 ```{python}
 display(ordered_table([{ "observations": case["n"], "coefficients": case["p"],
@@ -129,19 +112,13 @@ display(ordered_table([{ "observations": case["n"], "coefficients": case["p"],
                        for name, errors in case["max_absolute_errors_vs_R"].items()]))
 ```
 
-## Reproduce
+## Reproduction
 
 ```sh
-export PHP=/opt/homebrew/bin/php
-export PHP_CONFIG=/opt/homebrew/bin/php-config
 cargo build -p phit --release --locked
 .context/notebooks-venv/bin/python tests/benchmarks/run.py --model poisson
-QUARTO_PYTHON="$PWD/.context/notebooks-venv/bin/python" quarto render docs/benchmarks/poisson.qmd
-quarto render docs
+QUARTO_PYTHON="$PWD/.context/notebooks-venv/bin/python" \
+  quarto render docs/benchmarks/poisson.qmd
 ```
 
-Select matching PHP tools and `.so` on Linux. Use `--cases 1000:3 --repeats 2
---output .context/poisson-smoke.json` for a quick check that preserves the published
-report. Numerical failures abort without publishing results. Benchmarks are explicit
-development commands; ordinary renders and tests read saved evidence. Optimization
-or additional numerical dependencies should answer a demonstrated need.
+Set matching `PHP` and `PHP_CONFIG`, and use `.so` on Linux. For a quick check that leaves the published report unchanged, add `--cases 1000:3 --repeats 2 --output .context/poisson-smoke.json`. A numerical failure aborts the run without writing results.

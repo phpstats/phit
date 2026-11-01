@@ -2,9 +2,7 @@
 title: "Verification"
 ---
 
-This page lists the checks that run on every change, the reference results
-they compare against, and their tolerances. Running them needs the build
-environment described in [Development](development.qmd).
+phit's numerical results are checked against reference implementations on shared inputs. This page lists the routine checks, the shared metric, and the record for each model or API. Running the checks needs the build environment described in [Development](development.qmd).
 
 ## Routine checks
 
@@ -17,35 +15,109 @@ cargo build -p phit --locked
 # macOS; use libphit.so on Linux
 export STATS_EXTENSION="$PWD/target/debug/libphit.dylib"
 php -n -d "extension=$STATS_EXTENSION" -m
-php -n -d "extension=$STATS_EXTENSION" -r 'echo phpversion("phit"), PHP_EOL;'
 php -n -d "extension=$STATS_EXTENSION" tests/ols.php
 php -n -d "extension=$STATS_EXTENSION" tests/logistic.php
 php -n -d "extension=$STATS_EXTENSION" examples/ols.php
 php -n -d "extension=$STATS_EXTENSION" examples/logistic.php
 ```
 
-cargo test verifies the independent Rust engine. The extension crate disables its
-Rust test harness; explicitly building it and running PHP integration tests are
-separate required checks for binding changes. For a release/deployment check,
-build with --release and run the PHP scripts against target/release instead.
-For documentation-only changes, check links, commands and claims against source;
-rerun numerical tests when behavior or implementation changes.
+- `cargo test` checks the Rust engine. The extension crate has no Rust test harness, so binding changes also need the PHP integration tests.
+- `scripts/check` runs the full offline suite: clippy, the Rust tests, a release build, the stub check, the PHP test suites, and the runnable examples in `examples/`.
+- For a release build, build with `--release` and run the PHP scripts against `target/release`.
+- CI runs the suite on Linux and macOS. The packaging workflow runs it on Linux x86_64 and aarch64 with PHP 8.3, 8.4, and 8.5, including a PHP-FPM request.
+- The Rust and PHP tests read saved fixtures. R, Python, and their packages are needed only to regenerate fixtures or run the live comparisons.
 
-## Probability and descriptive APIs
+## Shared metric
 
-The offline release gate runs `tests/distributions.php`, `tests/descriptive.php`
-and `examples/distributions.php`, along with the Rust distribution/descriptive
-suites. Distribution checks include 8,618 reference comparisons, 25 independent
-mpmath adjudications and 43 documented boundary differences. Descriptive tests
-add 145 R quantities, type-7 scalar/batch identities, strict/explicit-drop missing
-policies, pairwise alignment, weight definitions and arithmetic overflow errors.
-The [distribution record](verifications/distributions.qmd) describes provenance,
-reference limitations and operation-specific tolerances. The [utility contract](descriptive.qmd)
-documents undefined correlation separately from numerical failure.
-`tests/smoothing.php` compares 15,639 density, bandwidth, interpolation, and ECDF
-quantities with R at relative `1e-12`.
+Unless a record states otherwise, each numerical quantity passes when
 
-Refresh PHP error evidence without changing independent expected values:
+$$|\text{phit} - \text{reference}| \le a + r\,|\text{reference}|,$$
+
+with an absolute part $a$ for values near zero and a relative part $r$ for larger values. Sample accounting (retained and dropped rows, group labels and order) must match exactly.
+
+- The absolute part means the tolerance does not establish relative accuracy for p-values far smaller than $a$. Extreme tails need focused tests.
+- A pass shows agreement on the tested inputs. It is not a proof of correctness for every floating-point input.
+- Where phit deliberately differs from a reference, the difference is tested explicitly and listed in the record.
+
+## Records
+
+| Area | Record | Reference | Tolerance ($a$ + $r$) |
+| --- | --- | --- | --- |
+| OLS | [record](verifications/ols.qmd) · [notebook](notebooks/ols-verification.qmd) | R `lm()`, statsmodels `OLS` | 1e-9 + 1e-7 |
+| Logistic | [record](verifications/logistic.qmd) · [notebook](notebooks/logistic-verification.qmd) | R `glm()`, statsmodels `Logit` | 1e-9 + 1e-7 |
+| Probit | [record](verifications/probit.qmd) · [notebook](notebooks/probit-verification.qmd) | R `glm()`, statsmodels `GLM` | 1e-9 + 1e-7 |
+| Poisson | [record](verifications/poisson.qmd) · [notebook](notebooks/poisson-verification.qmd) | R `glm()`, statsmodels `GLM` | 1e-9 + 1e-7 |
+| Gaussian random intercept, ML | [record](verifications/lmm.qmd) · [notebook](notebooks/lmm-verification.qmd) | lme4, statsmodels `MixedLM` | 1e-7 + 1e-6 |
+| Published mixed-model data | [notebook](notebooks/lmm-public-verification.qmd) · [provenance](data/lmm/index.qmd) | lme4, nlme, statsmodels | per quantity, see the LMM record |
+| Weighted, offset, and general Gaussian mixed fits | [R compatibility](r-compatibility.qmd) · [notebook](notebooks/r-compatibility.qmd) | `lm()`, `glm()`, lme4 with four optimizers | per quantity |
+| Binomial logit, one random intercept | [notebook](notebooks/logistic-mixed-verification.qmd) | lme4, SciPy, QUADPACK | per quantity |
+| Distributions and descriptive statistics | [record](verifications/distributions.qmd) | R, SciPy, 60-digit mpmath | see the record |
+| Seeded sampling | [Seeded sampling](rng.qmd) | Python and R | see the page |
+| Posterior-draw kernels | [Draw numerics](draw-numerics.qmd) | 80-digit Python Decimal | see the page |
+
+Large-sample timings and their numerical checks are in the [benchmark pages](benchmarks/ols.qmd).
+
+## OLS fixtures and coverage
+
+`tests/fixtures/ols-r.json` holds results from base R 4.6.1 `lm()`, `summary()`, `confint()`, and `logLik()`, regenerated with `Rscript tests/generate-fixtures.R`. The simulated rows in `docs/data/housing.csv` are shared by the PHP example, the notebooks, and the one- and two-predictor fits. To regenerate them, run `Rscript tests/generate-learning-data.R` first (it fixes its RNG and seed), then the fixtures, the three-way report, and the notebooks.
+
+The comparisons cover coefficients, covariance, fitted values, residuals, standard errors, t statistics, p-values, confidence intervals, RSS, residual variance, sigma, R-squared, adjusted R-squared, likelihood, and residual df. Perfect fits compare coefficients, predictions, residuals, and standard errors only, since their t, p, R-squared, and likelihood are unstable. R's undefined quantities are stored as JSON null.
+
+| Case | Evidence |
+| --- | --- |
+| Simulated housing, one and two predictors | R fixtures, Rust and PHP tests, three-way comparison |
+| Noisy regression with intercept | R simple and multiple fixtures |
+| Multiple predictors | R multiple and no-intercept fixtures |
+| Uncentered R-squared | R no-intercept fixture |
+| Correlated full-rank columns | R correlated fixture |
+| Perfect and zero outcomes | R fixtures plus explicit zero-fit assertions |
+| Empty, ragged, mismatched, or invalid numerical inputs | Rust rejection tests. PHP rejects infinity and malformed data and drops null or NAN by policy |
+| Insufficient degrees of freedom and singular designs | Rust and PHP rejection tests. R may instead drop aliased coefficients |
+| Missing data | PHP checks deletion, strict rejection, warnings, row alignment, validation before deletion, and rank and df after deletion |
+| Predictor units | Rust test rescales one predictor by 1e-12 |
+| Large residual df | Rust compares 95% t critical values with R `qt()` up to 999,997 df |
+| Large samples and wider models | [OLS benchmark](benchmarks/ols.qmd): up to one million rows and 11 coefficients against R and statsmodels |
+| PHP numeric types and loading | PHP rejects strings, booleans, and malformed rows, and checks that the extension loads |
+
+The suite does not exercise extreme scales or every array-key pattern.
+
+## GLM and mixed-model fixtures
+
+| Fixture | Generator | Notes |
+| --- | --- | --- |
+| `logistic-r.json` | `Rscript tests/generate-logistic-fixtures.R` | Also rewrites `docs/data/learning.csv`. Wald intervals use `confint.default()`, and R fits with epsilon 1e-14 |
+| `probit-r.json`, `poisson-r.json` | `Rscript tests/generate-probit-poisson-fixtures.R` | Also rewrites both teaching samples. R fits with epsilon 1e-16. Probit uses expected-information covariance |
+| `lmm-r.json` | `Rscript tests/generate-lmm-fixtures.R` | Also rewrites `docs/data/schools.csv`. lme4 with `REML = FALSE` and bobyqa `rhoend = 1e-10` |
+| `lmm-public-r.json` | `tests/generate-lmm-public-fixtures.py` | lme4 and nlme ML outputs for four published datasets |
+| `logistic-mixed-r.json` | see the notebook | Seven datasets, including cbpp, at four integration settings (Laplace, 9, 25, and 61 nodes) |
+
+Each record lists its rejection and edge-case tests. The binomial mixed-model verification also checks normal quadrature moments, tiny tail weights, the reduction to an ordinary GLM at zero variance, predictor units, and count limits. It separates agreement with R from approximation accuracy, using SciPy root finding and QUADPACK integration. statsmodels' Bayesian binomial mixed estimator has a different objective, so SciPy is the Python reference.
+
+Live comparisons:
+
+```sh
+.context/notebooks-venv/bin/python docs/verifications/compare_logistic.py
+.context/notebooks-venv/bin/python docs/verifications/compare_probit.py
+.context/notebooks-venv/bin/python docs/verifications/compare_poisson.py
+.context/notebooks-venv/bin/python docs/verifications/compare_lmm.py
+.context/notebooks-venv/bin/python docs/verifications/compare_lmm.py --public
+```
+
+## PHP intercept and offset contracts
+
+`tests/intercept.php` checks all seven matrix fitters with predictors-only inputs against the same complete design passed with `intercept: false`. The results must be identical, including covariance, likelihood, group effects, row accounting, and diagnostics. No-intercept and intercept-only models are tested separately. Automatic intercept insertion never changes a random-effects design.
+
+Poisson exposure checks compute the intercept-only weighted MLE, its standard error, the likelihood, and fitted counts independently, with absolute tolerances of 1e-10 for the coefficient and standard error and 1e-9 for the likelihood and counts. Rescaling the exposure must shift only the intercept and leave the fitted counts unchanged. Weighted and offset fits with the default intercept also match stored R fixtures at 1e-7 + 1e-6. Missing offsets follow the same deletion, warning, and strict-rejection rules as other inputs.
+
+## Distributions, descriptive statistics, sampling, and draws
+
+- `tests/distributions.php` makes 8,618 reference comparisons, uses 25 independent mpmath adjudications, and checks 43 documented boundary differences. See the [distribution record](verifications/distributions.qmd).
+- `tests/descriptive.php` adds 145 R quantities, type-7 scalar and batch identities, missing-value policies, pairwise alignment, weight definitions, and overflow errors. [Descriptive statistics](descriptive.qmd) documents undefined correlation separately from numerical failure.
+- `tests/smoothing.php` compares 15,639 density, bandwidth, interpolation, and ECDF quantities with R at relative 1e-12.
+- [Seeded sampling](rng.qmd) uses 25 independently generated Python and R cases: 2,000 Rust engine and quantile values and 1,616 PHP transformed values, plus repeatability, prefix, state-isolation, domain, and moment checks.
+- `crates/stats-core/tests/draws.rs` and `tests/draws.php` use 25 independent 80-digit Python Decimal cases, including covariance-map identities, affine round trips, and log determinants. See [Draw numerics](draw-numerics.qmd).
+
+To refresh the PHP distribution evidence without changing the reference values:
 
 ```sh
 PHP=/path/to/matching/php .context/v02/python/bin/python docs/verifications/compare_distributions.py --stored-references
@@ -53,275 +125,13 @@ python3 scripts/reference-manifest.py
 python3 scripts/distribution-docs.py
 ```
 
-Reference regeneration with R or 60-digit mpmath is intentional and separate;
-see the comparison page. Distribution scalar/batch/Rust/R/SciPy benchmarks and
-the seven-model pre-v0.2 preservation comparison run separately from the gate,
-with numerical agreement recorded before distribution timings. Seeded [sampling](rng.qmd)
-adds 25 independently generated Python/R cases: 2,000 Rust engine/quantile values
-and 1,616 PHP transformed references, plus repeatability, prefix, state-isolation,
-domain/limit and moment checks. `tests/rng.php` and `examples/rng.php` run in the
-release gate. The [readiness assessment](v0.2.qmd) records remaining release steps.
+## Contributor notes
 
-## Posterior-draw kernels
+- When changing an estimator or inference calculation, add a case that distinguishes the intended behavior from the old behavior.
+- Compare against R where its conventions match phit's, and test deliberate differences explicitly.
+- Keep fixture inputs, generator, and expected outputs together, and inspect regenerated fixture diffs. Do not relax a tolerance to hide a discrepancy.
+- When reporting verification, name the Rust and PHP checks that ran and the platform.
+- For documentation-only changes, check links, commands, and claims against the source. Rerun numerical tests when behavior or implementation changes.
+- Benchmarks run separately from the test suite. Check their numerical agreement before reporting timings.
 
-The release gate includes `crates/stats-core/tests/draws.rs` and `tests/draws.php`.
-Both consume 25 independent 80-digit Python Decimal cases, including covariance-map
-identities, affine round trips and log determinants. Strict validation includes
-zero weights, one effective draw and singular covariance, with explicit failures
-for map/affine numerical singularity. Provenance, formulas, numerical tolerances,
-reproduction commands and limitations are recorded in [draw numerical notes](draw-numerics.qmd).
-The [benchmark](benchmarks/draws.qmd) validates complete outputs against R before
-recording timings; it runs separately from the offline release gate.
-
-## PHP intercept and offset contracts
-
-`tests/intercept.php` checks all seven PHP fitters with predictors-only inputs
-against the same complete design passed with `intercept: false`. Those results
-must be identical, including covariance, likelihood, group effects, row accounting,
-and diagnostics. Existing fixtures retain their literal matrices and their PHP
-runners explicitly opt out of insertion. No-intercept and intercept-only models
-are exercised separately; automatic insertion never changes random-design z.
-
-Poisson exposure checks independently calculate the intercept-only weighted MLE,
-its standard error, likelihood and fitted counts. They use absolute tolerances
-1e-10 for the coefficient/SE and 1e-9 for likelihood/counts. Rescaling exposure
-must shift only the intercept and preserve counts. Default-intercept weighted/offset
-fits also match stored R fixtures under the existing 1e-7 absolute + 1e-6 relative
-tolerance. Missing offsets participate in the same warning/deletion/strict-rejection
-contract as other inputs. The offline release gate includes this suite and the
-runnable exposure example.
-
-## Reference and tolerances
-
-
-`tests/fixtures/ols-r.json` contains deterministic results generated by base R
-4.6.1 `lm()`, `summary()`, `confint()` and `logLik()`. R is not a runtime or test
-dependency. To regenerate: `Rscript tests/generate-fixtures.R`.
-The saved simulated housing observations in `docs/data/housing.csv` are shared
-by the PHP example, notebooks and one- and two-predictor reference fits.
-To regenerate that dataset intentionally, run `Rscript tests/generate-learning-data.R`
-first, then regenerate fixtures, the three-way report and both notebook outputs.
-The dataset generator specifies its RNG and seed; ordinary rendering and testing
-read the saved observations and do not generate fresh random samples.
-Rust and PHP tests compare noisy simple, multiple, no-intercept and correlated
-full-rank regressions, and include perfect/zero fits. Tolerance is
-`1e-9 + 1e-7 * abs(reference)` for each compared quantity. Perfect fits compare
-coefficients, predictions, residuals and standard errors, but omit unstable t/p,
-R-squared and likelihood comparisons; Rust also compares finite confidence
-intervals. Zero-fit conventions are tested directly. R's undefined quantities
-are stored as JSON null. Invalid shapes, insufficient observations and rank
-failure are tested separately because this implementation rejects cases that R
-may handle by dropping aliased coefficients.
-
-## Current coverage and limits
-
-| Case | Evidence |
-| --- | --- |
-| Named simulated housing, one and two predictors | R fixtures, Rust/PHP tests and executed three-way comparison |
-| Noisy regression with intercept | R simple and multiple fixtures |
-| Multiple predictors | R multiple and no-intercept fixtures |
-| Uncentered R-squared | R no-intercept fixture |
-| Correlated full-rank columns | R correlated fixture |
-| Perfect and zero outcomes | R fixtures plus explicit zero-fit assertions |
-| Empty, ragged, mismatched or invalid numerical inputs | Rust rejection tests; PHP rejects infinity and malformed data, drops null/NAN by policy |
-| Insufficient degrees of freedom and singular designs | Rust and PHP rejection tests |
-| Missing data | PHP checks null/NAN deletion, strict rejection, warnings, row alignment, validation before deletion, and rank/df after deletion |
-| Predictor units | Rust test rescales one predictor by 1e-12 |
-| Large residual df confidence intervals | Rust compares 95% t critical values with R qt() through 999,997 df |
-| Large samples and wider models | Separate release benchmark checks up to one million rows and up to 11 coefficients against R/statsmodels |
-| Historical Apple Accelerate trial | Archived correctness and benchmark results; experimental implementation removed |
-| PHP numeric types and loading | PHP rejects strings, booleans and malformed rows; checks missing policies and warnings; checks the extension loads |
-
-For ordinary fixtures, comparisons include coefficients, covariance, fitted
-values, residuals, standard errors, t-statistics, p-values, confidence intervals,
-RSS, residual variance, sigma, R-squared, adjusted R-squared and likelihood.
-Residual degrees of freedom is also checked. This is a small deterministic suite,
-not proof of correctness for every floating-point input. CI runs it on
-Linux and macOS, and the packaging workflow runs it on Linux x86_64 and aarch64
-at PHP 8.3, 8.4 and 8.5, including a PHP-FPM request. It does not exercise
-extreme scales or every array-key pattern.
-
-## Maintaining evidence
-
-When changing an estimator or inference calculation, add a case that distinguishes
-the intended behavior from the old behavior. Compare against R where its
-conventions match ours, and test deliberate differences explicitly. Keep fixture
-inputs, generator and expected outputs together. Inspect regenerated fixture
-diffs; do not simply relax a tolerance to hide a discrepancy. When reporting
-verification, identify which Rust/PHP checks ran and which platform was used.
-
-The current absolute-plus-relative tolerance supports near-zero quantities as
-well as larger ones. It does not establish relative accuracy for p-values much
-smaller than the absolute tolerance. If a change depends on extreme tails, add
-focused reference tests and a suitable tolerance for those values.
-
-## Executed three-way evidence
-
-The [OLS verification report](verifications/ols.qmd) and
-[verification notebook](notebooks/ols-verification.qmd) estimate the same cases
-afresh in R, Python statsmodels and PHP. Python/R are optional development tools;
-the ordinary Rust/PHP tests remain independent of them. The
-[math notebook](notebooks/ols-math.qmd) exposes each intermediate calculation.
-Follow [notebook setup](notebooks/index.qmd) to regenerate the comparison report
-and saved notebook outputs. Each future implemented estimator should have a
-walkthrough and equivalent-model evidence where reference support exists.
-
-## Scale and performance checks
-
-The [OLS benchmark report](benchmarks/ols.qmd) records release-extension timings,
-input loading, whole-process time and peak resident memory against R and statsmodels.
-Its standard cases include 1,000, 100,000 and one million observations with three
-coefficients, plus 100,000 observations with eleven coefficients (intercept included).
-It checks all inference and scalar statistics and ten sampled fitted/residual
-values against R; it does not compare every observation-length output on these
-large cases. These checks run separately from the small unit/reference suite.
-
-Run `.context/notebooks-venv/bin/python tests/benchmarks/run.py` after building the
-release extension with matching PHP headers. Review raw results and numerical
-agreement before reporting speed comparisons. Follow the report for timing
-boundaries, backend settings, hardware, reproduction and evidence limitations.
-
-## Binary logistic regression
-
-`tests/fixtures/logistic-r.json` stores base R `glm(..., family=binomial())`
-results for simulated students, one predictor, multiple predictors, no intercept,
-intercept only, highly correlated full-rank columns, and imbalanced outcomes.
-Regenerate intentionally with `Rscript tests/generate-logistic-fixtures.R`;
-this also regenerates the saved teaching observations in `docs/data/learning.csv`.
-Wald intervals use `confint.default()`, since glm's ordinary `confint()` uses
-profile likelihood. Reference fitting uses epsilon 1e-14 to stabilize final
-information/covariance agreement.
-
-Rust and PHP tests compare all statistical fields and full observation vectors
-with tolerance 1e-9 + 1e-7 × abs(reference). Rejection cases include malformed
-inputs, nonbinary outcomes, one retained class, rank deficiency, complete and
-quasi separation. Rust tests cover extreme logits and iteration exhaustion.
-PHP tests cover listwise deletion, warnings, row accounting, strict missingness
-and invalid values before deletion. Three-way verification also checks a sample
-with missing rows. These tests do not establish exhaustive separation detection.
-
-```sh
-PHP=/opt/homebrew/bin/php .context/notebooks-venv/bin/python docs/verifications/compare_logistic.py
-PHP=/opt/homebrew/bin/php .context/notebooks-venv/bin/python tests/benchmarks/run.py --model logistic
-```
-
-See the [verification record](verifications/logistic.qmd),
-[executed comparison](notebooks/logistic-verification.qmd) and
-[release benchmark](benchmarks/logistic.qmd).
-
-## Probit and Poisson
-
-`tests/fixtures/probit-r.json` and `poisson-r.json` are generated with base R glm,
-normal Wald inference and tolerance epsilon 1e-16. Regenerate intentionally with
-`Rscript tests/generate-probit-poisson-fixtures.R`; this also writes both shared
-teaching samples. Six fixtures per method cover named simulations, one predictor,
-multiple predictors, no intercept, intercept only, correlated columns and
-imbalanced/sparse outcomes. Three-way scripts add two missing rows and compare
-all fields/full observation vectors at 1e-9 + 1e-7 × abs(reference).
-
-Probit comparisons use expected-information covariance in both reference libraries.
-Rust tests include underflowing normal log tails, failed convergence and separation.
-Poisson tests cover integer validation, zero counts, precision of near-zero deviance,
-failed convergence and selected boundary designs. PHP tests check missing warnings,
-strict policies, invalid outcomes before deletion, row alignment and convergence
-metadata. Existing OLS/logistic tests continue to cover shared binding conversion.
-
-```sh
-php -n -d "extension=$STATS_EXTENSION" tests/probit.php
-php -n -d "extension=$STATS_EXTENSION" tests/poisson.php
-.context/notebooks-venv/bin/python docs/verifications/compare_probit.py
-.context/notebooks-venv/bin/python docs/verifications/compare_poisson.py
-.context/notebooks-venv/bin/python tests/benchmarks/run.py --model probit
-.context/notebooks-venv/bin/python tests/benchmarks/run.py --model poisson
-```
-
-See the [probit comparison](notebooks/probit-verification.qmd),
-[Poisson comparison](notebooks/poisson-verification.qmd) and their benchmark pages.
-These cases establish tested behavior, not exhaustive separation/boundary detection
-or coverage of Linux/PHP-FPM deployment.
-
-## Gaussian random-intercept ML
-
-`tests/fixtures/lmm-r.json` stores six lme4 ML fits: the simulated schools,
-one predictor, no intercept, intercept only, an additional singleton group and
-an exact zero-between-group-variance boundary. The generator
-`Rscript tests/generate-lmm-fixtures.R` intentionally refreshes both fixtures
-and `docs/data/schools.csv`. lme4 is a development dependency, never a runtime
-requirement. R uses REML=FALSE with bobyqa rhoend=1e-10.
-
-Rust/PHP comparisons cover fixed coefficients, plug-in GLS covariance and Wald
-inference, population/conditional fitted values, both residual definitions,
-shrunken group effects, variance components, ICC, marginal likelihood and AIC.
-Tolerance is 1e-7 + 1e-6 × abs(reference), reflecting independently optimized
-variance components. A balanced intercept-only case also has independently
-known ML variance and shrinkage results. Tests reject invalid/unidentifiable
-samples and positive-residual-variance failures, and verify units/row order,
-exact boundary behavior, typed group IDs and listwise deletion across x/y/groups.
-
-The [three-way comparison](notebooks/lmm-verification.qmd) uses statsmodels
-MixedLM ML estimates with the declared GLS covariance convention. Its exact
-zero-variance case uses a separately labeled NumPy OLS-limit check, since a
-statsmodels mixed optimizer is not a reliable exact-boundary reference.
-It also tests a sample with missing values in all three inputs. The stored report
-records the Python backend, warnings and covariance convention for each case.
-
-```sh
-php -n -d "extension=$STATS_EXTENSION" tests/lmm.php
-.context/notebooks-venv/bin/python docs/verifications/compare_lmm.py
-.context/notebooks-venv/bin/python tests/benchmarks/run.py --model lmm
-```
-
-The finite profile search is not an exhaustive global-optimization proof.
-The original fast call remains one random intercept with Gaussian ML. The expanded general fitter now has separate REML/random-slope/multiple-term tests; finite-sample mixed-model inference adjustments remain open.
-
-
-## Published Gaussian mixed-model data
-
-The [published-data comparison](notebooks/lmm-public-verification.qmd) checks
-sleepstudy (180 observations), Orthodont (108), Machines (54) and Hsb82 (7,185)
-against R lme4, R nlme and Python statsmodels. Both R packages have saved expected
-outputs in `tests/fixtures/lmm-public-r.json`, checked by Rust and PHP without
-runtime R/Python dependencies. The live comparison checks full output vectors,
-all inference, variance components, likelihood and exact group/sample metadata.
-CSV snapshots, original studies, export versions, checksums and explicit matrix
-construction are documented in [data provenance](data/lmm/index.qmd).
-
-Published near-zero observation-level differences use a documented 1e-6 absolute
-outcome-unit tolerance plus 1e-6 relative. Other fields use 1e-7 absolute plus
-1e-6 relative; likelihood/AIC use 1e-7 absolute plus 1e-10 relative. A separate
-native-versus-statsmodels check uses the stricter original uniform tolerance.
-The notebook includes independent profile-score checks and recorded reference
-optimizer rounding, rather than hiding disagreements or changing model conventions.
-Run `docs/verifications/compare_lmm.py --public` in the pinned Python environment.
-
-## Expanded R compatibility
-
-[The executed audit](notebooks/r-compatibility.qmd) verifies 12 weighted/offset
-fixed-estimator cases and 15 general Gaussian mixed cases. Both native BOBYQA
-and Nelder–Mead are compared against actual lme4 bobyqa, Nelder_Mead, nlminbwrap
-and nloptwrap reference fits, with saved controls, convergence codes and warnings.
-The published sleepstudy random-slope model has ML/REML statsmodels checks too.
-The [coverage ledger](r-compatibility.qmd) documents quantity-specific tolerances,
-backend differences and unsupported features. New fixture tests need no R;
-`compare_r_compatibility.py` adds actual PHP and live statsmodels verification.
-
-## Binomial logit with one random intercept
-
-`tests/fixtures/logistic-mixed-r.json` stores seven datasets at four integration
-settings (Laplace, 9, 25, 61 nodes), including published cbpp data and difficult
-rare-event/large-variation cases. Rust checks full output against lme4 and tests
-normal quadrature moments/tiny tail weights, the ordinary-GLM zero-variance
-reduction, predictor units, count canonicalization/limits and failure controls.
-PHP integration checks the actual binding, typed labels, complete row alignment,
-original-input validation, warnings and strict missingness.
-
-[The executed verification notebook](notebooks/logistic-mixed-verification.qmd)
-adds independent SciPy root finding, matched-approximation likelihood evaluation
-and QUADPACK integration. It distinguishes R agreement from approximation accuracy
-and retains lme4's raw likelihood convention plus the disclosed grouped-binomial
-normalization correction. The full Python mixed-model reference is SciPy;
-statsmodels' Bayesian binomial mixed estimator has a different objective.
-
-See the [v0.1 stabilization assessment](v0.1.qmd) for the offline `scripts/check` gate,
-IDE stubs, structured diagnostics, stress fixtures, provenance manifest,
-performance preservation and remaining release/deployment gates.
+The [v0.1 assessment](v0.1.qmd) is the historical record of the first stabilization pass.

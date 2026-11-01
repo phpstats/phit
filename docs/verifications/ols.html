@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -645,9 +646,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#reproduction" id="toc-reproduction" class="nav-link active" data-scroll-target="#reproduction">Reproduction</a></li>
-  <li><a href="#equivalent-specifications" id="toc-equivalent-specifications" class="nav-link" data-scroll-target="#equivalent-specifications">Equivalent specifications</a></li>
-  <li><a href="#verified-cases" id="toc-verified-cases" class="nav-link" data-scroll-target="#verified-cases">Verified cases</a></li>
+  <li><a href="#compared" id="toc-compared" class="nav-link active" data-scroll-target="#compared">Compared</a></li>
+  <li><a href="#inputs-and-scope" id="toc-inputs-and-scope" class="nav-link" data-scroll-target="#inputs-and-scope">Inputs and scope</a></li>
+  <li><a href="#reference-and-versions" id="toc-reference-and-versions" class="nav-link" data-scroll-target="#reference-and-versions">Reference and versions</a></li>
+  <li><a href="#metric-and-tolerance" id="toc-metric-and-tolerance" class="nav-link" data-scroll-target="#metric-and-tolerance">Metric and tolerance</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#known-exceptions" id="toc-known-exceptions" class="nav-link" data-scroll-target="#known-exceptions">Known exceptions</a></li>
+  <li><a href="#reproduction" id="toc-reproduction" class="nav-link" data-scroll-target="#reproduction">Reproduction</a></li>
   </ul>
 </nav>
     </div>
@@ -673,39 +678,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The executable <a href="../notebooks/ols-verification.html">verification notebook</a> shows the same observations, equivalent calls, coefficients, inference and model statistics across all three implementations. <a href="ols-results.json">ols-results.json</a> contains the saved complete numerical results, inputs, versions, sample metadata, PHP warnings and differences from R. These are generated results, not hand-entered examples. The <a href="../notebooks/ols-math.html">math notebook</a> derives the calculations.</p>
-<section id="reproduction" class="level2">
-<h2 class="anchored" data-anchor-id="reproduction">Reproduction</h2>
-<p>Follow <a href="../notebooks/index.html">notebook setup</a> to install development tools and build the PHP extension, then run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">.context/notebooks-venv/bin/python</span> docs/verifications/compare_ols.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The script fits every case afresh using Rscript, statsmodels and PHP, checks all statistical fields against R with absolute tolerance 1e-9 and relative tolerance 1e-7, and writes ols-results.json. It consumes the ordinary deterministic cases from tests/fixtures/ols-r.json plus an explicit missing-data case. R and Python are optional development tools; cargo test and tests/ols.php still run without them. See <a href="../verification.html">verification policy</a> for the tolerance’s limits.</p>
+<p>phit’s <code>fit_ols_matrix()</code> is compared with R’s <code>lm()</code> and statsmodels’ <code>OLS</code> on the same observations. The <a href="../notebooks/ols-verification.html">verification notebook</a> shows the calls and results side by side, and the <a href="../notebooks/ols-math.html">math notebook</a> derives the calculations. Shared metrics and tolerance conventions are described in <a href="../verification.html">Verification</a>.</p>
+<section id="compared" class="level2">
+<h2 class="anchored" data-anchor-id="compared">Compared</h2>
+<p>Coefficients, covariance, standard errors, t statistics, p-values, 95% confidence intervals, fitted values, residuals, R-squared, and log-likelihood. The models use an intercept, homoskedastic covariance, residual variance RSS/(n − p), Student’s t tests, and ML variance RSS/n for the likelihood.</p>
 </section>
-<section id="equivalent-specifications" class="level2">
-<h2 class="anchored" data-anchor-id="equivalent-specifications">Equivalent specifications</h2>
-<p>For the shared simulated housing dataset in examples/ols.php, run from the repository root:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>observations <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"docs/data/housing.csv"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(monthly_rent <span class="sc">~</span> area_m2, <span class="at">data =</span> observations, <span class="at">na.action =</span> na.omit)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(fit, <span class="at">level =</span> <span class="fl">0.95</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">logLik</span>(fit)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># A second model uses correlated predictors:</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(monthly_rent <span class="sc">~</span> area_m2 <span class="sc">+</span> bedrooms, <span class="at">data =</span> observations))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>observations <span class="op">=</span> pd.read_csv(<span class="st">"docs/data/housing.csv"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> sm.add_constant(observations[[<span class="st">"area_m2"</span>]])</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> observations[<span class="st">"monthly_rent"</span>]</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>fit <span class="op">=</span> sm.OLS(y, X, missing<span class="op">=</span><span class="st">'drop'</span>, hasconst<span class="op">=</span><span class="va">True</span>).fit(use_t<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fit.params, fit.bse, fit.tvalues, fit.pvalues, fit.conf_int(), fit.llf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// The verification runner prepares a complete design from the shared housing CSV.</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Each row of $x is [1.0, area_m2]; $y contains monthly_rent.</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">$result</span> <span class="op">=</span> Phit\fit_ols_matrix(x<span class="ot">:</span> <span class="va">$x</span><span class="ot">,</span> y<span class="ot">:</span> <span class="va">$y</span><span class="ot">,</span> intercept<span class="ot">:</span> <span class="kw">false</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>These are synthetic apartments, not empirical housing records. The <a href="../notebooks/ols-math.html">math notebook</a> explains the generating process and reports sample correlations. The fixtures retain small hand-checkable numerical cases alongside these teaching examples.</p>
-<p>These use an intercept, conventional homoskedastic covariance, residual variance RSS/(n-p), Student t tests, and 95% intervals. Likelihood uses ML variance RSS/n. The general R runner receives the explicit design columns with formula <code>y ~ . - 1</code>, then calculates R-squared using the same ones-column convention as the extension; this avoids a duplicate intercept. R’s coefficients, covariance, standard errors, tests, intervals, residuals and log-likelihood come from lm(). The notebook displays both the user-facing calls and this runner convention.</p>
-<p>Sources: <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html">R lm</a>, <a href="https://www.statsmodels.org/stable/generated/statsmodels.regression.linear_model.OLS.html">statsmodels OLS</a> and <a href="https://www.statsmodels.org/stable/missing.html">statsmodels missing data</a>.</p>
-</section>
-<section id="verified-cases" class="level2">
-<h2 class="anchored" data-anchor-id="verified-cases">Verified cases</h2>
+<section id="inputs-and-scope" class="level2">
+<h2 class="anchored" data-anchor-id="inputs-and-scope">Inputs and scope</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -757,9 +736,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>All fields pass the stated tolerance for all seven cases. The executable notebook displays the housing coefficients and inference from all three implementations. The saved report records the actual environment: R 4.6.1, statsmodels 0.15.0, NumPy 2.5.4, Python 3.14, and PHP 8.5.10 on the development Mac. This is not evidence of testing Linux or other PHP builds.</p>
-<p>For the missing-data case, original positions 1 and 3 are omitted; positions 0, 2, 4 and 5 are retained. PHP emits one E_WARNING with the dropped/original counts and returns sample metadata. The runner checks those positions and counts, and exposes the captured warning in both the saved report and notebook.</p>
-<p>Perfect/zero fits and invalid/singular inputs are covered by the Rust/PHP tests, not finite three-way comparisons. Decomposition-dependent tiny residuals make perfect-fit t/p and likelihood comparisons unstable. References may also accept singular designs by aliasing coefficients while our implementation rejects them.</p>
+<p>The housing rows in <code>docs/data/housing.csv</code> are simulated; the <a href="../notebooks/ols-math.html">math notebook</a> describes how they were generated. The other cases come from <code>tests/fixtures/ols-r.json</code>.</p>
+</section>
+<section id="reference-and-versions" class="level2">
+<h2 class="anchored" data-anchor-id="reference-and-versions">Reference and versions</h2>
+<p>R 4.6.1 <code>lm()</code>, statsmodels 0.15.0 with NumPy 2.5.4 on Python 3.14, and phit on PHP 8.5.10, all on the development Mac. Linux and other PHP builds are not covered by this report.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>observations <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"docs/data/housing.csv"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(monthly_rent <span class="sc">~</span> area_m2, <span class="at">data =</span> observations, <span class="at">na.action =</span> na.omit)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(fit, <span class="at">level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">logLik</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>observations <span class="op">=</span> pd.read_csv(<span class="st">"docs/data/housing.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> sm.add_constant(observations[[<span class="st">"area_m2"</span>]])</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fit <span class="op">=</span> sm.OLS(observations[<span class="st">"monthly_rent"</span>], X, missing<span class="op">=</span><span class="st">"drop"</span>, hasconst<span class="op">=</span><span class="va">True</span>).fit(use_t<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Each row of $x is [1.0, area_m2]; $y holds monthly_rent.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">$result</span> <span class="op">=</span> Phit\fit_ols_matrix(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    x<span class="ot">:</span> <span class="va">$x</span><span class="ot">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    y<span class="ot">:</span> <span class="va">$y</span><span class="ot">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    intercept<span class="ot">:</span> <span class="kw">false</span><span class="ot">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The runner gives every implementation the same explicit design. R receives it as <code>y ~ . - 1</code> and computes R-squared with the same ones-column convention as phit, which avoids a duplicate intercept.</p>
+</section>
+<section id="metric-and-tolerance" class="level2">
+<h2 class="anchored" data-anchor-id="metric-and-tolerance">Metric and tolerance</h2>
+<p>Every field, relative to R: absolute 1e-9 plus relative 1e-7.</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>All fields in all seven cases pass. <a href="ols-results.json">ols-results.json</a> holds the inputs, versions, sample metadata, PHP warnings, and differences from R.</p>
+<p>In the missing-data case, positions 1 and 3 are dropped and 0, 2, 4, and 5 are retained. phit emits one <code>E_WARNING</code> with the dropped and original counts. The runner checks the positions and counts and records the warning.</p>
+</section>
+<section id="known-exceptions" class="level2">
+<h2 class="anchored" data-anchor-id="known-exceptions">Known exceptions</h2>
+<ul>
+<li>Perfect and zero fits, and invalid or singular inputs, are covered by the Rust and PHP tests, not this comparison. Tiny decomposition-dependent residuals make perfect-fit t, p, and likelihood comparisons unstable.</li>
+<li>R and statsmodels may accept a singular design by aliasing coefficients. phit rejects it.</li>
+</ul>
+</section>
+<section id="reproduction" class="level2">
+<h2 class="anchored" data-anchor-id="reproduction">Reproduction</h2>
+<p>After the <a href="../notebooks/index.html">notebook setup</a>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">.context/notebooks-venv/bin/python</span> docs/verifications/compare_ols.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The script refits every case with Rscript, statsmodels, and PHP, checks every field, and rewrites <code>ols-results.json</code>. <code>cargo test</code> and <code>tests/ols.php</code> run without R or Python.</p>
+<p>Sources: <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html">R lm</a>, <a href="https://www.statsmodels.org/stable/generated/statsmodels.regression.linear_model.OLS.html">statsmodels OLS</a>, <a href="https://www.statsmodels.org/stable/missing.html">statsmodels missing data</a>.</p>
 
 
 </section>

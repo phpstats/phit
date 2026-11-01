@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -645,9 +646,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#reference-cases-and-conventions" id="toc-reference-cases-and-conventions" class="nav-link active" data-scroll-target="#reference-cases-and-conventions">Reference cases and conventions</a></li>
-  <li><a href="#failure-and-integration-checks" id="toc-failure-and-integration-checks" class="nav-link" data-scroll-target="#failure-and-integration-checks">Failure and integration checks</a></li>
-  <li><a href="#reproduce" id="toc-reproduce" class="nav-link" data-scroll-target="#reproduce">Reproduce</a></li>
+  <li><a href="#compared" id="toc-compared" class="nav-link active" data-scroll-target="#compared">Compared</a></li>
+  <li><a href="#inputs-and-scope" id="toc-inputs-and-scope" class="nav-link" data-scroll-target="#inputs-and-scope">Inputs and scope</a></li>
+  <li><a href="#reference-and-versions" id="toc-reference-and-versions" class="nav-link" data-scroll-target="#reference-and-versions">Reference and versions</a></li>
+  <li><a href="#metric-and-tolerance" id="toc-metric-and-tolerance" class="nav-link" data-scroll-target="#metric-and-tolerance">Metric and tolerance</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#known-exceptions-and-limits" id="toc-known-exceptions-and-limits" class="nav-link" data-scroll-target="#known-exceptions-and-limits">Known exceptions and limits</a></li>
+  <li><a href="#reproduction" id="toc-reproduction" class="nav-link" data-scroll-target="#reproduction">Reproduction</a></li>
   </ul>
 </nav>
     </div>
@@ -673,27 +678,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>The <a href="../notebooks/logistic-verification.html">executed comparison</a> fits identical observations in base R <code>glm()</code>, statsmodels <code>Logit</code>, and PHP <code>fit_logistic_matrix()</code>. The <a href="logistic-results.json">saved report</a> records versions, complete outputs, maximum differences from R, warnings and retained-row metadata.</p>
-<section id="reference-cases-and-conventions" class="level2">
-<h2 class="anchored" data-anchor-id="reference-cases-and-conventions">Reference cases and conventions</h2>
-<p>Six saved R fixtures cover the simulated learning sample, a single predictor, multiple predictors, no intercept, intercept only, correlated full-rank columns and imbalanced outcomes (the main sample is the multiple-predictor case). The three-way comparison adds listwise deletion of two rows. All coefficients, covariance entries, standard errors, normal z tests and p-values, Wald confidence limits, full fitted probabilities and response residuals, likelihood, deviance, null deviance, AIC and residual df are checked. Numerical tolerance is 1e-9 + 1e-7 × abs(reference); sample accounting is exact.</p>
-<p>R uses <code>confint.default(fit)</code>, not profile-likelihood <code>confint(fit)</code>. Its fitting tolerance is 1e-14 to make covariance evaluated at the preceding IRLS iterate negligible. Iteration counts can differ across implementations; they are not a reference equality requirement. Without a ones column the null baseline is probability 0.5; the Python runner computes this convention explicitly.</p>
+<p>phit’s <code>fit_logistic_matrix()</code> is compared with base R <code>glm()</code> and statsmodels <code>Logit</code> (Newton) on identical observations. The <a href="../notebooks/logistic-verification.html">executed comparison</a> shows the calls and results side by side. Shared metrics are described in <a href="../verification.html">Verification</a>.</p>
+<section id="compared" class="level2">
+<h2 class="anchored" data-anchor-id="compared">Compared</h2>
+<p>Coefficients, covariance, standard errors, normal z tests and p-values, Wald confidence limits, fitted probabilities and response residuals, log-likelihood, deviance, null deviance, AIC, and residual df.</p>
 </section>
-<section id="failure-and-integration-checks" class="level2">
-<h2 class="anchored" data-anchor-id="failure-and-integration-checks">Failure and integration checks</h2>
-<p>Rust/PHP tests reject insufficient observations, invalid shapes, nonfinite or nonbinary outcomes, one-class samples, dependent columns, and selected complete and quasi-separated designs. They check scaled predictor units, stable arithmetic at extreme logits, iteration exhaustion, missing-row warnings and alignment. OLS integration tests also run after changes to the shared PHP conversion code. No penalties or Firth correction are supplied. The separation check is not an exhaustive LP detector, and Wald inference can be poor with sparse or near-separated samples. Linux and PHP-FPM deployment have not been exercised by these reports.</p>
+<section id="inputs-and-scope" class="level2">
+<h2 class="anchored" data-anchor-id="inputs-and-scope">Inputs and scope</h2>
+<p>Six saved R fixtures: the simulated learning sample (the multiple-predictor case), a single predictor, no intercept, intercept only, correlated full-rank columns, and imbalanced outcomes. The three-way comparison adds a listwise-deletion case with two dropped rows.</p>
 </section>
-<section id="reproduce" class="level2">
-<h2 class="anchored" data-anchor-id="reproduce">Reproduce</h2>
-<p>From the repository root with matching PHP development tools:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PHP</span><span class="op">=</span>/opt/homebrew/bin/php</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PHP_CONFIG</span><span class="op">=</span>/opt/homebrew/bin/php-config</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> test <span class="at">--workspace</span> <span class="at">--locked</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> phit <span class="at">--locked</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$PWD</span><span class="st">/target/debug/libphit.dylib"</span> tests/logistic.php</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">.context/notebooks-venv/bin/python</span> docs/verifications/compare_logistic.py</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="va">QUARTO_PYTHON</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/.context/notebooks-venv/bin/python"</span> <span class="ex">quarto</span> render docs/notebooks/logistic-verification.qmd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Use <code>.so</code> on Linux. R fixture regeneration is an explicit development step: <code>Rscript tests/generate-logistic-fixtures.R</code>. Ordinary Rust/PHP tests use saved fixtures without R or Python. See <a href="../development.html">development</a> for setup and <a href="../benchmarks/logistic.html">large-sample benchmarks</a> for additional evidence.</p>
+<section id="reference-and-versions" class="level2">
+<h2 class="anchored" data-anchor-id="reference-and-versions">Reference and versions</h2>
+<p>R 4.6.1, statsmodels 0.15.0 with NumPy 2.5.4 on Python 3.14.7, and phit on PHP 8.5.10, on the development Mac. Linux and PHP-FPM are not covered by this report.</p>
+<ul>
+<li>R intervals use <code>confint.default(fit)</code> (Wald), not profile-likelihood <code>confint(fit)</code>.</li>
+<li>R’s fitting tolerance is 1e-14, so the covariance evaluated at the preceding IRLS iterate is negligible.</li>
+<li>Without a ones column, the null baseline is probability 0.5. The Python runner computes this convention explicitly.</li>
+</ul>
+</section>
+<section id="metric-and-tolerance" class="level2">
+<h2 class="anchored" data-anchor-id="metric-and-tolerance">Metric and tolerance</h2>
+<p>Absolute 1e-9 plus relative 1e-7 of the R value for every numerical field. Sample accounting must match exactly. Iteration counts may differ.</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>All fields in all seven cases pass. The <a href="logistic-results.json">saved report</a> records versions, complete outputs, maximum differences from R, warnings, and retained-row metadata.</p>
+</section>
+<section id="known-exceptions-and-limits" class="level2">
+<h2 class="anchored" data-anchor-id="known-exceptions-and-limits">Known exceptions and limits</h2>
+<p>The Rust and PHP tests reject insufficient observations, invalid shapes, nonfinite values, nonbinary outcomes, one-class samples, dependent columns, and selected complete and quasi-separated designs. They also check scaled predictor units, stable arithmetic at extreme logits, iteration exhaustion, and missing-row warnings and alignment.</p>
+<ul>
+<li>No penalty or Firth correction is offered.</li>
+<li>The separation check is not an exhaustive linear-programming detector.</li>
+<li>Wald inference can be poor with sparse or nearly separated samples.</li>
+</ul>
+</section>
+<section id="reproduction" class="level2">
+<h2 class="anchored" data-anchor-id="reproduction">Reproduction</h2>
+<p>From the repository root, with the PHP development tools and the <a href="../notebooks/index.html">notebook environment</a>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> test <span class="at">--workspace</span> <span class="at">--locked</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> phit <span class="at">--locked</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-n</span> <span class="at">-d</span> <span class="st">"extension=</span><span class="va">$PWD</span><span class="st">/target/debug/libphit.dylib"</span> tests/logistic.php</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">.context/notebooks-venv/bin/python</span> docs/verifications/compare_logistic.py</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">QUARTO_PYTHON</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/.context/notebooks-venv/bin/python"</span> <span class="dt">\</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">quarto</span> render docs/notebooks/logistic-verification.qmd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Use <code>.so</code> on Linux. Regenerating the R fixtures is a separate step: <code>Rscript tests/generate-logistic-fixtures.R</code>. The Rust and PHP tests read saved fixtures and need no R or Python. <a href="../benchmarks/logistic.html">Large-sample benchmarks</a> are reported separately.</p>
 
 
 </section>

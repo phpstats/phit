@@ -26,41 +26,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -110,6 +75,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -645,11 +611,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#how-they-coexist" id="toc-how-they-coexist" class="nav-link active" data-scroll-target="#how-they-coexist">How they coexist</a></li>
-  <li><a href="#what-the-polyfill-covers" id="toc-what-the-polyfill-covers" class="nav-link" data-scroll-target="#what-the-polyfill-covers">What the polyfill covers</a></li>
+  <li><a href="#versions" id="toc-versions" class="nav-link active" data-scroll-target="#versions">Versions</a></li>
+  <li><a href="#how-they-coexist" id="toc-how-they-coexist" class="nav-link" data-scroll-target="#how-they-coexist">How they coexist</a></li>
+  <li><a href="#coverage" id="toc-coverage" class="nav-link" data-scroll-target="#coverage">Coverage</a></li>
   <li><a href="#differences" id="toc-differences" class="nav-link" data-scroll-target="#differences">Differences</a></li>
   <li><a href="#speed" id="toc-speed" class="nav-link" data-scroll-target="#speed">Speed</a></li>
-  <li><a href="#versions-and-platforms" id="toc-versions-and-platforms" class="nav-link" data-scroll-target="#versions-and-platforms">Versions and platforms</a></li>
   </ul>
 </nav>
     </div>
@@ -675,22 +641,99 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>phit has two implementations of the <code>Phit\</code> functions. The polyfill provides every function except the CSV reader (<code>read_csv</code> and <code>CsvReader</code>).</p>
-<ul>
-<li><strong>The extension</strong>, <code>phpstats/phit</code>, is compiled Rust installed into PHP with PIE or a prebuilt binary. See <a href="./installation.html">Installation</a>.</li>
-<li><strong>The polyfill</strong>, <code>phpstats/phit-polyfill</code>, is plain PHP installed with Composer. It needs no PHP extension.</li>
-</ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">composer</span> require phpstats/phit-polyfill</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Code written against one runs unchanged on the other, provided it does not read CSV files through phit. Each polyfill release reproduces one phit release. Polyfill 0.4.1 reproduces phit v0.4.3, 0.4.0 reproduces v0.4.0, 0.3.0 reproduces v0.3.0, 0.2.0 reproduces v0.2.0, and 0.1.0 reproduces v0.1.1. phit v0.4.1 and v0.4.2 change only the CSV reader, which the polyfill does not provide.</p>
+<p>phit has two implementations of the <code>Phit\</code> functions. Code written against one runs unchanged on the other, unless it reads CSV files through phit.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Extension</th>
+<th>Polyfill</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Package</td>
+<td><code>phpstats/phit</code></td>
+<td><code>phpstats/phit-polyfill</code></td>
+</tr>
+<tr class="even">
+<td>Implementation</td>
+<td>Compiled Rust, installed into PHP</td>
+<td>Plain PHP, installed with Composer</td>
+</tr>
+<tr class="odd">
+<td>Install</td>
+<td>PIE or a prebuilt binary (<a href="./installation.html">Installation</a>)</td>
+<td><code>composer require phpstats/phit-polyfill</code></td>
+</tr>
+<tr class="even">
+<td>Functions</td>
+<td>All</td>
+<td>All except <code>read_csv()</code> and <code>CsvReader</code></td>
+</tr>
+<tr class="odd">
+<td>PHP</td>
+<td>8.3, 8.4, 8.5 (NTS) on Linux and macOS</td>
+<td><code>^8.3</code>; CI on Linux and macOS, Windows untested</td>
+</tr>
+<tr class="even">
+<td>OPcache JIT</td>
+<td>Runs under any setting</td>
+<td>Refuses to run while the JIT compiles the process</td>
+</tr>
+<tr class="odd">
+<td>Speed</td>
+<td>Faster</td>
+<td>Slower; the gap grows with model size</td>
+</tr>
+</tbody>
+</table>
+<section id="versions" class="level2">
+<h2 class="anchored" data-anchor-id="versions">Versions</h2>
+<p>Each polyfill release reproduces one phit release:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Polyfill</th>
+<th>phit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0.4.1</td>
+<td>v0.4.3</td>
+</tr>
+<tr class="even">
+<td>0.4.0</td>
+<td>v0.4.0</td>
+</tr>
+<tr class="odd">
+<td>0.3.0</td>
+<td>v0.3.0</td>
+</tr>
+<tr class="even">
+<td>0.2.0</td>
+<td>v0.2.0</td>
+</tr>
+<tr class="odd">
+<td>0.1.0</td>
+<td>v0.1.1</td>
+</tr>
+</tbody>
+</table>
+<p>phit v0.4.1 and v0.4.2 change only the CSV reader, which the polyfill does not provide. Polyfill 0.4.1 provides 242 of phit 0.4.3’s 243 functions, including the ten deprecated 0.3 model names.</p>
+</section>
 <section id="how-they-coexist" class="level2">
 <h2 class="anchored" data-anchor-id="how-they-coexist">How they coexist</h2>
-<p>Composer loads the polyfill’s <code>bootstrap.php</code> through its <code>files</code> autoload. If <code>extension_loaded('phit')</code> is true, the bootstrap returns before defining anything, so every <code>Phit\</code> function is the extension’s. Installing both is therefore safe: the extension is used where it is loaded, and the polyfill everywhere else, such as a CI runner or a host where extensions cannot be installed.</p>
-<p>The polyfill does not fill gaps in an older extension. If the loaded extension is older than the polyfill’s phit release, the functions added since then stay undefined.</p>
-<p>The polyfill’s composer.json declares <code>"provide": {"ext-phit": "*"}</code>. A package that requires <code>ext-phit</code> is therefore satisfied by the polyfill, including one that uses the functions the polyfill lacks.</p>
+<ul>
+<li>Composer loads the polyfill’s <code>bootstrap.php</code> through its <code>files</code> autoload. If <code>extension_loaded('phit')</code> is true, the bootstrap defines nothing, so every <code>Phit\</code> function is the extension’s. Installing both is safe.</li>
+<li>The polyfill does not fill gaps in an older extension. If the loaded extension is older than the polyfill’s phit release, functions added since then stay undefined.</li>
+<li>The polyfill’s composer.json declares <code>"provide": {"ext-phit": "*"}</code>, so it satisfies a package that requires <code>ext-phit</code>, including one that uses the CSV reader.</li>
+<li>Without the extension, <code>function_exists('Phit\read_csv')</code> and <code>class_exists('Phit\CsvReader')</code> return false, as does <code>Phit\Polyfill::supports('Phit\read_csv')</code>. phibble’s <code>DataFrame::fromCsv()</code> then uses its own PHP reader.</li>
+</ul>
 </section>
-<section id="what-the-polyfill-covers" class="level2">
-<h2 class="anchored" data-anchor-id="what-the-polyfill-covers">What the polyfill covers</h2>
-<p>The polyfill provides 242 of phit 0.4.3’s 243 functions, including the ten deprecated 0.3 model names. It does not provide <code>Phit\read_csv()</code> or the <code>Phit\CsvReader</code> class. Without the extension, <code>function_exists('Phit\read_csv')</code> and <code>class_exists('Phit\CsvReader')</code> return false, and <code>Phit\Polyfill::supports('Phit\read_csv')</code> returns false.</p>
+<section id="coverage" class="level2">
+<h2 class="anchored" data-anchor-id="coverage">Coverage</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -705,15 +748,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td>Formula models and prediction</td>
-<td><code>model_matrix</code>, <code>fit_ols</code>, <code>fit_generalized_linear</code>, <code>fit_mixed_gaussian</code>, <code>fit_mixed_logistic</code> and <code>predict</code>, with a port of the extension’s formula parser</td>
+<td><code>model_matrix</code>, <code>fit_ols</code>, <code>fit_generalized_linear</code>, <code>fit_mixed_gaussian</code>, <code>fit_mixed_logistic</code>, and <code>predict</code>, with a port of the formula parser</td>
 </tr>
 <tr class="even">
 <td>Matrix models</td>
-<td>All seven <code>fit_*</code> matrix functions</td>
+<td>All <code>*_matrix</code> functions</td>
 </tr>
 <tr class="odd">
 <td>Mixed models</td>
-<td>The same structures as the extension: <code>fit_mixed_gaussian</code> with random intercepts and slopes, <code>(x || g)</code>, several terms and nesting, by REML or ML with BOBYQA or Nelder–Mead; <code>fit_mixed_logistic</code> with one binomial logit <code>(1 | g)</code>, by Laplace or adaptive quadrature with up to 61 points</td>
+<td>The same structures as the extension. <code>fit_mixed_gaussian</code>: random intercepts and slopes, <code>(x || g)</code>, several terms, and nesting, by REML or ML with BOBYQA or Nelder–Mead. <code>fit_mixed_logistic</code>: one binomial logit <code>(1 | g)</code>, by Laplace or adaptive quadrature with up to 61 points.</td>
 </tr>
 <tr class="even">
 <td>Distributions, descriptive statistics, seeded sampling</td>
@@ -721,28 +764,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td>Posterior-draw kernels</td>
-<td><code>draws_moments</code>, <code>draws_covariance_map</code> and <code>draws_affine</code></td>
+<td><code>draws_moments</code>, <code>draws_covariance_map</code>, and <code>draws_affine</code></td>
 </tr>
 <tr class="even">
 <td>CSV input</td>
-<td>Not provided; phibble’s <code>DataFrame::fromCsv()</code> falls back to its own PHP reader</td>
+<td>Not provided</td>
 </tr>
 </tbody>
 </table>
-<p>The polyfill’s test suite runs the extension’s reference fixtures, including the lme4 and seeded-sampling references, at the extension’s tolerances. Randomized parity tests compare its results with the extension’s. In those tests the posterior-draw kernels and the random-intercept and random-slope fits are bit-identical.</p>
+<p>The polyfill’s tests run the extension’s reference fixtures, including the lme4 and seeded-sampling references, at the extension’s tolerances, plus randomized parity tests against the extension.</p>
 </section>
 <section id="differences" class="level2">
 <h2 class="anchored" data-anchor-id="differences">Differences</h2>
 <ul>
 <li>The listwise-deletion warning is <code>E_USER_WARNING</code> in the polyfill and <code>E_WARNING</code> in the extension. The text is the same.</li>
 <li>Arguments of the wrong scalar type follow PHP’s userland rules in the polyfill: coercion, or a <code>TypeError</code> under <code>strict_types</code>.</li>
-<li>Every polyfill function throws an exception with code 1007 while OPcache’s JIT is compiling the process. The JIT has produced wrong numerical results in the polyfill, so the polyfill refuses to run under it. PHP 8.4 and 8.5 disable the JIT by default. PHP 8.3’s default settings (<code>opcache.jit=tracing</code> with <code>opcache.jit_buffer_size=0</code>) also leave it off. The extension runs under any JIT setting.</li>
+<li>Every polyfill function throws an exception with code 1007 while OPcache’s JIT compiles the process, because the JIT has produced wrong numerical results in the polyfill. The JIT is off by default in PHP 8.4 and 8.5, and PHP 8.3’s defaults (<code>opcache.jit=tracing</code> with <code>opcache.jit_buffer_size=0</code>) also leave it off.</li>
 <li>On an x86-64 CPU without fused multiply-add, the extension’s products of matrices larger than 5×5 can differ from the polyfill’s in the last bit.</li>
 </ul>
 </section>
 <section id="speed" class="level2">
 <h2 class="anchored" data-anchor-id="speed">Speed</h2>
-<p>The polyfill is slower, and the gap grows with model size. These timings were recorded on an Apple M5 Ultra with PHP 8.5.10, OPcache on and the JIT off.</p>
+<p>These timings were recorded on an Apple M5 Ultra with PHP 8.5.10, OPcache on, and the JIT off.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 20%">
@@ -784,11 +827,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>Mixed models ran 13 to 78 times slower in that comparison. The polyfill’s cost grows with roughly the cube of the number of random coefficients.</p>
-</section>
-<section id="versions-and-platforms" class="level2">
-<h2 class="anchored" data-anchor-id="versions-and-platforms">Versions and platforms</h2>
-<p>The polyfill’s composer.json requires PHP <code>^8.3</code>. Its CI tests PHP 8.3, 8.4 and 8.5 on Linux, in five OPcache and JIT modes, and on macOS in two. Windows is untested. The extension supports PHP 8.3, 8.4 and 8.5 on Linux and macOS.</p>
+<p>The mixed-model row predates polyfill 0.4.1. Since phit v0.4.3 and polyfill 0.4.1, a Gaussian mixed model with one grouping term or nested terms is factored block by block. Its cost no longer grows with the cube of the number of random coefficients. Crossed terms still use the dense calculation.</p>
 <p>The polyfill’s own documentation is in the <a href="https://github.com/phpstats/phit-polyfill">phit-polyfill repository</a>.</p>
 
 

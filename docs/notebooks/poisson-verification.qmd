@@ -1,5 +1,5 @@
 ---
-title: "The same poisson models in R, statsmodels and PHP"
+title: "The same Poisson models in R, statsmodels and PHP"
 jupyter: python3
 ---
 
@@ -43,8 +43,8 @@ design to Python and PHP (`intercept: false` in PHP). Application calls can
 instead supply predictors only and use the automatic fixed intercept.
 
 ```r
-students <- read.csv("docs/data/clinic.csv")
-fit <- glm(calls ~ visitors + staff, data=students,
+days <- read.csv("docs/data/clinic.csv")
+fit <- glm(calls ~ visitors + staff, data=days,
            family=poisson(), control=glm.control(epsilon=1e-16, maxit=100))
 coef(fit)
 vcov(fit)
@@ -53,25 +53,30 @@ confint.default(fit) # normal Wald, not profile likelihood
 
 ```python
 import statsmodels.api as sm
-students = pd.read_csv("docs/data/clinic.csv")
-x = sm.add_constant(students[["visitors", "staff"]])
-fit = sm.GLM(students["calls"], x, family=sm.families.Poisson()).fit(tol=1e-11, tol_criterion="params", maxiter=100)
+days = pd.read_csv("docs/data/clinic.csv")
+x = sm.add_constant(days[["visitors", "staff"]])
+fit = sm.GLM(days["calls"], x, family=sm.families.Poisson()).fit(tol=1e-11, tol_criterion="params", maxiter=100)
 fit.params, fit.bse, fit.conf_int()
 ```
 
 ```php
 $x = []; $y = [];
-foreach ($students as $student) {
-    $x[] = [1.0, $student['visitors'], $student['staff']];
-    $y[] = $student['calls'];
+foreach ($days as $day) {
+    $x[] = [1.0, $day['visitors'], $day['staff']];
+    $y[] = $day['calls'];
 }
-$result = Phit\fit_poisson(x: $x, y: $y, intercept: false);
+$result = Phit\fit_poisson_matrix(
+    x: $x,
+    y: $y,
+    intercept: false,
+);
 ```
 
-Here `$students` contains already numeric records; see `examples/poisson.php`
-for the complete CSV conversion and call. The native interface uses no formula
-parser or model classes. The explicit-design example opts out of automatic
-fixed-intercept insertion.
+Here `$days` holds numeric records; `examples/poisson.php` has the complete CSV
+conversion. This comparison builds the design explicitly so all three
+implementations receive identical columns, and `intercept: false` stops phit
+adding a second intercept. Applications can use the formula interface instead:
+see [Linear and generalized linear models](../models.qmd).
 
 ## Missing rows and model statistics
 

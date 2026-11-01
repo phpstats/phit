@@ -62,13 +62,19 @@ foreach ($students as $student) {
     $y[] = $student['score'];
     $groups[] = $student['school'];
 }
-$result = Phit\fit_mixed_intercept(x: $x, y: $y, groups: $groups, intercept: false);
+$result = Phit\fit_mixed_gaussian_intercept_matrix(
+    x: $x,
+    y: $y,
+    groups: $groups,
+    intercept: false,
+);
 ```
 
-These PHP records are already numeric; `examples/lmm.php` supplies the complete
-CSV conversion with predictor-only x and an automatic fixed intercept. This
-verification passes an explicit design with `intercept: false`; formulas are not parsed.
-The comparison runner gives R the exact design columns with formula `y ~ 0 + x0 + ... + (1|group)`.
+These PHP records are numeric; `examples/lmm.php` has the complete CSV
+conversion with predictor-only x and an automatic fixed intercept. This
+comparison passes an explicit design with `intercept: false`, and the runner gives
+R the same design columns as `y ~ 0 + x0 + ... + (1|group)`. Applications can use
+`fit_mixed_gaussian()` with a formula instead; see [Mixed models](../mixed-models.qmd).
 
 ## Conventions that must match
 

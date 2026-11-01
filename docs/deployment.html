@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -700,7 +701,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Restart the PHP-FPM service so every worker loads the new module.</li>
 <li>Check the web runtime, not only the CLI, for example with <code>extension_loaded('phit')</code> and <code>phpversion('phit')</code> in a request.</li>
 </ol>
-<p>Each call converts PHP arrays into Rust vectors, fits the model and returns an array within the request. No background process, subprocess or network service is involved.</p>
+<p>Each call does its work within the request. There is no background process, subprocess, or network service.</p>
 </section>
 <section id="a-php-fpm-container-image" class="level2">
 <h2 class="anchored" data-anchor-id="a-php-fpm-container-image">A PHP-FPM container image</h2>
@@ -708,15 +709,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">--target</span> checks <span class="at">-f</span> docker/Dockerfile <span class="at">-t</span> phit:checks .</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-f</span> docker/Dockerfile <span class="at">-t</span> phit:local .</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/check-container</span> phit:local phit:checks</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The build installs the extension through PIE 1.5.0 and runs the Rust and PHP checks. The isolated FPM check sends a real FastCGI request. The production-image check then exercises both CLI and FPM using the shipped PHP configuration and verifies identical OLS coefficients and a Poisson log-exposure fit.</p>
-<p>The final image contains the PHP runtime and installed extension. Rust, Clang, PIE, Python, repository sources, and test utilities remain in the build stages. The image retains the official PHP entrypoint and foreground PHP-FPM command. Use it as an application base:</p>
+<ul>
+<li>The build installs the extension with PIE 1.5.0 and runs the Rust and PHP checks.</li>
+<li><code>check-container</code> sends a FastCGI request to an isolated FPM container, then runs the production image’s CLI and FPM with its shipped PHP configuration. Both must give identical OLS coefficients and a Poisson fit with a log-exposure offset.</li>
+<li>The final image holds the PHP runtime and the extension. Rust, Clang, PIE, Python, sources, and test tools stay in the build stages.</li>
+<li>The image keeps the official PHP entrypoint and runs PHP-FPM in the foreground.</li>
+</ul>
+<p>Use it as an application base:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode dockerfile code-with-copy"><code class="sourceCode dockerfile"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> phit:local</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">COPY</span> app/ /var/www/html/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Connect your normal web server to FPM. FPM speaks FastCGI, not HTTP; no public FPM listener is needed for the tests. The verification script removes only its own temporary container and never edits a production PHP/FPM configuration.</p>
+<p>Connect your web server to FPM, which speaks FastCGI rather than HTTP.</p>
 <section id="build-pins-and-reproducibility" class="level3">
 <h3 class="anchored" data-anchor-id="build-pins-and-reproducibility">Build pins and reproducibility</h3>
-<p>The Dockerfile pins PHP and Rust base images by OCI digest. The workflow records separate PHP 8.3/8.4/8.5 image digests. Build and runtime stages share exactly the same PHP image. <code>Cargo.lock</code> pins Rust dependencies; the downloaded PIE PHAR has a pinned SHA-256. Update those pins deliberately and rerun the gate.</p>
-<p>Debian APT packages are resolved at build time. These pins establish a repeatable base and dependency selection, not a promise that every future rebuild has the same bytes. Binary manifests record the compiler, PHP API, architecture, libc, linked libraries, extension hash and Cargo.lock hash.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Input</th>
+<th>Pinned by</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>PHP and Rust base images</td>
+<td>OCI digest, one PHP digest each for 8.3, 8.4, and 8.5; build and runtime stages share the PHP image</td>
+</tr>
+<tr class="even">
+<td>Rust dependencies</td>
+<td><code>Cargo.lock</code></td>
+</tr>
+<tr class="odd">
+<td>PIE PHAR</td>
+<td>SHA-256</td>
+</tr>
+<tr class="even">
+<td>Debian APT packages</td>
+<td>Not pinned; resolved at build time</td>
+</tr>
+</tbody>
+</table>
+<p>Update the pins deliberately and rerun the checks. Because APT packages are not pinned, a rebuild is repeatable but not byte-identical. Binary manifests record the compiler, PHP API, architecture, libc, linked libraries, extension hash, and <code>Cargo.lock</code> hash.</p>
 </section>
 </section>
 <section id="manual-build-without-pie" class="level2">
@@ -730,8 +765,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span> install INSTALL_ROOT=/absolute/path/to/staging</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Or install after reviewing the build:</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># sudo make install</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Build as an unprivileged user before installing. The install goal requires the already built module and does not rerun Cargo under sudo. <code>INSTALL_ROOT</code> stages under the configured extension directory. On macOS, use the matching LLVM/header setup in the <a href="./development.html#environment">development guide</a>.</p>
-<p>Add <code>extension=phit.so</code> to the relevant PHP INI configuration after a manual install. Inspect <code>php --ini</code> for CLI; check the FPM configuration separately. Verify the native functions through both. Rebuild for another PHP ABI, architecture, thread-safety/debug configuration, or platform.</p>
+<ul>
+<li>Build as an unprivileged user. <code>make install</code> needs the built module and does not rerun Cargo under sudo.</li>
+<li><code>INSTALL_ROOT</code> stages under the configured extension directory.</li>
+<li>On macOS, use the LLVM and header setup in the <a href="./development.html#environment">development guide</a>.</li>
+<li>After installing, add <code>extension=phit.so</code> to the PHP configuration. Check <code>php --ini</code> for the CLI and the FPM configuration separately, and confirm the functions load in both.</li>
+<li>Rebuild for another PHP ABI, architecture, thread-safety or debug configuration, or platform.</li>
+</ul>
 
 
 </section>

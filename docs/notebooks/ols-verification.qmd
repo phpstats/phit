@@ -4,9 +4,9 @@ jupyter: python3
 ---
 
 
-This notebook fits exactly the same design matrices and outcomes with three implementations. This verification opts out of PHP intercept insertion (`intercept: false`), so PHP and statsmodels receive the same explicit design; R's formula below generates the same ones column. We use conventional covariance, Student t inference, 95% intervals, and Gaussian likelihood at the ML variance. R and Python are development references, not production dependencies.
+This notebook fits exactly the same design matrices and outcomes with three implementations. This verification opts out of PHP intercept insertion (`intercept: false`), so PHP and statsmodels receive the same explicit design; R's formula below generates the same ones column. We use conventional covariance, Student t inference, 95% intervals, and Gaussian likelihood at the ML variance.
 
-See [setup](index.qmd), [verification report](../verifications/ols.qmd) and [math walkthrough](ols-math.qmd). Run all cells to rebuild the evidence from your environment.
+See [setup](index.qmd), the [verification record](../verifications/ols.qmd), and the [math walkthrough](ols-math.qmd).
 
 
 ```{python}
@@ -44,10 +44,15 @@ fit = sm.OLS(y, X, missing='drop', hasconst=True).fit(use_t=True)
 fit.params, fit.bse, fit.tvalues, fit.pvalues, fit.conf_int(), fit.llf
 ```
 
-PHP (after loading the extension):
+PHP:
 
 ```php
-$result = Phit\fit_ols(x: $x, y: $y, intercept: false); // missing defaults to 'drop'
+// missing defaults to 'drop'
+$result = Phit\fit_ols_matrix(
+    x: $x,
+    y: $y,
+    intercept: false,
+);
 ```
 
 The executable harness uses `y ~ . - 1` in R with the explicit design columns to avoid inserting a second intercept. It calculates centered/uncentered R-squared explicitly because that formula is syntactically no-intercept even when the supplied matrix contains ones. All other quantities come from R's fitted model. This makes the same runner work for multiple and no-intercept designs.
@@ -70,7 +75,7 @@ display(pd.DataFrame([{ 'implementation': name, **{key: simple_result[name][key]
 
 ## Automated agreement, including row deletion
 
-The runner compares all statistical fields using `abs(actual-reference) <= 1e-9 + 1e-7*abs(reference)` and checks retained sample counts and row positions separately. It covers simple, multiple, correlated full-rank, and no-intercept cases. The missing-data case drops one predictor-missing row and one outcome-missing row: both implementations must use the same four observations. No warning text is silently lost: PHP warnings are captured and shown below.
+The runner compares all statistical fields using `abs(actual-reference) <= 1e-9 + 1e-7*abs(reference)` and checks retained sample counts and row positions separately. It covers simple, multiple, correlated full-rank, and no-intercept cases. The missing-data case drops one predictor-missing row and one outcome-missing row: every implementation must use the same four observations. PHP's warning is captured and shown below.
 
 R's explicit `na.omit` and statsmodels' explicit `missing='drop'` select complete cases. They do not imply that all libraries warn on deletion by default. PHP deliberately emits a warning and returns metadata.
 
@@ -90,10 +95,10 @@ print('PHP warning:', missing['warnings'][0]['message'])
 print('All three implementations agree for every case and checked field.')
 ```
 
-## Read the limits of this evidence
+## Limits
 
-The harness deliberately excludes perfect and zero fits from three-way finite comparisons: floating-point residuals can differ dramatically relative to their tiny magnitudes, and some inference is undefined. The Rust/PHP test suites cover those conventions separately. We also deliberately reject singular designs instead of asking each reference implementation to make its own aliasing decisions.
+The harness excludes perfect and zero fits from three-way finite comparisons: floating-point residuals can differ dramatically relative to their tiny magnitudes, and some inference is undefined. The Rust/PHP test suites cover those conventions separately. phit rejects singular designs, so they are not compared with references that alias coefficients.
 
-The tolerance includes an absolute floor; it does not promise relative accuracy for extremely small p-values. This notebook verifies these deterministic cases in the recorded environment, not every possible dataset or platform. See [verification policy](../verification.qmd) for coverage and fixture maintenance.
+The tolerance includes an absolute floor; it does not promise relative accuracy for extremely small p-values. This notebook verifies these cases in the recorded environment, not every dataset or platform. See [Verification](../verification.qmd) for coverage and fixture maintenance.
 
 Sources: [R lm](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html), [statsmodels OLS](https://www.statsmodels.org/stable/generated/statsmodels.regression.linear_model.OLS.html), [statsmodels missing-data behavior](https://www.statsmodels.org/stable/missing.html).

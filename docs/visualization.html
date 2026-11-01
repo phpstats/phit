@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -673,7 +674,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Documentation figures use <strong>R and ggplot2</strong>, with one shared theme in <code>figures/style.R</code> and explicit figure jobs in <code>figures/render.R</code>. Rust/PHP estimation has no graphics or R dependency. The .qmd walkthroughs still use Python for matrices and independent verification; a small bridge passes computed points to R for drawing. No ipynb files are maintained as documentation sources.</p>
+<p>Documentation figures are drawn with <strong>R and ggplot2</strong>, from one shared theme in <code>figures/style.R</code> and the figure jobs in <code>figures/render.R</code>. The walkthroughs compute with Python and pass the points to R for drawing. The extension itself has no graphics or R dependency.</p>
 <section id="visual-conventions" class="level2">
 <h2 class="anchored" data-anchor-id="visual-conventions">Visual conventions</h2>
 <ul>
@@ -685,7 +686,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Log scales are explicit and reserved for quantities spanning orders of magnitude, such as integration errors. The 1e-13 display floor in the quadrature-error plot is disclosed; it never changes stored numerical measurements.</li>
 <li>Error-versus-reference figures use a zero reference line and label any unit multiplier. Agreement plots are not residual or model-adequacy diagnostics.</li>
 </ul>
-<p>These conventions use ggplot2’s <a href="https://ggplot2.tidyverse.org/reference/theme.html">shared themes</a> and <a href="https://ggplot2.tidyverse.org/reference/ggsave.html">explicit export controls</a>. Each figure is saved as selectable-text <strong>SVG</strong> and a <strong>160-dpi PNG</strong>, with fixed dimensions recorded in the <a href="figures/manifest.json">figure manifest</a>. Font family is generic sans-serif; the resolved font can differ across platforms.</p>
+<p>Each figure is saved as an <strong>SVG</strong> with selectable text and a <strong>160-dpi PNG</strong>, at fixed dimensions recorded in the <a href="figures/manifest.json">figure manifest</a>. The font family is generic sans-serif, so the resolved font can differ across platforms. The conventions use ggplot2’s <a href="https://ggplot2.tidyverse.org/reference/theme.html">themes</a> and <a href="https://ggplot2.tidyverse.org/reference/ggsave.html">export controls</a>.</p>
 </section>
 <section id="generate-figures-without-running-fits-or-benchmarks" class="level2">
 <h2 class="anchored" data-anchor-id="generate-figures-without-running-fits-or-benchmarks">Generate figures without running fits or benchmarks</h2>
@@ -699,14 +700,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> docs/figures/render.R approximation</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> docs/figures/render.R sleepstudy</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/render-docs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The renderer reads saved benchmark/reference reports and notebook-exported points in <code>figures/data/</code>. It does not call estimators, regenerate reference fixtures or run timed workers. A changed numerical report requires refreshed plots; unchanged measurements should not be retimed for a style change.</p>
-<p>The <a href="figures/manifest.json">manifest</a> records each input path/content MD5, image hashes, dimensions, renderer/theme hashes, R version, platform and direct package versions. <a href="figures/r-packages.json">The R package record</a> also records installed transitive dependency versions. These are the versions used for the saved figures; installing another version is not a claim of byte-identical reproduction. Data/report provenance remains in its original statistical verification records.</p>
-<p>Mathematical profile and posterior plots use points exported by the executable walkthroughs, preserving the visible calculations. Re-executing those .qmd pages updates their small JSON point snapshots and figures. Other figures read existing result reports. Jupyter embeds SVGs with namespaced clip IDs so figures on the same page do not interfere with each other.</p>
-<p>Ordinary website rendering reuses frozen outputs and saved images. Neither R nor Python is required to browse the committed HTML. Re-executing computational notebooks still requires the <a href="./documentation.html">documentation environment</a>.</p>
+<ul>
+<li>The renderer reads saved benchmark and reference reports and the points in <code>figures/data/</code>. It does not call estimators, regenerate fixtures, or run timings. Refresh the plots when a numerical report changes; a style change does not need new timings.</li>
+<li>Profile and posterior plots use points exported by the executable walkthroughs. Re-executing those pages updates their JSON point snapshots and figures.</li>
+<li>SVGs are embedded with namespaced clip IDs, so figures on one page do not interfere.</li>
+<li>An ordinary site render reuses frozen outputs and saved images. Re-executing the computational notebooks needs the <a href="./documentation.html">documentation environment</a>.</li>
+</ul>
+<p>The <a href="figures/manifest.json">manifest</a> records each input’s path and MD5, the image hashes and dimensions, the renderer and theme hashes, the R version, the platform, and the direct package versions. <a href="figures/r-packages.json">The R package record</a> adds the transitive dependency versions. Other versions may not reproduce the figures byte for byte. The data’s provenance stays in the verification records.</p>
 </section>
 <section id="existing-figure-coverage" class="level2">
 <h2 class="anchored" data-anchor-id="existing-figure-coverage">Existing figure coverage</h2>
-<p>The common renderer covers all five fixed/Gaussian-intercept benchmarks, the logistic-mixed benchmark, v0.1 preservation comparisons, Gaussian likelihood profiles, published-data numerical agreement, sleepstudy random slopes, logistic-mixed integration error, node sensitivity and conditional posterior shape. SVG and PNG downloads are retained alongside their saved input records.</p>
+<p>The renderer draws:</p>
+<ul>
+<li>the five fixed-effect and Gaussian random-intercept benchmarks, and the binomial mixed-model benchmark</li>
+<li>the v0.1 comparisons with earlier results</li>
+<li>Gaussian likelihood profiles, published-data agreement, and sleepstudy random slopes</li>
+<li>binomial mixed-model integration error, node sensitivity, and conditional posterior shape</li>
+</ul>
+<p>SVG and PNG downloads are kept next to their input records.</p>
 
 
 </section>
