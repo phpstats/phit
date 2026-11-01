@@ -1,0 +1,29 @@
+---
+title: "Fit a mixed model to a Polars table and chart it"
+include-in-header: _phiz-scripts.html
+---
+
+This example reads a CSV file with Polars, fits test scores with a random intercept for each school using `fit_lmer()`, and charts each school's fitted line with phiz.
+
+Requires the phit extension ([Installation](../installation.qmd)), the phpolars extension ([phpolars installation](https://phpolars.phpstats.org/docs/deployment)), and phiz from Composer (`composer require phpstats/phiz`).
+
+## Data
+
+The data are 250 simulated students in 12 schools, in [`docs/data/schools.csv`](https://github.com/phpstats/phit/blob/main/docs/data/schools.csv). `score` is a test score in points, and `study_hours` is time spent studying, in hours. Save the file beside the script:
+
+```sh
+curl -O \
+  https://raw.githubusercontent.com/phpstats/phit/main/docs/data/schools.csv
+```
+
+{{< include _generated/polars-mixed-model.md >}}
+
+## Explanation
+
+The script has three steps.
+
+1. `scan_csv()` starts a lazy query, `select()` keeps three of the file's four columns, and `collect()` runs it. `toColumns()` copies the result into PHP arrays, one per column. `fit_lmer()` and `Plot::of()` both accept an object with `toColumns()` and would each call it themselves, so the script calls it once and passes the arrays to both.
+2. `fit_lmer()` fits `score ~ study_hours + (1 | school)` by REML, as `lme4::lmer()` does by default. Within a school, each additional study hour is associated with a score about 2.3 points higher. School intercepts vary with a standard deviation of about 4.6 points around the average of 56.5 at zero hours. `fitted` holds the conditional fitted values, which include each school's random intercept.
+3. phiz draws every student as a point and joins each school's fitted values into a line. The model gives every school the same slope, so the twelve lines are parallel and differ only by their intercepts. The script saves the chart as a standalone page, `schools.html`.
+
+See [Fit a mixed model](mixed-model.qmd) for reading the variance components and school effects, [Mixed models](../mixed-models.qmd) for the supported structures, phpolars' [Getting started](https://phpolars.phpstats.org/docs/getting-started) for lazy queries, and phiz's [Get started](https://phiz.phpstats.org/docs/get-started) for layers and aesthetics.

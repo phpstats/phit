@@ -146,6 +146,23 @@ render to update its frozen content. For computational edits, rerun the affected
 output, and run the appropriate [Rust/PHP checks](verification.qmd). Saved
 results must never be mistaken for a new estimator test run.
 
+## Example pages with charts
+
+An example page that draws a chart includes `_generated/{name}.md`, which
+`scripts/docs-examples.php` writes from `docs/examples/scripts/{name}.php`. The
+script runs in an empty directory beside this checkout's `vendor/`, with the CSV
+files it names copied from `docs/data`. The generated file holds the script, its
+output, and its phiz chart. phiz is a Composer dev dependency for this purpose
+only. The scripts also need the phit and phpolars extensions:
+
+```sh
+composer install
+php -d extension=target/release/libphit.dylib \
+    -d extension=/path/to/libphp_polars.dylib scripts/docs-examples.php
+```
+
+Commit the generated files. Rendering the docs does not run the scripts.
+
 ## Standard figures
 
 All benchmark and notebook figures use the shared R/ggplot2 strategy in

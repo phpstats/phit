@@ -237,6 +237,7 @@ def manifest(benchmarks, verifications):
                 {'title': 'Fit logistic and Poisson models', 'path': 'examples/glm.qmd'},
                 {'title': 'Fit a mixed model', 'path': 'examples/mixed-model.qmd'},
                 {'title': 'Densities, quantiles, and random draws', 'path': 'examples/distributions.qmd'},
+                {'title': 'Fit a mixed model to a Polars table and chart it', 'path': 'examples/polars-mixed-model.qmd'},
                 {'title': 'API overview', 'path': 'contracts.qmd'},
                 {'title': 'R compatibility', 'path': 'r-compatibility.qmd'},
                 {'title': 'Verification', 'path': 'verification.qmd'},
@@ -254,6 +255,9 @@ def manifest(benchmarks, verifications):
              'description': 'Fits test scores with a random intercept per school and reads the fixed effects, variance components, and school effects.'},
             {'path': 'examples/distributions', 'title': 'Densities, quantiles, and random draws',
              'description': "Evaluates normal densities and quantiles, compares Student's t with the normal, and draws seeded samples."},
+            {'path': 'examples/polars-mixed-model', 'title': 'Fit a mixed model to a Polars table and chart it',
+             'description': "Reads a CSV file with phpolars, fits a random intercept per school with fit_lmer, and charts each school's fitted line with phiz.",
+             'also': ['phpolars', 'phiz']},
         ],
     }
 

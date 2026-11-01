@@ -285,6 +285,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Densities, quantiles, and random draws</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./examples/polars-mixed-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fit a mixed model to a Polars table and chart it</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -644,6 +650,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#recompute-each-models-notebooks" id="toc-recompute-each-models-notebooks" class="nav-link" data-scroll-target="#recompute-each-models-notebooks">Recompute each model’s notebooks</a></li>
   <li><a href="#writing-a-walkthrough" id="toc-writing-a-walkthrough" class="nav-link" data-scroll-target="#writing-a-walkthrough">Writing a walkthrough</a></li>
   <li><a href="#authoring-and-verification" id="toc-authoring-and-verification" class="nav-link" data-scroll-target="#authoring-and-verification">Authoring and verification</a></li>
+  <li><a href="#example-pages-with-charts" id="toc-example-pages-with-charts" class="nav-link" data-scroll-target="#example-pages-with-charts">Example pages with charts</a></li>
   <li><a href="#standard-figures" id="toc-standard-figures" class="nav-link" data-scroll-target="#standard-figures">Standard figures</a></li>
   <li><a href="#publish" id="toc-publish" class="nav-link" data-scroll-target="#publish">Publish</a></li>
   </ul>
@@ -739,18 +746,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Use relative links to .qmd pages so Quarto rewrites them to HTML links. Keep local reference data and scripts alongside the verification document. Each future implemented estimator should have a derivation walkthrough and equivalent-model verification evidence, following <a href="./notebooks/index.html">the notebook guide</a>.</p>
 <p>For prose-only pages, render the site and check navigation and local links. Any edit to a computational walkthrough (including prose) requires an individual page render to update its frozen content. For computational edits, rerun the affected pages and comparison scripts, inspect output, and run the appropriate <a href="./verification.html">Rust/PHP checks</a>. Saved results must never be mistaken for a new estimator test run.</p>
 </section>
+<section id="example-pages-with-charts" class="level2">
+<h2 class="anchored" data-anchor-id="example-pages-with-charts">Example pages with charts</h2>
+<p>An example page that draws a chart includes <code>_generated/{name}.md</code>, which <code>scripts/docs-examples.php</code> writes from <code>docs/examples/scripts/{name}.php</code>. The script runs in an empty directory beside this checkout’s <code>vendor/</code>, with the CSV files it names copied from <code>docs/data</code>. The generated file holds the script, its output, and its phiz chart. phiz is a Composer dev dependency for this purpose only. The scripts also need the phit and phpolars extensions:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">composer</span> install</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">php</span> <span class="at">-d</span> extension=target/release/libphit.dylib <span class="dt">\</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">-d</span> extension=/path/to/libphp_polars.dylib scripts/docs-examples.php</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Commit the generated files. Rendering the docs does not run the scripts.</p>
+</section>
 <section id="standard-figures" class="level2">
 <h2 class="anchored" data-anchor-id="standard-figures">Standard figures</h2>
 <p>All benchmark and notebook figures use the shared R/ggplot2 strategy in <a href="./visualization.html">Figure conventions</a>. SVG/PNG exports, fixed language ordering, colors/shapes, units, scale choices and input/package provenance use the same renderer. Python remains a numerical/verification notebook engine rather than a second drawing implementation. Matplotlib is not a documentation dependency.</p>
 <p>To refresh saved figures without estimating or timing anything:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> docs/figures/render.R <span class="at">--all</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/render-docs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> docs/figures/render.R <span class="at">--all</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/render-docs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The renderer uses saved reports and small notebook-exported point snapshots. Individual .qmd execution invokes the R renderer when appropriate. Saved images and frozen outputs support browsing/rendering without rerunning scientific checks.</p>
 </section>
 <section id="publish" class="level2">
 <h2 class="anchored" data-anchor-id="publish">Publish</h2>
 <p>phpstats.org imports the rendered HTML committed under <code>docs/</code>, and GitHub Pages serves the same directory at <a href="https://phpstats.github.io/phit/" class="uri">https://phpstats.github.io/phit/</a>. Neither runs Quarto. The site’s navigation is the sidebar in <code>docs/_quarto.yml</code>, so every page listed there needs its rendered HTML committed. After editing .qmd sources or refreshing frozen results, run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/render-docs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/render-docs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Commit the regenerated HTML/assets with their sources and push to main. <code>docs/.nojekyll</code> lets GitHub Pages serve the static Quarto website directly, including asset directories containing underscores. <code>quarto render docs</code> alone writes only <code>docs/_site/</code>; the script also copies the result into <code>docs/</code>.</p>
 
 

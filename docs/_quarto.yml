@@ -97,6 +97,7 @@ website:
           - examples/glm.qmd
           - examples/mixed-model.qmd
           - examples/distributions.qmd
+          - examples/polars-mixed-model.qmd
       - section: "Reference"
         contents:
           - contracts.qmd
