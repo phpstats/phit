@@ -17,6 +17,8 @@ import subprocess
 import tempfile
 import time
 
+from machine import extension as machine_extension, machine, memory_command, peak_memory
+
 ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('reference',ROOT/'tests/generate-rng-fixtures.py')
 reference = importlib.util.module_from_spec(spec);spec.loader.exec_module(reference)
@@ -49,22 +51,17 @@ def validate(result, case):
 
 def main():
     php = os.environ.get('PHP','php')
-    extension = ROOT/'target/release'/('libphit.dylib' if platform.system()=='Darwin' else 'libphit.so')
-    report = dict(recorded_at=datetime.now(timezone.utc).isoformat(),platform=platform.platform(),
+    extension = machine_extension()
+    report = dict(recorded_at=datetime.now(timezone.utc).isoformat(),**machine(),
         extension_sha256=hashlib.sha256(extension.read_bytes()).hexdigest(),seed=42,repeats=5,warmups=1,
         timing='Complete seeded batch call, including ChaCha initialization, inverse CDF and PHP result allocation; summaries/JSON excluded. Peak RSS covers the entire process.',
         verification='17 independent Python ChaCha/PCG/Open01 points mapped by R quantiles at 1e-15 + 1e-12 relative, plus full-vector mean/variance within eight theoretical standard errors.',cases=[])
     def worker(path,mode):
         command=[php,'-n','-d','memory_limit=-1','-d',f'extension={extension}',str(ROOT/'tests/benchmarks/rng.php'),str(path),mode,'5']
-        if platform.system()=='Darwin': command=['/usr/bin/time','-l',*command]
-        elif platform.system()=='Linux': command=['/usr/bin/time','-v',*command]
+        command=[*memory_command(),*command]
         start=time.perf_counter();done=subprocess.run(command,capture_output=True,text=True,check=True)
         result=json.loads(done.stdout);result['process_seconds']=time.perf_counter()-start
-        match=re.search(r'(\d+)\s+maximum resident set size',done.stderr)
-        if match: result['peak_rss_bytes']=int(match[1])
-        else:
-            match=re.search(r'Maximum resident set size \(kbytes\):\s*(\d+)',done.stderr)
-            result['peak_rss_bytes']=int(match[1])*1024 if match else None
+        result.update(peak_memory(done.stderr))
         return result
     with tempfile.TemporaryDirectory(prefix='rng-bench-',dir=ROOT/'.context') as directory:
         directory=Path(directory);r_cases=[];paths=[]

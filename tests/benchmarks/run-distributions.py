@@ -3,7 +3,7 @@
 
 Build: cargo build -p phit --release --locked
        cargo build -p stats-core --release --locked --example distribution_bench
-Run: PHP=/opt/homebrew/bin/php .context/v02/python/bin/python tests/benchmarks/run-distributions.py
+Run: PHP=$(command -v php) python3 tests/benchmarks/run-distributions.py
 """
 import argparse
 from contextlib import redirect_stdout
@@ -23,6 +23,8 @@ import tempfile
 import time
 import numpy as np
 import scipy
+
+from machine import extension as machine_extension, machine, memory_command, peak_memory
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
@@ -79,22 +81,14 @@ def agreement(actual, reference, op, implementation):
 
 
 def worker(command, env, timed):
-    if platform.system() == 'Darwin':
-        command = ['/usr/bin/time', '-l', *command]
-    elif platform.system() == 'Linux' and Path('/usr/bin/time').exists():
-        command = ['/usr/bin/time', '-v', *command]
+    command = [*memory_command(), *command]
     start = time.perf_counter()
     completed = subprocess.run(command, env=env, capture_output=True, text=True, timeout=1200)
     if completed.returncode:
         raise RuntimeError(f'{command}: {completed.stderr}\n{completed.stdout}')
     result = json.loads(completed.stdout)
     result['process_seconds'] = time.perf_counter()-start
-    match = re.search(r'(\d+)\s+maximum resident set size', completed.stderr)
-    if match:
-        result['peak_rss_bytes'] = int(match[1])
-    else:
-        match = re.search(r'Maximum resident set size \(kbytes\):\s*(\d+)', completed.stderr)
-        result['peak_rss_bytes'] = int(match[1])*1024 if match else None
+    result.update(peak_memory(completed.stderr))
     if timed:
         assert all(t > 0 for t in result['seconds']), 'increase small-case batching for timer resolution'
         result['median_seconds'] = statistics.median(result['seconds'])
@@ -115,8 +109,7 @@ def main():
     if min(sizes) < 2 or args.repeats < 3 or any(op not in OPERATIONS for op in operations):
         parser.error('sizes >= 2, repeats >= 3 and known operations required')
     php = os.environ.get('PHP', 'php')
-    extension = Path(os.environ.get('STATS_EXTENSION', ROOT/'target/release'/
-                     ('libphit.dylib' if platform.system() == 'Darwin' else 'libphit.so'))).resolve()
+    extension = machine_extension()
     native = ROOT/'target/release/examples/distribution_bench'
     if not extension.is_file() or not native.is_file():
         parser.error('Build the release extension and distribution_bench example first')
@@ -128,7 +121,7 @@ def main():
     config = io.StringIO()
     with redirect_stdout(config):
         np.show_config()
-    report = dict(recorded_at=datetime.now(timezone.utc).isoformat(), platform=platform.platform(),
+    report = dict(recorded_at=datetime.now(timezone.utc).isoformat(), **machine(),
         python=platform.python_version(), numpy=np.__version__, scipy=scipy.__version__, numpy_config=config.getvalue(),
         rust=subprocess.check_output(['rustc','--version'], text=True).strip(), thread_environment=THREADS,
         extension_sha256=hashlib.sha256(extension.read_bytes()).hexdigest(), rust_worker_sha256=hashlib.sha256(native.read_bytes()).hexdigest(),
@@ -136,8 +129,6 @@ def main():
         timing='Preloaded numeric inputs; complete output vector allocated and filled each call, including PHP input/output conversion and validation. Startup, JSON parsing and summaries excluded. Peak RSS and process time cover the entire timed worker.',
         verification='17 evenly spaced outputs plus min/max at fixture tolerances; all outputs consumed by sum and sum_squares at 1e-9 + 1e-10*abs(reference). Quantiles 1e-15 + 1e-12 relative; others 1e-300 + 1e-12 relative. Native agreement with R is required; SciPy discrepancies are explicitly recorded without relaxing the native gate. Independent mpmath fixtures separately adjudicate R disagreements.',
         cases=[])
-    if platform.system() == 'Darwin':
-        report['cpu'] = subprocess.check_output(['sysctl','-n','machdep.cpu.brand_string'], text=True).strip()
     report['complete'] = False
     previous = {}
     if args.resume and args.output.exists():

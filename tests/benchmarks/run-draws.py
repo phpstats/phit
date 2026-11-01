@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Verify full outputs against R before API-level release timings (no NumPy).
 
-Usage: PHP=/opt/homebrew/bin/php python3 tests/benchmarks/run-draws.py
+Usage: PHP=$(command -v php) python3 tests/benchmarks/run-draws.py
 Development reference dependency: R + jsonlite. No extension runtime dependency.
 """
 import argparse
@@ -16,6 +16,8 @@ import random
 import statistics
 import subprocess
 import tempfile
+
+from machine import extension as machine_extension, machine
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
@@ -80,8 +82,7 @@ def main():
         parser.error('--repeats must be at least 2')
     php = os.environ.get('PHP', 'php')
     rscript = os.environ.get('RSCRIPT', 'Rscript')
-    extension = os.environ.get('STATS_EXTENSION', str(ROOT/'target/release'/
-                       ('libphit.dylib' if platform.system() == 'Darwin' else 'libphit.so')))
+    extension = str(machine_extension())
     env = {**os.environ, **THREADS}
     commands = dict(PHP=[php, '-n', '-d', 'memory_limit=-1', '-d', f'extension={extension}', str(HERE/'draws.php')],
                     R=[rscript, str(HERE/'draws.R')])
@@ -91,15 +92,13 @@ def main():
                                 env=env, text=True, capture_output=True, check=True, timeout=600)
         return json.loads(result.stdout)
 
-    report = dict(recorded_at=datetime.now(timezone.utc).isoformat(), platform=platform.platform(),
-                  machine=platform.machine(), processor=platform.processor(), python=platform.python_version(),
+    report = dict(recorded_at=datetime.now(timezone.utc).isoformat(), **machine(),
+                  machine=platform.machine(), python=platform.python_version(),
                   rust=subprocess.check_output(['rustc', '--version'], text=True).strip(),
                   threads=THREADS, seed=20261012, repeats=args.repeats, warmups=1,
                   tolerance='1e-11 + 1e-11*abs(reference)', extension=extension,
                   boundaries='Preloaded inputs; complete result computation/materialization; PHP array conversion and native validation included. Startup, JSON I/O and reference comparisons excluded. Per-call seconds from batches.',
                   cases=[])
-    if platform.system() == 'Darwin':
-        report['cpu'] = subprocess.check_output(['sysctl', '-n', 'machdep.cpu.brand_string'], text=True).strip()
     with tempfile.TemporaryDirectory(prefix='phit-draw-bench-') as directory:
         paths = []
         for n, p in [(1000, 4), (4000, 16), (10000, 32), (100000, 8)]:

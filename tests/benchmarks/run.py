@@ -7,7 +7,6 @@ import json
 import os
 from pathlib import Path
 import platform
-import re
 import statistics
 import subprocess
 import sys
@@ -16,6 +15,8 @@ import time
 from contextlib import redirect_stdout
 
 import numpy as np
+
+from machine import extension as machine_extension, machine, memory_command, peak_memory
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
@@ -88,23 +89,15 @@ def dataset(n, p, path, model):
 
 
 def worker(command, env):
-    # Peak RSS covers the whole process, not just the fit, in bytes on macOS.
-    if sys.platform == 'darwin':
-        command = ['/usr/bin/time', '-l', *command]
-    elif sys.platform.startswith('linux') and Path('/usr/bin/time').exists():
-        command = ['/usr/bin/time', '-v', *command]
+    # Memory covers the whole process, not just the fit.
+    command = [*memory_command(), *command]
     start = time.perf_counter()
     completed = subprocess.run(command, env=env, capture_output=True, text=True,
                                timeout=600, check=True)
     elapsed = time.perf_counter() - start
     result = json.loads(completed.stdout)
-    peak = re.search(r'(\d+)\s+maximum resident set size', completed.stderr)
-    if peak:
-        peak_bytes = int(peak[1])
-    else:
-        peak = re.search(r'Maximum resident set size \(kbytes\):\s*(\d+)', completed.stderr)
-        peak_bytes = int(peak[1]) * 1024 if peak else None
-    result.update(process_seconds=elapsed, peak_rss_bytes=peak_bytes,
+    result.update(peak_memory(completed.stderr))
+    result.update(process_seconds=elapsed,
                   median_fit_seconds=statistics.median(result['fit_seconds']),
                   min_fit_seconds=min(result['fit_seconds']))
     return result
@@ -125,30 +118,15 @@ def main():
     cases = [tuple(map(int, value.split(':'))) for value in args.cases.split(',')]
     if any(p < 3 or n <= p for n, p in cases):
         parser.error('Require n > p >= 3')
-    suffix = '.dylib' if sys.platform == 'darwin' else '.so'
-    extension = Path(os.environ.get('STATS_EXTENSION', ROOT / f'target/release/libphit{suffix}')).resolve()
+    extension = machine_extension()
     if not extension.is_file():
         raise FileNotFoundError(f'Build the RELEASE extension first: {extension}')
     env = {**os.environ, **THREAD_ENV}
     config = io.StringIO()
     with redirect_stdout(config):
         np.show_config()
-    cpu = platform.processor()
-    memory = None
-    if sys.platform == 'darwin':
-        cpu = subprocess.check_output(['sysctl', '-n', 'machdep.cpu.brand_string'], text=True).strip()
-        memory = int(subprocess.check_output(['sysctl', '-n', 'hw.memsize'], text=True))
-    native_symbols = {}
-    if sys.platform == 'darwin':
-        from numpy.linalg import _umath_linalg
-        for name, library in [('extension', extension), ('numpy', _umath_linalg.__file__)]:
-            symbols = subprocess.check_output(['nm', '-u', str(library)], text=True)
-            native_symbols[name] = [line.strip() for line in symbols.splitlines() if 'gesdd' in line]
     report = {'recorded_at': datetime.now(timezone.utc).isoformat(),
-              'backend_label': 'nalgebra',
-              'model': args.model,
-              'lapack_symbols': native_symbols,
-              'platform': platform.platform(), 'cpu': cpu, 'host_memory_bytes': memory,
+              'model': args.model, **machine(),
               'python': platform.python_version(), 'numpy_config': config.getvalue(),
               'thread_environment': THREAD_ENV, 'repeats': args.repeats, 'warmups': 1,
               'extension_sha256': hashlib.sha256(extension.read_bytes()).hexdigest(),

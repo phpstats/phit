@@ -5,17 +5,15 @@ from pathlib import Path
 import numpy as np
 from scipy.special import expit
 from run import worker,THREAD_ENV
+from machine import extension as machine_extension,machine
 ROOT=Path(__file__).resolve().parents[2];HERE=Path(__file__).resolve().parent
 parser=argparse.ArgumentParser();parser.add_argument('--sizes',default='1000,10000,100000');parser.add_argument('--repeats',type=int,default=3);args=parser.parse_args()
 if args.repeats<1:parser.error('repeats must be positive')
-php=os.environ.get('PHP','/opt/homebrew/bin/php' if Path('/opt/homebrew/bin/php').exists() else 'php');ext=Path(os.environ.get('STATS_EXTENSION',ROOT/'target/release'/('libphit.dylib' if platform.system()=='Darwin' else 'libphit.so')))
-env={**os.environ,**THREAD_ENV};report=dict(recorded_at=datetime.now(timezone.utc).isoformat(),platform=platform.platform(),
+php=os.environ.get('PHP','php');ext=machine_extension()
+env={**os.environ,**THREAD_ENV};report=dict(recorded_at=datetime.now(timezone.utc).isoformat(),**machine(),
  model='binomial logit, one random intercept, Laplace',repeats=args.repeats,warmups=1,thread_environment=THREAD_ENV,
  extension_sha256=hashlib.sha256(ext.read_bytes()).hexdigest(),python_reference='Independent SciPy likelihood/optimizer; not BinomialBayesMixedGLM',
  tolerances=dict(estimates=dict(absolute=2e-5,relative=2e-4),inference=dict(absolute=2e-5,relative=2e-3),likelihood=dict(absolute=1e-6,relative=1e-8)),R_controls=dict(optimizer='bobyqa',tolPwrss=1e-12,initial_calc_derivs=False,restart_calc_derivs=True,restart_rhobeg=.001,rhoend=1e-9,restart_nAGQ0initStep=False),cases=[])
-if platform.system()=='Darwin':
- report['cpu']=subprocess.check_output(['sysctl','-n','machdep.cpu.brand_string'],text=True).strip()
- report['host_memory_bytes']=int(subprocess.check_output(['sysctl','-n','hw.memsize'],text=True))
 report['tolerances']['random_effects_absolute']=5e-5
 report['rust']=subprocess.check_output(['rustc','--version'],text=True).strip()
 with tempfile.TemporaryDirectory(dir=ROOT/'.context',prefix='logistic-mixed-benchmark-') as tmp:
@@ -24,7 +22,7 @@ with tempfile.TemporaryDirectory(dir=ROOT/'.context',prefix='logistic-mixed-benc
   rng=np.random.default_rng(20261011);G=50;g=np.arange(n)%G;study=rng.uniform(1,12,n);practice=.6*study+rng.normal(0,2,n)
   x=np.column_stack((np.ones(n),study,practice));beta=np.array([-2.,.2,.1]);effects=rng.normal(0,1,G);y=rng.binomial(1,expit(x@beta+effects[g]))
   path=Path(tmp)/'data.csv';np.savetxt(path,np.column_stack((y,g,x)),delimiter=',',fmt='%.17g',header='y,group,x0,x1,x2',comments='')
-  results={};commands={'R':['Rscript',str(HERE/'logistic-mixed.R')], 'SciPy reference':[sys.executable,str(HERE/'logistic-mixed.py')],
+  results={};commands={'R':[os.environ.get('RSCRIPT','Rscript'),str(HERE/'logistic-mixed.R')], 'SciPy reference':[sys.executable,str(HERE/'logistic-mixed.py')],
    'PHP':[php,'-n','-d','memory_limit=-1','-d',f'extension={ext}',str(HERE/'logistic-mixed.php')]}
   for label,command in commands.items():
    print(n,label,flush=True);results[label]=worker([*command,str(path),str(args.repeats)],env)
