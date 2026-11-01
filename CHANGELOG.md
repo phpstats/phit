@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.4
 
 The listwise-deletion warning names the function once. PHP already prefixes
 the message with the function, so it now reads `Phit\fit_ols(): dropped 1 of 10
