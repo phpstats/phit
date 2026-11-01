@@ -392,7 +392,7 @@ For `(1 + slope | group)`, supply z columns `[1, slope]`; for independent interc
 and slope use the same z with `correlated: false`. Multiple terms are independent
 of one another. Repeated labels across terms do not connect their random effects.
 For nested groups, supply explicit identifiers for each parent and parent/child
-combination. There is no two-level limit: supply three, four or more random terms within the documented dense-design limits. Groups and output ordering follow first appearance after deletion;
+combination. There is no two-level limit: supply three, four or more random terms. Crossed designs are subject to the dense limits below. Groups and output ordering follow first appearance after deletion;
 integer 1 and string "1" remain distinct.
 
 ```php
@@ -436,9 +436,15 @@ fixed effects, as in lme4. It uses the REML or ML sigma according to `method`.
 Blocks between different terms are not returned. A zero relative factor gives a
 zero block. lme4 splits `(x || g)` into one-column terms and reports only the
 diagonal; here the term is one block, so its off-diagonal conditional covariances
-are also returned. Dense limits
-are q≤512 random coefficients and n(q+p+1)≤50,000,000 entries; exceeding them fails
-explicitly. The existing `fit_mixed_gaussian_intercept_matrix` remains the faster random-intercept ML path.
+are also returned.
+
+The random-effect columns that share rows form independent blocks: one block per
+group for a single grouping term, and one per outermost group for nested terms.
+Each block is compressed by its own QR factorization, and each likelihood
+evaluation factors the small blocks separately, so the cost grows linearly with
+the number of rows and of groups. Crossed terms usually connect every column into
+one block. That design uses a dense QR summary, limited to q≤512 random
+coefficients and n(q+p+1)≤50,000,000 entries; exceeding them fails explicitly. The existing `fit_mixed_gaussian_intercept_matrix` remains the faster random-intercept ML path.
 
 The result contains:
 

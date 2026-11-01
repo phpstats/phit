@@ -113,8 +113,18 @@ struct TermData {
     // (row, column, global theta index), in lme4's lower-triangle order.
     parameters: Vec<(usize, usize, usize)>,
 }
+/// The random-effect columns that share rows with each other (a connected component of the design), and the
+/// QR summary of the weighted rows they appear in: [Z_block, X_scaled, y-offset]. One grouping term gives one
+/// block per group; nested terms give one per outer group.
+struct Block {
+    columns: Vec<usize>,
+    r: DMatrix<f64>,
+}
 struct Data {
-    r: DMatrix<f64>, // QR summary of weighted [Z, X_scaled, y-offset]
+    /// QR summary of weighted [Z, X_scaled, y-offset], when the design does not split into blocks.
+    r: DMatrix<f64>,
+    /// The design split into independent blocks, which each evaluation factors separately.
+    blocks: Option<Vec<Block>>,
     terms: Vec<TermData>,
     n: usize,
     p: usize,
@@ -136,6 +146,9 @@ impl Data {
         l
     }
     fn profile(&self, theta: &[f64]) -> Result<Profile, StatsError> {
+        if let Some(blocks) = &self.blocks {
+            return self.profile_blocks(blocks, theta);
+        }
         let lambda = self.lambda(theta);
         let u = self.r.columns(0, self.q) * &lambda;
         let nr = self.r.nrows();
@@ -171,6 +184,30 @@ impl Data {
         // QR compression retains residual directions, including components of y
         // perpendicular to both Z and X. Do not use y'y - beta'X'y subtraction.
         let q = (b - a * &solution).norm_squared();
+        let fixed_r = upper.view((self.q, self.q), (self.p, self.p)).into_owned();
+        let logdet_r = (0..self.q).map(|j| upper[(j, j)].abs().ln()).sum::<f64>();
+        self.finish(
+            solution,
+            q,
+            fixed_r,
+            logdet_r,
+            Random::Dense {
+                random_r: upper.view((0, 0), (self.q, self.q)).into_owned(),
+                lambda,
+            },
+        )
+    }
+
+    /// The profiled objective from the penalized least-squares solution, its residual sum of squares, the fixed
+    /// block of the factor, and the log determinant of the random block's factor.
+    fn finish(
+        &self,
+        solution: DVector<f64>,
+        q: f64,
+        fixed_r: DMatrix<f64>,
+        logdet_r: f64,
+        random: Random,
+    ) -> Result<Profile, StatsError> {
         let df = self.n - if self.reml { self.p } else { 0 };
         let variance = q / df as f64;
         if !variance.is_finite() || variance <= 0.0 {
@@ -179,7 +216,6 @@ impl Data {
                 "no positive finite residual variance",
             ));
         }
-        let fixed_r = upper.view((self.q, self.q), (self.p, self.p)).into_owned();
         let svd = fixed_r.clone().svd(false, false);
         let cutoff = f64::EPSILON * self.n.max(self.p) as f64 * svd.singular_values[0];
         if svd
@@ -193,8 +229,7 @@ impl Data {
             ));
         }
         // The random block of R satisfies R_U'R_U=I+U'U.
-        let logdet_v =
-            2.0 * (0..self.q).map(|j| upper[(j, j)].abs().ln()).sum::<f64>() - self.log_weights;
+        let logdet_v = 2.0 * logdet_r - self.log_weights;
         let logdet_x = if self.reml {
             2.0 * ((0..self.p).map(|j| fixed_r[(j, j)].abs().ln()).sum::<f64>()
                 + self.scales.iter().map(|s| s.ln()).sum::<f64>())
@@ -213,12 +248,108 @@ impl Data {
         }
         Ok(Profile {
             solution,
-            random_r: upper.view((0, 0), (self.q, self.q)).into_owned(),
             fixed_r,
             variance,
             objective,
-            lambda,
+            random,
         })
+    }
+
+    /// One block's Λ: each term-group's k x k factor at that group's columns.
+    fn block_lambda(&self, columns: &[usize], theta: &[f64]) -> DMatrix<f64> {
+        let m = columns.len();
+        let mut l = DMatrix::zeros(m, m);
+        let local: HashMap<usize, usize> =
+            columns.iter().enumerate().map(|(i, &c)| (c, i)).collect();
+        for term in &self.terms {
+            for &c in columns {
+                if c < term.base
+                    || c >= term.base + term.k * term.ids.len()
+                    || (c - term.base) % term.k != 0
+                {
+                    continue;
+                }
+                for &(i, j, t) in &term.parameters {
+                    l[(local[&(c + i)], local[&(c + j)])] = theta[t];
+                }
+            }
+        }
+        l
+    }
+
+    /// The profile for a design that splits into blocks. Each block's rows [R_Z Λ, R_X, R_y; I, 0, 0] are
+    /// factored on their own; the rows left after eliminating the block's random columns are stacked and
+    /// factored for the fixed effects. The quadratic forms are the dense profile's, so the objective and
+    /// estimates agree with it to rounding.
+    fn profile_blocks(&self, blocks: &[Block], theta: &[f64]) -> Result<Profile, StatsError> {
+        let fixed_columns = self.p + 1;
+        let mut factors = Vec::with_capacity(blocks.len());
+        let mut rest_rows = 0;
+        let mut parts = Vec::with_capacity(blocks.len());
+        for block in blocks {
+            let m = block.columns.len();
+            let lambda = self.block_lambda(&block.columns, theta);
+            let rows = block.r.nrows();
+            let mut a = DMatrix::zeros(rows + m, m + fixed_columns);
+            a.view_mut((0, 0), (rows, m))
+                .copy_from(&(block.r.columns(0, m) * &lambda));
+            a.view_mut((0, m), (rows, fixed_columns))
+                .copy_from(&block.r.columns(m, fixed_columns));
+            for j in 0..m {
+                a[(rows + j, j)] = 1.0;
+            }
+            let r = a.qr().unpack_r();
+            let kept = r.nrows();
+            rest_rows += kept - m;
+            parts.push(r.view((m, m), (kept - m, fixed_columns)).into_owned());
+            factors.push((r, lambda));
+        }
+        let mut stacked = DMatrix::zeros(rest_rows, fixed_columns);
+        let mut at = 0;
+        for part in &parts {
+            stacked
+                .view_mut((at, 0), (part.nrows(), fixed_columns))
+                .copy_from(part);
+            at += part.nrows();
+        }
+        let fixed = stacked.qr().unpack_r();
+        if fixed.nrows() < fixed_columns {
+            return Err(err(
+                ErrorKind::InvalidInput,
+                "no positive finite residual variance",
+            ));
+        }
+        let fixed_r = fixed.view((0, 0), (self.p, self.p)).into_owned();
+        let beta = fixed_r
+            .solve_upper_triangular(&fixed.view((0, self.p), (self.p, 1)).into_owned())
+            .ok_or_else(|| {
+                err(
+                    ErrorKind::RankDeficiency,
+                    "mixed-model fixed design is rank deficient",
+                )
+            })?;
+        let rss = fixed[(self.p, self.p)].powi(2);
+        let mut solution = DVector::zeros(self.q + self.p);
+        solution.rows_mut(self.q, self.p).copy_from(&beta.column(0));
+        let mut logdet_r = 0.0;
+        let mut random = Vec::with_capacity(blocks.len());
+        for (block, (r, lambda)) in blocks.iter().zip(factors) {
+            let m = block.columns.len();
+            let l = r.view((0, 0), (m, m)).into_owned();
+            let rhs = r.view((0, m + self.p), (m, 1)) - r.view((0, m), (m, self.p)) * &beta;
+            let u = l.solve_upper_triangular(&rhs).ok_or_else(|| {
+                err(
+                    ErrorKind::FactorizationFailure,
+                    "cannot solve random-effect block",
+                )
+            })?;
+            for (i, &c) in block.columns.iter().enumerate() {
+                solution[c] = u[(i, 0)];
+            }
+            logdet_r += (0..m).map(|j| l[(j, j)].abs().ln()).sum::<f64>();
+            random.push((l, lambda));
+        }
+        self.finish(solution, rss, fixed_r, logdet_r, Random::Blocks(random))
     }
 }
 // Internal adapter only: the statistical API remains specific to Gaussian fits.
@@ -252,14 +383,21 @@ impl CostFunction for SimplexObjective<'_> {
     }
 }
 
+/// The random-effect factor: R_11 with R_11'R_11 = Λ'Z'WZΛ + I (the penalized random-effect block), and Λ.
+enum Random {
+    Dense {
+        random_r: DMatrix<f64>,
+        lambda: DMatrix<f64>,
+    },
+    /// Per block, in Data::blocks order: its R_11 block and its Λ block.
+    Blocks(Vec<(DMatrix<f64>, DMatrix<f64>)>),
+}
 struct Profile {
     solution: DVector<f64>,
-    // R_11 with R_11'R_11 = Λ'Z'WZΛ + I (the penalized random-effect block).
-    random_r: DMatrix<f64>,
     fixed_r: DMatrix<f64>,
     variance: f64,
     objective: f64,
-    lambda: DMatrix<f64>,
+    random: Random,
 }
 
 /// Fit Gaussian random intercepts/slopes, crossed/nested explicit grouping terms,
@@ -389,9 +527,48 @@ pub fn fit_lmm(
             )
             .ok_or_else(|| err(ErrorKind::Unsupported, "random design too large"))?;
     }
-    // This first general implementation uses a dense square-root summary, not
-    // lme4's sparse Cholesky. Fail explicitly rather than allocate unbounded memory.
-    if q > 512 || n.checked_mul(q + p + 1).is_none_or(|s| s > 50_000_000) {
+    // Random-effect columns that share a row are connected; each connected set of columns, with the rows they
+    // appear in, is a block that the penalized least-squares problem can factor on its own. One grouping term
+    // has a block per group and nested terms a block per outer group. Crossed terms usually connect everything
+    // into one block, which uses the dense summary below.
+    let mut parent: Vec<usize> = (0..q).collect();
+    fn root(parent: &mut [usize], mut c: usize) -> usize {
+        while parent[c] != c {
+            parent[c] = parent[parent[c]];
+            c = parent[c];
+        }
+        c
+    }
+    let row_columns = |i: usize| {
+        metadata
+            .iter()
+            .flat_map(move |m| (0..m.k).map(move |j| m.base + m.indices[i] * m.k + j))
+    };
+    for i in 0..n {
+        let mut columns = row_columns(i);
+        let first = columns.next().expect("each row has a random column");
+        for c in columns {
+            let (a, b) = (root(&mut parent, first), root(&mut parent, c));
+            if a != b {
+                parent[a.max(b)] = a.min(b);
+            }
+        }
+    }
+    let mut block_of = vec![usize::MAX; q];
+    let mut block_columns: Vec<Vec<usize>> = Vec::new();
+    for c in 0..q {
+        let r = root(&mut parent, c);
+        if block_of[r] == usize::MAX {
+            block_of[r] = block_columns.len();
+            block_columns.push(Vec::new());
+        }
+        block_of[c] = block_of[r];
+        block_columns[block_of[c]].push(c);
+    }
+    let blocked = block_columns.len() > 1;
+    // The dense summary is the general fallback; it is not lme4's sparse Cholesky. Fail explicitly rather than
+    // allocate unbounded memory.
+    if !blocked && (q > 512 || n.checked_mul(q + p + 1).is_none_or(|s| s > 50_000_000)) {
         return Err(err(
             ErrorKind::Unsupported,
             "general mixed-model dense design limit exceeded (q <= 512, n*(q+p+1) <= 50000000); use fit_mixed_intercept for large random-intercept fits",
@@ -412,8 +589,44 @@ pub fn fit_lmm(
             "fixed design is rank deficient or has invalid scale",
         ));
     }
-    let mut augmented = DMatrix::zeros(n, q + p + 1);
-    for i in 0..n {
+    let weighted_row = |i: usize, out: &mut dyn FnMut(usize, f64)| {
+        let w = weights[i].sqrt();
+        for (term, meta) in terms.iter().zip(&metadata) {
+            for j in 0..meta.k {
+                out(meta.base + meta.indices[i] * meta.k + j, w * term.z[i][j]);
+            }
+        }
+    };
+    let blocks = blocked.then(|| {
+        let mut rows: Vec<Vec<usize>> = vec![Vec::new(); block_columns.len()];
+        for i in 0..n {
+            rows[block_of[row_columns(i).next().expect("each row has a random column")]].push(i);
+        }
+        block_columns
+            .iter()
+            .zip(&rows)
+            .map(|(columns, rows)| {
+                let m = columns.len();
+                let local: HashMap<usize, usize> =
+                    columns.iter().enumerate().map(|(l, &c)| (c, l)).collect();
+                let mut a = DMatrix::zeros(rows.len(), m + p + 1);
+                for (r, &i) in rows.iter().enumerate() {
+                    weighted_row(i, &mut |c, v| a[(r, local[&c])] = v);
+                    let w = weights[i].sqrt();
+                    for j in 0..p {
+                        a[(r, m + j)] = w * design[(i, j)] / scales[j];
+                    }
+                    a[(r, m + p)] = w * (y[i] - offset[i]);
+                }
+                Block {
+                    columns: columns.clone(),
+                    r: a.qr().unpack_r(),
+                }
+            })
+            .collect::<Vec<_>>()
+    });
+    let mut augmented = DMatrix::zeros(if blocked { 0 } else { n }, q + p + 1);
+    for i in 0..augmented.nrows() {
         let w = weights[i].sqrt();
         for (term, meta) in terms.iter().zip(&metadata) {
             for j in 0..meta.k {
@@ -433,6 +646,7 @@ pub fn fit_lmm(
     }
     let data = Data {
         r: augmented.qr().unpack_r(),
+        blocks,
         terms: metadata,
         n,
         p,
@@ -584,7 +798,22 @@ pub fn fit_lmm(
     let normal = Normal::new(0.0, 1.0)
         .map_err(|_| err(ErrorKind::Internal, "invalid normal distribution"))?;
     let critical = normal.inverse_cdf(0.975);
-    let effects = &fit.lambda * fit.solution.rows(0, q);
+    let effects = match &fit.random {
+        Random::Dense { lambda, .. } => lambda * fit.solution.rows(0, q),
+        Random::Blocks(factors) => {
+            let mut effects = DVector::zeros(q);
+            for (block, (_, lambda)) in data.blocks.iter().flatten().zip(factors) {
+                let u = DVector::from_iterator(
+                    block.columns.len(),
+                    block.columns.iter().map(|&c| fit.solution[c]),
+                );
+                for (v, &c) in (lambda * u).iter().zip(&block.columns) {
+                    effects[c] = *v;
+                }
+            }
+            effects
+        }
+    };
     let fixed: Vec<f64> = (0..n)
         .map(|i| offset[i] + (0..p).map(|j| design[(i, j)] * beta[j]).sum::<f64>())
         .collect();
@@ -603,22 +832,52 @@ pub fn fit_lmm(
         })
         .collect();
     // lme4 condVar: sigma² Λ (L L')⁻¹ Λ' with L L' = Λ'Z'WZΛ + I at the final
-    // theta. With R_11'R_11 = L L', solve R_11' S = Λ' so the product is S'S.
-    let spread = fit
-        .random_r
-        .transpose()
-        .solve_lower_triangular(&fit.lambda.transpose())
-        .ok_or_else(|| {
-            err(
-                ErrorKind::FactorizationFailure,
-                "cannot solve random-effect conditional covariance factor",
-            )
-        })?;
+    // theta. With R_11'R_11 = L L', solve R_11' S = Λ' so the product is S'S. In blocks, R_11 and Λ are block
+    // diagonal, so each group's covariance comes from its block's S.
+    let spreads: Vec<(DMatrix<f64>, Vec<usize>)> = match &fit.random {
+        Random::Dense { random_r, lambda } => vec![(
+            random_r
+                .transpose()
+                .solve_lower_triangular(&lambda.transpose())
+                .ok_or_else(|| {
+                    err(
+                        ErrorKind::FactorizationFailure,
+                        "cannot solve random-effect conditional covariance factor",
+                    )
+                })?,
+            (0..q).collect(),
+        )],
+        Random::Blocks(factors) => data
+            .blocks
+            .iter()
+            .flatten()
+            .zip(factors)
+            .map(|(block, (l, lambda))| {
+                l.transpose()
+                    .solve_lower_triangular(&lambda.transpose())
+                    .map(|spread| (spread, block.columns.clone()))
+                    .ok_or_else(|| {
+                        err(
+                            ErrorKind::FactorizationFailure,
+                            "cannot solve random-effect conditional covariance factor",
+                        )
+                    })
+            })
+            .collect::<Result<_, _>>()?,
+    };
+    let mut spread_of = vec![(0usize, 0usize); q];
+    for (s, (_, columns)) in spreads.iter().enumerate() {
+        for (local, &c) in columns.iter().enumerate() {
+            spread_of[c] = (s, local);
+        }
+    }
     let cond_block = |base: usize, k: usize| -> Vec<Vec<f64>> {
+        let (s, first) = spread_of[base];
+        let spread = &spreads[s].0;
         (0..k)
             .map(|i| {
                 (0..k)
-                    .map(|j| fit.variance * spread.column(base + i).dot(&spread.column(base + j)))
+                    .map(|j| fit.variance * spread.column(first + i).dot(&spread.column(first + j)))
                     .collect()
             })
             .collect()

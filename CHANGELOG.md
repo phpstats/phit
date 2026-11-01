@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.4.3
+
+`fit_mixed_gaussian()` and `fit_mixed_gaussian_matrix()` scale linearly with the
+number of groups for single and nested grouping terms. The random-effect columns
+that share rows form independent blocks, one per group or outermost group, and
+each likelihood evaluation factors the blocks separately instead of one dense
+matrix. Crossed terms keep the dense path, and their results are unchanged.
+
+The objective is the same function, so results agree with 0.4.2 to rounding. On
+the lme4 fixtures, log-likelihoods differ by at most 2.1e-15 relative. Where the
+different rounding changes BOBYQA's path, coefficients move by at most 2.6e-8
+relative and random-effect estimates by at most 3e-6 (the near-flat four-level
+nested model). Every lme4 and statsmodels comparison passes at its existing
+tolerance. A random intercept on 20,000 rows took 182 ms with 200 groups and
+1,473 ms with 500 in 0.4.2, and takes 10 and 12 ms now. Single and nested
+designs are no longer limited to 512 random coefficients.
+
 ## 0.4.2
 
 `read_csv()` no longer holds the whole file while it reads it. It reads the

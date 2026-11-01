@@ -41,11 +41,13 @@ the estimator reuse experiment is recorded in the [v0.2 assessment](v0.2.qmd).
 
 The new mixed call is `fit_mixed_gaussian_matrix()`. The existing `fit_mixed_gaussian_intercept_matrix()` remains the
 optimized one-group random-intercept ML call used by the million-row benchmarks.
-The general implementation caches a **dense QR square-root summary** and then
-solves penalized least squares; it does not allocate an observation covariance
-matrix. It has explicit dense-design limits: at most 512 random coefficients and
-50,000,000 entries in the initial augmented matrix. This is not yet lme4's sparse
-implementation and has not been benchmarked on large general designs.
+The general implementation caches a QR square-root summary and then solves
+penalized least squares; it does not allocate an observation covariance matrix.
+Single and nested grouping terms split into independent blocks, one per group or
+outermost group, so their cost is linear in the rows and the groups. Crossed terms
+use a dense summary with explicit limits: at most 512 random coefficients and
+50,000,000 entries in the initial augmented matrix. lme4 uses a sparse Cholesky
+factor for every design, including crossed ones.
 
 An intercept-only OLS fit now reports R-squared and adjusted R-squared as zero,
 matching `summary.lm()`. Other undefined statistics retain their documented

@@ -100,20 +100,45 @@ fn underflow_is_not_an_ols_perfect_fit() {
 }
 #[test]
 fn dense_mixed_design_limit_is_checked_before_factorization() {
+    // Row 2k pairs group k of the first term with group k of the second, and row 2k + 1 with group k + 1, so every
+    // random column is connected: one block, which uses the dense summary and its limit.
+    let n = 1040;
+    let crossed = |groups: Vec<usize>| RandomTerm {
+        z: vec![vec![1.]; n],
+        groups,
+        correlated: false,
+    };
+    let e = fit_lmm(
+        vec![vec![1.]; n],
+        (0..n).map(|i| (i % 7) as f64).collect(),
+        vec![
+            crossed((0..n).map(|i| i / 2).collect()),
+            crossed((0..n).map(|i| i.div_ceil(2) % (n / 2)).collect()),
+        ],
+        Default::default(),
+    )
+    .unwrap_err();
+    assert_eq!(e.kind(), ErrorKind::Unsupported);
+}
+#[test]
+fn one_grouping_term_has_no_dense_limit() {
+    // 513 groups: past the dense limit, but one term splits into a block per group.
     let n = 1026;
     let term = RandomTerm {
         z: vec![vec![1.]; n],
         groups: (0..n).map(|i| i / 2).collect(),
         correlated: false,
     };
-    let e = fit_lmm(
+    let fit = fit_lmm(
         vec![vec![1.]; n],
-        (0..n).map(|i| (i % 7) as f64).collect(),
+        (0..n)
+            .map(|i| (i % 7) as f64 + (i / 2 % 5) as f64)
+            .collect(),
         vec![term],
         Default::default(),
     )
-    .unwrap_err();
-    assert_eq!(e.kind(), ErrorKind::Unsupported);
+    .unwrap();
+    assert_eq!(fit.terms[0].effects.len(), 513);
 }
 #[test]
 fn error_categories_are_independent_of_message_wording() {
