@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.1
+
+`read_csv()` and `CsvReader` share repeated strings within a column. A value
+repeated in a string column is now one PHP string, as phibble's PHP reader
+holds it, instead of one string per cell. The values returned do not change. A
+column stops sharing once more than half of its values are distinct (checked
+from 16,384 rows on), and it shares at most 65,536 distinct values.
+
+On a seeded 2,000,000-row orders file read with phibble's `fromCsv()`, the data
+frame's PHP heap fell from 505 to 225 MiB, the same as phibble's PHP reader.
+The peak memory footprint fell from 875 to 593 MiB. At 20,000,000 rows, the heap
+fell from 6,389 to 3,585 MiB and the peak footprint from 8,417 to 5,599 MiB.
+`bench/csv/memory.php` measures this.
+
 ## 0.4.0
 
 phit 0.4.0 renames the model functions. Numerical results do not change: each
