@@ -1,6 +1,6 @@
-"""Runs the model workload benchmarks and writes site/benchmarks/{ols,mixed}-workload.json.
+"""Runs the workload benchmarks and writes site/benchmarks/{workload}-workload.json.
 
-    python bench/run.py --polyfill /path/to/phit-polyfill [--workload ols|mixed|all] [--repeats 7]
+    python bench/run.py --polyfill /path/to/phit-polyfill [--workload NAME|all] [--repeats 7]
 
 Every run is a fresh process. Each implementation runs once as a warm-up, then the implementations alternate for
 --repeats rounds, in a rotated order each round. bench/README.md describes the method and the requirements.
@@ -23,28 +23,14 @@ DATA = ROOT / '.context' / 'bench-data'
 # One BLAS/OpenMP thread in every runtime; phit and the polyfill are single-threaded.
 THREADS = {name: '1' for name in ('OPENBLAS_NUM_THREADS', 'OMP_NUM_THREADS', 'MKL_NUM_THREADS',
                                   'VECLIB_MAXIMUM_THREADS', 'BLIS_NUM_THREADS')}
-IMPLEMENTATIONS = ['phit', 'phit-polyfill', 'R', 'statsmodels']
-LANGUAGES = {'phit': 'php', 'phit-polyfill': 'php', 'R': 'r', 'statsmodels': 'python'}
-
-# The timed part of each script, verbatim; run() checks that each script contains it.
-CODE = {
-    'ols': {
-        'phit': "$fit = fit_ols('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', $data);",
-        'R': 'fit <- lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10, data = d)\n  table <- coef(summary(fit))',
-        'statsmodels': "fit = smf.ols('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', data=d).fit()\n"
-                       "    coefficients, standard_errors = fit.params, fit.bse",
-    },
-    'mixed': {
-        'phit': "$fit = fit_mixed_gaussian('y ~ x1 + x2 + x3 + (1 | g)', $data);",
-        'R': 'fit <- lmer(y ~ x1 + x2 + x3 + (1 | g), data = d, REML = TRUE)\n  table <- coef(summary(fit))',
-        'statsmodels': "fit = smf.mixedlm('y ~ x1 + x2 + x3', d, groups=d['g']).fit(reml=True)\n"
-                       "    coefficients, standard_errors = fit.fe_params, fit.bse_fe",
-    },
-}
-SCRIPTS = {'phit': 'fit.php', 'phit-polyfill': 'fit.php', 'R': 'fit.R', 'statsmodels': 'fit.py'}
+LANGUAGES = {'phit': 'php', 'phit-polyfill': 'php', 'R': 'r', 'statsmodels': 'python', 'GPBoost': 'python',
+             'SciPy': 'python'}
+SCRIPTS = {'php': 'fit.php', 'r': 'fit.R', 'python': 'fit.py'}
 
 WORKLOADS = {
     'ols': {
+        'implementations': ['phit', 'phit-polyfill', 'R', 'statsmodels'],
+        'data': 'ols.csv',
         'title': 'OLS workload: phit, phit-polyfill, R and statsmodels',
         'description': 'Elapsed time and peak memory to fit a linear model by least squares from a formula, '
                        'with coefficients and standard errors, in the phit extension, phit-polyfill, R lm() and '
@@ -56,6 +42,8 @@ WORKLOADS = {
                        'the Moore-Penrose pseudoinverse by SVD.',
     },
     'mixed': {
+        'implementations': ['phit', 'phit-polyfill', 'R', 'statsmodels'],
+        'data': 'mixed.csv',
         'title': 'Gaussian mixed-model workload: phit, phit-polyfill, lme4 and statsmodels',
         'description': 'Elapsed time and peak memory to fit a Gaussian random-intercept model by REML from a '
                        'formula, with fixed-effect coefficients and standard errors, in the phit extension, '
@@ -70,17 +58,73 @@ WORKLOADS = {
                        'a different parameterization. The criteria differ, so iteration counts are not comparable, '
                        'and the fixed effects agree to the precision recorded in check.',
     },
+    'logistic': {
+        'implementations': ['phit', 'phit-polyfill', 'R', 'statsmodels'],
+        'data': 'binary.csv',
+        'title': 'Logistic regression workload: phit, phit-polyfill, R and statsmodels',
+        'description': 'Elapsed time and peak memory to fit a binomial logit model from a formula, with '
+                       'coefficients and standard errors, in the phit extension, phit-polyfill, R glm() and '
+                       'statsmodels Logit.',
+        'case': '1,000,000 rows, 10 predictors',
+        'workload': 'Logistic regression, 1,000,000 rows, 10 predictors, 0/1 response',
+        'convergence': 'phit and phit-polyfill: Newton/IRLS solved by column-scaled weighted SVD, starting at zero, '
+                       'until each scaled coefficient step is at most 1e-8 x (1 + |coefficient|) and the '
+                       'log-likelihood change at most 1e-10 x (1 + |log-likelihood|). R glm(): IRLS until the '
+                       'relative deviance change is below epsilon 1e-8, at most 25 iterations. statsmodels '
+                       'Logit.fit(method="newton"): Newton-Raphson until the parameter change is below tol 1e-8, at '
+                       'most 35 iterations.',
+    },
+    'probit': {
+        'implementations': ['phit', 'phit-polyfill', 'R', 'statsmodels'],
+        'data': 'binary.csv',
+        'title': 'Probit regression workload: phit, phit-polyfill, R and statsmodels',
+        'description': 'Elapsed time and peak memory to fit a binomial probit model from a formula, with '
+                       'coefficients and standard errors, in the phit extension, phit-polyfill, R glm() and '
+                       'statsmodels Probit, on the logistic workload\'s data.',
+        'case': '1,000,000 rows, 10 predictors',
+        'workload': 'Probit regression, 1,000,000 rows, 10 predictors, 0/1 response',
+        'convergence': 'phit and phit-polyfill: Fisher scoring solved by column-scaled weighted SVD, until each '
+                       'scaled coefficient step is at most 1e-11 x (1 + |coefficient|) and the log-likelihood change '
+                       'at most 1e-13 x (1 + |log-likelihood|), at most 100 updates. R glm(binomial("probit")): IRLS '
+                       'until the relative deviance change is below epsilon 1e-8, at most 25 iterations. statsmodels '
+                       'Probit.fit(method="newton"): Newton-Raphson until the parameter change is below tol 1e-8, at '
+                       'most 35 iterations.',
+    },
+    'mixed-logistic': {
+        'implementations': ['phit', 'phit-polyfill', 'R', 'GPBoost'],
+        'data': 'mixed-binary.csv',
+        'title': 'Binomial mixed-model workload: phit, phit-polyfill, lme4 and GPBoost',
+        'description': 'Elapsed time and peak memory to fit a binomial logit model with one random intercept by '
+                       'the Laplace approximation, with fixed-effect coefficients and standard errors, in the phit '
+                       'extension, phit-polyfill, lme4 glmer() and GPBoost.',
+        'case': '20,000 rows, 200 groups, 3 predictors',
+        'workload': 'Binomial logit random intercept by Laplace, 20,000 rows in 200 groups, 3 predictors, 0/1 '
+                    'response',
+        'convergence': 'phit and phit-polyfill: BOBYQA over the fixed effects and the group SD, starting from the '
+                       'binomial GLM, final trust-region radius 1e-7, at most 20,000 evaluations, with each group\'s '
+                       'conditional mode solved by bracketed Newton steps. lme4 glmer(): nAGQ = 1 with its default '
+                       'two stages (bobyqa, then Nelder_Mead) and glmerControl(tolPwrss = 1e-10), tighter than the '
+                       'default 1e-7, which stops the conditional-mode iterations early enough to move the estimates '
+                       '(docs/r-compatibility.qmd). GPBoost 1.8.0: GPModel(likelihood="bernoulli_logit") with '
+                       'optimizer_cov "lbfgs" and delta_rel_conv 1e-12, single-threaded through OMP_NUM_THREADS.',
+    },
+    'distributions': {
+        'implementations': ['phit', 'phit-polyfill', 'R', 'SciPy'],
+        'data': None,
+        'title': 'Distributions workload: phit, phit-polyfill, R and SciPy',
+        'description': 'Elapsed time and peak memory to evaluate the normal and gamma CDF and quantile functions over '
+                       '1,000,000 inputs each, with batch calls, in the phit extension, phit-polyfill, R and SciPy.',
+        'case': '4 functions x 1,000,000 inputs',
+        'workload': 'Normal CDF and quantile, gamma (shape 2.5, scale 1.5) CDF and quantile, 1,000,000 inputs each',
+        'convergence': 'No iterations to compare. phit and phit-polyfill use the _array batch functions (cdflib '
+                       'normal and incomplete-gamma backends). R uses its vectorized pnorm, qnorm, pgamma and qgamma. '
+                       'SciPy uses stats.norm and stats.gamma cdf and ppf on numpy arrays.',
+    },
 }
 
 
-def dedent(code):
-    """The snippet without the indentation its lines after the first have in the script."""
-    first, _, rest = code.partition('\n')
-    return first + ('\n' + textwrap.dedent(rest) if rest else '')
-
-
 def command(implementation, workload, path, args):
-    script = str(HERE / SCRIPTS[implementation])
+    script = str(HERE / SCRIPTS[LANGUAGES[implementation]])
     time = [args.time, '-l']
     if implementation == 'phit':
         return time + [args.php, '-n', '-d', 'memory_limit=-1', '-d', f'extension={args.extension}', script, workload, path]
@@ -89,6 +133,16 @@ def command(implementation, workload, path, args):
     if implementation == 'R':
         return time + ['Rscript', script, workload, path]
     return time + [args.python, script, workload, path]
+
+
+def timed_code(implementation, workload):
+    """The lines between the script's [workload] and [/workload] markers, dedented."""
+    text = (HERE / SCRIPTS[LANGUAGES[implementation]]).read_text()
+    match = re.search(rf'^[ \t]*(?://|#) \[{re.escape(workload)}\]\n(.*?)^[ \t]*(?://|#) \[/{re.escape(workload)}\]',
+                      text, re.S | re.M)
+    if not match:
+        raise SystemExit(f'{SCRIPTS[LANGUAGES[implementation]]} has no [{workload}] block')
+    return textwrap.dedent(match.group(1)).rstrip('\n')
 
 
 def run(implementation, workload, path, args):
@@ -108,19 +162,26 @@ def run(implementation, workload, path, args):
 
 
 def version(args, workload):
+    implementations = WORKLOADS[workload]['implementations']
     php = subprocess.run([args.php, '-n', '-r', 'echo PHP_VERSION;'], capture_output=True, text=True).stdout
     r = subprocess.run(['Rscript', '-e', 'cat(paste(R.version$major, R.version$minor, sep = "."), "\\n"); '
                         'cat(as.character(packageVersion("lme4")))'], capture_output=True, text=True).stdout.split()
-    py = subprocess.run([args.python, '-c', 'import platform, statsmodels, numpy, pandas; '
-                         'print(platform.python_version(), statsmodels.__version__, numpy.__version__, '
-                         'pandas.__version__)'], capture_output=True, text=True).stdout.split()
+    py = json.loads(subprocess.run([args.python, '-c', 'import json, platform, importlib.metadata as m; print(json.dumps('
+                                    '{"Python": platform.python_version(), **{k: m.version(k) for k in '
+                                    '["statsmodels", "numpy", "pandas", "scipy", "gpboost"]}}))'],
+                                   capture_output=True, text=True).stdout)
     phit = subprocess.run([args.php, '-n', '-d', f'extension={args.extension}', '-r', 'echo phpversion("phit");'],
                           capture_output=True, text=True).stdout
     polyfill = json.loads((Path(args.polyfill) / 'composer.json').read_text()).get('version') or args.polyfill_version
-    versions = {'phit': phit, 'phit-polyfill': polyfill, 'R': r[0], 'Python': py[0], 'statsmodels': py[1],
-                'numpy': py[2], 'pandas': py[3]}
-    if workload == 'mixed':
+    versions = {'phit': phit, 'phit-polyfill': polyfill, 'R': r[0], 'Python': py['Python'], 'numpy': py['numpy']}
+    if workload in ('mixed', 'mixed-logistic'):
         versions['lme4'] = r[1]
+    if 'statsmodels' in implementations:
+        versions |= {'statsmodels': py['statsmodels'], 'pandas': py['pandas']}
+    if 'GPBoost' in implementations:
+        versions |= {'gpboost': py['gpboost'], 'pandas': py['pandas']}
+    if 'SciPy' in implementations:
+        versions['scipy'] = py['scipy']
     return php, versions
 
 
@@ -133,28 +194,35 @@ def machine():
 
 
 def benchmark(workload, args):
-    path = str(DATA / f'{workload}.csv')
-    for implementation in IMPLEMENTATIONS:
-        code = CODE[workload]['phit' if implementation == 'phit-polyfill' else implementation]
-        if code not in (HERE / SCRIPTS[implementation]).read_text():
-            raise SystemExit(f'bench/{SCRIPTS[implementation]} does not contain the recorded code for {implementation}')
-    baseline = {i: round(run(i, workload, '--baseline', args)['peak_memory_mib'], 1) for i in IMPLEMENTATIONS}
-    for implementation in IMPLEMENTATIONS:
+    spec = WORKLOADS[workload]
+    implementations = spec['implementations']
+    path = str(DATA / spec['data']) if spec['data'] else '-'
+    code = {i: timed_code(i, workload) for i in implementations}
+    baseline = {i: round(run(i, workload, '--baseline', args)['peak_memory_mib'], 1) for i in implementations}
+    for implementation in implementations:
         print(f'{workload}: warm-up {implementation}', file=sys.stderr)
         run(implementation, workload, path, args)
-    reps = {i: [] for i in IMPLEMENTATIONS}
+    reps = {i: [] for i in implementations}
     for round_ in range(args.repeats):
-        order = IMPLEMENTATIONS[round_ % 4:] + IMPLEMENTATIONS[:round_ % 4]
+        shift = round_ % len(implementations)
+        order = implementations[shift:] + implementations[:shift]
         for implementation in order:
             reps[implementation].append(run(implementation, workload, path, args))
             print(f'{workload}: round {round_ + 1} {implementation} {reps[implementation][-1]["ms"]:.1f} ms',
                   file=sys.stderr)
 
-    reference = reps['phit'][0]['coefficients']
-    difference = max(abs(a - b) for i in IMPLEMENTATIONS for r in reps[i] for a, b in zip(r['coefficients'], reference))
+    if workload == 'distributions':
+        # Every 1000th output of each function; the largest relative difference from SciPy.
+        reference = reps['SciPy'][0]['values']
+        check = {'max_relative_difference_from_scipy': max(
+            abs(a - b) / max(abs(b), 1e-300) for i in implementations for r in reps[i]
+            for a, b in zip(r['values'], reference)), 'compared_values': len(reference)}
+    else:
+        reference = reps['phit'][0]['coefficients']
+        check = {'max_abs_coefficient_difference': max(
+            abs(a - b) for i in implementations for r in reps[i] for a, b in zip(r['coefficients'], reference))}
     php, versions = version(args, workload)
     cpu, cores, memory, os_name = machine()
-    spec = WORKLOADS[workload]
     commit = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True, cwd=ROOT).stdout.strip()
     rows = [{
         'case': spec['case'], 'implementation': i,
@@ -164,30 +232,35 @@ def benchmark(workload, args):
         'reps_peak_memory_mib': [round(r['peak_memory_mib'], 1) for r in reps[i]],
         'peak_rss_mib': round(statistics.median(r['peak_rss_mib'] for r in reps[i]), 1),
         'reps_peak_rss_mib': [round(r['peak_rss_mib'], 1) for r in reps[i]],
-    } for i in IMPLEMENTATIONS]
+    } for i in implementations]
     return {
         'title': spec['title'], 'description': spec['description'],
         'measure': 'Elapsed time', 'unit': 'ms', 'statistic': 'median', 'workload': spec['workload'],
         'environment': {
             'cpu': cpu, 'cores': cores, 'memory_gb': memory, 'os': os_name, 'php': php, 'versions': versions,
             'threads': 'One thread everywhere: OPENBLAS_NUM_THREADS, OMP_NUM_THREADS, MKL_NUM_THREADS, '
-                       'VECLIB_MAXIMUM_THREADS and BLIS_NUM_THREADS set to 1 for R (OpenBLAS) and numpy. '
+                       'VECLIB_MAXIMUM_THREADS and BLIS_NUM_THREADS set to 1 for R (OpenBLAS), numpy and GPBoost '
+                       '(OpenMP). '
                        'phit and phit-polyfill are single-threaded.',
             'repeats': args.repeats, 'date': datetime.now(timezone.utc).date().isoformat(), 'commit': commit,
         },
-        'method': 'Each run is a fresh process. Each implementation runs once as a warm-up, then the four alternate '
-                  f'for {args.repeats} rounds in a rotated order. The time runs from the data already in memory in '
-                  "the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame) to "
-                  'holding the coefficients and standard errors, and includes building the model matrix from the '
-                  'formula. Reading the CSV file is outside the timing. Every process runs under /usr/bin/time -l. '
+        'method': 'Each run is a fresh process. Each implementation runs once as a warm-up, then the '
+                  f'{len(implementations)} alternate for {args.repeats} rounds in a rotated order. ' + (
+                      'The time runs from the inputs already in memory (a PHP array, an R vector, a numpy array) to '
+                      'holding all four results. Building the inputs is outside the timing. '
+                      if workload == 'distributions' else
+                      "The time runs from the data already in memory in the runtime's usual structure (PHP arrays "
+                      'of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the '
+                      'coefficients and standard errors, and includes building the model matrix from the formula. '
+                      'Reading the CSV file is outside the timing. ') + 'Every process runs under /usr/bin/time -l. '
                   "Memory is the process's peak memory footprint as macOS reports it, data included: its own "
                   'allocations, without the clean file pages it maps. peak_rss_mib gives the peak resident set '
                   "size, which counts those pages. baseline_memory_mib is each runtime's peak footprint with its "
                   'libraries loaded and no data. ' + spec['convergence'],
         'memory_measure': 'peak memory footprint',
-        'check': {'max_abs_coefficient_difference': difference},
-        'code': {i: dedent(CODE[workload]['phit' if i == 'phit-polyfill' else i]) for i in IMPLEMENTATIONS},
-        'languages': LANGUAGES,
+        'check': check,
+        'code': code,
+        'languages': {i: LANGUAGES[i] for i in implementations},
         'baseline_memory_mib': baseline,
         'rows': rows,
     }
@@ -197,7 +270,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--polyfill', required=True, help='phit-polyfill checkout with vendor/ installed')
     parser.add_argument('--polyfill-version', default='', help='recorded when composer.json has no version')
-    parser.add_argument('--workload', choices=['ols', 'mixed', 'all'], default='all')
+    parser.add_argument('--workload', choices=[*WORKLOADS, 'all'], default='all')
     parser.add_argument('--repeats', type=int, default=7)
     parser.add_argument('--php', default=subprocess.run(['php-config', '--php-binary'], capture_output=True,
                                                         text=True).stdout.strip())
@@ -205,7 +278,7 @@ def main():
     parser.add_argument('--python', default=str(ROOT / '.context' / 'bench-venv' / 'bin' / 'python'))
     parser.add_argument('--time', default='/usr/bin/time')
     args = parser.parse_args()
-    for workload in ['ols', 'mixed'] if args.workload == 'all' else [args.workload]:
+    for workload in list(WORKLOADS) if args.workload == 'all' else [args.workload]:
         record = benchmark(workload, args)
         out = ROOT / 'site' / 'benchmarks' / f'{workload}-workload.json'
         out.write_text(json.dumps(record, indent=1) + '\n')
