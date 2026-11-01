@@ -1,0 +1,189 @@
+{
+ "title": "Distributions workload: phit, phit-polyfill, R and SciPy",
+ "description": "Elapsed time and peak memory to evaluate the normal and gamma CDF and quantile functions over 1,000,000 inputs each, with batch calls, in the phit extension, phit-polyfill, R and SciPy.",
+ "measure": "Elapsed time",
+ "unit": "ms",
+ "statistic": "median",
+ "workload": "Normal CDF and quantile, gamma (shape 2.5, scale 1.5) CDF and quantile, 1,000,000 inputs each",
+ "environment": {
+  "cpu": "Apple M5 Ultra",
+  "cores": 30,
+  "memory_gb": 96,
+  "os": "macOS 27.0.1 (arm64)",
+  "php": "8.5.10",
+  "versions": {
+   "phit": "0.4.2",
+   "phit-polyfill": "0.4.0",
+   "R": "4.6.1",
+   "Python": "3.14.7",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1"
+  },
+  "threads": "One thread everywhere: OPENBLAS_NUM_THREADS, OMP_NUM_THREADS, MKL_NUM_THREADS, VECLIB_MAXIMUM_THREADS and BLIS_NUM_THREADS set to 1 for R (OpenBLAS), numpy and GPBoost (OpenMP). phit and phit-polyfill are single-threaded.",
+  "repeats": 7,
+  "date": "2026-11-01",
+  "commit": "6166405"
+ },
+ "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the inputs already in memory (a PHP array, an R vector, a numpy array) to holding all four results. Building the inputs is outside the timing. Every process runs under /usr/bin/time -l. Memory is the process's peak memory footprint as macOS reports it, data included: its own allocations, without the clean file pages it maps. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak footprint with its libraries loaded and no data. No iterations to compare. phit and phit-polyfill use the _array batch functions (cdflib normal and incomplete-gamma backends). R uses its vectorized pnorm, qnorm, pgamma and qgamma. SciPy uses stats.norm and stats.gamma cdf and ppf on numpy arrays.",
+ "memory_measure": "peak memory footprint",
+ "check": {
+  "max_relative_difference_from_scipy": 2.8778385154256668e-11,
+  "compared_values": 4000
+ },
+ "code": {
+  "phit": "$normalCdf = dist_normal_cdf_array($x);\n$normalQuantile = dist_normal_quantile_array($p);\n$gammaCdf = dist_gamma_cdf_array($positive, 2.5, 1.5);\n$gammaQuantile = dist_gamma_quantile_array($p, 2.5, 1.5);",
+  "phit-polyfill": "$normalCdf = dist_normal_cdf_array($x);\n$normalQuantile = dist_normal_quantile_array($p);\n$gammaCdf = dist_gamma_cdf_array($positive, 2.5, 1.5);\n$gammaQuantile = dist_gamma_quantile_array($p, 2.5, 1.5);",
+  "R": "normal_cdf <- pnorm(x)\nnormal_quantile <- qnorm(p)\ngamma_cdf <- pgamma(positive, shape = 2.5, scale = 1.5)\ngamma_quantile <- qgamma(p, shape = 2.5, scale = 1.5)",
+  "SciPy": "normal_cdf = stats.norm.cdf(x)\nnormal_quantile = stats.norm.ppf(p)\ngamma_cdf = stats.gamma.cdf(positive, 2.5, scale=1.5)\ngamma_quantile = stats.gamma.ppf(p, 2.5, scale=1.5)"
+ },
+ "languages": {
+  "phit": "php",
+  "phit-polyfill": "php",
+  "R": "r",
+  "SciPy": "python"
+ },
+ "baseline_memory_mib": {
+  "phit": 11.4,
+  "phit-polyfill": 11.7,
+  "R": 56.3,
+  "SciPy": 101.1
+ },
+ "rows": [
+  {
+   "case": "4 functions x 1,000,000 inputs",
+   "implementation": "phit",
+   "value": 646.941,
+   "reps": [
+    615.831,
+    635.94,
+    651.306,
+    646.941,
+    668.304,
+    713.811,
+    640.366
+   ],
+   "peak_memory_mib": 120.3,
+   "reps_peak_memory_mib": [
+    120.2,
+    120.3,
+    120.3,
+    120.4,
+    120.4,
+    120.3,
+    120.3
+   ],
+   "peak_rss_mib": 138.2,
+   "reps_peak_rss_mib": [
+    138.1,
+    138.2,
+    138.2,
+    138.3,
+    138.3,
+    138.2,
+    138.2
+   ]
+  },
+  {
+   "case": "4 functions x 1,000,000 inputs",
+   "implementation": "phit-polyfill",
+   "value": 14009.199,
+   "reps": [
+    13247.097,
+    13238.951,
+    14199.679,
+    14023.293,
+    15081.27,
+    14009.199,
+    13196.469
+   ],
+   "peak_memory_mib": 120.8,
+   "reps_peak_memory_mib": [
+    120.8,
+    120.7,
+    120.7,
+    120.8,
+    120.8,
+    120.8,
+    120.8
+   ],
+   "peak_rss_mib": 137.7,
+   "reps_peak_rss_mib": [
+    137.7,
+    137.7,
+    137.7,
+    137.7,
+    137.8,
+    137.8,
+    137.7
+   ]
+  },
+  {
+   "case": "4 functions x 1,000,000 inputs",
+   "implementation": "R",
+   "value": 436.404,
+   "reps": [
+    424.963,
+    436.404,
+    431.633,
+    441.242,
+    498.665,
+    456.196,
+    434.716
+   ],
+   "peak_memory_mib": 123.8,
+   "reps_peak_memory_mib": [
+    123.8,
+    126.0,
+    123.8,
+    123.9,
+    123.7,
+    123.7,
+    124.1
+   ],
+   "peak_rss_mib": 135.6,
+   "reps_peak_rss_mib": [
+    135.5,
+    137.7,
+    135.6,
+    135.6,
+    135.4,
+    135.4,
+    135.9
+   ]
+  },
+  {
+   "case": "4 functions x 1,000,000 inputs",
+   "implementation": "SciPy",
+   "value": 295.037,
+   "reps": [
+    289.817,
+    306.765,
+    294.305,
+    304.536,
+    338.906,
+    294.17,
+    295.037
+   ],
+   "peak_memory_mib": 194.6,
+   "reps_peak_memory_mib": [
+    194.6,
+    193.5,
+    192.9,
+    194.4,
+    195.2,
+    196.3,
+    195.3
+   ],
+   "peak_rss_mib": 224.9,
+   "reps_peak_rss_mib": [
+    224.9,
+    223.8,
+    223.2,
+    224.7,
+    225.5,
+    226.3,
+    225.6
+   ]
+  }
+ ]
+}
