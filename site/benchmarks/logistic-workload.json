@@ -187,5 +187,13 @@
  "description": "Maximum-likelihood fit of a binomial logit model from a formula, returning coefficients and standard errors. Implementations: the phit extension, phit-polyfill, R glm(), and statsmodels Logit.",
  "workload": "Logistic regression, 1,000,000 rows, 10 predictors, 0/1 response",
  "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every millisecond. The peak resident set size, which counts those pages, and each runtime's baseline memory with its libraries loaded and no data are recorded beside it. phit and phit-polyfill: Newton/IRLS solved by column-scaled weighted SVD, starting at zero, until each scaled coefficient step is at most 1e-8 x (1 + |coefficient|) and the log-likelihood change at most 1e-10 x (1 + |log-likelihood|). R glm(): IRLS until the relative deviance change is below epsilon 1e-8, at most 25 iterations. statsmodels Logit.fit(method=\"newton\"): Newton-Raphson until the parameter change is below tol 1e-8, at most 35 iterations.",
- "memory_measure": "peak anonymous memory"
+ "memory_measure": "peak anonymous memory",
+ "reproduce": [
+  "# Linux: build bench/peakmem.c and put it on the PATH",
+  "cc -O2 -o ~/.local/bin/peakmem bench/peakmem.c",
+  "cargo build -p phit --release --locked",
+  ".context/bench-venv/bin/python bench/generate.py",
+  ".context/bench-venv/bin/python bench/run.py --workload logistic --polyfill ../phit-polyfill --polyfill-version 0.4.1"
+ ],
+ "source": "bench/run.py"
 }

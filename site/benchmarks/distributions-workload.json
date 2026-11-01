@@ -187,5 +187,13 @@
  "description": "Normal and gamma CDF and quantile functions over 1,000,000 inputs each, by batch calls. Implementations: the phit extension, phit-polyfill, R, and SciPy.",
  "workload": "Normal CDF and quantile, gamma (shape 2.5, scale 1.5) CDF and quantile, 1,000,000 inputs each",
  "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the inputs already in memory (a PHP array, an R vector, a numpy array) to holding all four results. Building the inputs is outside the timing. Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every millisecond. The peak resident set size, which counts those pages, and each runtime's baseline memory with its libraries loaded and no data are recorded beside it. No iterations to compare. phit and phit-polyfill use the _array batch functions (cdflib normal and incomplete-gamma backends). R uses its vectorized pnorm, qnorm, pgamma and qgamma. SciPy uses stats.norm and stats.gamma cdf and ppf on numpy arrays.",
- "memory_measure": "peak anonymous memory"
+ "memory_measure": "peak anonymous memory",
+ "reproduce": [
+  "# Linux: build bench/peakmem.c and put it on the PATH",
+  "cc -O2 -o ~/.local/bin/peakmem bench/peakmem.c",
+  "cargo build -p phit --release --locked",
+  ".context/bench-venv/bin/python bench/generate.py",
+  ".context/bench-venv/bin/python bench/run.py --workload distributions --polyfill ../phit-polyfill --polyfill-version 0.4.1"
+ ],
+ "source": "bench/run.py"
 }

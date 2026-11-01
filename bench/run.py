@@ -223,8 +223,8 @@ def machine():
     return cpu, os.cpu_count(), round(kib / 2**20), f'Linux, {release} ({platform.machine()})'
 
 
-def record_text(workload, implementations, repeats, darwin):
-    """A record's reader-facing text: title, label, Scope, workload, method, and memory measure."""
+def record_text(workload, implementations, repeats, darwin, polyfill_version):
+    """A record's reader-facing text: title, label, Scope, workload, method, memory measure, and reproduction."""
     spec = WORKLOADS[workload]
     inputs = ('The time runs from the inputs already in memory (a PHP array, an R vector, a numpy array) to '
               'holding all four results. Building the inputs is outside the timing. '
@@ -240,6 +240,15 @@ def record_text(workload, implementations, repeats, darwin):
                   f'{implementations} alternate for {repeats} rounds in a rotated order. ' + inputs
                   + MEMORY_METHOD[darwin] + spec['convergence'],
         'memory_measure': 'peak memory footprint' if darwin else 'peak anonymous memory',
+        'reproduce': [
+            '# Linux: build bench/peakmem.c and put it on the PATH',
+            'cc -O2 -o ~/.local/bin/peakmem bench/peakmem.c',
+            'cargo build -p phit --release --locked',
+            '.context/bench-venv/bin/python bench/generate.py',
+            f'.context/bench-venv/bin/python bench/run.py --workload {workload} --polyfill ../phit-polyfill '
+            f'--polyfill-version {polyfill_version}',
+        ],
+        'source': 'bench/run.py',
     }
 
 
@@ -294,7 +303,7 @@ def benchmark(workload, args):
             'repeats': args.repeats, 'date': datetime.now(timezone.utc).date().isoformat(), 'commit': commit,
             'code_commit': commit,
         },
-        **record_text(workload, len(implementations), args.repeats, sys.platform == 'darwin'),
+        **record_text(workload, len(implementations), args.repeats, sys.platform == 'darwin', versions['phit-polyfill']),
         'check': check,
         'code': code,
         'languages': {i: LANGUAGES[i] for i in implementations},
@@ -326,7 +335,8 @@ def main():
             out = ROOT / 'site' / 'benchmarks' / f'{workload}-workload.json'
             record = json.loads(out.read_text())
             text = record_text(workload, len(record['code']), record['environment']['repeats'],
-                               record['memory_measure'] == 'peak memory footprint')
+                               record['memory_measure'] == 'peak memory footprint',
+                               record['environment']['versions']['phit-polyfill'])
             record = {**{k: text[k] for k in ('title', 'label')}, **{k: v for k, v in record.items() if k not in text},
                       **{k: text[k] for k in text if k not in ('title', 'label')}}
             out.write_text(json.dumps(record, indent=1) + '\n')
