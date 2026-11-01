@@ -8,169 +8,169 @@
   {
    "name": "binary_1",
    "quantity": "coefficients",
-   "max_abs_error": 3.149782110689614e-07,
+   "max_abs_error": 3.475685441678422e-07,
    "passed": true
   },
   {
    "name": "binary_9",
    "quantity": "coefficients",
-   "max_abs_error": 8.375430748941426e-08,
+   "max_abs_error": 4.9403206414666556e-08,
    "passed": true
   },
   {
    "name": "binary_25",
    "quantity": "coefficients",
-   "max_abs_error": 1.2611851918364891e-07,
+   "max_abs_error": 1.6638913180599957e-07,
    "passed": true
   },
   {
    "name": "binary_61",
    "quantity": "coefficients",
-   "max_abs_error": 4.001991138480321e-08,
+   "max_abs_error": 5.054155094441626e-08,
    "passed": true
   },
   {
    "name": "no_intercept_1",
    "quantity": "coefficients",
-   "max_abs_error": 2.9770630710634904e-08,
+   "max_abs_error": 2.957112771317938e-08,
    "passed": true
   },
   {
    "name": "no_intercept_9",
    "quantity": "coefficients",
-   "max_abs_error": 7.561876069761553e-09,
+   "max_abs_error": 8.684913704870567e-09,
    "passed": true
   },
   {
    "name": "no_intercept_25",
    "quantity": "coefficients",
-   "max_abs_error": 2.6787826928886815e-08,
+   "max_abs_error": 2.6616900544729205e-08,
    "passed": true
   },
   {
    "name": "no_intercept_61",
    "quantity": "coefficients",
-   "max_abs_error": 2.2359309487240964e-08,
+   "max_abs_error": 1.8147438135551752e-08,
    "passed": true
   },
   {
    "name": "grouped_offset_1",
    "quantity": "coefficients",
-   "max_abs_error": 1.7695984486643113e-06,
+   "max_abs_error": 1.5979946841326864e-06,
    "passed": true
   },
   {
    "name": "grouped_offset_9",
    "quantity": "coefficients",
-   "max_abs_error": 1.3504184246393436e-06,
+   "max_abs_error": 1.181231713776043e-06,
    "passed": true
   },
   {
    "name": "grouped_offset_25",
    "quantity": "coefficients",
-   "max_abs_error": 7.443580991584042e-07,
+   "max_abs_error": 6.920719335390402e-07,
    "passed": true
   },
   {
    "name": "grouped_offset_61",
    "quantity": "coefficients",
-   "max_abs_error": 8.173894450180796e-08,
+   "max_abs_error": 1.72595855829627e-07,
    "passed": true
   },
   {
    "name": "rare_events_1",
    "quantity": "coefficients",
-   "max_abs_error": 1.152076363197807e-06,
+   "max_abs_error": 1.2090648304763363e-06,
    "passed": true
   },
   {
    "name": "rare_events_9",
    "quantity": "coefficients",
-   "max_abs_error": 4.137237130663607e-08,
+   "max_abs_error": 1.272382741390743e-07,
    "passed": true
   },
   {
    "name": "rare_events_25",
    "quantity": "coefficients",
-   "max_abs_error": 1.3161967249430973e-07,
+   "max_abs_error": 2.9311360449923995e-08,
    "passed": true
   },
   {
    "name": "rare_events_61",
    "quantity": "coefficients",
-   "max_abs_error": 2.8137828955721034e-08,
+   "max_abs_error": 1.0418941176482122e-07,
    "passed": true
   },
   {
    "name": "large_group_variation_1",
    "quantity": "coefficients",
-   "max_abs_error": 1.523663873848058e-06,
+   "max_abs_error": 1.5336179221003832e-06,
    "passed": true
   },
   {
    "name": "large_group_variation_9",
    "quantity": "coefficients",
-   "max_abs_error": 5.192793328667733e-08,
+   "max_abs_error": 5.421603410660225e-08,
    "passed": true
   },
   {
    "name": "large_group_variation_25",
    "quantity": "coefficients",
-   "max_abs_error": 4.205289294567649e-08,
+   "max_abs_error": 1.4704646833507695e-08,
    "passed": true
   },
   {
    "name": "large_group_variation_61",
    "quantity": "coefficients",
-   "max_abs_error": 4.59502720318028e-08,
+   "max_abs_error": 3.2627663681950025e-08,
    "passed": true
   },
   {
    "name": "boundary_1",
    "quantity": "coefficients",
-   "max_abs_error": 8.247378057705831e-09,
+   "max_abs_error": 8.247377961557697e-09,
    "passed": true
   },
   {
    "name": "boundary_9",
    "quantity": "coefficients",
-   "max_abs_error": 4.8328846245999426e-09,
+   "max_abs_error": 4.832884528451808e-09,
    "passed": true
   },
   {
    "name": "boundary_25",
    "quantity": "coefficients",
-   "max_abs_error": 4.836543553310035e-09,
+   "max_abs_error": 4.836543457161901e-09,
    "passed": true
   },
   {
    "name": "boundary_61",
    "quantity": "coefficients",
-   "max_abs_error": 4.842138259129848e-09,
+   "max_abs_error": 4.842138162981714e-09,
    "passed": true
   },
   {
    "name": "cbpp_1",
    "quantity": "coefficients",
-   "max_abs_error": 7.570788196353817e-08,
+   "max_abs_error": 4.7151640147902185e-08,
    "passed": true
   },
   {
    "name": "cbpp_9",
    "quantity": "coefficients",
-   "max_abs_error": 5.221274779199092e-08,
+   "max_abs_error": 7.600768836546479e-08,
    "passed": true
   },
   {
    "name": "cbpp_25",
    "quantity": "coefficients",
-   "max_abs_error": 7.137462265660588e-08,
+   "max_abs_error": 6.064641533409798e-08,
    "passed": true
   },
   {
    "name": "cbpp_61",
    "quantity": "coefficients",
-   "max_abs_error": 8.575105581165587e-08,
+   "max_abs_error": 5.577975148440828e-08,
    "passed": true
   }
  ]

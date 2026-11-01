@@ -8,25 +8,25 @@
   {
    "name": "ols_intercept_individual",
    "quantity": "ols: all quantities",
-   "max_abs_error": 4.547473508864641e-13,
+   "max_abs_error": 5.684341886080801e-13,
    "passed": true
   },
   {
    "name": "ols_no_intercept_individual",
    "quantity": "ols: all quantities",
-   "max_abs_error": 1.0913936421275139e-11,
+   "max_abs_error": 1.4551915228366852e-11,
    "passed": true
   },
   {
    "name": "logistic_intercept_individual",
    "quantity": "logistic: all quantities",
-   "max_abs_error": 1.3758642918304531e-06,
+   "max_abs_error": 1.3758642998240589e-06,
    "passed": true
   },
   {
    "name": "logistic_intercept_grouped",
    "quantity": "logistic: all quantities",
-   "max_abs_error": 2.0866863792434742e-11,
+   "max_abs_error": 2.0865087435595342e-11,
    "passed": true
   },
   {
@@ -38,13 +38,13 @@
   {
    "name": "logistic_no_intercept_grouped",
    "quantity": "logistic: all quantities",
-   "max_abs_error": 1.0479701648691275e-06,
+   "max_abs_error": 1.0479701693100196e-06,
    "passed": true
   },
   {
    "name": "probit_intercept_individual",
    "quantity": "probit: all quantities",
-   "max_abs_error": 1.6382994392216688e-06,
+   "max_abs_error": 1.638299437445312e-06,
    "passed": true
   },
   {
@@ -56,13 +56,13 @@
   {
    "name": "probit_no_intercept_individual",
    "quantity": "probit: all quantities",
-   "max_abs_error": 5.972969878698109e-07,
+   "max_abs_error": 5.97296986093454e-07,
    "passed": true
   },
   {
    "name": "probit_no_intercept_grouped",
    "quantity": "probit: all quantities",
-   "max_abs_error": 6.55622322653926e-07,
+   "max_abs_error": 6.55622333312067e-07,
    "passed": true
   },
   {
@@ -74,295 +74,295 @@
   {
    "name": "poisson_no_intercept_individual",
    "quantity": "poisson: all quantities",
-   "max_abs_error": 1.8881603836007343e-08,
+   "max_abs_error": 1.8881602059650504e-08,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 5.684341886080802e-14,
+   "max_abs_error": 8.526512829121202e-14,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 3.769020584520888e-08,
+   "max_abs_error": 3.8066797714009226e-08,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 1.1175932346230155e-08,
+   "max_abs_error": 1.056380521946565e-08,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 1.2789769243681803e-12,
+   "max_abs_error": 1.3073986337985843e-12,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max fitted",
-   "max_abs_error": 3.057257176308781e-07,
+   "max_abs_error": 3.0572571718678887e-07,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 2.3925347369946337e-07,
+   "max_abs_error": 2.39253473921508e-07,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 1.5509726836171467e-10,
+   "max_abs_error": 1.5506884665228426e-10,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 5.379520570558682e-06,
+   "max_abs_error": 5.379897162427483e-06,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 1.5812780002066873e-06,
+   "max_abs_error": 1.5806658730799228e-06,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 1.538751348562073e-10,
+   "max_abs_error": 1.538467131467769e-10,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 5.036104647082595e-06,
+   "max_abs_error": 5.036104647526685e-06,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 1.3916058872465165e-06,
+   "max_abs_error": 1.3916058871910053e-06,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 3.979039320256561e-12,
+   "max_abs_error": 3.950617610826157e-12,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 5.997995016215896e-07,
+   "max_abs_error": 5.994229097527892e-07,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 1.1471983833999388e-06,
+   "max_abs_error": 1.1446496424039054e-06,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 2.7569058147491887e-12,
+   "max_abs_error": 2.7284841053187847e-12,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 9.432154250976765e-07,
+   "max_abs_error": 9.432154246535873e-07,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 9.154597906402273e-07,
+   "max_abs_error": 9.154597904181827e-07,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 5.735500963055529e-10,
+   "max_abs_error": 5.735216745961225e-10,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 9.930637481891935e-06,
+   "max_abs_error": 9.930260890023135e-06,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 9.022473142161758e-06,
+   "max_abs_error": 9.019924401165724e-06,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 5.723279628000455e-10,
+   "max_abs_error": 5.722995410906151e-10,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 1.0274053405368022e-05,
+   "max_abs_error": 1.0274053404923933e-05,
    "passed": true
   },
   {
    "name": "random_slopes_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 8.790734549402046e-06,
+   "max_abs_error": 8.790734549180002e-06,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 5.684341886080802e-14,
+   "max_abs_error": 8.526512829121202e-14,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 2.5702156625229122e-08,
+   "max_abs_error": 2.9278266255872154e-08,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 2.553681532901919e-08,
+   "max_abs_error": 1.1289573553785459e-08,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 1.4779288903810084e-12,
+   "max_abs_error": 1.5063505998114124e-12,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max fitted",
-   "max_abs_error": 3.0886920820982766e-07,
+   "max_abs_error": 3.0886920843187227e-07,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 7.644424153685492e-07,
+   "max_abs_error": 7.644424147024154e-07,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 5.582023732131347e-11,
+   "max_abs_error": 5.5791815611883067e-11,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 9.039528841014999e-07,
+   "max_abs_error": 8.963970774544805e-07,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 5.38460096377591e-06,
+   "max_abs_error": 5.359211429967203e-06,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 5.439915184979327e-11,
+   "max_abs_error": 5.4370730140362866e-11,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 8.598079261901148e-07,
+   "max_abs_error": 8.598079275223824e-07,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 6.1235065638154396e-06,
+   "max_abs_error": 6.123506563149306e-06,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 6.576783562195487e-11,
+   "max_abs_error": 6.573941391252447e-11,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 3.355945375149716e-06,
+   "max_abs_error": 3.359521484780359e-06,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 3.645351286607479e-06,
+   "max_abs_error": 3.6199617527987726e-06,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 6.434675015043467e-11,
+   "max_abs_error": 6.431832844100427e-11,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 3.6391124267343145e-06,
+   "max_abs_error": 3.639112426956359e-06,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 4.384256886647009e-06,
+   "max_abs_error": 4.384256885980875e-06,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 4.2872574113062e-07,
+   "max_abs_error": 4.287257127089106e-07,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 7.302379862617059e-05,
+   "max_abs_error": 7.303135443281761e-05,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 0.00047381660356604627,
+   "max_abs_error": 0.000473841993099855,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 4.287243200451485e-07,
+   "max_abs_error": 4.2872429162343906e-07,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 7.306794358408197e-05,
+   "max_abs_error": 7.30679435827497e-05,
    "passed": true
   },
   {
    "name": "random_slopes_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 0.00047307769796600674,
+   "max_abs_error": 0.00047307769796667287,
    "passed": true
   },
   {
@@ -374,19 +374,19 @@
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 9.593394523221832e-09,
+   "max_abs_error": 9.956914404085637e-09,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 4.34644118474381e-08,
+   "max_abs_error": 4.421025545653379e-08,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 5.115907697472721e-13,
+   "max_abs_error": 5.684341886080801e-13,
    "passed": true
   },
   {
@@ -398,7 +398,7 @@
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 4.32845365105905e-07,
+   "max_abs_error": 4.328453646618158e-07,
    "passed": true
   },
   {
@@ -410,31 +410,31 @@
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 1.4234269043456038e-05,
+   "max_abs_error": 1.423474762951571e-05,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 5.092241720294766e-06,
+   "max_abs_error": 5.092987563903861e-06,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 8.382414762309054e-10,
+   "max_abs_error": 8.381846328120446e-10,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 1.4243633012167578e-05,
+   "max_abs_error": 1.4243633011723489e-05,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 4.6159319433414225e-06,
+   "max_abs_error": 4.615931943785512e-06,
    "passed": true
   },
   {
@@ -446,31 +446,31 @@
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 6.855794430915552e-05,
+   "max_abs_error": 6.855756171564309e-05,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.00013947867046160134,
+   "max_abs_error": 0.00013947941630521044,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 6.154445486572513e-08,
+   "max_abs_error": 6.154439802230627e-08,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 6.849081533211177e-05,
+   "max_abs_error": 6.849081533122359e-05,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.000139002360684648,
+   "max_abs_error": 0.00013900236068509209,
    "passed": true
   },
   {
@@ -482,31 +482,31 @@
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 3.481906976077198e-07,
+   "max_abs_error": 3.477121115480486e-07,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 1.8274806401485932e-07,
+   "max_abs_error": 1.8200222040576364e-07,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 5.684341886080802e-14,
+   "max_abs_error": 0.0,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 3.3882672889617993e-07,
+   "max_abs_error": 3.3882672934026914e-07,
    "passed": true
   },
   {
    "name": "independent_slopes (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 6.590578409682024e-07,
+   "max_abs_error": 6.590578405241132e-07,
    "passed": true
   },
   {
@@ -656,145 +656,145 @@
   {
    "name": "nested (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 8.526512829121202e-14,
+   "max_abs_error": 2.842170943040401e-14,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 4.2660123433790886e-08,
+   "max_abs_error": 1.5159075772430697e-08,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 8.214216151714027e-08,
+   "max_abs_error": 1.4705114281809983e-07,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 6.536993168992922e-13,
+   "max_abs_error": 7.105427357601002e-13,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max fitted",
-   "max_abs_error": 7.941658441978916e-08,
+   "max_abs_error": 7.94165817552539e-08,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 1.7130622098626702e-07,
+   "max_abs_error": 1.7130622131933393e-07,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 1.078319655789528e-10,
+   "max_abs_error": 1.0794565241667442e-10,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 1.0979082176731936e-06,
+   "max_abs_error": 1.0673230539381962e-06,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 2.939426381853849e-06,
+   "max_abs_error": 3.0043353631548086e-06,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 1.0726353139034472e-10,
+   "max_abs_error": 1.0720668797148392e-10,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 9.758315098196135e-07,
+   "max_abs_error": 9.758315124841488e-07,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 3.009635401118871e-06,
+   "max_abs_error": 3.0096354008968262e-06,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 1.2022383089060895e-11,
+   "max_abs_error": 1.2136069926782511e-11,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 1.9352447200304823e-07,
+   "max_abs_error": 1.6956976045534589e-07,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 2.2724849959576687e-06,
+   "max_abs_error": 2.3373939772586283e-06,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 1.1453948900452815e-11,
+   "max_abs_error": 1.1397105481592007e-11,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 9.526039690399557e-08,
+   "max_abs_error": 9.526039645990636e-08,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 2.3426940152226905e-06,
+   "max_abs_error": 2.342694015000646e-06,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 5.439915184979327e-11,
+   "max_abs_error": 5.4512838687514886e-11,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 4.3401173766000056e-07,
+   "max_abs_error": 4.579664492077029e-07,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 4.704363268492884e-06,
+   "max_abs_error": 4.639454287191924e-06,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 5.383071766118519e-11,
+   "max_abs_error": 5.377387424232438e-11,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 5.358602419569536e-07,
+   "max_abs_error": 5.358602441773996e-07,
    "passed": true
   },
   {
    "name": "nested (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 4.634154249227862e-06,
+   "max_abs_error": 4.634154249449907e-06,
    "passed": true
   },
   {
@@ -806,31 +806,31 @@
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 1.828396168912505e-07,
+   "max_abs_error": 1.4326617936433195e-07,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 3.3803911003715825e-08,
+   "max_abs_error": 4.275057841063301e-08,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 6.536993168992922e-13,
+   "max_abs_error": 7.105427357601002e-13,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max fitted",
-   "max_abs_error": 3.633404076497371e-07,
+   "max_abs_error": 3.6334040631746944e-07,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 4.3942272887065315e-07,
+   "max_abs_error": 4.3942272931474236e-07,
    "passed": true
   },
   {
@@ -842,31 +842,31 @@
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 1.5917997140957318e-06,
+   "max_abs_error": 1.6313731516226504e-06,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 6.572742881627569e-07,
+   "max_abs_error": 6.599841701482312e-07,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 1.3812950783176348e-11,
+   "max_abs_error": 1.375610736431554e-11,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 1.4112989233372453e-06,
+   "max_abs_error": 1.411298924669513e-06,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 4.834969181688464e-07,
+   "max_abs_error": 4.834969180578241e-07,
    "passed": true
   },
   {
@@ -878,31 +878,31 @@
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 4.891102713439066e-05,
+   "max_abs_error": 4.887145369686374e-05,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 5.134081126331735e-06,
+   "max_abs_error": 5.131865392069002e-06,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 3.980176188633777e-09,
+   "max_abs_error": 3.980119345214916e-09,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 4.909152792514915e-05,
+   "max_abs_error": 4.909152792381688e-05,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 5.084044146591582e-06,
+   "max_abs_error": 5.084044146570765e-06,
    "passed": true
   },
   {
@@ -914,31 +914,31 @@
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 4.145208509109821e-06,
+   "max_abs_error": 4.105635071582903e-06,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 4.517602348652616e-06,
+   "max_abs_error": 4.526549016059533e-06,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 6.065192792448215e-11,
+   "max_abs_error": 6.059508450562134e-11,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 4.325709299868308e-06,
+   "max_abs_error": 4.32570929853604e-06,
    "passed": true
   },
   {
    "name": "weighted_offset (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 4.044375708778247e-06,
+   "max_abs_error": 4.044375708334158e-06,
    "passed": true
   },
   {
@@ -950,13 +950,13 @@
   {
    "name": "no_intercept (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 5.512944251107044e-08,
+   "max_abs_error": 1.9474574314282123e-08,
    "passed": true
   },
   {
    "name": "no_intercept (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 6.081424617221387e-07,
+   "max_abs_error": 3.235199317330739e-07,
    "passed": true
   },
   {
@@ -968,13 +968,13 @@
   {
    "name": "no_intercept (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max fitted",
-   "max_abs_error": 7.223963913172149e-08,
+   "max_abs_error": 7.223963974234415e-08,
    "passed": true
   },
   {
    "name": "no_intercept (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 1.3986240254837412e-07,
+   "max_abs_error": 1.3986240343655254e-07,
    "passed": true
   },
   {
@@ -986,13 +986,13 @@
   {
    "name": "no_intercept (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 1.533828254796088e-06,
+   "max_abs_error": 1.4981733865992997e-06,
    "passed": true
   },
   {
    "name": "no_intercept (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 1.713553103499521e-05,
+   "max_abs_error": 1.6850908505006146e-05,
    "passed": true
   },
   {
@@ -1004,13 +1004,13 @@
   {
    "name": "no_intercept (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 1.550938451416739e-06,
+   "max_abs_error": 1.5509384520273617e-06,
    "passed": true
   },
   {
    "name": "no_intercept (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 1.6387526170724698e-05,
+   "max_abs_error": 1.638752616983652e-05,
    "passed": true
   },
   {
@@ -1022,13 +1022,13 @@
   {
    "name": "no_intercept (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 8.834012953207182e-06,
+   "max_abs_error": 8.798358085010394e-06,
    "passed": true
   },
   {
    "name": "no_intercept (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.00015115291373568596,
+   "max_abs_error": 0.00015143753626567502,
    "passed": true
   },
   {
@@ -1040,13 +1040,13 @@
   {
    "name": "no_intercept (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 8.851123149827833e-06,
+   "max_abs_error": 8.851123150438456e-06,
    "passed": true
   },
   {
    "name": "no_intercept (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.00015190091859995647,
+   "max_abs_error": 0.00015190091860084465,
    "passed": true
   },
   {
@@ -1058,13 +1058,13 @@
   {
    "name": "no_intercept (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 1.8776278365717491e-06,
+   "max_abs_error": 1.8419729683749608e-06,
    "passed": true
   },
   {
    "name": "no_intercept (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 3.4284374854642863e-06,
+   "max_abs_error": 3.2938437870555504e-06,
    "passed": true
   },
   {
@@ -1076,13 +1076,13 @@
   {
    "name": "no_intercept (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 1.8947380331924002e-06,
+   "max_abs_error": 1.8947380338030229e-06,
    "passed": true
   },
   {
    "name": "no_intercept (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 3.2972735974912126e-06,
+   "max_abs_error": 3.297273597269168e-06,
    "passed": true
   },
   {
@@ -1094,13 +1094,13 @@
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 5.552567738931202e-08,
+   "max_abs_error": 5.5212452387820576e-08,
    "passed": true
   },
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 1.505696831105574e-08,
+   "max_abs_error": 1.4972030226712008e-08,
    "passed": true
   },
   {
@@ -1112,13 +1112,13 @@
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max fitted",
-   "max_abs_error": 3.0468797351801413e-07,
+   "max_abs_error": 3.046879726298357e-07,
    "passed": true
   },
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 8.262260622893258e-08,
+   "max_abs_error": 8.262260617342143e-08,
    "passed": true
   },
   {
@@ -1130,13 +1130,13 @@
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 1.883804019797708e-05,
+   "max_abs_error": 1.883835342297857e-05,
    "passed": true
   },
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 5.108255622721103e-06,
+   "max_abs_error": 5.108340560805447e-06,
    "passed": true
   },
   {
@@ -1148,13 +1148,13 @@
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 1.8588877901848377e-05,
+   "max_abs_error": 1.8588877902736556e-05,
    "passed": true
   },
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 5.040689984803226e-06,
+   "max_abs_error": 5.040689984858737e-06,
    "passed": true
   },
   {
@@ -1166,13 +1166,13 @@
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 3.2797354192481976e-06,
+   "max_abs_error": 3.280048644249689e-06,
    "passed": true
   },
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 8.893675615406771e-07,
+   "max_abs_error": 8.894524996250208e-07,
    "passed": true
   },
   {
@@ -1184,13 +1184,13 @@
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 3.0305731231194954e-06,
+   "max_abs_error": 3.030573124007674e-06,
    "passed": true
   },
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 8.218019236228002e-07,
+   "max_abs_error": 8.218019236783114e-07,
    "passed": true
   },
   {
@@ -1202,13 +1202,13 @@
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 8.315269637293454e-07,
+   "max_abs_error": 8.31213738727854e-07,
    "passed": true
   },
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 2.25486364469063e-07,
+   "max_abs_error": 2.2540142638471927e-07,
    "passed": true
   },
   {
@@ -1220,175 +1220,175 @@
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 1.0806892598580475e-06,
+   "max_abs_error": 1.0806892589698691e-06,
    "passed": true
   },
   {
    "name": "random_slope_only (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 2.9305200238693985e-07,
+   "max_abs_error": 2.930520023314287e-07,
    "passed": true
   },
   {
    "name": "sleepstudy_ml (ML)",
-   "quantity": "phit bobyqa vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 0.0,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 2.308645093762607e-06,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 2.734889903877047e-05,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit nelder_mead vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 1.4779288903810084e-12,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit nelder_mead vs lme4 bobyqa: max fitted",
-   "max_abs_error": 8.164375913111144e-06,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 4.654616816424095e-05,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit bobyqa vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 1.9110757421003655e-10,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 6.20030132267857e-05,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 0.003343869538184663,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit nelder_mead vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 1.8962964531965554e-10,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 5.812534914184653e-05,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 0.0033246722690591923,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit bobyqa vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 3.922195901395753e-11,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 2.8286793138931898e-05,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.001790544285768192,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit nelder_mead vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 3.774403012357652e-11,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit nelder_mead vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 3.138956648740532e-05,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.0018097415548936624,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit bobyqa vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 1.2896180123789236e-08,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 0.0006560044564878353,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 0.038389359930306455,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit nelder_mead vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 1.2894702194898855e-08,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 0.0006538263848483439,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_ml (ML)",
-   "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 0.038370162661180984,
-   "passed": true
-  },
-  {
-   "name": "sleepstudy_reml (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: log likelihood",
    "max_abs_error": 1.1368683772161603e-13,
    "passed": true
   },
   {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
+   "max_abs_error": 2.6401550030641374e-06,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
+   "max_abs_error": 2.7114179177445408e-05,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit nelder_mead vs lme4 bobyqa: log likelihood",
+   "max_abs_error": 1.3642420526593924e-12,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit nelder_mead vs lme4 bobyqa: max fitted",
+   "max_abs_error": 8.164375856267725e-06,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
+   "max_abs_error": 4.654616839161463e-05,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit bobyqa vs lme4 Nelder_Mead: log likelihood",
+   "max_abs_error": 1.9122126104775816e-10,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
+   "max_abs_error": 6.250168652854882e-05,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
+   "max_abs_error": 0.00337259397156231,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit nelder_mead vs lme4 Nelder_Mead: log likelihood",
+   "max_abs_error": 1.8974333215737715e-10,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
+   "max_abs_error": 5.8125349227111656e-05,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
+   "max_abs_error": 0.0033246722688318187,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit bobyqa vs lme4 nlminbwrap: log likelihood",
+   "max_abs_error": 3.9335645851679146e-11,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
+   "max_abs_error": 2.7715880577261487e-05,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
+   "max_abs_error": 0.0017618198523905448,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit nelder_mead vs lme4 nlminbwrap: log likelihood",
+   "max_abs_error": 3.785771696129814e-11,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit nelder_mead vs lme4 nlminbwrap: max fitted",
+   "max_abs_error": 3.138956640214019e-05,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
+   "max_abs_error": 0.001809741555121036,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit bobyqa vs lme4 nloptwrap: log likelihood",
+   "max_abs_error": 1.2896293810626958e-08,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
+   "max_abs_error": 0.0006565753690495058,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
+   "max_abs_error": 0.0384180843636841,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit nelder_mead vs lme4 nloptwrap: log likelihood",
+   "max_abs_error": 1.2894815881736577e-08,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
+   "max_abs_error": 0.0006538263850188741,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_ml (ML)",
+   "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
+   "max_abs_error": 0.03837016266095361,
+   "passed": true
+  },
+  {
+   "name": "sleepstudy_reml (REML)",
+   "quantity": "phit bobyqa vs lme4 bobyqa: log likelihood",
+   "max_abs_error": 2.2737367544323206e-13,
+   "passed": true
+  },
+  {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 3.659027385083391e-06,
+   "max_abs_error": 3.6652842254625284e-06,
    "passed": true
   },
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 0.0002340619422511736,
+   "max_abs_error": 0.00023503966644966567,
    "passed": true
   },
   {
@@ -1406,25 +1406,25 @@
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 0.0002919080205856517,
+   "max_abs_error": 0.000291908020358278,
    "passed": true
   },
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 4.671392161981203e-10,
+   "max_abs_error": 4.672529030358419e-10,
    "passed": true
   },
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 0.00011203358423017562,
+   "max_abs_error": 0.00011201808891314613,
    "passed": true
   },
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 0.00753481830201963,
+   "max_abs_error": 0.007533840577821138,
    "passed": true
   },
   {
@@ -1436,31 +1436,31 @@
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 0.00011008307353677083,
+   "max_abs_error": 0.00011008307342308399,
    "passed": true
   },
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 0.007476972223685152,
+   "max_abs_error": 0.007476972223912526,
    "passed": true
   },
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 6.808704711147584e-10,
+   "max_abs_error": 6.8098415795248e-10,
    "passed": true
   },
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 0.00017947879589996774,
+   "max_abs_error": 0.00017951402944049732,
    "passed": true
   },
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.0016368032678837352,
+   "max_abs_error": 0.0016371389820459825,
    "passed": true
   },
   {
@@ -1478,25 +1478,25 @@
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.0015804571321549332,
+   "max_abs_error": 0.001580457132158486,
    "passed": true
   },
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 7.305516191991046e-10,
+   "max_abs_error": 7.306653060368262e-10,
    "passed": true
   },
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 0.00015884002624488858,
+   "max_abs_error": 0.0001588245309278591,
    "passed": true
   },
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 0.010140918159777357,
+   "max_abs_error": 0.010139940435578865,
    "passed": true
   },
   {
@@ -1508,13 +1508,13 @@
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 0.00015688951555148378,
+   "max_abs_error": 0.00015688951543779694,
    "passed": true
   },
   {
    "name": "sleepstudy_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 0.010083072081442879,
+   "max_abs_error": 0.010083072081670252,
    "passed": true
   },
   {
@@ -1526,7 +1526,7 @@
   {
    "name": "boundary (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 1.922962686383563e-16,
+   "max_abs_error": 0,
    "passed": true
   },
   {
@@ -1544,7 +1544,7 @@
   {
    "name": "boundary (REML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max fitted",
-   "max_abs_error": 1.922962686383563e-16,
+   "max_abs_error": 0,
    "passed": true
   },
   {
@@ -1562,7 +1562,7 @@
   {
    "name": "boundary (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 1.922962686383563e-16,
+   "max_abs_error": 0,
    "passed": true
   },
   {
@@ -1580,7 +1580,7 @@
   {
    "name": "boundary (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 1.922962686383563e-16,
+   "max_abs_error": 0,
    "passed": true
   },
   {
@@ -1598,7 +1598,7 @@
   {
    "name": "boundary (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 1.922962686383563e-16,
+   "max_abs_error": 0,
    "passed": true
   },
   {
@@ -1616,7 +1616,7 @@
   {
    "name": "boundary (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 1.922962686383563e-16,
+   "max_abs_error": 0,
    "passed": true
   },
   {
@@ -1634,7 +1634,7 @@
   {
    "name": "boundary (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 1.922962686383563e-16,
+   "max_abs_error": 0,
    "passed": true
   },
   {
@@ -1652,7 +1652,7 @@
   {
    "name": "boundary (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 1.922962686383563e-16,
+   "max_abs_error": 0,
    "passed": true
   },
   {
@@ -1664,145 +1664,145 @@
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 7.389644451905042e-13,
+   "max_abs_error": 1.0800249583553523e-12,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 6.5519571990080294e-09,
+   "max_abs_error": 6.620219039632502e-09,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 9.939415264170748e-06,
+   "max_abs_error": 1.022555263929803e-05,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 1.7053025658242404e-12,
+   "max_abs_error": 1.7621459846850485e-12,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max fitted",
-   "max_abs_error": 1.81583317271361e-08,
+   "max_abs_error": 4.464254743652418e-09,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 2.859010852063193e-06,
+   "max_abs_error": 7.96742291697683e-07,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 1.3415046851150692e-11,
+   "max_abs_error": 1.3073986337985843e-11,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 1.4185081909090513e-07,
+   "max_abs_error": 1.4187788366371024e-07,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 2.25625315088962e-05,
+   "max_abs_error": 2.2276394133768918e-05,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 1.2448708730516955e-11,
+   "max_abs_error": 1.2391865311656147e-11,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 1.624026850777227e-07,
+   "max_abs_error": 1.4870860809423903e-07,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 3.160178331640395e-05,
+   "max_abs_error": 3.220535990067219e-05,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 2.112381025654031e-08,
+   "max_abs_error": 2.1123469196027145e-08,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 1.344159514360399e-06,
+   "max_abs_error": 1.3441943167435966e-06,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.001800474529812135,
+   "max_abs_error": 0.0018007606671872622,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 2.1122843918419676e-08,
+   "max_abs_error": 2.1122787075000815e-08,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 1.3639952953781176e-06,
+   "max_abs_error": 1.3505989358009174e-06,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.0017914352780046272,
+   "max_abs_error": 0.001790831701420359,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 1.0857093002414331e-11,
+   "max_abs_error": 1.0516032489249483e-11,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 5.6031851158877544e-08,
+   "max_abs_error": 5.605679831433008e-08,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 5.577218776409154e-05,
+   "max_abs_error": 5.548605038896426e-05,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 9.890754881780595e-12,
+   "max_abs_error": 9.833911462919787e-12,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 7.640159793709245e-08,
+   "max_abs_error": 6.270752095360876e-08,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 6.48114395715993e-05,
+   "max_abs_error": 6.541501615586753e-05,
    "passed": true
   },
   {
@@ -1814,13 +1814,13 @@
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 1.5331551139752264e-08,
+   "max_abs_error": 2.1550064843722794e-08,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 3.502376601005608e-05,
+   "max_abs_error": 3.4206774190082e-05,
    "passed": true
   },
   {
@@ -1832,13 +1832,13 @@
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max fitted",
-   "max_abs_error": 7.635492238478037e-08,
+   "max_abs_error": 7.635490817392565e-08,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 2.162731025734388e-05,
+   "max_abs_error": 2.1627310253791165e-05,
    "passed": true
   },
   {
@@ -1850,13 +1850,13 @@
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 8.127314288230991e-08,
+   "max_abs_error": 7.515974687066773e-08,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 3.8085218175609725e-05,
+   "max_abs_error": 3.726822635563565e-05,
    "passed": true
   },
   {
@@ -1868,13 +1868,13 @@
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 4.307889156507372e-08,
+   "max_abs_error": 4.307886314336429e-08,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 2.4688762422897526e-05,
+   "max_abs_error": 2.4688762419344812e-05,
    "passed": true
   },
   {
@@ -1886,13 +1886,13 @@
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 5.231734974131541e-07,
+   "max_abs_error": 5.135018170676631e-07,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.0001374776698028768,
+   "max_abs_error": 0.0001418462792379671,
    "passed": true
   },
   {
@@ -1910,7 +1910,7 @@
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.00014814901388149337,
+   "max_abs_error": 0.00014814901387438795,
    "passed": true
   },
   {
@@ -1922,13 +1922,13 @@
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 6.19224834963461e-07,
+   "max_abs_error": 6.212741681110856e-07,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 0.00017218220776271664,
+   "max_abs_error": 0.00016781359832762632,
    "passed": true
   },
   {
@@ -1946,31 +1946,31 @@
   {
    "name": "nested_4_grouping_levels_ml (ML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 0.00016151086368410006,
+   "max_abs_error": 0.00016151086369120549,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 2.1600499167107046e-12,
+   "max_abs_error": 2.4442670110147446e-12,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 1.2327419085522706e-08,
+   "max_abs_error": 2.2979236291575944e-09,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 9.296174994233297e-07,
+   "max_abs_error": 4.209302463920039e-06,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 4.718003765447065e-12,
+   "max_abs_error": 5.002220859751105e-12,
    "passed": true
   },
   {
@@ -1982,259 +1982,259 @@
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 2.8948433126174677e-05,
+   "max_abs_error": 2.8948433172359955e-05,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 4.831690603168681e-12,
+   "max_abs_error": 4.547473508864641e-12,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 9.040466864007612e-08,
+   "max_abs_error": 1.0046407794561674e-07,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 1.531663309961573e-05,
+   "max_abs_error": 1.9662617972926455e-05,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 2.2737367544323206e-12,
+   "max_abs_error": 1.9895196601282805e-12,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 5.2600533706481656e-08,
+   "max_abs_error": 5.2600540811909013e-08,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 4.440174863518109e-05,
+   "max_abs_error": 4.440174868136637e-05,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 8.061419976002071e-09,
+   "max_abs_error": 8.061135758907767e-09,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 2.1452379215247674e-06,
+   "max_abs_error": 2.135005175318838e-06,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.001038096095374641,
+   "max_abs_error": 0.0010370415704024083,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 8.058862022153335e-09,
+   "max_abs_error": 8.05857780505903e-09,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 2.1735315698379054e-06,
+   "max_abs_error": 2.17353158404876e-06,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.0010275654439446669,
+   "max_abs_error": 0.0010275654439837467,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 2.643446350703016e-09,
+   "max_abs_error": 2.643162133608712e-09,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 3.874673026871278e-07,
+   "max_abs_error": 3.9096097026458665e-07,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 0.001150902481473537,
+   "max_abs_error": 0.0011552484663468476,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 2.6408883968542796e-09,
+   "max_abs_error": 2.6406041797599755e-09,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 3.9088430270339813e-07,
+   "max_abs_error": 3.908842884925434e-07,
    "passed": true
   },
   {
    "name": "nested_3_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 0.0011799875970091023,
+   "max_abs_error": 0.0011799875970552876,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 7.958078640513122e-13,
+   "max_abs_error": 1.7053025658242404e-12,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max fitted",
-   "max_abs_error": 2.1569292130152462e-08,
+   "max_abs_error": 2.6132568109460408e-08,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 2.6427083387403627e-05,
+   "max_abs_error": 4.9691418205100035e-05,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: log likelihood",
-   "max_abs_error": 1.6484591469634324e-12,
+   "max_abs_error": 1.7053025658242404e-12,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max fitted",
-   "max_abs_error": 6.778358851988742e-08,
+   "max_abs_error": 1.9308608045776054e-08,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 bobyqa: max random covariance",
-   "max_abs_error": 2.488357010577147e-05,
+   "max_abs_error": 5.119910731110622e-05,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 9.379164112033322e-12,
+   "max_abs_error": 8.469669410260394e-12,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 7.315194494594834e-08,
+   "max_abs_error": 9.334625161727672e-08,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 5.9631486099220865e-05,
+   "max_abs_error": 8.289582091691727e-05,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: log likelihood",
-   "max_abs_error": 8.526512829121202e-12,
+   "max_abs_error": 8.469669410260394e-12,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max fitted",
-   "max_abs_error": 3.506349344206683e-08,
+   "max_abs_error": 8.763573333681052e-08,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 Nelder_Mead: max random covariance",
-   "max_abs_error": 5.808797281758871e-05,
+   "max_abs_error": 8.440351002292346e-05,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 1.631974555493798e-10,
+   "max_abs_error": 1.6228796084760688e-10,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 4.5703105655547915e-07,
+   "max_abs_error": 4.773335788854638e-07,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.00021032530390741044,
+   "max_abs_error": 0.00023358963872510685,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: log likelihood",
-   "max_abs_error": 1.623448042664677e-10,
+   "max_abs_error": 1.6228796084760688e-10,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max fitted",
-   "max_abs_error": 4.190508207102539e-07,
+   "max_abs_error": 4.715982768743743e-07,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nlminbwrap: max random covariance",
-   "max_abs_error": 0.00020878179062577829,
+   "max_abs_error": 0.00023509732783111303,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 3.802256287599448e-10,
+   "max_abs_error": 3.793161340581719e-10,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 8.428250168890372e-07,
+   "max_abs_error": 8.26116078656014e-07,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit bobyqa vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 0.00020468223672764907,
+   "max_abs_error": 0.000206589902258969,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: log likelihood",
-   "max_abs_error": 3.793729774770327e-10,
+   "max_abs_error": 3.793161340581719e-10,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max fitted",
-   "max_abs_error": 8.844325236623263e-07,
+   "max_abs_error": 8.359575502936423e-07,
    "passed": true
   },
   {
    "name": "nested_4_grouping_levels_reml (REML)",
    "quantity": "phit nelder_mead vs lme4 nloptwrap: max random covariance",
-   "max_abs_error": 0.00021146132222327196,
+   "max_abs_error": 0.000211166795402562,
    "passed": true
   }
  ]
