@@ -39,5 +39,6 @@ done
 if command -v python3 >/dev/null 2>&1; then
     python3 scripts/reference-manifest.py --check
     python3 scripts/site-export.py --check
+    python3 scripts/functions-reference.py --check
 fi
 echo 'Rust/PHP release checks passed'

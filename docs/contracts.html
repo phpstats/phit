@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>API overview – phit</title>
+<title>API conventions – phit</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -122,7 +122,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./contracts.html">Reference</a></li><li class="breadcrumb-item"><a href="./contracts.html">API overview</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./functions/index.html">Functions</a></li><li class="breadcrumb-item"><a href="./contracts.html">API conventions</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -178,6 +178,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="./getting-started.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">A first model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./licensing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Licensing</span></a>
   </div>
 </li>
       </ul>
@@ -251,17 +257,100 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Deploying to servers</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-compatibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R compatibility: target, coverage and remaining work</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Examples</span></a>
+ <span class="menu-text">Functions</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./functions/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">All functions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./functions/models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./functions/mixed-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mixed models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./functions/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./functions/sampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sampling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./functions/statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Statistics and optimization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./functions/draws.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Posterior draws</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./functions/csv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSV</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./contracts.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">API conventions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Model contracts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reference-utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Shared rules</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Examples</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./examples/linear-model.html" class="sidebar-item-text sidebar-link">
@@ -296,65 +385,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">Reference</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./contracts.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">API overview</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./reference-models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Matrix model functions</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./reference-utilities.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Distributions, statistics, draws, optimization and CSV</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./licensing.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Licensing</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Compatibility and limitations</span></a>
+ <span class="menu-text">Mathematics</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./r-compatibility.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">R compatibility: target, coverage and remaining work</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
- <span class="menu-text">Mathematics</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./notebooks/index.html" class="sidebar-item-text sidebar-link">
@@ -419,13 +456,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
  <span class="menu-text">Contributing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./development.html" class="sidebar-item-text sidebar-link">
@@ -487,9 +524,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./contracts.html">Reference</a></li><li class="breadcrumb-item"><a href="./contracts.html">API overview</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./functions/index.html">Functions</a></li><li class="breadcrumb-item"><a href="./contracts.html">API conventions</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">API overview</h1>
+<h1 class="title">API conventions</h1>
 </div>
 
 
@@ -512,52 +549,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="header">
 <th>Prefix or name</th>
 <th>Purpose</th>
-<th>Reference</th>
+<th>Functions</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>fit_ols</code>, <code>fit_generalized_linear</code>, <code>fit_mixed_gaussian</code>, <code>fit_mixed_logistic</code>, <code>model_matrix</code>, <code>predict</code></td>
+<td><code>fit_ols</code>, <code>fit_generalized_linear</code>, <code>model_matrix</code>, <code>predict</code></td>
 <td>Formula models and prediction</td>
-<td><a href="./formulas.html">Model formulas</a></td>
+<td><a href="./functions/models.html">Models</a></td>
 </tr>
 <tr class="even">
-<td><code>fit_ols_matrix</code>, <code>fit_logistic_matrix</code>, <code>fit_probit_matrix</code>, <code>fit_poisson_matrix</code>, <code>fit_mixed_gaussian_intercept_matrix</code>, <code>fit_mixed_gaussian_matrix</code>, <code>fit_mixed_logistic_matrix</code></td>
+<td><code>fit_ols_matrix</code>, <code>fit_logistic_matrix</code>, <code>fit_probit_matrix</code>, <code>fit_poisson_matrix</code></td>
 <td>Models on numeric matrices</td>
-<td><a href="./reference-models.html">Matrix model functions</a></td>
+<td><a href="./functions/models.html#matrix-models">Models</a></td>
 </tr>
 <tr class="odd">
-<td><code>dist_*</code></td>
-<td>Densities, CDFs, quantiles and seeded samples</td>
-<td><a href="./reference-utilities.html">Distributions and utilities</a></td>
+<td><code>fit_mixed_gaussian</code>, <code>fit_mixed_logistic</code>, <code>fit_mixed_*_matrix</code></td>
+<td>Mixed models</td>
+<td><a href="./functions/mixed-models.html">Mixed models</a></td>
 </tr>
 <tr class="even">
-<td><code>stat_*</code></td>
-<td>Descriptive statistics, kernel density, interpolation and the ECDF</td>
-<td><a href="./reference-utilities.html">Distributions and utilities</a></td>
+<td><code>dist_*</code></td>
+<td>Densities, CDFs, quantiles, and seeded samples</td>
+<td><a href="./functions/distributions.html">Distributions</a> · <a href="./functions/sampling.html">Sampling</a></td>
 </tr>
 <tr class="odd">
+<td><code>stat_*</code>, <code>optimize</code>, <code>uniroot</code></td>
+<td>Descriptive statistics, density estimation, interpolation, the ECDF, optimization, and root finding</td>
+<td><a href="./functions/statistics.html">Statistics and optimization</a></td>
+</tr>
+<tr class="even">
 <td><code>draws_*</code></td>
 <td>Weighted posterior-draw summaries and transforms</td>
-<td><a href="./reference-utilities.html#posterior-draw-numerical-kernels">Distributions and utilities</a></td>
-</tr>
-<tr class="even">
-<td><code>optimize</code>, <code>uniroot</code></td>
-<td>One-dimensional minimization and root finding</td>
-<td><a href="./reference-utilities.html#one-dimensional-optimization-and-root-finding">Distributions and utilities</a></td>
+<td><a href="./functions/draws.html">Posterior draws</a></td>
 </tr>
 <tr class="odd">
 <td><code>permutation_rng</code></td>
 <td>Seeded permutations and samples without replacement</td>
-<td><a href="./rng.html">Seeded sampling</a></td>
+<td><a href="./functions/sampling.html#permutation_rng">Sampling</a></td>
 </tr>
 <tr class="even">
 <td><code>read_csv</code>, <code>CsvReader</code></td>
 <td>Reading delimited text files</td>
-<td><a href="./io.html">Reading CSV files</a></td>
+<td><a href="./functions/csv.html">CSV</a></td>
 </tr>
 </tbody>
 </table>
+<p><a href="./functions/index.html">All functions</a> lists every function with its purpose.</p>
 <p>Import the functions you use:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_ols<span class="ot">,</span> predict<span class="ot">,</span> dist_normal_quantile}<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>stubs/phit.php</code> in the repository declares every signature with PHPDoc array shapes for IDEs and static analysis. Do not load it at runtime.</p>
@@ -578,7 +616,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><a href="./reference-models.html">Matrix model functions</a> lists the mixed-model matrix signatures.</p>
+<p><a href="./reference-models.html">Model contracts</a> lists the mixed-model matrix signatures.</p>
 <p>Every estimator is synchronous and stateless:</p>
 <ul>
 <li>It returns a complete fit and keeps no model handle, input data, or configuration.</li>
@@ -627,7 +665,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="matrix-model-contracts" class="level2">
 <h2 class="anchored" data-anchor-id="matrix-model-contracts">Matrix model contracts</h2>
-<p><a href="./reference-models.html">Matrix model functions</a> defines the inputs, results, convergence rules, and failure cases of each matrix function:</p>
+<p><a href="./reference-models.html">Model contracts</a> defines the inputs, results, convergence rules, and failure cases of each matrix function:</p>
 <ul>
 <li><a href="./reference-models.html#ols-input-and-output">OLS</a></li>
 <li><span id="binary-logistic-regression"></span><a href="./reference-models.html#binary-logistic-regression">Binary logistic regression</a></li>

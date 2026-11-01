@@ -28,6 +28,8 @@ $p['fit'];
 
 ## Capabilities
 
+[All functions](functions/index.qmd) lists every function with its purpose and links to its reference entry.
+
 | Area | Functions | Guide |
 | --- | --- | --- |
 | Linear and generalized linear models | `fit_ols()`, `fit_generalized_linear()`: linear, logistic, probit, and Poisson regression with weights and offsets | [Models](models.qmd) |
@@ -39,7 +41,7 @@ $p['fit'];
 | Posterior draws | Weighted moments and transforms for MCMC output | [Posterior draws](draw-numerics.qmd) |
 | CSV input | A native reader, used by phibble | [Reading CSV files](io.qmd) |
 
-Each model also has a matrix function, such as `fit_ols_matrix()`, for code that builds its own design. See [Matrix model functions](reference-models.qmd).
+Each model also has a matrix function, such as `fit_ols_matrix()`, for code that builds its own design. See [Model contracts](reference-models.qmd).
 
 ## Results
 

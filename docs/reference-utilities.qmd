@@ -1,5 +1,5 @@
 ---
-title: "Distributions, statistics, draws, optimization and CSV"
+title: "Shared rules"
 ---
 
 ## Probability distributions and descriptive statistics

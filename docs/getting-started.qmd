@@ -150,4 +150,4 @@ Invalid input and failed fits throw a PHP `Exception`. `getCode()` gives the cat
 | 1004 | Rank-deficient design |
 | 1006 | Nonconvergence |
 
-The full table is in the [API overview](contracts.qmd#v01-diagnostics-and-errors).
+The full table is in the [API conventions](contracts.qmd#v01-diagnostics-and-errors).

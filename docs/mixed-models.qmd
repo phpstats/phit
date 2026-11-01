@@ -200,5 +200,5 @@ A `fit_mixed_logistic` result has the fixed-effect keys of `fit_mixed_gaussian` 
 `fit_mixed_gaussian_matrix()`, `fit_mixed_gaussian_intercept_matrix()` and `fit_mixed_logistic_matrix()` fit the same
 models from numeric matrices and explicit random-effect designs.
 `fit_mixed_gaussian_intercept_matrix()` is a faster path for a Gaussian random intercept by
-ML. [Matrix model functions](reference-models.qmd) defines their inputs, the
+ML. [Model contracts](reference-models.qmd) defines their inputs, the
 optimizer controls and the convergence rules.

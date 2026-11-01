@@ -265,7 +265,7 @@ coefficients diverging; the fitter rejects nonconvergence or singular informatio
 rather than returning a partial fit. It has no exhaustive boundary-existence test.
 Independent outcomes, equal conditional mean/variance and linear log mean are
 model assumptions. Offsets and prior weights are supported (see
-[Matrix model functions](../reference-models.qmd)); robust errors, zero-inflation
+[Model contracts](../reference-models.qmd)); robust errors, zero-inflation
 and negative-binomial alternatives are not. Try doubling every
 count while retaining the design: which coefficient should shift, and why?
 

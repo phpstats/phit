@@ -1,5 +1,5 @@
 ---
-title: "Matrix model functions"
+title: "Model contracts"
 ---
 
 The matrix functions fit the same models as the formula functions from numeric arrays: a predictor matrix `x` (one row per observation, one column per predictor) and an outcome list `y`. Use them when code already holds a design matrix, or needs a design the formula grammar cannot express.

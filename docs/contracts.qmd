@@ -1,19 +1,21 @@
 ---
-title: "API overview"
+title: "API conventions"
 ---
 
 The extension registers the PHP module `phit` (`extension=phit`, Composer `ext-phit`). Every function is in the `Phit` namespace and is named by prefix. The polyfill defines the same functions except the CSV reader; see [Extension or polyfill](extension-or-polyfill.qmd).
 
-| Prefix or name | Purpose | Reference |
+| Prefix or name | Purpose | Functions |
 | --- | --- | --- |
-| `fit_ols`, `fit_generalized_linear`, `fit_mixed_gaussian`, `fit_mixed_logistic`, `model_matrix`, `predict` | Formula models and prediction | [Model formulas](formulas.qmd) |
-| `fit_ols_matrix`, `fit_logistic_matrix`, `fit_probit_matrix`, `fit_poisson_matrix`, `fit_mixed_gaussian_intercept_matrix`, `fit_mixed_gaussian_matrix`, `fit_mixed_logistic_matrix` | Models on numeric matrices | [Matrix model functions](reference-models.qmd) |
-| `dist_*` | Densities, CDFs, quantiles and seeded samples | [Distributions and utilities](reference-utilities.qmd) |
-| `stat_*` | Descriptive statistics, kernel density, interpolation and the ECDF | [Distributions and utilities](reference-utilities.qmd) |
-| `draws_*` | Weighted posterior-draw summaries and transforms | [Distributions and utilities](reference-utilities.qmd#posterior-draw-numerical-kernels) |
-| `optimize`, `uniroot` | One-dimensional minimization and root finding | [Distributions and utilities](reference-utilities.qmd#one-dimensional-optimization-and-root-finding) |
-| `permutation_rng` | Seeded permutations and samples without replacement | [Seeded sampling](rng.qmd) |
-| `read_csv`, `CsvReader` | Reading delimited text files | [Reading CSV files](io.qmd) |
+| `fit_ols`, `fit_generalized_linear`, `model_matrix`, `predict` | Formula models and prediction | [Models](functions/models.qmd) |
+| `fit_ols_matrix`, `fit_logistic_matrix`, `fit_probit_matrix`, `fit_poisson_matrix` | Models on numeric matrices | [Models](functions/models.qmd#matrix-models) |
+| `fit_mixed_gaussian`, `fit_mixed_logistic`, `fit_mixed_*_matrix` | Mixed models | [Mixed models](functions/mixed-models.qmd) |
+| `dist_*` | Densities, CDFs, quantiles, and seeded samples | [Distributions](functions/distributions.qmd) · [Sampling](functions/sampling.qmd) |
+| `stat_*`, `optimize`, `uniroot` | Descriptive statistics, density estimation, interpolation, the ECDF, optimization, and root finding | [Statistics and optimization](functions/statistics.qmd) |
+| `draws_*` | Weighted posterior-draw summaries and transforms | [Posterior draws](functions/draws.qmd) |
+| `permutation_rng` | Seeded permutations and samples without replacement | [Sampling](functions/sampling.qmd#permutation_rng) |
+| `read_csv`, `CsvReader` | Reading delimited text files | [CSV](functions/csv.qmd) |
+
+[All functions](functions/index.qmd) lists every function with its purpose.
 
 Import the functions you use:
 
@@ -45,7 +47,7 @@ Phit\fit_ols_matrix(
 ): array;
 ```
 
-[Matrix model functions](reference-models.qmd) lists the mixed-model matrix signatures.
+[Model contracts](reference-models.qmd) lists the mixed-model matrix signatures.
 
 Every estimator is synchronous and stateless:
 
@@ -69,7 +71,7 @@ The formula functions build R's `model.matrix()` over named columns and fit it w
 
 ## Matrix model contracts
 
-[Matrix model functions](reference-models.qmd) defines the inputs, results, convergence rules, and failure cases of each matrix function:
+[Model contracts](reference-models.qmd) defines the inputs, results, convergence rules, and failure cases of each matrix function:
 
 - [OLS](reference-models.qmd#ols-input-and-output)
 - []{#binary-logistic-regression}[Binary logistic regression](reference-models.qmd#binary-logistic-regression)

@@ -123,7 +123,11 @@
     "path": "examples/polars-mixed-model.qmd"
    },
    {
-    "title": "API overview",
+    "title": "Functions",
+    "path": "functions/index.qmd"
+   },
+   {
+    "title": "API conventions",
     "path": "contracts.qmd"
    },
    {

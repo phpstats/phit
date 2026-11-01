@@ -1,0 +1,1893 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Statistics and optimization functions – phit</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5a69534754b34dc075d7f980428dccec.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../functions/index.html">Functions</a></li><li class="breadcrumb-item"><a href="../functions/statistics.html">Statistics and optimization</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">phit</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Getting started</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../installation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Installation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../extension-or-polyfill.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Extension or polyfill</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">A first model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../licensing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Licensing</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Guides</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../formulas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Model formulas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear and generalized linear models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mixed models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../missing-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Missing values and sample accounting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probability distributions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../descriptive.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Descriptive statistics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../rng.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Seeded batch sampling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../draw-numerics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Posterior-draw numerical kernels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../io.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading CSV files</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../deployment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Deploying to servers</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-compatibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R compatibility: target, coverage and remaining work</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Functions</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../functions/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">All functions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../functions/models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../functions/mixed-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mixed models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../functions/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../functions/sampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sampling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../functions/statistics.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Statistics and optimization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../functions/draws.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Posterior draws</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../functions/csv.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CSV</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../contracts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">API conventions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Model contracts</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference-utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Shared rules</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Examples</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/linear-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fit a linear model and predict</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/glm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fit logistic and Poisson models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/mixed-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fit a mixed model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Densities, quantiles, and random draws</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/polars-mixed-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fit a mixed model to a Polars table and chart it</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Mathematics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Walkthroughs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ols-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ols-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: Rust implementation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/logistic-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/probit-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probit regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/poisson-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/lmm-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian random intercept</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/lmm-general-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Random slopes and REML</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/logistic-mixed-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Binomial random intercept</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/lmm/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Published data sets</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Contributing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../development.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Development</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../releasing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Releasing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documentation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Building and maintaining the documentation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Figure conventions and reproducibility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../design-philosophy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Design philosophy</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#summaries" id="toc-summaries" class="nav-link active" data-scroll-target="#summaries">Summaries</a>
+  <ul class="collapse">
+  <li><a href="#stat_mean" id="toc-stat_mean" class="nav-link" data-scroll-target="#stat_mean"><code>stat_mean()</code></a></li>
+  <li><a href="#stat_median" id="toc-stat_median" class="nav-link" data-scroll-target="#stat_median"><code>stat_median()</code></a></li>
+  <li><a href="#stat_var" id="toc-stat_var" class="nav-link" data-scroll-target="#stat_var"><code>stat_var()</code></a></li>
+  <li><a href="#stat_sd" id="toc-stat_sd" class="nav-link" data-scroll-target="#stat_sd"><code>stat_sd()</code></a></li>
+  <li><a href="#stat_quantile" id="toc-stat_quantile" class="nav-link" data-scroll-target="#stat_quantile"><code>stat_quantile()</code></a></li>
+  <li><a href="#stat_quantile_array" id="toc-stat_quantile_array" class="nav-link" data-scroll-target="#stat_quantile_array"><code>stat_quantile_array()</code></a></li>
+  <li><a href="#stat_weighted_mean" id="toc-stat_weighted_mean" class="nav-link" data-scroll-target="#stat_weighted_mean"><code>stat_weighted_mean()</code></a></li>
+  <li><a href="#stat_weighted_var" id="toc-stat_weighted_var" class="nav-link" data-scroll-target="#stat_weighted_var"><code>stat_weighted_var()</code></a></li>
+  <li><a href="#stat_cov" id="toc-stat_cov" class="nav-link" data-scroll-target="#stat_cov"><code>stat_cov()</code></a></li>
+  <li><a href="#stat_cor" id="toc-stat_cor" class="nav-link" data-scroll-target="#stat_cor"><code>stat_cor()</code></a></li>
+  </ul></li>
+  <li><a href="#smoothing-and-interpolation" id="toc-smoothing-and-interpolation" class="nav-link" data-scroll-target="#smoothing-and-interpolation">Smoothing and interpolation</a>
+  <ul class="collapse">
+  <li><a href="#stat_density" id="toc-stat_density" class="nav-link" data-scroll-target="#stat_density"><code>stat_density()</code></a></li>
+  <li><a href="#stat_bw_nrd0" id="toc-stat_bw_nrd0" class="nav-link" data-scroll-target="#stat_bw_nrd0"><code>stat_bw_nrd0()</code></a></li>
+  <li><a href="#stat_bw_nrd" id="toc-stat_bw_nrd" class="nav-link" data-scroll-target="#stat_bw_nrd"><code>stat_bw_nrd()</code></a></li>
+  <li><a href="#stat_approx" id="toc-stat_approx" class="nav-link" data-scroll-target="#stat_approx"><code>stat_approx()</code></a></li>
+  <li><a href="#stat_ecdf" id="toc-stat_ecdf" class="nav-link" data-scroll-target="#stat_ecdf"><code>stat_ecdf()</code></a></li>
+  </ul></li>
+  <li><a href="#optimization-and-root-finding" id="toc-optimization-and-root-finding" class="nav-link" data-scroll-target="#optimization-and-root-finding">Optimization and root finding</a>
+  <ul class="collapse">
+  <li><a href="#optimize" id="toc-optimize" class="nav-link" data-scroll-target="#optimize"><code>optimize()</code></a></li>
+  <li><a href="#uniroot" id="toc-uniroot" class="nav-link" data-scroll-target="#uniroot"><code>uniroot()</code></a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../functions/index.html">Functions</a></li><li class="breadcrumb-item"><a href="../functions/statistics.html">Statistics and optimization</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Statistics and optimization functions</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- Generated by scripts/functions-reference.py from stubs/phit.php. Do not edit. -->
+<p>Descriptive statistics, density estimation, interpolation, the ECDF, and one-dimensional optimization. Missing values, weights, and errors follow the <a href="../reference-utilities.html#descriptive-statistics">shared rules</a>.</p>
+<section id="summaries" class="level2">
+<h2 class="anchored" data-anchor-id="summaries">Summaries</h2>
+<section id="stat_mean" class="level3">
+<h3 class="anchored" data-anchor-id="stat_mean"><code>stat_mean()</code></h3>
+<p>Arithmetic mean. null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_mean(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">float</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$values</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>float</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
+</section>
+<section id="stat_median" class="level3">
+<h3 class="anchored" data-anchor-id="stat_median"><code>stat_median()</code></h3>
+<p>Median (type 7 quantile at 0.5). null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_median(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">float</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$values</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>float</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
+</section>
+<section id="stat_var" class="level3">
+<h3 class="anchored" data-anchor-id="stat_var"><code>stat_var()</code></h3>
+<p>Variance; type ‘sample’ divides by n - 1, ‘population’ by n.&nbsp;null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_var(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$type</span> <span class="op">=</span> <span class="st">'sample'</span><span class="ot">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">float</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$values</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$type</code></td>
+<td><code>string</code></td>
+<td><code>'sample'</code></td>
+<td>‘sample’ divides by n − 1, ‘population’ by n</td>
+</tr>
+<tr class="odd">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>float</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
+</section>
+<section id="stat_sd" class="level3">
+<h3 class="anchored" data-anchor-id="stat_sd"><code>stat_sd()</code></h3>
+<p>Standard deviation: square root of stat_var. null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_sd(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$type</span> <span class="op">=</span> <span class="st">'sample'</span><span class="ot">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">float</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$values</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$type</code></td>
+<td><code>string</code></td>
+<td><code>'sample'</code></td>
+<td>‘sample’ divides by n − 1, ‘population’ by n</td>
+</tr>
+<tr class="odd">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>float</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
+</section>
+<section id="stat_quantile" class="level3">
+<h3 class="anchored" data-anchor-id="stat_quantile"><code>stat_quantile()</code></h3>
+<p>Sample quantile, R’s default type 7 (linear interpolation). null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_quantile(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$p</span><span class="ot">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">float</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$values</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$p</code></td>
+<td><code>float</code></td>
+<td>required</td>
+<td>Probability in [0, 1]</td>
+</tr>
+<tr class="odd">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>float</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
+</section>
+<section id="stat_quantile_array" class="level3">
+<h3 class="anchored" data-anchor-id="stat_quantile_array"><code>stat_quantile_array()</code></h3>
+<p>Several type 7 quantiles from one sort. null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_quantile_array(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$probabilities</span><span class="ot">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$values</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$probabilities</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Probabilities in [0, 1]</td>
+</tr>
+<tr class="odd">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>list&lt;float&gt;</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
+</section>
+<section id="stat_weighted_mean" class="level3">
+<h3 class="anchored" data-anchor-id="stat_weighted_mean"><code>stat_weighted_mean()</code></h3>
+<p>Weighted mean sum(w*x)/sum(w); weights must be nonnegative with a positive sum. Negative weights reject before missing deletion. null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_weighted_mean(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$weights</span><span class="ot">,</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">float</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$values</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$weights</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Nonnegative weights with a positive sum, aligned with the values</td>
+</tr>
+<tr class="odd">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>float</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
+</section>
+<section id="stat_weighted_var" class="level3">
+<h3 class="anchored" data-anchor-id="stat_weighted_var"><code>stat_weighted_var()</code></h3>
+<p>Weighted variance; type ‘frequency’ (W - 1), ‘reliability’ (W - sum(w^2)/W) or ‘population’ (W). Negative weights reject before missing deletion. null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_weighted_var(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$weights</span><span class="ot">,</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$type</span> <span class="op">=</span> <span class="st">'frequency'</span><span class="ot">,</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">float</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$values</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$weights</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Nonnegative weights with a positive sum, aligned with the values</td>
+</tr>
+<tr class="odd">
+<td><code>$type</code></td>
+<td><code>string</code></td>
+<td><code>'frequency'</code></td>
+<td>‘frequency’ divides by W − 1, ‘reliability’ by W − sum(w²)/W, ‘population’ by W, with W = sum(w)</td>
+</tr>
+<tr class="even">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>float</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
+</section>
+<section id="stat_cov" class="level3">
+<h3 class="anchored" data-anchor-id="stat_cov"><code>stat_cov()</code></h3>
+<p>Covariance; type ‘sample’ (n - 1) or ‘population’ (n). null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_cov(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$type</span> <span class="op">=</span> <span class="st">'sample'</span><span class="ot">,</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">float</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$x</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$y</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Second variable, aligned with the first; null and NAN are missing</td>
+</tr>
+<tr class="odd">
+<td><code>$type</code></td>
+<td><code>string</code></td>
+<td><code>'sample'</code></td>
+<td>‘sample’ divides by n − 1, ‘population’ by n</td>
+</tr>
+<tr class="even">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>float</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
+</section>
+<section id="stat_cor" class="level3">
+<h3 class="anchored" data-anchor-id="stat_cor"><code>stat_cor()</code></h3>
+<p>Pearson correlation; NAN when either input is constant. null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_cor(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">float</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$x</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$y</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Second variable, aligned with the first; null and NAN are missing</td>
+</tr>
+<tr class="odd">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>float</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
+</section>
+</section>
+<section id="smoothing-and-interpolation" class="level2">
+<h2 class="anchored" data-anchor-id="smoothing-and-interpolation">Smoothing and interpolation</h2>
+<section id="stat_density" class="level3">
+<h3 class="anchored" data-anchor-id="stat_density"><code>stat_density()</code></h3>
+<p>Kernel density estimate as R’s density(): linear binning, FFT convolution, then interpolation onto n points from <code>from</code> to <code>to</code>. bw: ‘nrd0’ (default), ‘nrd’ or a number, multiplied by adjust. Kernels: ‘gaussian’, ‘epanechnikov’, ‘rectangular’, ‘triangular’, ‘biweight’, ‘cosine’, ‘optcosine’. Weights are not normalized; as in R, weights summing to one are renormalized after missing values are dropped. Data arrays: null/NAN are missing, rejected by missing ‘raise’ (default) or removed by ‘drop’; infinite values raise 1003.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_density(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mixed</span> <span class="va">$bw</span> <span class="op">=</span> <span class="st">'nrd0'</span><span class="ot">,</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$adjust</span> <span class="op">=</span> <span class="fl">1.0</span><span class="ot">,</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$kernel</span> <span class="op">=</span> <span class="st">'gaussian'</span><span class="ot">,</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$n</span> <span class="op">=</span> <span class="dv">512</span><span class="ot">,</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">float</span> <span class="va">$from</span> <span class="op">=</span> <span class="kw">NULL</span><span class="ot">,</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">float</span> <span class="va">$to</span> <span class="op">=</span> <span class="kw">NULL</span><span class="ot">,</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$cut</span> <span class="op">=</span> <span class="fl">3.0</span><span class="ot">,</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">NULL</span><span class="ot">,</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$x</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$bw</code></td>
+<td><code>mixed</code></td>
+<td><code>'nrd0'</code></td>
+<td>‘nrd0’, ‘nrd’ or a positive bandwidth</td>
+</tr>
+<tr class="odd">
+<td><code>$adjust</code></td>
+<td><code>float</code></td>
+<td><code>1.0</code></td>
+<td>Multiplier applied to the bandwidth</td>
+</tr>
+<tr class="even">
+<td><code>$kernel</code></td>
+<td><code>string</code></td>
+<td><code>'gaussian'</code></td>
+<td>‘gaussian’, ‘epanechnikov’, ‘rectangular’, ‘triangular’, ‘biweight’, ‘cosine’, or ‘optcosine’</td>
+</tr>
+<tr class="odd">
+<td><code>$n</code></td>
+<td><code>int</code></td>
+<td><code>512</code></td>
+<td>Number of output points</td>
+</tr>
+<tr class="even">
+<td><code>$from</code></td>
+<td><code>?float</code></td>
+<td><code>NULL</code></td>
+<td>Left end of the output grid; null extends the data range by cut bandwidths</td>
+</tr>
+<tr class="odd">
+<td><code>$to</code></td>
+<td><code>?float</code></td>
+<td><code>NULL</code></td>
+<td>Right end of the output grid; null extends the data range by cut bandwidths</td>
+</tr>
+<tr class="even">
+<td><code>$cut</code></td>
+<td><code>float</code></td>
+<td><code>3.0</code></td>
+<td>Bandwidths beyond the data range for the default grid</td>
+</tr>
+<tr class="odd">
+<td><code>$weights</code></td>
+<td><code>?array</code></td>
+<td><code>NULL</code></td>
+<td>Nonnegative weights aligned with x, used as given; null weights all points equally</td>
+</tr>
+<tr class="even">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>array{x: list&lt;float&gt;, y: list&lt;float&gt;, bw: float, n: int}</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#density-estimation-interpolation-and-the-ecdf">Details</a></p>
+</section>
+<section id="stat_bw_nrd0" class="level3">
+<h3 class="anchored" data-anchor-id="stat_bw_nrd0"><code>stat_bw_nrd0()</code></h3>
+<p>R’s bw.nrd0: 0.9 * min(sd, IQR/1.34) * n^(-1/5), with R’s fallbacks when that is zero. Data arrays: null/NAN are missing, rejected by missing ‘raise’ (default) or removed by ‘drop’; infinite values raise 1003.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_bw_nrd0(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">float</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$x</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>float</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#density-estimation-interpolation-and-the-ecdf">Details</a></p>
+</section>
+<section id="stat_bw_nrd" class="level3">
+<h3 class="anchored" data-anchor-id="stat_bw_nrd"><code>stat_bw_nrd()</code></h3>
+<p>R’s bw.nrd: 1.06 * min(sd, IQR/1.34) * n^(-1/5). Data arrays: null/NAN are missing, rejected by missing ‘raise’ (default) or removed by ‘drop’; infinite values raise 1003.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_bw_nrd(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">float</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$x</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>float</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#density-estimation-interpolation-and-the-ecdf">Details</a></p>
+</section>
+<section id="stat_approx" class="level3">
+<h3 class="anchored" data-anchor-id="stat_approx"><code>stat_approx()</code></h3>
+<p>Interpolate (x, y) at xout as R’s approx(): method ‘linear’ or ‘constant’ (f weights the right-hand value), rule 1 gives NAN outside [min(x), max(x)], rule 2 the nearest end value; tied x collapse by ties ‘mean’, ‘min’ or ‘max’. Data arrays: null/NAN are missing, rejected by missing ‘raise’ (default) or removed by ‘drop’; infinite values raise 1003.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_approx(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$xout</span><span class="ot">,</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$method</span> <span class="op">=</span> <span class="st">'linear'</span><span class="ot">,</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$rule</span> <span class="op">=</span> <span class="dv">1</span><span class="ot">,</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$ties</span> <span class="op">=</span> <span class="st">'mean'</span><span class="ot">,</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$f</span> <span class="op">=</span> <span class="fl">0.0</span><span class="ot">,</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$x</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Abscissae of the points; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$y</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Ordinates, aligned with x; null and NAN are missing</td>
+</tr>
+<tr class="odd">
+<td><code>$xout</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Evaluation points; null or NAN gives NAN</td>
+</tr>
+<tr class="even">
+<td><code>$method</code></td>
+<td><code>string</code></td>
+<td><code>'linear'</code></td>
+<td>‘linear’ or ‘constant’</td>
+</tr>
+<tr class="odd">
+<td><code>$rule</code></td>
+<td><code>int</code></td>
+<td><code>1</code></td>
+<td>1 returns NAN outside the data range; 2 returns the value at the nearer end</td>
+</tr>
+<tr class="even">
+<td><code>$ties</code></td>
+<td><code>string</code></td>
+<td><code>'mean'</code></td>
+<td>‘mean’, ‘min’, or ‘max’ for tied x values</td>
+</tr>
+<tr class="odd">
+<td><code>$f</code></td>
+<td><code>float</code></td>
+<td><code>0.0</code></td>
+<td>For method ‘constant’, the weight of the right-hand value, in [0, 1]</td>
+</tr>
+<tr class="even">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>list&lt;float&gt;</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#density-estimation-interpolation-and-the-ecdf">Details</a></p>
+</section>
+<section id="stat_ecdf" class="level3">
+<h3 class="anchored" data-anchor-id="stat_ecdf"><code>stat_ecdf()</code></h3>
+<p>Empirical CDF of x at each q: the proportion of x at or below q, as R’s ecdf(x)(q). Data arrays: null/NAN are missing, rejected by missing ‘raise’ (default) or removed by ‘drop’; infinite values raise 1003.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_ecdf(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$q</span><span class="ot">,</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$x</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Data; null and NAN are missing</td>
+</tr>
+<tr class="even">
+<td><code>$q</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Evaluation points; null or NAN gives NAN</td>
+</tr>
+<tr class="odd">
+<td><code>$missing</code></td>
+<td><code>string</code></td>
+<td><code>'raise'</code></td>
+<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>list&lt;float&gt;</code></p>
+<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>See also</strong> <a href="../descriptive.html#density-estimation-interpolation-and-the-ecdf">Details</a></p>
+</section>
+</section>
+<section id="optimization-and-root-finding" class="level2">
+<h2 class="anchored" data-anchor-id="optimization-and-root-finding">Optimization and root finding</h2>
+<section id="optimize" class="level3">
+<h3 class="anchored" data-anchor-id="optimize"><code>optimize()</code></h3>
+<p>Minimize f on [lower, upper] (or maximize, with maximum: true) as R’s optimize(): Brent’s golden-section and parabolic search. Returns ‘minimum’ or ‘maximum’, and the objective f(x). f receives one float and returns an int or float; an exception from f propagates. Nonfinite values during the search are replaced by +/-PHP_FLOAT_MAX, as R does, with one E_WARNING.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Phit\optimize(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">callable</span> <span class="va">$f</span><span class="ot">,</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$lower</span><span class="ot">,</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$upper</span><span class="ot">,</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">float</span> <span class="va">$tol</span> <span class="op">=</span> <span class="kw">NULL</span><span class="ot">,</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="va">$maximum</span> <span class="op">=</span> <span class="kw">false</span><span class="ot">,</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$f</code></td>
+<td><code>callable</code></td>
+<td>required</td>
+<td>Objective: takes one float and returns an int or float</td>
+</tr>
+<tr class="even">
+<td><code>$lower</code></td>
+<td><code>float</code></td>
+<td>required</td>
+<td>Lower end of the search interval</td>
+</tr>
+<tr class="odd">
+<td><code>$upper</code></td>
+<td><code>float</code></td>
+<td>required</td>
+<td>Upper end of the search interval</td>
+</tr>
+<tr class="even">
+<td><code>$tol</code></td>
+<td><code>?float</code></td>
+<td><code>NULL</code></td>
+<td>Default PHP_FLOAT_EPSILON ** 0.25, as R</td>
+</tr>
+<tr class="odd">
+<td><code>$maximum</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Maximize instead of minimize</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>array{minimum: float, objective: float}\|array{maximum: float, objective: float}</code></p>
+<p><strong>Errors</strong> Input error (code 1001).</p>
+<p><strong>See also</strong> <a href="../reference-utilities.html#one-dimensional-optimization-and-root-finding">Details</a></p>
+</section>
+<section id="uniroot" class="level3">
+<h3 class="anchored" data-anchor-id="uniroot"><code>uniroot()</code></h3>
+<p>A root of f in [lower, upper] as R’s uniroot(): Brent’s method; f(lower) and f(upper) must not have the same sign. Returns the root, f(root), the iterations used and the estimated precision; E_WARNING and iter = maxiter when not converged. f receives one float and returns an int or float; an exception from f propagates. Nonfinite values during the search are replaced by +/-PHP_FLOAT_MAX, as R does, with one E_WARNING.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Phit\uniroot(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">callable</span> <span class="va">$f</span><span class="ot">,</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$lower</span><span class="ot">,</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$upper</span><span class="ot">,</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">float</span> <span class="va">$tol</span> <span class="op">=</span> <span class="kw">NULL</span><span class="ot">,</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$maxiter</span> <span class="op">=</span> <span class="dv">1000</span><span class="ot">,</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$f</code></td>
+<td><code>callable</code></td>
+<td>required</td>
+<td>Function whose root is sought: takes one float and returns an int or float</td>
+</tr>
+<tr class="even">
+<td><code>$lower</code></td>
+<td><code>float</code></td>
+<td>required</td>
+<td>Lower end of the search interval</td>
+</tr>
+<tr class="odd">
+<td><code>$upper</code></td>
+<td><code>float</code></td>
+<td>required</td>
+<td>Upper end of the search interval</td>
+</tr>
+<tr class="even">
+<td><code>$tol</code></td>
+<td><code>?float</code></td>
+<td><code>NULL</code></td>
+<td>Default PHP_FLOAT_EPSILON ** 0.25, as R</td>
+</tr>
+<tr class="odd">
+<td><code>$maxiter</code></td>
+<td><code>int</code></td>
+<td><code>1000</code></td>
+<td>Largest number of iterations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>array{root: float, f_root: float, iter: int, estim_prec: float}</code></p>
+<p><strong>Errors</strong> Input error (code 1001).</p>
+<p><strong>See also</strong> <a href="../reference-utilities.html#one-dimensional-optimization-and-root-finding">Details</a></p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/phit\.phpstats\.org\/docs\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

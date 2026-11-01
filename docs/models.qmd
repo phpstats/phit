@@ -185,7 +185,7 @@ rate ratio pro/basic 2.0945
 | `n_input`, `n_observations`, `n_dropped`, `retained_rows`, `dropped_rows` | Sample accounting |
 | `diagnostics` | `converged`, `solver`, `iterations` and `warnings` |
 
-Each family's matrix function in [Matrix model functions](reference-models.qmd)
+Each family's matrix function in [Model contracts](reference-models.qmd)
 defines these quantities exactly, including the null-deviance baseline and the
 convergence rule.
 

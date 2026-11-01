@@ -11,6 +11,13 @@ $glm = ['z_statistics'=>'list<float>','deviance'=>'float','null_deviance'=>'floa
 $mixed = ['z_statistics'=>'list<float>','fixed_fitted'=>'list<float>','marginal_residuals'=>'list<float>','aic'=>'float',
  'residual_variance'=>'float','sigma'=>'float','method'=>'string','converged'=>'bool'];
 $group = ['group_labels'=>'list<int|string>','group_sizes'=>'list<int>','random_effects'=>'list<float>','random_effects_cond_var'=>'list<float>'];
+$matrixPurpose=['Phit\fit_ols_matrix'=>'Least-squares fit of a numeric design, like R\'s lm.fit() with the full summary.',
+ 'Phit\fit_logistic_matrix'=>'Binomial logit fit of a numeric design by Newton steps, like R\'s glm(family = binomial).',
+ 'Phit\fit_probit_matrix'=>'Binomial probit fit of a numeric design by Fisher scoring, like R\'s glm(family = binomial(link = "probit")).',
+ 'Phit\fit_poisson_matrix'=>'Poisson log-link fit of a numeric design by Newton steps, like R\'s glm(family = poisson).',
+ 'Phit\fit_mixed_gaussian_intercept_matrix'=>'Gaussian model with one random intercept, fitted by ML on a numeric design.',
+ 'Phit\fit_mixed_gaussian_matrix'=>'Gaussian mixed model on a numeric design and explicit random terms, like lme4::lmer().',
+ 'Phit\fit_mixed_logistic_matrix'=>'Binomial logit model with one random intercept on a numeric design, like lme4::glmer(family = binomial).'];
 $models=['Phit\fit_ols_matrix','Phit\fit_logistic_matrix','Phit\fit_probit_matrix','Phit\fit_poisson_matrix','Phit\fit_mixed_gaussian_intercept_matrix','Phit\fit_mixed_gaussian_matrix','Phit\fit_mixed_logistic_matrix'];
 // The 0.3 names: deprecated aliases in 0.4, removed in 0.5. Each is documented as its replacement plus @deprecated.
 $aliases=['Phit\fit_lm'=>'Phit\fit_ols','Phit\fit_glm'=>'Phit\fit_generalized_linear','Phit\fit_lmer'=>'Phit\fit_mixed_gaussian','Phit\fit_glmer'=>'Phit\fit_mixed_logistic',
@@ -192,7 +199,7 @@ foreach ($functions as $name) {
   else $keys+=['z_statistics'=>'list<float>','fixed_fitted'=>'list<float>','linear_predictor'=>'list<float>','aic'=>'float','bic'=>'float','n_parameters'=>'int']+$group+
    ['n_groups'=>'int','random_intercept_sd'=>'float','random_intercept_variance'=>'float','neg2_log_likelihood'=>'float','quadrature_points'=>'int','integration'=>'string','method'=>'string','family'=>'string','link'=>'string','optimizer'=>'string','converged'=>'bool','evaluations'=>'int','gradient_max'=>'float','boundary'=>'bool','singular'=>'bool'];
   $api[$alias]['result_keys']=array_keys($keys);sort($api[$alias]['result_keys']);
-  $text.="/**\n * Predictor matrix: rows are observations. A fixed intercept is prepended by default.\n * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.\n * @param array<array<int|float|null>> \$x\n * @param array<int|float|null> \$y\n * @param bool \$intercept False uses x exactly (including any caller-supplied ones).\n";
+  $text.="/**\n * {$matrixPurpose[$name]}\n * Predictor matrix: rows are observations. A fixed intercept is prepended by default.\n * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.\n * @param array<array<int|float|null>> \$x\n * @param array<int|float|null> \$y\n * @param bool \$intercept False uses x exactly (including any caller-supplied ones).\n";
   if(in_array($name,['Phit\fit_mixed_gaussian_intercept_matrix','Phit\fit_mixed_logistic_matrix'],true))$text.=" * @param array<int|string|null> \$groups\n";
   if($name==='Phit\fit_ols_matrix')$text.=" * @param array<int|float|null>|null \$weights Positive weights: weighted least squares, as lm(weights = )\n";
   if($name==='Phit\fit_mixed_gaussian_matrix')$text.=" * @param array<array{z:array<array<int|float|null>>,groups:array<int|string|null>,correlated?:bool}> \$random\n";
@@ -231,6 +238,29 @@ foreach(get_declared_classes() as $class){
  }
  $text=rtrim($text)."\n}\n\n";
 }
+// Describe every parameter: a docblock line that ends at the parameter name gets the description from
+// scripts/php-param-docs.php, and a parameter without a line gets one, typed from the signature.
+$paramDocs=require __DIR__.'/php-param-docs.php';
+$text=preg_replace_callback('~(/\*\*(?:(?!\*/).)*?\*/)\nfunction (\w+)\(([^)]*)\)~s',function(array $m)use($paramDocs):string{
+ [$all,$doc,$function,$signature]=$m;
+ $family=preg_match('~^dist_(nbinom_mu|[a-z]+)_~',$function,$f)?$f[1]:null;
+ foreach(array_filter(array_map('trim',explode(', ',$signature))) as $param){
+  if(!preg_match('~^(\S+) \$(\w+)~',$param,$pm))continue;
+  [, $type,$name]=$pm;
+  $line='~(\* @param [^\n]*\$'.$name.')([ \t]*)\n~';
+  if(preg_match($line,$doc,$found)&&$found[2]===''){
+   $text=$paramDocs["$function:$name"]??($family?($paramDocs["$family:$name"]??null):null)??$paramDocs[php_param_group($function).":$name"]??null;
+   if($text===null)throw new RuntimeException("No description for $function \$$name");
+   $doc=preg_replace($line,'$1 '.str_replace(['\\','$'],['\\\\','\\$'],$text)."\n",$doc,1);
+  }elseif(!preg_match('~\$'.$name.'\b~',$doc)){
+   $text=$paramDocs["$function:$name"]??($family?($paramDocs["$family:$name"]??null):null)??$paramDocs[php_param_group($function).":$name"]??null;
+   if($text===null)throw new RuntimeException("No description for $function \$$name");
+   $insert=" * @param $type \$$name $text\n";
+   $doc=preg_match('~\n \* @(return|throws|deprecated)~',$doc)?preg_replace('~(\n \* @(?:return|throws|deprecated))~',"\n".rtrim($insert,"\n").'$1',$doc,1):preg_replace('~\n \*/$~',"\n".rtrim($insert,"\n")."\n */",$doc);
+  }
+ }
+ return $doc."\nfunction $function($signature)";
+},$text);
 $text=rtrim($text)."\n";
 $root=dirname(__DIR__);$stub="$root/stubs/phit.php";$apiPath="$root/tests/fixtures/php-api.json";
 if(in_array('--check',$argv,true)){

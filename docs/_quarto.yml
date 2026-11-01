@@ -71,6 +71,7 @@ website:
           - installation.qmd
           - extension-or-polyfill.qmd
           - getting-started.qmd
+          - licensing.qmd
       - section: "Guides"
         contents:
           - formulas.qmd
@@ -83,6 +84,31 @@ website:
           - draw-numerics.qmd
           - io.qmd
           - deployment.qmd
+          - r-compatibility.qmd
+      - section: "Functions"
+        contents:
+          - href: functions/index.qmd
+            text: "All functions"
+          - href: functions/models.qmd
+            text: "Models"
+          - href: functions/mixed-models.qmd
+            text: "Mixed models"
+          - href: functions/distributions.qmd
+            text: "Distributions"
+          - href: functions/sampling.qmd
+            text: "Sampling"
+          - href: functions/statistics.qmd
+            text: "Statistics and optimization"
+          - href: functions/draws.qmd
+            text: "Posterior draws"
+          - href: functions/csv.qmd
+            text: "CSV"
+          - href: contracts.qmd
+            text: "API conventions"
+          - href: reference-models.qmd
+            text: "Model contracts"
+          - href: reference-utilities.qmd
+            text: "Shared rules"
       - section: "Examples"
         contents:
           - examples/linear-model.qmd
@@ -90,15 +116,6 @@ website:
           - examples/mixed-model.qmd
           - examples/distributions.qmd
           - examples/polars-mixed-model.qmd
-      - section: "Reference"
-        contents:
-          - contracts.qmd
-          - reference-models.qmd
-          - reference-utilities.qmd
-          - licensing.qmd
-      - section: "Compatibility and limitations"
-        contents:
-          - r-compatibility.qmd
       - section: "Mathematics"
         contents:
           - href: notebooks/index.qmd
