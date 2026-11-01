@@ -618,13 +618,20 @@ pub fn fit_lmm(
                     }
                     a[(r, m + p)] = w * (y[i] - offset[i]);
                 }
-                Block {
+                if a.iter().any(|v| !v.is_finite()) {
+                    return Err(err(
+                        ErrorKind::Nonfinite,
+                        "weighted design exceeds floating-point range",
+                    ));
+                }
+                Ok(Block {
                     columns: columns.clone(),
                     r: a.qr().unpack_r(),
-                }
+                })
             })
-            .collect::<Vec<_>>()
+            .collect::<Result<Vec<_>, _>>()
     });
+    let blocks = blocks.transpose()?;
     let mut augmented = DMatrix::zeros(if blocked { 0 } else { n }, q + p + 1);
     for i in 0..augmented.nrows() {
         let w = weights[i].sqrt();

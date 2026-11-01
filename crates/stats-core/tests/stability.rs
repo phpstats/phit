@@ -121,6 +121,35 @@ fn dense_mixed_design_limit_is_checked_before_factorization() {
     assert_eq!(e.kind(), ErrorKind::Unsupported);
 }
 #[test]
+fn an_overflowing_weighted_design_is_rejected_in_blocks_too() {
+    // One grouping term splits into blocks; the weighted rows are checked as the dense summary checks them.
+    let n = 40;
+    let term = RandomTerm {
+        z: vec![vec![1.]; n],
+        groups: (0..n).map(|i| i / 4).collect(),
+        correlated: false,
+    };
+    // sqrt(1e300) * 1e300 overflows only in the weighted response column.
+    let mut y: Vec<f64> = (0..n).map(|i| (i % 7) as f64).collect();
+    y[3] = 1e300;
+    let e = fit_lmm(
+        vec![vec![1.]; n],
+        y,
+        vec![term],
+        LmmOptions {
+            weights: vec![1e300; n],
+            ..Default::default()
+        },
+    )
+    .unwrap_err();
+    assert_eq!(e.kind(), ErrorKind::Nonfinite);
+    assert!(
+        e.to_string()
+            .contains("weighted design exceeds floating-point range"),
+        "{e}"
+    );
+}
+#[test]
 fn one_grouping_term_has_no_dense_limit() {
     // 513 groups: past the dense limit, but one term splits into a block per group.
     let n = 1026;
