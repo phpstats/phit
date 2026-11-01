@@ -106,11 +106,13 @@ Observation-length outputs are fully materialized, but cross-runtime checks samp
 ten evenly spaced rows; small fixtures check every row.
 
 Benchmark absolute tolerance is 1e-7. Relative tolerance is 1e-6 for ordinary
-outputs, 1e-5 for covariance, SE, z-statistics, variance components, sigma and ICC,
+outputs, 1e-5 for covariance, SE, z-statistics, variance components, sigma, ICC, and random effects,
 and 1e-9 for likelihood/AIC. Small saved references use the tighter uniform
 1e-7 + 1e-6 × abs(reference) policy.
-These tolerances apply to phit against R. statsmodels is checked against R as a peer, at 1e-6 + 1e-5 × abs(reference),
-because its BFGS optimizer stops slightly short of R's optimum on the largest samples.
+These tolerances apply to phit against R. statsmodels is checked against R as a peer, at 1e-6 + 1e-5 × abs(reference).
+At a million rows the profiled likelihood cannot separate variance ratios that differ by about 1e-6 relative: lme4's
+deviance at R's and at phit's solutions differs by 7e-8 on 6.06 × 10^6. Independent optimizers stop at different points
+in that range, and the shrunken random effects move with the ratio, so they share the variance-sensitive tolerance.
 
 At 100,000 rows, R's between-group variance differed from the analytic-score solution by about 2.6e-6 relative while log-likelihood differed
 by only about 8e-10. The log-ratio profile score was approximately 2.55e-4 in R,

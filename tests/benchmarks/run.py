@@ -133,13 +133,14 @@ def main():
               'rust': subprocess.check_output(['rustc', '--version'], text=True).strip(),
               'tolerance': {'absolute': 1e-7 if args.model=='lmm' else 1e-9, 'relative': 1e-6 if args.model=='lmm' else 1e-7}, 'cases': []}
     if args.model == 'lmm':
-        # statsmodels' BFGS stops slightly short of R's optimum on a million rows (random effects differed by
-        # 6e-6 relative on Linux), so it is checked as a peer at this looser tolerance; phit is checked against R
-        # at the tolerance above.
+        # The profiled likelihood is flat in the variance ratio at the floating-point resolution of the objective:
+        # at n=1,000,000, lme4's deviance at R's and at phit's solution differs by 7e-8 on 6.06e6, while the ratio
+        # differs by 1e-6 relative. Variance-sensitive quantities, including the shrunken random effects, are
+        # therefore compared at 1e-5 relative. statsmodels is checked as a peer at the looser tolerance below.
         report['tolerance']['peer'] = {'absolute': 1e-6, 'relative': 1e-5}
         report['tolerance']['quantity_relative'] = {
             key:1e-5 for key in ['covariance','std_errors','z_statistics','residual_variance',
-                                 'random_intercept_variance','sigma','icc']}
+                                 'random_intercept_variance','sigma','icc','random_effects']}
         report['tolerance']['quantity_relative']['log_likelihood'] = 1e-9
         report['tolerance']['quantity_relative']['aic'] = 1e-9
     scratch = ROOT / '.context'
