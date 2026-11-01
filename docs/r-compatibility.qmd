@@ -111,6 +111,27 @@ fixtures restart `glm()` from its own solution until the coefficients stop
 changing, so they compare against the information at the converged
 coefficients.
 
+`fit_mixed_logistic()` evaluates the Laplace approximation with each group's
+conditional mode solved to convergence. lme4's `glmer()` finds the modes by
+penalized iteratively reweighted least squares (PIRLS) and stops at
+`glmerControl(tolPwrss = 1e-7)` by default. At that tolerance its objective is
+perturbed enough to move the estimates. For `cbind(incidence, size - incidence)
+~ period + (1 | herd)` on lme4's `cbpp` data, with BOBYQA at `rhoend = 1e-12`:
+
+| lme4 `tolPwrss` | log-likelihood | `period4` | herd variance |
+| --- | --- | --- | --- |
+| 1e-7 (default) | -92.0265664 | -1.5797501 | 0.4122466 |
+| 1e-10 | -92.0262819 | -1.5803138 | 0.4124997 |
+| 1e-13 | -92.0262819 | -1.5803139 | 0.4124997 |
+| phit | -92.0262819 | -1.5803139 | 0.4124997 |
+
+At the default, lme4 converges on its own objective, and a tighter `rhoend` or
+another optimizer does not change the result. The Laplace approximation written
+independently in R, with exact conditional modes, is maximized at phit's
+estimates. At lme4's default estimates, it gives -92.0262862 where lme4 reports
+-92.0265664. phit's lme4 fixtures, including this model, therefore fit
+`glmer()` with `tolPwrss = 1e-12`.
+
 Different optimizers can stop at slightly different variance estimates on a flat
 likelihood. The cross-optimizer tolerance accommodates that observed spread,
 particularly covariance entries and small residuals on sleepstudy. It does not

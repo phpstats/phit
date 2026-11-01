@@ -33,8 +33,8 @@
  "code": {
   "phit": "$fit = fit_ols('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', $data);",
   "phit-polyfill": "$fit = fit_ols('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', $data);",
-  "R": "fit <- lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10, data = d)\n  table <- coef(summary(fit))",
-  "statsmodels": "fit = smf.ols('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', data=d).fit()\n    coefficients, standard_errors = fit.params, fit.bse"
+  "R": "fit <- lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10, data = d)\ntable <- coef(summary(fit))",
+  "statsmodels": "fit = smf.ols('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', data=d).fit()\ncoefficients, standard_errors = fit.params, fit.bse"
  },
  "languages": {
   "phit": "php",

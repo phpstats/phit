@@ -15,6 +15,7 @@ import re
 import statistics
 import subprocess
 import sys
+import textwrap
 
 ROOT = Path(__file__).resolve().parents[1]
 HERE = Path(__file__).resolve().parent
@@ -70,6 +71,12 @@ WORKLOADS = {
                        'and the fixed effects agree to the precision recorded in check.',
     },
 }
+
+
+def dedent(code):
+    """The snippet without the indentation its lines after the first have in the script."""
+    first, _, rest = code.partition('\n')
+    return first + ('\n' + textwrap.dedent(rest) if rest else '')
 
 
 def command(implementation, workload, path, args):
@@ -179,7 +186,7 @@ def benchmark(workload, args):
                   'libraries loaded and no data. ' + spec['convergence'],
         'memory_measure': 'peak memory footprint',
         'check': {'max_abs_coefficient_difference': difference},
-        'code': {i: CODE[workload]['phit' if i == 'phit-polyfill' else i] for i in IMPLEMENTATIONS},
+        'code': {i: dedent(CODE[workload]['phit' if i == 'phit-polyfill' else i]) for i in IMPLEMENTATIONS},
         'languages': LANGUAGES,
         'baseline_memory_mib': baseline,
         'rows': rows,

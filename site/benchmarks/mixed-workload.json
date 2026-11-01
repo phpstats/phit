@@ -34,8 +34,8 @@
  "code": {
   "phit": "$fit = fit_mixed_gaussian('y ~ x1 + x2 + x3 + (1 | g)', $data);",
   "phit-polyfill": "$fit = fit_mixed_gaussian('y ~ x1 + x2 + x3 + (1 | g)', $data);",
-  "R": "fit <- lmer(y ~ x1 + x2 + x3 + (1 | g), data = d, REML = TRUE)\n  table <- coef(summary(fit))",
-  "statsmodels": "fit = smf.mixedlm('y ~ x1 + x2 + x3', d, groups=d['g']).fit(reml=True)\n    coefficients, standard_errors = fit.fe_params, fit.bse_fe"
+  "R": "fit <- lmer(y ~ x1 + x2 + x3 + (1 | g), data = d, REML = TRUE)\ntable <- coef(summary(fit))",
+  "statsmodels": "fit = smf.mixedlm('y ~ x1 + x2 + x3', d, groups=d['g']).fit(reml=True)\ncoefficients, standard_errors = fit.fe_params, fit.bse_fe"
  },
  "languages": {
   "phit": "php",

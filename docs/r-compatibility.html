@@ -781,6 +781,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Fixed-model comparisons use <code>abs_error &lt;= 1e-7 + 1e-6 * abs(reference)</code>. Native BOBYQA versus R BOBYQA uses <code>1e-5 + 1e-5 * abs(reference)</code> for mixed estimates; cross-optimizer comparisons use <code>1e-3 + 3e-4 * abs(reference)</code>. <strong>All mixed likelihood/AIC/BIC comparisons</strong> use the stricter <code>5e-6 + 1e-9 * abs(reference)</code>. Shapes, sample metadata, grouping order, parameter counts and singular flags are exact where compared. The notebook reports actual errors, not only pass/fail.</p>
 <p>GLM covariances are the inverse Fisher information at the final coefficients. R’s <code>vcov()</code> and <code>summary()</code> for a <code>glm</code> use the working weights of the last IRLS iteration, which were computed from the coefficients one step before the final update. Newton steps converge quadratically, so R’s coefficients are already at the maximum to many digits, but its weights lag one step behind. Its covariance therefore differs from the information at its own coefficients by about the size of that last step. This is not a difference in the convergence tolerance, in Fisher versus observed information (they are equal for the canonical logit and log links), or in dispersion (fixed at one for the binomial and Poisson families).</p>
 <p>For <code>am ~ wt + hp</code> on <code>mtcars</code>, the coefficients agree to 12 digits. R’s last step changed them by 3.4e-8 relative. The variance of the <code>wt</code> coefficient is 9.41676694948 from <code>vcov()</code> and 9.41676794579 from phit, 1.1e-7 relative. Recomputing the information in R at <code>coef(fit)</code>, or refitting with <code>start = coef(fit)</code>, gives 9.41676794579. On designs near separation the last step is larger and the two can differ by about 1e-4 relative. phit’s R fixtures restart <code>glm()</code> from its own solution until the coefficients stop changing, so they compare against the information at the converged coefficients.</p>
+<p><code>fit_mixed_logistic()</code> evaluates the Laplace approximation with each group’s conditional mode solved to convergence. lme4’s <code>glmer()</code> finds the modes by penalized iteratively reweighted least squares (PIRLS) and stops at <code>glmerControl(tolPwrss = 1e-7)</code> by default. At that tolerance its objective is perturbed enough to move the estimates. For <code>cbind(incidence, size - incidence) ~ period + (1 | herd)</code> on lme4’s <code>cbpp</code> data, with BOBYQA at <code>rhoend = 1e-12</code>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>lme4 <code>tolPwrss</code></th>
+<th>log-likelihood</th>
+<th><code>period4</code></th>
+<th>herd variance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1e-7 (default)</td>
+<td>-92.0265664</td>
+<td>-1.5797501</td>
+<td>0.4122466</td>
+</tr>
+<tr class="even">
+<td>1e-10</td>
+<td>-92.0262819</td>
+<td>-1.5803138</td>
+<td>0.4124997</td>
+</tr>
+<tr class="odd">
+<td>1e-13</td>
+<td>-92.0262819</td>
+<td>-1.5803139</td>
+<td>0.4124997</td>
+</tr>
+<tr class="even">
+<td>phit</td>
+<td>-92.0262819</td>
+<td>-1.5803139</td>
+<td>0.4124997</td>
+</tr>
+</tbody>
+</table>
+<p>At the default, lme4 converges on its own objective, and a tighter <code>rhoend</code> or another optimizer does not change the result. The Laplace approximation written independently in R, with exact conditional modes, is maximized at phit’s estimates. At lme4’s default estimates, it gives -92.0262862 where lme4 reports -92.0265664. phit’s lme4 fixtures, including this model, therefore fit <code>glmer()</code> with <code>tolPwrss = 1e-12</code>.</p>
 <p>Different optimizers can stop at slightly different variance estimates on a flat likelihood. The cross-optimizer tolerance accommodates that observed spread, particularly covariance entries and small residuals on sleepstudy. It does not replace the stricter BOBYQA check or likelihood check.</p>
 <p>The R fixtures record each wrapper’s controls and warnings. They use tightened optimization controls and <code>boundary.tol=1e-3</code>, with lme4 checking whether snapping near-boundary Cholesky parameters to zero improves the objective. At the default boundary tolerance, one singular REML case was left just above zero by nloptwrap and classified nonsingular. Tightening nlminb excessively also produced singular convergence warnings. <strong>These fixtures validate explicit controls, not identity under every package default.</strong> The saved reference runs have convergence code zero and no warnings. The multi-level BOBYQA references also use a local R-only restart (rhobeg=0.001, rhoend=1e-9) to improve variance-component precision on flat profiles; no native estimates are used to seed R. Published historical benchmark reports retain their original model/optimizer definitions; their timings do not describe the new general fitter.</p>
 </section>
