@@ -22,7 +22,8 @@
   "threads": "One thread everywhere: OPENBLAS_NUM_THREADS, OMP_NUM_THREADS, MKL_NUM_THREADS, VECLIB_MAXIMUM_THREADS and BLIS_NUM_THREADS set to 1 for R (OpenBLAS), numpy and GPBoost (OpenMP). phit and phit-polyfill are single-threaded.",
   "repeats": 7,
   "date": "2026-11-01",
-  "commit": "6166405"
+  "commit": "6166405",
+  "code_commit": "beb77ed"
  },
  "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the inputs already in memory (a PHP array, an R vector, a numpy array) to holding all four results. Building the inputs is outside the timing. Every process runs under /usr/bin/time -l. Memory is the process's peak memory footprint as macOS reports it, data included: its own allocations, without the clean file pages it maps. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak footprint with its libraries loaded and no data. No iterations to compare. phit and phit-polyfill use the _array batch functions (cdflib normal and incomplete-gamma backends). R uses its vectorized pnorm, qnorm, pgamma and qgamma. SciPy uses stats.norm and stats.gamma cdf and ppf on numpy arrays.",
  "memory_measure": "peak memory footprint",

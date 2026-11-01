@@ -24,7 +24,8 @@
   "threads": "One thread everywhere: OPENBLAS_NUM_THREADS, OMP_NUM_THREADS, MKL_NUM_THREADS, VECLIB_MAXIMUM_THREADS and BLIS_NUM_THREADS set to 1 for R (OpenBLAS), numpy and GPBoost (OpenMP). phit and phit-polyfill are single-threaded.",
   "repeats": 7,
   "date": "2026-11-01",
-  "commit": "a504722"
+  "commit": "a504722",
+  "code_commit": "beb77ed"
  },
  "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under /usr/bin/time -l. Memory is the process's peak memory footprint as macOS reports it, data included: its own allocations, without the clean file pages it maps. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak footprint with its libraries loaded and no data. phit and phit-polyfill: BOBYQA over the relative covariance factor, final trust-region radius 1e-7 (tolerance), at most 20,000 evaluations, the documented defaults. lme4 lmer(): its default nloptwrap, NLopt BOBYQA with xtol_abs 1e-8, ftol_abs 1e-8 and maxeval 1e5, on the same profiled REML criterion. statsmodels MixedLM.fit(reml=True): its default method list starting with BFGS (gtol 1e-5 on the gradient norm), which optimizes the REML likelihood over a different parameterization. The criteria differ, so iteration counts are not comparable, and the fixed effects agree to the precision recorded in check.",
  "memory_measure": "peak memory footprint",
@@ -32,10 +33,10 @@
   "max_abs_coefficient_difference": 2.152646727537899e-09
  },
  "code": {
-  "phit": "$fit = fit_mixed_gaussian('y ~ x1 + x2 + x3 + (1 | g)', $data);",
-  "phit-polyfill": "$fit = fit_mixed_gaussian('y ~ x1 + x2 + x3 + (1 | g)', $data);",
-  "R": "fit <- lmer(y ~ x1 + x2 + x3 + (1 | g), data = d, REML = TRUE)\ntable <- coef(summary(fit))",
-  "statsmodels": "fit = smf.mixedlm('y ~ x1 + x2 + x3', d, groups=d['g']).fit(reml=True)\ncoefficients, standard_errors = fit.fe_params, fit.bse_fe"
+  "phit": "$fit = fit_mixed_gaussian(\n    'y ~ x1 + x2 + x3 + (1 | g)',\n    $data,\n);",
+  "phit-polyfill": "$fit = fit_mixed_gaussian(\n    'y ~ x1 + x2 + x3 + (1 | g)',\n    $data,\n);",
+  "R": "fit <- lmer(\n  y ~ x1 + x2 + x3 + (1 | g),\n  data = d,\n  REML = TRUE\n)\ntable <- coef(summary(fit))",
+  "statsmodels": "fit = smf.mixedlm(\n    'y ~ x1 + x2 + x3',\n    d,\n    groups=d['g'],\n).fit(reml=True)\ncoefficients = fit.fe_params\nstandard_errors = fit.bse_fe"
  },
  "languages": {
   "phit": "php",

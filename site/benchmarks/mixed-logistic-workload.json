@@ -24,7 +24,8 @@
   "threads": "One thread everywhere: OPENBLAS_NUM_THREADS, OMP_NUM_THREADS, MKL_NUM_THREADS, VECLIB_MAXIMUM_THREADS and BLIS_NUM_THREADS set to 1 for R (OpenBLAS), numpy and GPBoost (OpenMP). phit and phit-polyfill are single-threaded.",
   "repeats": 7,
   "date": "2026-11-01",
-  "commit": "951dfb5"
+  "commit": "951dfb5",
+  "code_commit": "beb77ed"
  },
  "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under /usr/bin/time -l. Memory is the process's peak memory footprint as macOS reports it, data included: its own allocations, without the clean file pages it maps. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak footprint with its libraries loaded and no data. phit and phit-polyfill: BOBYQA over the fixed effects and the group SD, starting from the binomial GLM, final trust-region radius 1e-7, at most 20,000 evaluations, with each group's conditional mode solved by bracketed Newton steps. lme4 glmer(): nAGQ = 1 with its default two stages (bobyqa, then Nelder_Mead) and glmerControl(tolPwrss = 1e-10), tighter than the default 1e-7, which stops the conditional-mode iterations early enough to move the estimates (docs/r-compatibility.qmd). GPBoost 1.8.0: GPModel(likelihood=\"bernoulli_logit\") with optimizer_cov \"lbfgs\" and delta_rel_conv 1e-12, single-threaded through OMP_NUM_THREADS.",
  "memory_measure": "peak memory footprint",
@@ -32,10 +33,10 @@
   "max_abs_coefficient_difference": 1.0630688304424929e-05
  },
  "code": {
-  "phit": "$fit = fit_mixed_logistic('y ~ x1 + x2 + x3 + (1 | g)', $data);",
-  "phit-polyfill": "$fit = fit_mixed_logistic('y ~ x1 + x2 + x3 + (1 | g)', $data);",
-  "R": "fit <- glmer(y ~ x1 + x2 + x3 + (1 | g), data = d, family = binomial,\n  control = glmerControl(tolPwrss = 1e-10))\ntable <- coef(summary(fit))",
-  "GPBoost": "model = gpb.GPModel(group_data=d['g'], likelihood='bernoulli_logit')\nmodel.set_optim_params(params={'optimizer_cov': 'lbfgs', 'delta_rel_conv': 1e-12})\nmodel.fit(y=y, X=X)\ntable = model.get_coef(std_err=True)"
+  "phit": "$fit = fit_mixed_logistic(\n    'y ~ x1 + x2 + x3 + (1 | g)',\n    $data,\n);",
+  "phit-polyfill": "$fit = fit_mixed_logistic(\n    'y ~ x1 + x2 + x3 + (1 | g)',\n    $data,\n);",
+  "R": "fit <- glmer(\n  y ~ x1 + x2 + x3 + (1 | g),\n  data = d,\n  family = binomial,\n  control = glmerControl(tolPwrss = 1e-10)\n)\ntable <- coef(summary(fit))",
+  "GPBoost": "model = gpb.GPModel(\n    group_data=d['g'],\n    likelihood='bernoulli_logit',\n)\nmodel.set_optim_params(params={\n    'optimizer_cov': 'lbfgs',\n    'delta_rel_conv': 1e-12,\n})\nmodel.fit(y=y, X=X)\ntable = model.get_coef(std_err=True)"
  },
  "languages": {
   "phit": "php",

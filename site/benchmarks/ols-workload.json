@@ -23,7 +23,8 @@
   "threads": "One thread everywhere: OPENBLAS_NUM_THREADS, OMP_NUM_THREADS, MKL_NUM_THREADS, VECLIB_MAXIMUM_THREADS and BLIS_NUM_THREADS set to 1 for R (OpenBLAS), numpy and GPBoost (OpenMP). phit and phit-polyfill are single-threaded.",
   "repeats": 7,
   "date": "2026-11-01",
-  "commit": "d7b9e64"
+  "commit": "d7b9e64",
+  "code_commit": "beb77ed"
  },
  "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under /usr/bin/time -l. Memory is the process's peak memory footprint as macOS reports it, data included: its own allocations, without the clean file pages it maps. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak footprint with its libraries loaded and no data. OLS has no iterations. phit and phit-polyfill solve by column-scaled SVD. R lm() uses a Householder QR (LINPACK dqrls). statsmodels OLS.fit() uses its default method, \"pinv\": the Moore-Penrose pseudoinverse by SVD.",
  "memory_measure": "peak memory footprint",
@@ -31,10 +32,10 @@
   "max_abs_coefficient_difference": 2.9531932455029164e-12
  },
  "code": {
-  "phit": "$fit = fit_ols('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', $data);",
-  "phit-polyfill": "$fit = fit_ols('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', $data);",
-  "R": "fit <- lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10, data = d)\ntable <- coef(summary(fit))",
-  "statsmodels": "fit = smf.ols('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', data=d).fit()\ncoefficients, standard_errors = fit.params, fit.bse"
+  "phit": "$fit = fit_ols(\n    'y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10',\n    $data,\n);",
+  "phit-polyfill": "$fit = fit_ols(\n    'y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10',\n    $data,\n);",
+  "R": "fit <- lm(\n  y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10,\n  data = d\n)\ntable <- coef(summary(fit))",
+  "statsmodels": "fit = smf.ols(\n    'y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10',\n    data=d,\n).fit()\ncoefficients, standard_errors = fit.params, fit.bse"
  },
  "languages": {
   "phit": "php",
