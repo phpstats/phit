@@ -151,7 +151,8 @@
   "site/benchmarks/draws.json",
   "site/benchmarks/ols-workload.json",
   "site/benchmarks/mixed-workload.json",
-  "site/benchmarks/logistic-workload.json"
+  "site/benchmarks/logistic-workload.json",
+  "site/benchmarks/probit-workload.json"
  ],
  "verifications": [
   "site/verifications/ols.json",
