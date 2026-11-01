@@ -564,40 +564,17 @@ window.Quarto = {
 </li>
       </ul>
   </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
- <span class="menu-text">History</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./v0.1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.1 stabilization assessment (historical)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./v0.2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.2 numerical API assessment (historical)</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
  <span class="menu-text">Contributing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./development.html" class="sidebar-item-text sidebar-link">
@@ -680,7 +657,7 @@ window.Quarto = {
 X^\top X\hat\beta=X^\top y.
 \]</span></p>
 <p>This characterizes the answer, but computing the inverse of <span class="math inline">\(X^\top X\)</span> squares the condition number and can lose accuracy. In <code>crates/stats-core/src/ols.rs</code>, we scale columns with a diagonal matrix <span class="math inline">\(D\)</span> and decompose <span class="math inline">\(A=XD^{-1}=USV^\top\)</span>. The least-squares solution is <span class="math inline">\(\hat\beta=D^{-1}VS^{-1}U^\top y\)</span>. nalgebra’s SVD <code>solve</code> performs this calculation. Singular values at numerical zero indicate a rank failure. Scaling makes the rank decision less dependent on predictor units.</p>
-<p>The numerical engine uses nalgebra’s Rust-native decomposition. External BLAS/LAPACK dependencies are deferred until a concrete need justifies them; the <a href="./benchmarks/ols.html#apple-accelerate-experiment">past experiment</a> is kept as historical evidence.</p>
+<p>The numerical engine uses nalgebra’s Rust-native decomposition, with no external BLAS or LAPACK dependency.</p>
 <p>Fitted values are <span class="math inline">\(X\hat\beta\)</span>, residuals are <span class="math inline">\(y-X\hat\beta\)</span>, and <span class="math inline">\(\mathrm{RSS}\)</span> is the squared residual norm. Full rank uses <span class="math inline">\(p\)</span> estimated coefficients and leaves <span class="math inline">\(n-p\)</span> residual degrees of freedom. The unbiased estimate of error variance is <span class="math inline">\(s^2=\mathrm{RSS}/(n-p)\)</span>. The conventional covariance is</p>
 <p><span class="math display">\[
 \widehat{\operatorname{Var}}(\hat\beta)

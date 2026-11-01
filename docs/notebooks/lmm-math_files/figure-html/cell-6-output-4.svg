@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-labelledby="lmm-profile-accessible-title" width="648.00pt" height="324.00pt" viewBox="0 0 648.00 324.00"><title id="lmm-profile-accessible-title">Gaussian likelihood profile on the teaching sample</title>
+<g class="svglite">
+<defs>
+  <style type="text/css"><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width="100%" height="100%" style="stroke: none; fill: #FFFFFF;"/>
+<defs>
+  <clipPath id="cpMC4wMHw2NDguMDB8MC4wMHwzMjQuMDA=">
+    <rect x="0.00" y="0.00" width="648.00" height="324.00"/>
+  </clipPath>
+</defs>
+<g clip-path="url(#cpMC4wMHw2NDguMDB8MC4wMHwzMjQuMDA=)">
+<rect x="0.00" y="0.00" width="648.00" height="324.00" style="stroke-width: 1.16; stroke: none; fill: #FFFFFF;"/>
+</g>
+<defs>
+  <clipPath id="cpNDEuMTh8NjMyLjA2fDUwLjc5fDI3MC4yOQ==">
+    <rect x="41.18" y="50.79" width="590.88" height="219.50"/>
+  </clipPath>
+</defs>
+<g clip-path="url(#cpNDEuMTh8NjMyLjA2fDUwLjc5fDI3MC4yOQ==)">
+<polyline points="41.18,260.31 632.06,260.31 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="41.18,219.21 632.06,219.21 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="41.18,178.11 632.06,178.11 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="41.18,137.01 632.06,137.01 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="41.18,95.91 632.06,95.91 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="41.18,54.81 632.06,54.81 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="68.03,270.29 68.03,50.79 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="202.33,270.29 202.33,50.79 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="336.62,270.29 336.62,50.79 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="470.91,270.29 470.91,50.79 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="605.20,270.29 605.20,50.79 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="68.03,60.77 74.75,170.39 81.46,211.23 88.18,231.51 94.89,242.99 101.61,249.95 108.32,254.32 115.04,257.08 121.75,258.78 128.46,259.76 135.18,260.22 141.89,260.31 148.61,260.12 155.32,259.72 162.04,259.15 168.75,258.46 175.47,257.67 182.18,256.80 188.90,255.86 195.61,254.87 202.33,253.83 209.04,252.76 215.75,251.67 222.47,250.54 229.18,249.40 235.90,248.24 242.61,247.07 249.33,245.89 256.04,244.69 262.76,243.49 269.47,242.28 276.19,241.06 282.90,239.84 289.62,238.62 296.33,237.39 303.04,236.16 309.76,234.93 316.47,233.69 323.19,232.46 329.90,231.22 336.62,229.98 343.33,228.74 350.05,227.50 356.76,226.26 363.48,225.02 370.19,223.78 376.91,222.54 383.62,221.29 390.33,220.05 397.05,218.81 403.76,217.57 410.48,216.33 417.19,215.09 423.91,213.84 430.62,212.60 437.34,211.36 444.05,210.12 450.77,208.88 457.48,207.64 464.19,206.40 470.91,205.16 477.62,203.92 484.34,202.68 491.05,201.44 497.77,200.20 504.48,198.96 511.20,197.72 517.91,196.48 524.63,195.25 531.34,194.01 538.06,192.77 544.77,191.53 551.48,190.30 558.20,189.06 564.91,187.82 571.63,186.58 578.34,185.35 585.06,184.11 591.77,182.88 598.49,181.64 605.20,180.40 " style="stroke-width: 1.16; stroke: #0072B2; stroke-linecap: butt;"/>
+<line x1="140.40" y1="270.29" x2="140.40" y2="50.79" style="stroke-width: 1.16; stroke: #009E73; stroke-dasharray: 6.21,6.21; stroke-linecap: butt;"/>
+<circle cx="68.03" cy="60.77" r="3.59" style="stroke-width: 0.77; stroke: #E69F00; fill: #E69F00;"/>
+</g>
+<g clip-path="url(#cpMC4wMHw2NDguMDB8MC4wMHwzMjQuMDA=)">
+<text x="35.80" y="263.75" text-anchor="end" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="5.33px" lengthAdjust="spacingAndGlyphs">0</text>
+<text x="35.80" y="222.65" text-anchor="end" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="10.66px" lengthAdjust="spacingAndGlyphs">10</text>
+<text x="35.80" y="181.55" text-anchor="end" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="10.66px" lengthAdjust="spacingAndGlyphs">20</text>
+<text x="35.80" y="140.45" text-anchor="end" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="10.66px" lengthAdjust="spacingAndGlyphs">30</text>
+<text x="35.80" y="99.35" text-anchor="end" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="10.66px" lengthAdjust="spacingAndGlyphs">40</text>
+<text x="35.80" y="58.25" text-anchor="end" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="10.66px" lengthAdjust="spacingAndGlyphs">50</text>
+<text x="68.03" y="282.54" text-anchor="middle" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="5.33px" lengthAdjust="spacingAndGlyphs">0</text>
+<text x="202.33" y="282.54" text-anchor="middle" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="5.33px" lengthAdjust="spacingAndGlyphs">1</text>
+<text x="336.62" y="282.54" text-anchor="middle" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="5.33px" lengthAdjust="spacingAndGlyphs">2</text>
+<text x="470.91" y="282.54" text-anchor="middle" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="5.33px" lengthAdjust="spacingAndGlyphs">3</text>
+<text x="605.20" y="282.54" text-anchor="middle" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="5.33px" lengthAdjust="spacingAndGlyphs">4</text>
+<text x="336.62" y="295.42" text-anchor="middle" style="font-size: 11.00px;fill: #253247; font-family: &quot;Arial&quot;;" textLength="188.70px" lengthAdjust="spacingAndGlyphs">log(1 + random/residual variance ratio)</text>
+<text transform="translate(19.83,160.54) rotate(-90)" text-anchor="middle" style="font-size: 11.00px;fill: #253247; font-family: &quot;Arial&quot;;" textLength="226.91px" lengthAdjust="spacingAndGlyphs">Negative log-likelihood minus plotted minimum</text>
+<text x="11.96" y="42.49" style="font-size: 11.00px;fill: #536174; font-family: &quot;Arial&quot;;" textLength="305.56px" lengthAdjust="spacingAndGlyphs">Dashed line: selected ML fit; orange point: zero group variance</text>
+<text x="11.96" y="24.84" style="font-size: 18.00px; font-weight: bold;fill: #253247; font-family: &quot;Arial&quot;;" textLength="384.20px" lengthAdjust="spacingAndGlyphs">Variance-ratio profile on the teaching sample</text>
+<text x="11.96" y="310.16" style="font-size: 9.00px;fill: #536174; font-family: &quot;Arial&quot;;" textLength="349.00px" lengthAdjust="spacingAndGlyphs">Points exported by the numerical walkthrough; figure rendering does not refit the model.</text>
+</g>
+</g>
+</svg>

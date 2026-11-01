@@ -570,40 +570,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
- <span class="menu-text">History</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./v0.1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.1 stabilization assessment (historical)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./v0.2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.2 numerical API assessment (historical)</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
  <span class="menu-text">Contributing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./development.html" class="sidebar-item-text sidebar-link">
@@ -653,7 +630,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#verify" id="toc-verify" class="nav-link" data-scroll-target="#verify">Verify</a></li>
   <li><a href="#declare-the-dependency" id="toc-declare-the-dependency" class="nav-link" data-scroll-target="#declare-the-dependency">Declare the dependency</a></li>
   <li><a href="#upgrade" id="toc-upgrade" class="nav-link" data-scroll-target="#upgrade">Upgrade</a></li>
-  <li><a href="#release-history" id="toc-release-history" class="nav-link" data-scroll-target="#release-history">Release history</a></li>
   </ul>
 </nav>
     </div>
@@ -791,13 +767,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="upgrade" class="level2">
 <h2 class="anchored" data-anchor-id="upgrade">Upgrade</h2>
 <p>Run <code>pie install phpstats/phit</code> again, or replace <code>phit.so</code> with the newer binary, then restart PHP-FPM. The <a href="https://github.com/phpstats/phit/releases">release notes</a> and the <a href="https://github.com/phpstats/phit/blob/main/CHANGELOG.md">changelog</a> describe each release.</p>
-</section>
-<section id="release-history" class="level2">
-<h2 class="anchored" data-anchor-id="release-history">Release history</h2>
-<ul>
-<li>Releases up to v0.3.0 used <code>.tar.gz</code> archives, such as <code>phit-0.3.0-php8.4-x86_64-nts-bookworm.tar.gz</code>, which PIE does not download.</li>
-<li>The release workflow installs every archive in the matching official PHP image, and installs with PIE on PHP 8.3, 8.4, and 8.5 on both architectures. See <a href="./releasing.html">Releasing</a>.</li>
-</ul>
 
 
 </section>

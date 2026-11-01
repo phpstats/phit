@@ -570,40 +570,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
- <span class="menu-text">History</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./v0.1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.1 stabilization assessment (historical)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./v0.2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.2 numerical API assessment (historical)</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
  <span class="menu-text">Contributing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./development.html" class="sidebar-item-text sidebar-link">
@@ -646,7 +623,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#names-in-phit-0.4" id="toc-names-in-phit-0.4" class="nav-link active" data-scroll-target="#names-in-phit-0.4">Names in phit 0.4</a></li>
+  <li><a href="#deprecated-aliases" id="toc-deprecated-aliases" class="nav-link active" data-scroll-target="#deprecated-aliases">Deprecated aliases</a></li>
   <li><a href="#signatures" id="toc-signatures" class="nav-link" data-scroll-target="#signatures">Signatures</a></li>
   <li><a href="#formula-interfaces" id="toc-formula-interfaces" class="nav-link" data-scroll-target="#formula-interfaces">Formula interfaces</a></li>
   <li><a href="#matrix-model-contracts" id="toc-matrix-model-contracts" class="nav-link" data-scroll-target="#matrix-model-contracts">Matrix model contracts</a></li>
@@ -739,115 +716,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Import the functions you use:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_ols<span class="ot">,</span> predict<span class="ot">,</span> dist_normal_quantile}<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>stubs/phit.php</code> in the repository declares every signature with PHPDoc array shapes for IDEs and static analysis. Do not load it at runtime.</p>
-<section id="names-in-phit-0.4" class="level2">
-<h2 class="anchored" data-anchor-id="names-in-phit-0.4">Names in phit 0.4</h2>
-<p>phit 0.4.0 renamed the model functions. The 0.3 names still work in 0.4 as deprecated aliases. Each call raises one <code>E_USER_DEPRECATED</code> that names the replacement and returns exactly the replacement’s result. phit 0.5 will remove them.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>0.3 name</th>
-<th>0.4 name</th>
-<th>Input</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>fit_lm</code></td>
-<td><code>fit_ols</code></td>
-<td>Formula</td>
-</tr>
-<tr class="even">
-<td><code>fit_glm</code></td>
-<td><code>fit_generalized_linear</code></td>
-<td>Formula</td>
-</tr>
-<tr class="odd">
-<td><code>fit_lmer</code></td>
-<td><code>fit_mixed_gaussian</code></td>
-<td>Formula</td>
-</tr>
-<tr class="even">
-<td><code>fit_glmer</code></td>
-<td><code>fit_mixed_logistic</code></td>
-<td>Formula</td>
-</tr>
-<tr class="odd">
-<td><code>fit_ols</code> (matrix)</td>
-<td><code>fit_ols_matrix</code></td>
-<td>Matrix</td>
-</tr>
-<tr class="even">
-<td><code>fit_logistic</code></td>
-<td><code>fit_logistic_matrix</code></td>
-<td>Matrix</td>
-</tr>
-<tr class="odd">
-<td><code>fit_probit</code></td>
-<td><code>fit_probit_matrix</code></td>
-<td>Matrix</td>
-</tr>
-<tr class="even">
-<td><code>fit_poisson</code></td>
-<td><code>fit_poisson_matrix</code></td>
-<td>Matrix</td>
-</tr>
-<tr class="odd">
-<td><code>fit_mixed</code></td>
-<td><code>fit_mixed_gaussian_matrix</code></td>
-<td>Matrix</td>
-</tr>
-<tr class="even">
-<td><code>fit_mixed_intercept</code></td>
-<td><code>fit_mixed_gaussian_intercept_matrix</code></td>
-<td>Matrix</td>
-</tr>
-<tr class="odd">
-<td><code>fit_logistic_mixed</code></td>
-<td><code>fit_mixed_logistic_matrix</code></td>
-<td>Matrix</td>
-</tr>
-</tbody>
-</table>
-<p><code>fit_ols</code> is the one name that 0.3 and 0.4 both use, so during 0.4 it accepts both forms and dispatches on its first argument:</p>
-<ul>
-<li>A string, or the named arguments <code>formula:</code> and <code>data:</code>, is the formula fit.</li>
-<li>An array, or the named arguments <code>x:</code> and <code>y:</code>, is the 0.3 matrix fit. It returns <code>fit_ols_matrix()</code>’s result and raises one deprecation.</li>
-<li>In phit 0.5, an array passed to <code>fit_ols</code> will be an error that names <code>fit_ols_matrix()</code>.</li>
-</ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mixed</span> <span class="va">$formula</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mixed</span> <span class="va">$data</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mixed</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$x</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$y</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ul>
-<li><code>offset</code> and <code>intercept</code> belong to the matrix form. A formula writes them as <code>offset()</code> and <code>- 1</code>.</li>
-<li>Mixing the two forms, such as a formula with <code>x:</code>, throws code 1001.</li>
-<li><code>fit_mixed_logistic</code> has no <code>family</code> or <code>link</code> arguments. The deprecated <code>fit_glmer</code> still accepts them and throws code 1007 for anything but the binomial family with the logit link.</li>
-</ul>
+<section id="deprecated-aliases" class="level2">
+<h2 class="anchored" data-anchor-id="deprecated-aliases">Deprecated aliases</h2>
+<p><code>fit_lm</code>, <code>fit_glm</code>, <code>fit_lmer</code>, <code>fit_glmer</code>, <code>fit_logistic</code>, <code>fit_probit</code>, <code>fit_poisson</code>, <code>fit_mixed</code>, <code>fit_mixed_intercept</code>, and <code>fit_logistic_mixed</code>, and <code>fit_ols</code> called with a matrix, still exist as deprecated aliases: each call raises <code>E_USER_DEPRECATED</code> that names the current function and returns its result.</p>
 </section>
 <section id="signatures" class="level2">
 <h2 class="anchored" data-anchor-id="signatures">Signatures</h2>
 <p>The formula functions are listed in <a href="./formulas.html">Model formulas</a>. The four fixed-effect matrix functions share one signature:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// fit_ols_matrix, fit_logistic_matrix,</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">// fit_probit_matrix, fit_poisson_matrix</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols_matrix(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// fit_ols_matrix, fit_logistic_matrix,</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">// fit_probit_matrix, fit_poisson_matrix</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols_matrix(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$offset</span> <span class="op">=</span> <span class="kw">null</span><span class="ot">,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="va">$intercept</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><a href="./reference-models.html">Matrix model functions</a> lists the mixed-model matrix signatures.</p>
 <p>Every estimator is synchronous and stateless:</p>
 <ul>
@@ -1062,16 +947,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="implementation-notes" class="level2">
 <h2 class="anchored" data-anchor-id="implementation-notes">Implementation notes</h2>
 <p>The Rust core takes the design literally and has no PHP dependency:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">fn</span> fit_ols(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;&gt;,</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;,</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>OlsResult<span class="op">,</span> StatsError<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">fn</span> fit_ols(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;&gt;,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>) <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>OlsResult<span class="op">,</span> StatsError<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>OlsResult</code> has the statistical fields of the PHP array, with <code>Vec&lt;f64&gt;</code> for lists, <code>Vec&lt;Vec&lt;f64&gt;&gt;</code> for covariance, <code>Vec&lt;[f64; 2]&gt;</code> for confidence intervals, <code>f64</code> for scalars, and <code>usize</code> for residual degrees of freedom. Missing-value deletion and its metadata exist only in the PHP binding.</li>
 <li><code>StatsError::new(kind, message)</code> carries an explicit <code>ErrorKind</code>. <code>kind()</code> returns the category, and <code>.0</code> the message. The binding maps each <code>ErrorKind</code> to the codes above.</li>
 <li>The binding converts values and errors. It does not implement statistical formulas.</li>
 </ul>
-<p>See <a href="./design-philosophy.html">Design philosophy</a> for the boundary between this API and optional convenience layers, and the <a href="./v0.1.html">v0.1 assessment</a> for the tested stress ranges.</p>
+<p>See <a href="./design-philosophy.html">Design philosophy</a> for the boundary between this API and optional convenience layers.</p>
 
 
 </section>

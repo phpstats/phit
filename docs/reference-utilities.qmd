@@ -75,7 +75,7 @@ The ten [descriptive functions](descriptive.qmd) are `stat_mean`, `stat_var`, `s
 
 These defaults differ from the model functions, which drop missing rows by default, and from the draw kernels below, which accept no missing values. They do not depend on the input's shape.
 
-The [verification record](verifications/distributions.qmd), [benchmarks](benchmarks/distributions.qmd), and [v0.2 assessment](v0.2.qmd) cover accuracy, speed, and platform limits.
+The [verification record](verifications/distributions.qmd) and [benchmarks](benchmarks/distributions.qmd) cover accuracy and speed.
 
 ## Posterior-draw numerical kernels
 

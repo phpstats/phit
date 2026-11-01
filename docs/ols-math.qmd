@@ -30,10 +30,8 @@ $\hat\beta=D^{-1}VS^{-1}U^\top y$. nalgebra's SVD `solve` performs this
 calculation. Singular values at numerical zero indicate a rank failure. Scaling
 makes the rank decision less dependent on predictor units.
 
-The numerical engine uses nalgebra's Rust-native decomposition. External
-BLAS/LAPACK dependencies are deferred until a concrete need justifies them;
-the [past experiment](benchmarks/ols.qmd#apple-accelerate-experiment) is kept
-as historical evidence.
+The numerical engine uses nalgebra's Rust-native decomposition, with no
+external BLAS or LAPACK dependency.
 
 Fitted values are $X\hat\beta$, residuals are $y-X\hat\beta$, and
 $\mathrm{RSS}$ is the squared residual norm. Full rank uses $p$ estimated

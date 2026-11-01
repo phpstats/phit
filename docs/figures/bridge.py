@@ -3,7 +3,7 @@ import json,os,subprocess,re,html
 from pathlib import Path
 HERE=Path(__file__).resolve().parent
 STEMS={'approximation':['logistic-mixed-integration-error','logistic-mixed-node-sensitivity'],
-       'preservation':['v01-preservation'],'public-agreement':['lmm-public-agreement'],
+       'public-agreement':['lmm-public-agreement'],
        'sleepstudy':['sleepstudy-slopes'],'profile':['lmm-profile'],'posterior':['logistic-mixed-posterior']}
 def render_figure(job,payload=None,display=True):
     if payload is not None:
@@ -21,7 +21,6 @@ def render_figure(job,payload=None,display=True):
                     'logistic-mixed-posterior':'Conditional random-intercept distribution and Gaussian approximation',
                     'logistic-mixed-integration-error':'Independent integration error across quadrature node counts',
                     'logistic-mixed-node-sensitivity':'Group standard deviation sensitivity to quadrature node count',
-                    'v01-preservation':'Full PHP fitting before and after stabilization',
                     'lmm-public-agreement':'PHP and lme4 agreement on published Gaussian datasets',
                     'sleepstudy-slopes':'Observed reaction times, population mean and subject conditional means'}
             title=titles[stem]

@@ -1,0 +1,1918 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Ordinary least squares: from the objective to inference – phit</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5a69534754b34dc075d7f980428dccec.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../verification.html">Benchmarks and verification</a></li><li class="breadcrumb-item"><a href="../notebooks/index.html">Mathematics</a></li><li class="breadcrumb-item"><a href="../notebooks/ols-math.html">OLS</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">phit</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Getting started</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../installation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Installation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../extension-or-polyfill.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Extension or polyfill</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">A first model</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Guides</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../formulas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Model formulas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear and generalized linear models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mixed models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../missing-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Missing values and sample accounting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probability distributions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../descriptive.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Descriptive statistics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../rng.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Seeded batch sampling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../draw-numerics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Posterior-draw numerical kernels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../io.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading CSV files</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../deployment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Deploying to servers</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Examples</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/linear-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fit a linear model and predict</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/glm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fit logistic and Poisson models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/mixed-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fit a mixed model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Densities, quantiles, and random draws</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/polars-mixed-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fit a mixed model to a Polars table and chart it</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../contracts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">API overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Matrix model functions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference-utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, statistics, draws, optimization and CSV</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../licensing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Licensing</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Compatibility and limitations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-compatibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R compatibility: target, coverage and remaining work</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Benchmarks and verification</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verifications/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/rng.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Seeded sampling: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/draws.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Posterior draws: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verifications/ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ols-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: R and statsmodels comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verifications/logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/logistic-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic: R and statsmodels comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verifications/probit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probit: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/probit-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probit: R and statsmodels comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/probit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probit: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verifications/poisson.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/poisson-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson: R and statsmodels comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/poisson.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verifications/lmm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/lmm-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: synthetic comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/lmm-public-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: published data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/r-compatibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: lme4 optimizer audit</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/lmm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/logistic-mixed-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Binomial mixed: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/logistic-mixed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Binomial mixed: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/lmm/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Published data sets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Mathematics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Walkthroughs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ols-math.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">OLS</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ols-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: Rust implementation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/logistic-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/probit-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probit regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/poisson-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/lmm-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian random intercept</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/lmm-general-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Random slopes and REML</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/logistic-mixed-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Binomial random intercept</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Contributing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../development.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Development</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../releasing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Releasing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documentation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Building and maintaining the documentation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Figure conventions and reproducibility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../design-philosophy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Design philosophy</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#where-these-data-come-from" id="toc-where-these-data-come-from" class="nav-link active" data-scroll-target="#where-these-data-come-from">Where these data come from</a></li>
+  <li><a href="#read-the-matrices" id="toc-read-the-matrices" class="nav-link" data-scroll-target="#read-the-matrices">Read the matrices</a></li>
+  <li><a href="#what-does-fitting-minimize" id="toc-what-does-fitting-minimize" class="nav-link" data-scroll-target="#what-does-fitting-minimize">1. What does fitting minimize?</a>
+  <ul class="collapse">
+  <li><a href="#expand-the-dot-products" id="toc-expand-the-dot-products" class="nav-link" data-scroll-target="#expand-the-dot-products">Expand the dot products</a></li>
+  </ul></li>
+  <li><a href="#svd-gives-a-stable-solution-and-a-rank-check" id="toc-svd-gives-a-stable-solution-and-a-rank-check" class="nav-link" data-scroll-target="#svd-gives-a-stable-solution-and-a-rank-check">2. SVD gives a stable solution and a rank check</a>
+  <ul class="collapse">
+  <li><a href="#what-problem-does-svd-help-us-understand" id="toc-what-problem-does-svd-help-us-understand" class="nav-link" data-scroll-target="#what-problem-does-svd-help-us-understand">What problem does SVD help us understand?</a></li>
+  <li><a href="#why-scale-the-columns-first" id="toc-why-scale-the-columns-first" class="nav-link" data-scroll-target="#why-scale-the-columns-first">Why scale the columns first?</a></li>
+  <li><a href="#what-do-u-s-and-v-mean" id="toc-what-do-u-s-and-v-mean" class="nav-link" data-scroll-target="#what-do-u-s-and-v-mean">What do U, S and V mean?</a></li>
+  <li><a href="#derive-the-least-squares-solution-from-the-decomposition" id="toc-derive-the-least-squares-solution-from-the-decomposition" class="nav-link" data-scroll-target="#derive-the-least-squares-solution-from-the-decomposition">Derive the least-squares solution from the decomposition</a></li>
+  <li><a href="#why-small-singular-values-matter" id="toc-why-small-singular-values-matter" class="nav-link" data-scroll-target="#why-small-singular-values-matter">Why small singular values matter</a></li>
+  </ul></li>
+  <li><a href="#residuals-and-degrees-of-freedom" id="toc-residuals-and-degrees-of-freedom" class="nav-link" data-scroll-target="#residuals-and-degrees-of-freedom">3. Residuals and degrees of freedom</a></li>
+  <li><a href="#covariance-standard-errors-and-t-tests" id="toc-covariance-standard-errors-and-t-tests" class="nav-link" data-scroll-target="#covariance-standard-errors-and-t-tests">4. Covariance, standard errors and t-tests</a></li>
+  <li><a href="#r-squared-and-the-intercept-convention" id="toc-r-squared-and-the-intercept-convention" class="nav-link" data-scroll-target="#r-squared-and-the-intercept-convention">5. R-squared and the intercept convention</a></li>
+  <li><a href="#gaussian-likelihood-explains-the-same-estimator" id="toc-gaussian-likelihood-explains-the-same-estimator" class="nav-link" data-scroll-target="#gaussian-likelihood-explains-the-same-estimator">6. Gaussian likelihood explains the same estimator</a></li>
+  <li><a href="#verify-what-we-calculated" id="toc-verify-what-we-calculated" class="nav-link" data-scroll-target="#verify-what-we-calculated">7. Verify what we calculated</a></li>
+  <li><a href="#missing-data-singularity-and-perfect-fits" id="toc-missing-data-singularity-and-perfect-fits" class="nav-link" data-scroll-target="#missing-data-singularity-and-perfect-fits">8. Missing data, singularity and perfect fits</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../verification.html">Benchmarks and verification</a></li><li class="breadcrumb-item"><a href="../notebooks/index.html">Mathematics</a></li><li class="breadcrumb-item"><a href="../notebooks/ols-math.html">OLS</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Ordinary least squares: from the objective to inference</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This executable companion to <a href="../ols-math.html">OLS mathematics and Rust notes</a> uses Python to show the intermediate matrices; phit’s estimator is in <code>crates/stats-core/src/ols.rs</code>. It uses the saved simulated housing observations shared by the PHP example and the R fixtures.</p>
+<p>We model <span class="math inline">\(y=X\beta+\epsilon\)</span>. Rows are observations, columns are coefficients, and the first column of the mathematical design is ones (automatically added by the default PHP call). Our unknowns are the intercept and slope. We assume full column rank and <span class="math inline">\(n&gt;p\)</span>. Run cells from top to bottom; see <a href="../notebooks/index.html">notebook setup</a>.</p>
+<div id="40e78cec" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> t</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Math, display</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> show_matrix(symbol, values):</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Render calculated numbers as a LaTeX matrix, with its dimensions."""</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    matrix <span class="op">=</span> np.asarray(values)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> matrix.ndim <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        matrix <span class="op">=</span> matrix[:, <span class="va">None</span>]</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> [<span class="st">" &amp; "</span>.join(<span class="ss">f"</span><span class="sc">{</span>value<span class="sc">:.6g}</span><span class="ss">"</span> <span class="cf">for</span> value <span class="kw">in</span> row) <span class="cf">for</span> row <span class="kw">in</span> matrix]</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    latex <span class="op">=</span> <span class="vs">r"</span><span class="dv">\b</span><span class="vs">egin{bmatrix}"</span> <span class="op">+</span> <span class="vs">r" </span><span class="ch">\\</span><span class="vs"> "</span>.join(rows) <span class="op">+</span> <span class="vs">r"</span><span class="er">\</span><span class="vs">end{bmatrix}"</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    display(Math(symbol <span class="op">+</span> <span class="st">" = "</span> <span class="op">+</span> latex <span class="op">+</span> <span class="vs">rf"</span><span class="er">\</span><span class="vs">quad</span><span class="kw">(</span><span class="sc">{</span>matrix<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ch">\t</span><span class="vs">imes </span><span class="sc">{</span>matrix<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="kw">)</span><span class="vs">"</span>))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> math_number(value):</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    number <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>value<span class="sc">:.8g}</span><span class="ss">"</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">"e"</span> <span class="kw">in</span> number:</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        mantissa, exponent <span class="op">=</span> number.split(<span class="st">"e"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> mantissa <span class="op">+</span> <span class="vs">rf"</span><span class="ch">\t</span><span class="vs">imes10</span><span class="dv">^</span><span class="ch">{{</span><span class="sc">{</span><span class="bu">int</span>(exponent)<span class="sc">}</span><span class="ch">}}</span><span class="vs">"</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> number</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> show_dot(symbol, left, right):</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Show the first two and last products, but sum every term."""</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    left, right <span class="op">=</span> np.asarray(left), np.asarray(right)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> left.ndim <span class="op">==</span> right.ndim <span class="op">==</span> <span class="dv">1</span> <span class="kw">and</span> left.shape <span class="op">==</span> right.shape</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    terms <span class="op">=</span> [<span class="vs">rf"</span><span class="kw">(</span><span class="sc">{</span>math_number(a)<span class="sc">}</span><span class="kw">)</span><span class="er">\</span><span class="vs">cdot</span><span class="kw">(</span><span class="sc">{</span>math_number(b)<span class="sc">}</span><span class="kw">)</span><span class="vs">"</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>             <span class="cf">for</span> a, b <span class="kw">in</span> <span class="bu">zip</span>(left, right)]</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(terms) <span class="op">&gt;</span> <span class="dv">3</span>:</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>        terms <span class="op">=</span> terms[:<span class="dv">2</span>] <span class="op">+</span> [<span class="vs">r"</span><span class="er">\</span><span class="vs">cdots"</span>, terms[<span class="op">-</span><span class="dv">1</span>]]</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    display(Math(symbol <span class="op">+</span> <span class="st">" = "</span> <span class="op">+</span> <span class="st">" + "</span>.join(terms)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>                 <span class="op">+</span> <span class="vs">r"</span><span class="ch">\a</span><span class="vs">pprox "</span> <span class="op">+</span> math_number(left <span class="op">@</span> right)))</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Run from the repository root or anywhere below it.</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>ROOT <span class="op">=</span> <span class="bu">next</span>(p <span class="cf">for</span> p <span class="kw">in</span> [Path.cwd(), <span class="op">*</span>Path.cwd().parents] <span class="cf">if</span> (p <span class="op">/</span> <span class="st">"Cargo.toml"</span>).exists())</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>fixture <span class="op">=</span> json.loads((ROOT <span class="op">/</span> <span class="st">"tests/fixtures/ols-r.json"</span>).read_text())</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>case <span class="op">=</span> <span class="bu">next</span>(c <span class="cf">for</span> c <span class="kw">in</span> fixture[<span class="st">"cases"</span>] <span class="cf">if</span> c[<span class="st">"name"</span>] <span class="op">==</span> <span class="st">"simulated_housing"</span>)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array(case[<span class="st">"x"</span>], dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array(case[<span class="st">"y"</span>], dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>n, p <span class="op">=</span> X.shape</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>observations <span class="op">=</span> pd.read_csv(ROOT <span class="op">/</span> <span class="st">"docs/data/housing.csv"</span>)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>np.testing.assert_array_equal(X[:, <span class="dv">1</span>], observations[<span class="st">"area_m2"</span>])</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>np.testing.assert_array_equal(y, observations[<span class="st">"monthly_rent"</span>])</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>display(observations)</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>display(observations.corr().rename_axis(<span class="st">"Sample Pearson correlations"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">area_m2</th>
+<th data-quarto-table-cell-role="th">bedrooms</th>
+<th data-quarto-table-cell-role="th">monthly_rent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>74.4</td>
+<td>2</td>
+<td>1879.25</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>57.4</td>
+<td>2</td>
+<td>1805.03</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>66.4</td>
+<td>2</td>
+<td>2022.29</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>49.1</td>
+<td>1</td>
+<td>1267.85</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>45.7</td>
+<td>1</td>
+<td>1509.24</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>92.4</td>
+<td>3</td>
+<td>2240.10</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>37.0</td>
+<td>1</td>
+<td>959.51</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>93.9</td>
+<td>3</td>
+<td>2386.54</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">area_m2</th>
+<th data-quarto-table-cell-role="th">bedrooms</th>
+<th data-quarto-table-cell-role="th">monthly_rent</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Sample Pearson correlations</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">area_m2</th>
+<td>1.000000</td>
+<td>0.961874</td>
+<td>0.936149</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">bedrooms</th>
+<td>0.961874</td>
+<td>1.000000</td>
+<td>0.932812</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">monthly_rent</th>
+<td>0.936149</td>
+<td>0.932812</td>
+<td>1.000000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<section id="where-these-data-come-from" class="level3">
+<h3 class="anchored" data-anchor-id="where-these-data-come-from">Where these data come from</h3>
+<p>Each row is a simulated apartment: <code>area_m2</code> is floor area in square metres, <code>bedrooms</code> is a correlated count, and <code>monthly_rent</code> is rent in fictional currency units per month. The generator uses seed <code>20261011</code> and saves the eight observations in <a href="../data/housing.csv">housing.csv</a>. See <code>tests/generate-learning-data.R</code> for the complete generation process. The saved CSV, rather than independently generated samples in each language, is the input to every implementation.</p>
+<p>We generate area uniformly between 35 and 110 square metres, then generate bedrooms from area plus noise, rounded and bounded to 1–4. Rent follows</p>
+<p><span class="math display">\[\mathrm{rent}_i=650+18\,\mathrm{area}_i+\epsilon_i,
+\qquad \epsilon_i\sim N(0,180^2).\]</span></p>
+<p>So the population intercept is 650, the slope is 18 currency units per additional square metre, and the error standard deviation is 180. We know these because we wrote the simulation, not because an estimator discovered them. Estimated coefficients differ from the generating values because this sample contains noise.</p>
+<p>The correlation table above reports <strong>observed sample Pearson correlations</strong>. Area and rent are associated, as are area and bedroom count. Eight observations keep the matrices readable; they are a teaching sample, not enough to make reliable claims about a housing market. Correlation alone does not establish causation. The first model uses area only; bedrooms become a second predictor in the <a href="../notebooks/ols-verification.html">verification notebook</a>. Bedrooms have no additional direct term in this simulated rent equation, despite their correlation with rent.</p>
+</section>
+<section id="read-the-matrices" class="level3">
+<h3 class="anchored" data-anchor-id="read-the-matrices">Read the matrices</h3>
+<p><span class="math inline">\(X\)</span> has <span class="math inline">\(n=8\)</span> rows (observations) and <span class="math inline">\(p=2\)</span> columns (intercept and slope). <span class="math inline">\(y\)</span> is a column vector, so its mathematical dimensions are <span class="math inline">\(8\times1\)</span>. NumPy stores our vectors as one-dimensional arrays; we display them as columns. The second column contains the observed floor areas; the first column of ones is a constructed intercept column, not a measurement or a starting guess. The superscript <span class="math inline">\(\top\)</span> means <strong>transpose</strong>: swap rows and columns, without changing the values. In Python, <code>X.T</code> is <span class="math inline">\(X^\top\)</span>.</p>
+<div id="d6e8f42a" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="st">"X"</span>, X)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="st">"y"</span>, y)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"X</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op"</span>, X.T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle X = \begin{bmatrix}1 &amp; 74.4 \\ 1 &amp; 57.4 \\ 1 &amp; 66.4 \\ 1 &amp; 49.1 \\ 1 &amp; 45.7 \\ 1 &amp; 92.4 \\ 1 &amp; 37 \\ 1 &amp; 93.9\end{bmatrix}\quad(8\times 2)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle y = \begin{bmatrix}1879.25 \\ 1805.03 \\ 2022.29 \\ 1267.85 \\ 1509.24 \\ 2240.1 \\ 959.51 \\ 2386.54\end{bmatrix}\quad(8\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle X^\top = \begin{bmatrix}1 &amp; 1 &amp; 1 &amp; 1 &amp; 1 &amp; 1 &amp; 1 &amp; 1 \\ 74.4 &amp; 57.4 &amp; 66.4 &amp; 49.1 &amp; 45.7 &amp; 92.4 &amp; 37 &amp; 93.9\end{bmatrix}\quad(2\times 8)\)</span></p>
+</div>
+</div>
+<p>Matrix multiplication takes a row from the left matrix and a column from the right matrix, multiplies their corresponding entries, and adds the products. The inner dimensions must match: <span class="math inline">\((a\times b)(b\times c)\)</span> produces <span class="math inline">\(a\times c\)</span>. Numbers in these displays are rounded to six significant digits for readability; calculations and verification use the full precision values.</p>
+</section>
+<section id="what-does-fitting-minimize" class="level2">
+<h2 class="anchored" data-anchor-id="what-does-fitting-minimize">1. What does fitting minimize?</h2>
+<p>For a candidate <span class="math inline">\(\beta\)</span>, fitted values are <span class="math inline">\(X\beta\)</span> and residuals are <span class="math inline">\(r=y-X\beta\)</span>. The residual sum of squares is</p>
+<p><span class="math display">\[RSS(\beta)=r^\top r=\sum_i(y_i-x_i^\top\beta)^2.\]</span></p>
+<p>OLS chooses <span class="math inline">\(\hat\beta=\arg\min_\beta RSS(\beta)\)</span>. Squaring makes large errors costly and gives a smooth quadratic. Differentiating gives <span class="math inline">\(-2X^\top(y-X\beta)\)</span>; at the minimum,</p>
+<p><span class="math display">\[X^\top X\hat\beta=X^\top y.\]</span></p>
+<p>These normal equations explain the answer. Computing <span class="math inline">\((X^\top X)^{-1}\)</span> directly is a poor numerical strategy: forming <span class="math inline">\(X^\top X\)</span> squares the condition number. The implementation solves through SVD instead.</p>
+<div id="b54d60f4" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rss_at(beta):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    residuals <span class="op">=</span> y <span class="op">-</span> X <span class="op">@</span> np.asarray(beta)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> residuals <span class="op">@</span> residuals</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"RSS at generating coefficients [650, 18]:"</span>, rss_at([<span class="dv">650</span>, <span class="dv">18</span>]))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Gradient there:"</span>, <span class="op">-</span><span class="dv">2</span> <span class="op">*</span> X.T <span class="op">@</span> (y <span class="op">-</span> X <span class="op">@</span> np.array([<span class="dv">650</span>, <span class="dv">18</span>])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RSS at generating coefficients [650, 18]: 264940.4373000001
+Gradient there: [  847.18  32810.806]</code></pre>
+</div>
+</div>
+<p>At the trial coefficients <span class="math inline">\(\beta=[650,18]^\top\)</span>, each fitted outcome is <span class="math inline">\(1\cdot650+\mathrm{area}_i\cdot18\)</span>. The residual is the observed outcome minus that fit.</p>
+<div id="675b1643" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>trial_beta <span class="op">=</span> np.array([<span class="fl">650.</span>, <span class="fl">18.</span>])</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"</span><span class="dv">\b</span><span class="vs">eta_{</span><span class="dv">\m</span><span class="vs">athrm{trial}}"</span>, trial_beta)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"X</span><span class="dv">\b</span><span class="vs">eta_{</span><span class="dv">\m</span><span class="vs">athrm{trial}}"</span>, X <span class="op">@</span> trial_beta)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"y-X</span><span class="dv">\b</span><span class="vs">eta_{</span><span class="dv">\m</span><span class="vs">athrm{trial}}"</span>, y <span class="op">-</span> X <span class="op">@</span> trial_beta)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"X</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op X"</span>, X.T <span class="op">@</span> X)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"X</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op y"</span>, X.T <span class="op">@</span> y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle \beta_{\mathrm{trial}} = \begin{bmatrix}650 \\ 18\end{bmatrix}\quad(2\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle X\beta_{\mathrm{trial}} = \begin{bmatrix}1989.2 \\ 1683.2 \\ 1845.2 \\ 1533.8 \\ 1472.6 \\ 2313.2 \\ 1316 \\ 2340.2\end{bmatrix}\quad(8\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle y-X\beta_{\mathrm{trial}} = \begin{bmatrix}-109.95 \\ 121.83 \\ 177.09 \\ -265.95 \\ 36.64 \\ -73.1 \\ -356.49 \\ 46.34\end{bmatrix}\quad(8\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle X^\top X = \begin{bmatrix}8 &amp; 516.3 \\ 516.3 &amp; 36462.4\end{bmatrix}\quad(2\times 2)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle X^\top y = \begin{bmatrix}14069.8 \\ 975512\end{bmatrix}\quad(2\times 1)\)</span></p>
+</div>
+</div>
+<p>Here <span class="math inline">\(X^\top X\)</span> has dimensions <span class="math inline">\((2\times8)(8\times2)=2\times2\)</span>. Its top-left entry is the sum of eight squared ones, hence 8; its top-right entry is the sum of the observed floor areas; its bottom-right entry is the sum of their squares. For example, its top-right calculation begins <span class="math inline">\(1\cdot74.4+1\cdot57.4+\cdots+1\cdot93.9\)</span>. <span class="math inline">\(X^\top y\)</span> contains the sum of rents and the sum of area–rent products. The normal equations give two equations for the two unknown coefficients. We show these products to understand the mathematics; the numerical solver below uses SVD rather than the normal equations.</p>
+<section id="expand-the-dot-products" class="level3">
+<h3 class="anchored" data-anchor-id="expand-the-dot-products">Expand the dot products</h3>
+<p>Every entry in a matrix product is one row–column dot product. Below, we show the first two and last terms of long sums; <span class="math inline">\(\cdots\)</span> stands for the omitted terms. <strong>The result includes all eight observations</strong>, not just the displayed terms. Both factors and results are rounded for display, so the equals sign describes the operation and <span class="math inline">\(\approx\)</span> marks the displayed numerical result.</p>
+<div id="61538415" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(p):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(p):</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        show_dot(<span class="vs">rf"</span><span class="kw">(</span><span class="vs">X</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op X</span><span class="kw">)</span><span class="vs">_</span><span class="ch">{{</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="vs">,</span><span class="sc">{</span>j<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ch">}}</span><span class="vs">"</span>, X[:, i], X[:, j])</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(p):</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    show_dot(<span class="vs">rf"</span><span class="kw">(</span><span class="vs">X</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op y</span><span class="kw">)</span><span class="vs">_</span><span class="ch">{{</span><span class="sc">{</span>j<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ch">}}</span><span class="vs">"</span>, X[:, j], y)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>show_dot(<span class="vs">r"</span><span class="kw">(</span><span class="vs">X</span><span class="dv">\b</span><span class="vs">eta_{</span><span class="dv">\m</span><span class="vs">athrm{trial}}</span><span class="kw">)</span><span class="vs">_1"</span>, X[<span class="dv">0</span>], trial_beta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (X^\top X)_{1,1} = (1)\cdot(1) + (1)\cdot(1) + \cdots + (1)\cdot(1)\approx 8\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (X^\top X)_{1,2} = (1)\cdot(74.4) + (1)\cdot(57.4) + \cdots + (1)\cdot(93.9)\approx 516.3\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (X^\top X)_{2,1} = (74.4)\cdot(1) + (57.4)\cdot(1) + \cdots + (93.9)\cdot(1)\approx 516.3\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (X^\top X)_{2,2} = (74.4)\cdot(74.4) + (57.4)\cdot(57.4) + \cdots + (93.9)\cdot(93.9)\approx 36462.35\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (X^\top y)_{1} = (1)\cdot(1879.25) + (1)\cdot(1805.03) + \cdots + (1)\cdot(2386.54)\approx 14069.81\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (X^\top y)_{2} = (74.4)\cdot(1879.25) + (57.4)\cdot(1805.03) + \cdots + (93.9)\cdot(2386.54)\approx 975511.9\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (X\beta_{\mathrm{trial}})_1 = (1)\cdot(650) + (74.4)\cdot(18)\approx 1989.2\)</span></p>
+</div>
+</div>
+<p>The subscripts here use mathematical indexing starting at 1 (Python indices start at 0). In particular, <span class="math inline">\((X^\top X)_{1,2}\)</span> and <span class="math inline">\((X^\top X)_{2,1}\)</span> are equal: swapping the two factors in every scalar product does not change their sum. This is why <span class="math inline">\(X^\top X\)</span> is symmetric.</p>
+</section>
+</section>
+<section id="svd-gives-a-stable-solution-and-a-rank-check" class="level2">
+<h2 class="anchored" data-anchor-id="svd-gives-a-stable-solution-and-a-rank-check">2. SVD gives a stable solution and a rank check</h2>
+<section id="what-problem-does-svd-help-us-understand" class="level3">
+<h3 class="anchored" data-anchor-id="what-problem-does-svd-help-us-understand">What problem does SVD help us understand?</h3>
+<p><strong>SVD means singular value decomposition.</strong> A decomposition rewrites one matrix as a product of simpler matrices. It does not change the data or guess the coefficients. For our model, multiplying <span class="math inline">\(X\beta\)</span> takes two coefficient values and produces eight fitted rents. That is a map from a two-dimensional coefficient space into an eight-dimensional observation space.</p>
+<p>The possible fitted vectors form the <strong>column space</strong> of <span class="math inline">\(X\)</span>: all linear combinations of its intercept and area columns. It is a two-dimensional plane through the origin inside that eight-dimensional space. The observed <span class="math inline">\(y\)</span> will generally lie outside this plane because it includes noise. Least squares seeks the point on the plane closest to <span class="math inline">\(y\)</span> in squared Euclidean distance.</p>
+<p>These are spaces of vectors, not a scatterplot of area against rent: the eight coordinates of an observation-space vector correspond to the eight apartments.</p>
+</section>
+<section id="why-scale-the-columns-first" class="level3">
+<h3 class="anchored" data-anchor-id="why-scale-the-columns-first">Why scale the columns first?</h3>
+<p>Scale the columns with <span class="math inline">\(D=\operatorname{diag}(\|X_j\|)\)</span>, so <span class="math inline">\(A=XD^{-1}\)</span>. Decompose <span class="math inline">\(A=USV^\top\)</span>. Then</p>
+<p><span class="math display">\[\hat\beta=D^{-1}VS^{-1}U^\top y.\]</span></p>
+<p>The notation <span class="math inline">\(\|X_j\|=\sqrt{\sum_i X_{ij}^2}\)</span> is the Euclidean length of column <span class="math inline">\(j\)</span>. <span class="math inline">\(D\)</span> has those lengths on its diagonal and zeros elsewhere. Multiplying by <span class="math inline">\(D^{-1}\)</span> divides each column by its length, giving unit-length columns in <span class="math inline">\(A\)</span>. This is column scaling, <strong>not centering or z-score standardization</strong>. The intercept column is scaled too; no observations are changed or removed.</p>
+<p>Define scaled coefficients <span class="math inline">\(\theta=D\beta\)</span>. Then <span class="math inline">\(A\theta=X\beta\)</span>, so this change of units preserves every possible fitted vector. We solve for <span class="math inline">\(\theta\)</span> and recover <span class="math inline">\(\beta=D^{-1}\theta\)</span>. Scaling prevents the numerical rank decision from being dominated simply by the choice of metres versus centimetres.</p>
+</section>
+<section id="what-do-u-s-and-v-mean" class="level3">
+<h3 class="anchored" data-anchor-id="what-do-u-s-and-v-mean">What do U, S and V mean?</h3>
+<p>For our full-rank design, the thin SVD is</p>
+<p><span class="math display">\[A=USV^\top,\qquad
+U^\top U=I_2,\qquad V^\top V=VV^\top=I_2.\]</span></p>
+<p><span class="math inline">\(I_2\)</span> is the <span class="math inline">\(2\times2\)</span> identity matrix: ones on its diagonal and zeros elsewhere. <strong>Orthonormal</strong> columns have length one and are perpendicular to one another; their dot products are therefore 1 with themselves and 0 with each other. Those equalities are exactly what the identity matrices say.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Matrix</th>
+<th>Dimensions</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(V\)</span></td>
+<td><span class="math inline">\(2\times2\)</span></td>
+<td>Its columns <span class="math inline">\(v_j\)</span> are orthonormal directions in scaled coefficient space. <span class="math inline">\(V^\top\)</span> expresses a coefficient vector in those directions.</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(S\)</span></td>
+<td><span class="math inline">\(2\times2\)</span></td>
+<td>Diagonal entries <span class="math inline">\(s_j\ge0\)</span> are singular values: the amount that <span class="math inline">\(A\)</span> stretches each corresponding direction.</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(U\)</span></td>
+<td><span class="math inline">\(8\times2\)</span></td>
+<td>Its columns <span class="math inline">\(u_j\)</span> are orthonormal directions spanning the possible fitted outcomes.</td>
+</tr>
+</tbody>
+</table>
+<p>The key relationship for each direction is</p>
+<p><span class="math display">\[A v_j=s_j u_j.\]</span></p>
+<p>So an input direction <span class="math inline">\(v_j\)</span> of length one becomes an output direction <span class="math inline">\(u_j\)</span> stretched to length <span class="math inline">\(s_j\)</span>. Reading <span class="math inline">\(A\theta=USV^\top\theta\)</span> right to left: change coordinates using <span class="math inline">\(V^\top\)</span>, scale them using <span class="math inline">\(S\)</span>, and combine the observation-space directions using <span class="math inline">\(U\)</span>. <span class="math inline">\(V^\top\)</span> is a rotation or reflection; the rectangular <span class="math inline">\(U\)</span> embeds two coordinates into the eight-dimensional fitted plane. The thin <span class="math inline">\(U\)</span> is not an invertible <span class="math inline">\(8\times8\)</span> rotation.</p>
+<p>Singular values are <strong>not regression coefficients or error standard deviations</strong>. They describe the design matrix, independent of the observed rents <span class="math inline">\(y\)</span>.</p>
+<p>If a singular value is numerically zero, at least one coefficient cannot be uniquely identified. We reject the design. The threshold is <span class="math inline">\(\epsilon\max(n,p)s_{max}\)</span>. Scaling makes this decision less dependent on predictor units. The Rust code calls nalgebra’s <code>svd.solve()</code> for the scaled solution, then undoes the column scaling.</p>
+<div id="980d07c5" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>scales <span class="op">=</span> np.linalg.norm(X, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> X <span class="op">/</span> scales</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>U, singular_values, Vt <span class="op">=</span> np.linalg.svd(A, full_matrices<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>tolerance <span class="op">=</span> np.finfo(<span class="bu">float</span>).eps <span class="op">*</span> <span class="bu">max</span>(n, p) <span class="op">*</span> singular_values[<span class="dv">0</span>]</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.<span class="bu">all</span>(singular_values <span class="op">&gt;</span> tolerance)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>beta <span class="op">=</span> (Vt.T <span class="op">@</span> ((U.T <span class="op">@</span> y) <span class="op">/</span> singular_values)) <span class="op">/</span> scales</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Singular values:"</span>, singular_values)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Rank threshold:"</span>, tolerance)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Coefficients:"</span>, beta)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Normal-equation gradient (approximately zero):"</span>, <span class="op">-</span><span class="dv">2</span> <span class="op">*</span> X.T <span class="op">@</span> (y <span class="op">-</span> X <span class="op">@</span> beta))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Singular values: [1.39855253 0.20988288]
+Rank threshold: 2.4843283507592642e-15
+Coefficients: [372.47854453  21.47972428]
+Normal-equation gradient (approximately zero): [-2.27373675e-12 -1.54490355e-10]</code></pre>
+</div>
+</div>
+<p>The thin SVD keeps only the <span class="math inline">\(p=2\)</span> needed columns of <span class="math inline">\(U\)</span>. Here <span class="math inline">\(U\)</span> is <span class="math inline">\(8\times2\)</span>, <span class="math inline">\(S\)</span> is <span class="math inline">\(2\times2\)</span>, and <span class="math inline">\(V^\top\)</span> is <span class="math inline">\(2\times2\)</span>. <span class="math inline">\(S\)</span> is diagonal: its only nonzero entries are the singular values. <span class="math inline">\(D^{-1}\)</span> undoes the original column scaling.</p>
+<div id="adc8efcf" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> np.diag(scales)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>D_inverse <span class="op">=</span> np.diag(<span class="dv">1</span> <span class="op">/</span> scales)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>S <span class="op">=</span> np.diag(singular_values)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="st">"D"</span>, D)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"D</span><span class="dv">^</span><span class="vs">{-1}"</span>, D_inverse)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"A=XD</span><span class="dv">^</span><span class="vs">{-1}"</span>, A)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="st">"U"</span>, U)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="st">"S"</span>, S)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"V</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op"</span>, Vt)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"U</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op y"</span>, U.T <span class="op">@</span> y)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"S</span><span class="dv">^</span><span class="vs">{-1}U</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op y"</span>, (U.T <span class="op">@</span> y) <span class="op">/</span> singular_values)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"VS</span><span class="dv">^</span><span class="vs">{-1}U</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op y"</span>, Vt.T <span class="op">@</span> ((U.T <span class="op">@</span> y) <span class="op">/</span> singular_values))</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"</span><span class="er">\</span><span class="vs">hat</span><span class="dv">\b</span><span class="vs">eta=D</span><span class="dv">^</span><span class="vs">{-1}VS</span><span class="dv">^</span><span class="vs">{-1}U</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op y"</span>, beta)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>np.testing.assert_allclose(U <span class="op">@</span> S <span class="op">@</span> Vt, A, atol<span class="op">=</span><span class="fl">1e-14</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>np.testing.assert_allclose(X.T <span class="op">@</span> X <span class="op">@</span> beta, X.T <span class="op">@</span> y, atol<span class="op">=</span><span class="fl">1e-8</span>, rtol<span class="op">=</span><span class="fl">1e-12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle D = \begin{bmatrix}2.82843 &amp; 0 \\ 0 &amp; 190.951\end{bmatrix}\quad(2\times 2)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle D^{-1} = \begin{bmatrix}0.353553 &amp; 0 \\ 0 &amp; 0.00523694\end{bmatrix}\quad(2\times 2)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle A=XD^{-1} = \begin{bmatrix}0.353553 &amp; 0.389628 \\ 0.353553 &amp; 0.3006 \\ 0.353553 &amp; 0.347733 \\ 0.353553 &amp; 0.257134 \\ 0.353553 &amp; 0.239328 \\ 0.353553 &amp; 0.483893 \\ 0.353553 &amp; 0.193767 \\ 0.353553 &amp; 0.491749\end{bmatrix}\quad(8\times 2)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle U = \begin{bmatrix}-0.375752 &amp; 0.121539 \\ -0.33074 &amp; -0.178401 \\ -0.35457 &amp; -0.0196096 \\ -0.308763 &amp; -0.324843 \\ -0.29976 &amp; -0.384831 \\ -0.423412 &amp; 0.439122 \\ -0.276725 &amp; -0.53833 \\ -0.427384 &amp; 0.465588\end{bmatrix}\quad(8\times 2)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle S = \begin{bmatrix}1.39855 &amp; 0 \\ 0 &amp; 0.209883\end{bmatrix}\quad(2\times 2)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle V^\top = \begin{bmatrix}-0.707107 &amp; -0.707107 \\ -0.707107 &amp; 0.707107\end{bmatrix}\quad(2\times 2)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle U^\top y = \begin{bmatrix}-5098.02 \\ 452.36\end{bmatrix}\quad(2\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle S^{-1}U^\top y = \begin{bmatrix}-3645.21 \\ 2155.3\end{bmatrix}\quad(2\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle VS^{-1}U^\top y = \begin{bmatrix}1053.53 \\ 4101.58\end{bmatrix}\quad(2\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle \hat\beta=D^{-1}VS^{-1}U^\top y = \begin{bmatrix}372.479 \\ 21.4797\end{bmatrix}\quad(2\times 1)\)</span></p>
+</div>
+</div>
+<p>Check those geometric claims using the actual matrices:</p>
+<div id="09763804" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"U</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op U"</span>, U.T <span class="op">@</span> U)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"V</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op V"</span>, Vt <span class="op">@</span> Vt.T)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"Av_1"</span>, A <span class="op">@</span> Vt.T[:, <span class="dv">0</span>])</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"s_1u_1"</span>, singular_values[<span class="dv">0</span>] <span class="op">*</span> U[:, <span class="dv">0</span>])</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>np.testing.assert_allclose(U.T <span class="op">@</span> U, np.eye(p), atol<span class="op">=</span><span class="fl">1e-14</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>np.testing.assert_allclose(Vt <span class="op">@</span> Vt.T, np.eye(p), atol<span class="op">=</span><span class="fl">1e-14</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>np.testing.assert_allclose(A <span class="op">@</span> Vt.T[:, <span class="dv">0</span>], singular_values[<span class="dv">0</span>] <span class="op">*</span> U[:, <span class="dv">0</span>], atol<span class="op">=</span><span class="fl">1e-14</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle U^\top U = \begin{bmatrix}1 &amp; 1.40929e-17 \\ 1.40929e-17 &amp; 1\end{bmatrix}\quad(2\times 2)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle V^\top V = \begin{bmatrix}1 &amp; 0 \\ 0 &amp; 1\end{bmatrix}\quad(2\times 2)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle Av_1 = \begin{bmatrix}-0.525509 \\ -0.462557 \\ -0.495884 \\ -0.431821 \\ -0.419231 \\ -0.592164 \\ -0.387014 \\ -0.597719\end{bmatrix}\quad(8\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle s_1u_1 = \begin{bmatrix}-0.525509 \\ -0.462557 \\ -0.495884 \\ -0.431821 \\ -0.419231 \\ -0.592164 \\ -0.387014 \\ -0.597719\end{bmatrix}\quad(8\times 1)\)</span></p>
+</div>
+</div>
+</section>
+<section id="derive-the-least-squares-solution-from-the-decomposition" class="level3">
+<h3 class="anchored" data-anchor-id="derive-the-least-squares-solution-from-the-decomposition">Derive the least-squares solution from the decomposition</h3>
+<p>First project the outcomes onto the columns of <span class="math inline">\(U\)</span>:</p>
+<p><span class="math display">\[c=U^\top y,\qquad y_\parallel=Uc,\qquad
+y_\perp=y-Uc.\]</span></p>
+<p>Each <span class="math inline">\(c_j=u_j^\top y\)</span> is a dot product measuring how much of <span class="math inline">\(y\)</span> lies along direction <span class="math inline">\(u_j\)</span>. <span class="math inline">\(y_\parallel\)</span> lies in the fitted plane, while <span class="math inline">\(y_\perp\)</span> is perpendicular to it. The model can fit the first part; no choice of coefficients can reproduce the second part. This is a geometric decomposition of the observed sample, not recovery of the true simulation errors.</p>
+<p>Write <span class="math inline">\(z=V^\top\theta\)</span>. Because the two residual components are perpendicular, the Pythagorean theorem gives</p>
+<p><span class="math display">\[\|y-A\theta\|^2
+=\|c-Sz\|^2+\|y_\perp\|^2.\]</span></p>
+<p>The second term cannot change as we vary coefficients. The first term is minimized at zero by setting <span class="math inline">\(z_j=c_j/s_j\)</span>. Thus</p>
+<p><span class="math display">\[\hat z=S^{-1}U^\top y,\qquad
+\hat\theta=V\hat z,\qquad
+\hat\beta=D^{-1}\hat\theta.\]</span></p>
+<p>This explains the solution formula rather than just prescribing a sequence of matrix multiplications. It also gives <span class="math inline">\(\hat y=UU^\top y\)</span> and <span class="math inline">\(r=y-UU^\top y\)</span>. <span class="math inline">\(UU^\top\)</span> is a projection matrix, not the <span class="math inline">\(8\times8\)</span> identity: it preserves vectors in the fitted plane and removes perpendicular components. There are two fitted directions and six residual directions, which is where <span class="math inline">\(n-p=8-2=6\)</span> comes from.</p>
+<div id="0ce71036" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>coordinates <span class="op">=</span> U.T <span class="op">@</span> y</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>projected_y <span class="op">=</span> U <span class="op">@</span> coordinates</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>perpendicular_y <span class="op">=</span> y <span class="op">-</span> projected_y</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"c=U</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op y"</span>, coordinates)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"y_</span><span class="er">\</span><span class="vs">parallel=Uc"</span>, projected_y)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"y_</span><span class="er">\</span><span class="vs">perp=y-Uc"</span>, perpendicular_y)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"U</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op y_</span><span class="er">\</span><span class="vs">perp"</span>, U.T <span class="op">@</span> perpendicular_y)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>np.testing.assert_allclose(projected_y, X <span class="op">@</span> beta, atol<span class="op">=</span><span class="fl">1e-10</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>np.testing.assert_allclose(U.T <span class="op">@</span> perpendicular_y, np.zeros(p), atol<span class="op">=</span><span class="fl">1e-10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle c=U^\top y = \begin{bmatrix}-5098.02 \\ 452.36\end{bmatrix}\quad(2\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle y_\parallel=Uc = \begin{bmatrix}1970.57 \\ 1605.41 \\ 1798.73 \\ 1427.13 \\ 1354.1 \\ 2357.21 \\ 1167.23 \\ 2389.42\end{bmatrix}\quad(8\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle y_\perp=y-Uc = \begin{bmatrix}-91.32 \\ 199.615 \\ 223.558 \\ -159.283 \\ 155.138 \\ -117.105 \\ -207.718 \\ -2.88465\end{bmatrix}\quad(8\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle U^\top y_\perp = \begin{bmatrix}8.19167e-13 \\ -2.69876e-14\end{bmatrix}\quad(2\times 1)\)</span></p>
+</div>
+</div>
+<p>Reading the final product from right to left: <span class="math inline">\(U^\top y\)</span> expresses the outcome in the left singular-vector directions; <span class="math inline">\(S^{-1}\)</span> divides by the singular values; <span class="math inline">\(V\)</span> converts back to scaled coefficient coordinates; <span class="math inline">\(D^{-1}\)</span> restores the original predictor units. Each intermediate coefficient vector is <span class="math inline">\(2\times1\)</span>. The signs of corresponding singular vectors can differ across software while giving the same reconstructed matrix and coefficients.</p>
+<div id="02492ba4" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(p):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    show_dot(<span class="vs">rf"</span><span class="kw">(</span><span class="vs">U</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op y</span><span class="kw">)</span><span class="vs">_</span><span class="ch">{{</span><span class="sc">{</span>j<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ch">}}</span><span class="vs">"</span>, U[:, j], y)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>scaled_coordinates <span class="op">=</span> (U.T <span class="op">@</span> y) <span class="op">/</span> singular_values</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(p):</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    show_dot(<span class="vs">rf"</span><span class="kw">(</span><span class="vs">VS</span><span class="dv">^</span><span class="sc">{</span><span class="op">-</span><span class="dv">1</span><span class="sc">}</span><span class="vs">U</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op y</span><span class="kw">)</span><span class="vs">_</span><span class="ch">{{</span><span class="sc">{</span>j<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ch">}}</span><span class="vs">"</span>, Vt.T[j], scaled_coordinates)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (U^\top y)_{1} = (-0.37575198)\cdot(1879.25) + (-0.33073952)\cdot(1805.03) + \cdots + (-0.42738393)\cdot(2386.54)\approx -5098.0192\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (U^\top y)_{2} = (0.12153867)\cdot(1879.25) + (-0.17840147)\cdot(1805.03) + \cdots + (0.46558765)\cdot(2386.54)\approx 452.35992\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (VS^-1U^\top y)_{1} = (-0.70710678)\cdot(-3645.2111) + (-0.70710678)\cdot(2155.2969)\approx 1053.5284\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (VS^-1U^\top y)_{2} = (-0.70710678)\cdot(-3645.2111) + (0.70710678)\cdot(2155.2969)\approx 4101.5785\)</span></p>
+</div>
+</div>
+<p><span class="math inline">\(S^{-1}\)</span> and <span class="math inline">\(D^{-1}\)</span> are diagonal, so multiplying by them simply divides each coordinate by its corresponding singular value or column scale.</p>
+</section>
+<section id="why-small-singular-values-matter" class="level3">
+<h3 class="anchored" data-anchor-id="why-small-singular-values-matter">Why small singular values matter</h3>
+<p>If <span class="math inline">\(s_j=0\)</span>, then <span class="math inline">\(Av_j=0\)</span>: moving the coefficients along that nonzero direction does not change any fitted outcome. The data cannot distinguish those coefficient choices. For example, adding a second copy of area lets one area coefficient increase while the other decreases by the same amount. Only their sum matters.</p>
+<p>If <span class="math inline">\(s_j\)</span> is small but positive, division by <span class="math inline">\(s_j\)</span> amplifies changes in the outcome coordinates. The design is identifiable but coefficients can be sensitive to noise. The condition number <span class="math inline">\(\kappa(A)=s_{\max}/s_{\min}\)</span> measures that sensitivity in the scaled coordinates. Strongly correlated predictors often produce small singular values; full rank alone does not guarantee precise estimates.</p>
+<div id="8ad6b453" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Condition number of scaled design:"</span>, singular_values[<span class="dv">0</span>] <span class="op">/</span> singular_values[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>duplicated <span class="op">=</span> np.column_stack([X, X[:, <span class="dv">1</span>]])</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>duplicated_scaled <span class="op">=</span> duplicated <span class="op">/</span> np.linalg.norm(duplicated, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>duplicate_singular_values <span class="op">=</span> np.linalg.svd(duplicated_scaled, compute_uv<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>duplicate_threshold <span class="op">=</span> (np.finfo(<span class="bu">float</span>).eps <span class="op">*</span> <span class="bu">max</span>(duplicated.shape)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                       <span class="op">*</span> duplicate_singular_values[<span class="dv">0</span>])</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"</span><span class="ch">\t</span><span class="vs">ext{singular values with duplicated area}"</span>, duplicate_singular_values)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Smallest value:"</span>, duplicate_singular_values[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Numerical rank threshold:"</span>, duplicate_threshold)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> duplicate_singular_values[<span class="op">-</span><span class="dv">1</span>] <span class="op">&lt;=</span> duplicate_threshold</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Condition number of scaled design: 6.663490322078895</code></pre>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle \text{singular values with duplicated area} = \begin{bmatrix}1.71506 \\ 0.242043 \\ 1.62057e-17\end{bmatrix}\quad(3\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Smallest value: 1.620565314202345e-17
+Numerical rank threshold: 3.0465504588638278e-15</code></pre>
+</div>
+</div>
+<p>In floating-point arithmetic, an exact zero may appear as a tiny positive number. Our threshold treats such directions as numerically rank deficient and rejects the fit with a clear error. It does not silently discard a predictor or divide by a nearly zero value.</p>
+<p>Finally, <span class="math inline">\(A^\top A=VS^2V^\top\)</span>, so forming the normal-equation matrix squares the singular values and its condition number is <span class="math inline">\(\kappa(A)^2\)</span>. This can lose accuracy before a solve even begins. SVD works with <span class="math inline">\(A\)</span> directly and exposes its rank. It avoids that extra numerical damage; it cannot make redundant predictors identifiable or make noisy data informative.</p>
+</section>
+</section>
+<section id="residuals-and-degrees-of-freedom" class="level2">
+<h2 class="anchored" data-anchor-id="residuals-and-degrees-of-freedom">3. Residuals and degrees of freedom</h2>
+<p>Full rank means we estimate <span class="math inline">\(p\)</span> coefficients, leaving <span class="math inline">\(n-p\)</span> independent residual directions. The unbiased variance estimate is</p>
+<p><span class="math display">\[s^2=\frac{RSS}{n-p},\qquad s=\sqrt{s^2}.\]</span></p>
+<p>The result fields are <code>fitted</code>, <code>residuals</code>, <code>rss</code>, <code>df_residual</code>, <code>residual_variance</code>, and <code>sigma</code>. We preserve actual floating-point residuals; we do not round nearly perfect fits to zero.</p>
+<div id="b4a5f311" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fitted <span class="op">=</span> X <span class="op">@</span> beta</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>residuals <span class="op">=</span> y <span class="op">-</span> fitted</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>rss <span class="op">=</span> residuals <span class="op">@</span> residuals</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> n <span class="op">-</span> p</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>variance <span class="op">=</span> rss <span class="op">/</span> df</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>sigma <span class="op">=</span> np.sqrt(variance)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>display(pd.DataFrame({<span class="st">"y"</span>: y, <span class="st">"fitted"</span>: fitted, <span class="st">"residual"</span>: residuals}))</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"RSS=</span><span class="sc">{</span>rss<span class="sc">:.8f}</span><span class="ss">; residual df=</span><span class="sc">{</span>df<span class="sc">}</span><span class="ss">; variance=</span><span class="sc">{</span>variance<span class="sc">:.8f}</span><span class="ss">; sigma=</span><span class="sc">{</span>sigma<span class="sc">:.8f}</span><span class="ss">"</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> rss_at(beta <span class="op">+</span> np.array([<span class="fl">0.1</span>, <span class="dv">0</span>])) <span class="op">&gt;</span> rss</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> rss_at(beta <span class="op">+</span> np.array([<span class="dv">0</span>, <span class="fl">0.1</span>])) <span class="op">&gt;</span> rss</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">y</th>
+<th data-quarto-table-cell-role="th">fitted</th>
+<th data-quarto-table-cell-role="th">residual</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>1879.25</td>
+<td>1970.570031</td>
+<td>-91.320031</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>1805.03</td>
+<td>1605.414718</td>
+<td>199.615282</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>2022.29</td>
+<td>1798.732236</td>
+<td>223.557764</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>1267.85</td>
+<td>1427.133006</td>
+<td>-159.283006</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>1509.24</td>
+<td>1354.101944</td>
+<td>155.138056</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>2240.10</td>
+<td>2357.205068</td>
+<td>-117.105068</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>959.51</td>
+<td>1167.228343</td>
+<td>-207.718343</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>2386.54</td>
+<td>2389.424654</td>
+<td>-2.884654</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RSS=204471.40305666; residual df=6; variance=34078.56717611; sigma=184.60381138</code></pre>
+</div>
+</div>
+<div id="c7778284" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"</span><span class="er">\</span><span class="vs">hat y=X</span><span class="er">\</span><span class="vs">hat</span><span class="dv">\b</span><span class="vs">eta"</span>, fitted)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"r=y-</span><span class="er">\</span><span class="vs">hat y"</span>, residuals)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"X</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op r"</span>, X.T <span class="op">@</span> residuals)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>display(Math(<span class="vs">rf"r</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op r=</span><span class="dv">\m</span><span class="vs">athrm</span><span class="ch">{{</span><span class="vs">RSS</span><span class="ch">}}</span><span class="vs">=</span><span class="sc">{</span>rss<span class="sc">:.6g}</span><span class="vs">,</span><span class="er">\</span><span class="vs">qquad n-p=</span><span class="sc">{</span>df<span class="sc">}</span><span class="vs">,</span><span class="er">\</span><span class="vs">qquad s</span><span class="dv">^</span><span class="vs">2=</span><span class="sc">{</span>variance<span class="sc">:.6g}</span><span class="vs">"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle \hat y=X\hat\beta = \begin{bmatrix}1970.57 \\ 1605.41 \\ 1798.73 \\ 1427.13 \\ 1354.1 \\ 2357.21 \\ 1167.23 \\ 2389.42\end{bmatrix}\quad(8\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle r=y-\hat y = \begin{bmatrix}-91.32 \\ 199.615 \\ 223.558 \\ -159.283 \\ 155.138 \\ -117.105 \\ -207.718 \\ -2.88465\end{bmatrix}\quad(8\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle X^\top r = \begin{bmatrix}1.13687e-12 \\ 7.72452e-11\end{bmatrix}\quad(2\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle r^\top r=\mathrm{RSS}=204471,\qquad n-p=6,\qquad s^2=34078.6\)</span></p>
+</div>
+</div>
+<p><span class="math inline">\(X\hat\beta\)</span> multiplies a <span class="math inline">\(8\times2\)</span> matrix by a <span class="math inline">\(2\times1\)</span> vector, giving eight fitted outcomes. <span class="math inline">\(r^\top r\)</span> multiplies <span class="math inline">\((1\times8)(8\times1)\)</span>, giving a scalar: the sum of squared residuals. At the optimum, <span class="math inline">\(X^\top r\)</span> is approximately zero. This says the residual vector is perpendicular to every predictor column.</p>
+<div id="71997d64" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>show_dot(<span class="vs">r"</span><span class="er">\</span><span class="vs">hat y_1"</span>, X[<span class="dv">0</span>], beta)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>show_dot(<span class="vs">r"</span><span class="er">\</span><span class="vs">hat y_2"</span>, X[<span class="dv">1</span>], beta)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>show_dot(<span class="vs">r"</span><span class="dv">\m</span><span class="vs">athrm{RSS}=r</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op r"</span>, residuals, residuals)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(p):</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    show_dot(<span class="vs">rf"</span><span class="kw">(</span><span class="vs">X</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op r</span><span class="kw">)</span><span class="vs">_</span><span class="ch">{{</span><span class="sc">{</span>j<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ch">}}</span><span class="vs">"</span>, X[:, j], residuals)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle \hat y_1 = (1)\cdot(372.47854) + (74.4)\cdot(21.479724)\approx 1970.57\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle \hat y_2 = (1)\cdot(372.47854) + (57.4)\cdot(21.479724)\approx 1605.4147\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle \mathrm{RSS}=r^\top r = (-91.320031)\cdot(-91.320031) + (199.61528)\cdot(199.61528) + \cdots + (-2.8846541)\cdot(-2.8846541)\approx 204471.4\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (X^\top r)_{1} = (1)\cdot(-91.320031) + (1)\cdot(199.61528) + \cdots + (1)\cdot(-2.8846541)\approx 1.1368684\times10^{-12}\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (X^\top r)_{2} = (74.4)\cdot(-91.320031) + (57.4)\cdot(199.61528) + \cdots + (93.9)\cdot(-2.8846541)\approx 7.730705\times10^{-11}\)</span></p>
+</div>
+</div>
+<p>The first two expressions are predicted rents for the first two apartments. The RSS expression squares and sums all eight residuals. The last two dot products should be zero in exact arithmetic; tiny displayed values reflect floating-point roundoff, not additional unexplained effects.</p>
+</section>
+<section id="covariance-standard-errors-and-t-tests" class="level2">
+<h2 class="anchored" data-anchor-id="covariance-standard-errors-and-t-tests">4. Covariance, standard errors and t-tests</h2>
+<p>Under independent errors with constant variance,</p>
+<p><span class="math display">\[\widehat{\operatorname{Var}}(\hat\beta)=s^2(X^\top X)^{-1}
+=s^2D^{-1}VS^{-2}V^\top D^{-1}.\]</span></p>
+<p>The code computes the latter expression, without forming <span class="math inline">\(X^\top X\)</span>. Standard errors are the square roots of the diagonal. Under Gaussian errors, <span class="math inline">\((\hat\beta_j-\beta_j)/SE_j\)</span> has a Student t distribution with <span class="math inline">\(n-p\)</span> degrees of freedom. For <span class="math inline">\(H_0:\beta_j=0\)</span>, the statistic is <span class="math inline">\(t_j=\hat\beta_j/SE_j\)</span>, the two-sided p-value is <span class="math inline">\(2P(T\ge |t_j|)\)</span>, and the 95% interval is <span class="math inline">\(\hat\beta_j\pm t_{0.975,n-p}SE_j\)</span>.</p>
+<p>Use the survival function for upper tails to avoid subtracting a CDF close to one. These are conventional homoskedastic standard errors, not robust estimates.</p>
+<p>For the fixed 95% interval, Rust finds the critical value by bisection on <span class="math inline">\(P(T&gt;t)=0.025\)</span>. Large-sample checks found that statrs’ inverse-beta quantile lost precision at high residual degrees of freedom. Solving on the survival function preserves agreement with R; this notebook independently uses SciPy’s <code>t.ppf</code>. See the <a href="../benchmarks/ols.html">large-data report</a> and the focused Rust critical-value test for the regression evidence.</p>
+<div id="257c74ed" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>scaled_inverse <span class="op">=</span> (Vt.T <span class="op">/</span> singular_values) <span class="op">@</span> (Vt <span class="op">/</span> singular_values[:, <span class="va">None</span>])</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>covariance <span class="op">=</span> variance <span class="op">*</span> scaled_inverse <span class="op">/</span> scales[:, <span class="va">None</span>] <span class="op">/</span> scales[<span class="va">None</span>, :]</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>se <span class="op">=</span> np.sqrt(np.diag(covariance))</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>t_statistics <span class="op">=</span> beta <span class="op">/</span> se</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>p_values <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> t.sf(np.<span class="bu">abs</span>(t_statistics), df)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>critical <span class="op">=</span> t.ppf(<span class="fl">0.975</span>, df)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>conf_int <span class="op">=</span> np.column_stack([beta <span class="op">-</span> critical <span class="op">*</span> se, beta <span class="op">+</span> critical <span class="op">*</span> se])</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>display(pd.DataFrame(covariance, index<span class="op">=</span>[<span class="st">"intercept"</span>, <span class="st">"area_m2"</span>], columns<span class="op">=</span>[<span class="st">"intercept"</span>, <span class="st">"area_m2"</span>]))</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>display(pd.DataFrame({<span class="st">"coefficient"</span>: beta, <span class="st">"SE"</span>: se, <span class="st">"t"</span>: t_statistics, <span class="st">"p"</span>: p_values,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"lower 95%"</span>: conf_int[:, <span class="dv">0</span>], <span class="st">"upper 95%"</span>: conf_int[:, <span class="dv">1</span>]}, index<span class="op">=</span>[<span class="st">"intercept"</span>, <span class="st">"area_m2"</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">intercept</th>
+<th data-quarto-table-cell-role="th">area_m2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">intercept</th>
+<td>49440.146638</td>
+<td>-700.063153</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">area_m2</th>
+<td>-700.063153</td>
+<td>10.847386</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">coefficient</th>
+<th data-quarto-table-cell-role="th">SE</th>
+<th data-quarto-table-cell-role="th">t</th>
+<th data-quarto-table-cell-role="th">p</th>
+<th data-quarto-table-cell-role="th">lower 95%</th>
+<th data-quarto-table-cell-role="th">upper 95%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">intercept</th>
+<td>372.478545</td>
+<td>222.351403</td>
+<td>1.67518</td>
+<td>0.144919</td>
+<td>-171.59574</td>
+<td>916.552829</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">area_m2</th>
+<td>21.479724</td>
+<td>3.293537</td>
+<td>6.52178</td>
+<td>0.000620</td>
+<td>13.42073</td>
+<td>29.538719</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="7aa5a2a6" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"</span><span class="kw">(</span><span class="vs">X</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op X</span><span class="kw">)</span><span class="dv">^</span><span class="vs">{-1}=D</span><span class="dv">^</span><span class="vs">{-1}VS</span><span class="dv">^</span><span class="vs">{-2}V</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op D</span><span class="dv">^</span><span class="vs">{-1}"</span>, covariance <span class="op">/</span> variance)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"</span><span class="dv">\w</span><span class="vs">idehat{</span><span class="er">\</span><span class="vs">operatorname{Var}}</span><span class="kw">(</span><span class="er">\</span><span class="vs">hat</span><span class="dv">\b</span><span class="vs">eta</span><span class="kw">)</span><span class="vs">"</span>, covariance)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"</span><span class="er">\</span><span class="vs">operatorname{SE}</span><span class="kw">(</span><span class="er">\</span><span class="vs">hat</span><span class="dv">\b</span><span class="vs">eta</span><span class="kw">)</span><span class="vs">"</span>, se)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="st">"t"</span>, t_statistics)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"</span><span class="ch">\t</span><span class="vs">ext{95</span><span class="ch">\%</span><span class="vs"> intervals </span><span class="kw">(</span><span class="vs">lower, upper</span><span class="kw">)</span><span class="vs">}"</span>, conf_int)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle (X^\top X)^{-1}=D^{-1}VS^{-2}V^\top D^{-1} = \begin{bmatrix}1.45077 &amp; -0.0205426 \\ -0.0205426 &amp; 0.000318305\end{bmatrix}\quad(2\times 2)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle \widehat{\operatorname{Var}}(\hat\beta) = \begin{bmatrix}49440.1 &amp; -700.063 \\ -700.063 &amp; 10.8474\end{bmatrix}\quad(2\times 2)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle \operatorname{SE}(\hat\beta) = \begin{bmatrix}222.351 \\ 3.29354\end{bmatrix}\quad(2\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle t = \begin{bmatrix}1.67518 \\ 6.52178\end{bmatrix}\quad(2\times 1)\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle \text{95\% intervals (lower, upper)} = \begin{bmatrix}-171.596 &amp; 916.553 \\ 13.4207 &amp; 29.5387\end{bmatrix}\quad(2\times 2)\)</span></p>
+</div>
+</div>
+<p>The covariance matrix is <span class="math inline">\(2\times2\)</span>, one row and column per coefficient. Diagonal entries are the variances of the intercept and slope estimates; off-diagonal entries describe how the two estimates vary together. Taking the square root of each diagonal entry gives the <span class="math inline">\(2\times1\)</span> standard-error vector. The interval matrix has one row per coefficient and two columns: lower and upper bounds.</p>
+</section>
+<section id="r-squared-and-the-intercept-convention" class="level2">
+<h2 class="anchored" data-anchor-id="r-squared-and-the-intercept-convention">5. R-squared and the intercept convention</h2>
+<p>With a column of exact ones, use <span class="math inline">\(TSS=\sum_i(y_i-\bar y)^2\)</span> and <span class="math inline">\(R^2=1-RSS/TSS\)</span>. Adjusted R-squared is <span class="math inline">\(1-(1-R^2)(n-1)/(n-p)\)</span>.</p>
+<p>Without an intercept, use uncentered <span class="math inline">\(TSS=\sum_i y_i^2\)</span> and adjusted R-squared <span class="math inline">\(1-(1-R^2)n/(n-p)\)</span>, matching R’s no-intercept convention. Do not compare centered and uncentered R-squared as if they used the same baseline.</p>
+<div id="fdddd170" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>has_intercept <span class="op">=</span> <span class="bu">bool</span>(np.<span class="bu">any</span>(np.<span class="bu">all</span>(X <span class="op">==</span> <span class="dv">1</span>, axis<span class="op">=</span><span class="dv">0</span>)))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>tss <span class="op">=</span> np.<span class="bu">sum</span>((y <span class="op">-</span> y.mean()) <span class="op">**</span> <span class="dv">2</span>) <span class="cf">if</span> has_intercept <span class="cf">else</span> y <span class="op">@</span> y</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>r_squared <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> rss <span class="op">/</span> tss</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>adj_r_squared <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> (<span class="dv">1</span> <span class="op">-</span> r_squared) <span class="op">*</span> (n <span class="op">-</span> <span class="bu">int</span>(has_intercept)) <span class="op">/</span> df</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"R²=</span><span class="sc">{</span>r_squared<span class="sc">:.9f}</span><span class="ss">; adjusted R²=</span><span class="sc">{</span>adj_r_squared<span class="sc">:.9f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R²=0.876374351; adjusted R²=0.855770076</code></pre>
+</div>
+</div>
+</section>
+<section id="gaussian-likelihood-explains-the-same-estimator" class="level2">
+<h2 class="anchored" data-anchor-id="gaussian-likelihood-explains-the-same-estimator">6. Gaussian likelihood explains the same estimator</h2>
+<p>For independent <span class="math inline">\(y_i\sim N(x_i^\top\beta,\sigma^2)\)</span>, multiply the normal densities and take logs:</p>
+<p><span class="math display">\[\ell(\beta,\sigma^2)=-\frac n2\log(2\pi\sigma^2)-\frac{RSS(\beta)}{2\sigma^2}.\]</span></p>
+<p>At fixed positive variance, maximizing this expression minimizes RSS, so it gives the same OLS coefficients. Differentiate with respect to <span class="math inline">\(v=\sigma^2\)</span>:</p>
+<p><span class="math display">\[\frac{\partial\ell}{\partial v}=-\frac{n}{2v}+\frac{RSS}{2v^2}=0
+\quad\Longrightarrow\quad\hat v_{ML}=RSS/n.\]</span></p>
+<p>This ML variance differs from <span class="math inline">\(RSS/(n-p)\)</span> used for standard errors. At the estimates,</p>
+<p><span class="math display">\[\ell(\hat\beta,\hat v_{ML})=-\frac n2[\log(2\pi)+\log(RSS/n)+1].\]</span></p>
+<div id="c68e7be7" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>ml_variance <span class="op">=</span> rss <span class="op">/</span> n</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>log_likelihood <span class="op">=</span> <span class="op">-</span>n <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> (np.log(<span class="dv">2</span> <span class="op">*</span> np.pi) <span class="op">+</span> np.log(ml_variance) <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_likelihood_at(candidate, v):</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>n <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> np.log(<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> v) <span class="op">-</span> rss_at(candidate) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> v)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"ML variance=</span><span class="sc">{</span>ml_variance<span class="sc">:.8f}</span><span class="ss">; inference variance=</span><span class="sc">{</span>variance<span class="sc">:.8f}</span><span class="ss">"</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Log-likelihood=</span><span class="sc">{</span>log_likelihood<span class="sc">:.9f}</span><span class="ss">"</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> log_likelihood_at(beta, ml_variance) <span class="op">&gt;</span> log_likelihood_at(beta <span class="op">+</span> [<span class="dv">0</span>, <span class="fl">0.1</span>], ml_variance)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> log_likelihood_at(beta, ml_variance) <span class="op">&gt;</span> log_likelihood_at(beta, <span class="dv">2</span> <span class="op">*</span> ml_variance)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>ML variance=25558.92538208; inference variance=34078.56717611
+Log-likelihood=-51.946475724</code></pre>
+</div>
+</div>
+</section>
+<section id="verify-what-we-calculated" class="level2">
+<h2 class="anchored" data-anchor-id="verify-what-we-calculated">7. Verify what we calculated</h2>
+<p>These checks compare the independently displayed steps to the committed R reference. The <a href="../notebooks/ols-verification.html">three implementation notebook</a> executes R, statsmodels and the PHP extension on the same data and checks every returned statistical field. Cross-implementation agreement is evidence; it does not replace understanding the formulas.</p>
+<div id="c5e18719" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>calculated <span class="op">=</span> <span class="bu">dict</span>(coefficients<span class="op">=</span>beta, covariance<span class="op">=</span>covariance, std_errors<span class="op">=</span>se,</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>                  t_statistics<span class="op">=</span>t_statistics, p_values<span class="op">=</span>p_values, conf_int<span class="op">=</span>conf_int,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                  fitted<span class="op">=</span>fitted, residuals<span class="op">=</span>residuals, rss<span class="op">=</span>rss, residual_variance<span class="op">=</span>variance,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>                  sigma<span class="op">=</span>sigma, r_squared<span class="op">=</span>r_squared, adj_r_squared<span class="op">=</span>adj_r_squared,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>                  df_residual<span class="op">=</span>df, log_likelihood<span class="op">=</span>log_likelihood)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> key, value <span class="kw">in</span> calculated.items():</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    np.testing.assert_allclose(value, case[<span class="st">"expected"</span>][key], atol<span class="op">=</span><span class="fl">1e-9</span>, rtol<span class="op">=</span><span class="fl">1e-7</span>, err_msg<span class="op">=</span>key)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"All displayed calculations agree with the committed R fixture."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>All displayed calculations agree with the committed R fixture.</code></pre>
+</div>
+</div>
+</section>
+<section id="missing-data-singularity-and-perfect-fits" class="level2">
+<h2 class="anchored" data-anchor-id="missing-data-singularity-and-perfect-fits">8. Missing data, singularity and perfect fits</h2>
+<p>The PHP call drops a whole row if any supplied predictor or its outcome is <code>null</code> or <code>NAN</code>, warns once on a successful fit, and reports original row positions. It applies all formulas above to the retained sample: <span class="math inline">\(n\)</span> and <span class="math inline">\(n-p\)</span> change. Use <code>missing: 'raise'</code> to reject missingness. Infinity, malformed values and rank failure remain errors. See <a href="../missing-data.html">missing-data contract</a>.</p>
+<p>Listwise deletion changes the estimation sample; it is not imputation and does not guarantee unbiased results when missingness is related to the outcome or predictors. Document why data are missing and which observations were retained.</p>
+<p>At exact zero RSS, standard errors are zero and the Gaussian log-likelihood has an infinite limit as variance approaches zero. A zero coefficient divided by a zero standard error is undefined (NaN); a nonzero coefficient gives infinite t and zero p.&nbsp;If TSS is also zero, R-squared is undefined. Decomposition roundoff can leave small residuals in mathematically perfect fits; unstable t-statistics and likelihoods should not be compared tightly across algorithms.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/phit\.phpstats\.org\/docs\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

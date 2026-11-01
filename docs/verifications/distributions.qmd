@@ -12,7 +12,7 @@ Densities and masses, CDFs, survival functions, their logs, and quantiles for 13
 
 <!-- BEGIN REFERENCE EVIDENCE -->
 
-Native refresh: **2026-10-12T15:18:49.923101+00:00**. PHP 8.5.10; R version 4.6.1 (2026-06-24); SciPy 1.18.1; mpmath 1.4.1 at 60 digits.
+Native refresh: **2026-11-01T19:23:00.594834+00:00**. PHP 8.5.10; R version 4.6.1 (2026-06-24); SciPy 1.18.1; mpmath 1.4.1 at 60 digits.
 
 553 cases, 8,661 points, 27 unavailable independent reference points.
 
@@ -138,15 +138,10 @@ conventions and peer-library errors are kept separate from unavailable reference
 See the commands under [Inputs and references](#inputs-and-references) and run
 `./scripts/check` with a matching PHP for the full suite.
 
-## Implementation history: backend and model-path audit
+## Implementation notes
 
-The [raw statrs report](distributions-audit.json) and executable
-`crates/stats-core/examples/statrs_audit.rs` document why statrs alone is not used
-for the new distribution API. The [reuse experiment](distributions-reuse.json)
-compares the public Normal log-CDF and Student-t quantile with the existing probit
-and OLS formulas. Candidate t quantiles improve large-df reference error, but all
-six tested critical values and 17 tested normal log-CDF values differ in rounding,
-so the regression code keeps its existing paths.
+- statrs alone is not used for the distribution functions. The [statrs report](distributions-audit.json) and `crates/stats-core/examples/statrs_audit.rs` record the cases it fails.
+- The regression code keeps its own normal log-CDF and Student-t quantile paths. The [reuse comparison](distributions-reuse.json) shows that the distribution functions' versions differ from them in rounding on all six tested critical values and 17 tested log-CDF values.
 
 ```sh
 cargo run -p stats-core --release --locked --example statrs_audit
@@ -154,4 +149,4 @@ cargo run -p stats-core --release --locked --example distribution_reuse_audit
 PHP=/path/to/matching/php PHP_CONFIG=/path/to/php-config ./scripts/check
 ```
 
-The [v0.2 assessment](../v0.2.qmd) is the historical record of that release's scope.
+

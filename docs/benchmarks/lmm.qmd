@@ -63,29 +63,11 @@ render_charts(report,'lmm')
 Each panel uses its own labeled linear scale. Download timing [SVG](figures/lmm-fit-time.svg)/[PNG](figures/lmm-fit-time.png)
 and memory [SVG](figures/lmm-memory.svg)/[PNG](figures/lmm-memory.png).
 
-## Native Rust optimization
+## Algorithm {#native-rust-optimization}
 
-This section compares the current implementation with the one recorded before it, on 2026-10-11. The earlier implementation whitened and SVD-factorized all n rows at every trial variance ratio. The current one follows lme4's penalized least-squares elimination: it separates within-group deviations from group means and caches an augmented QR square-root summary, so each trial factors p + 1 + G rows. Covariance is computed only for the selected solution. The grid, score-root refinement, ML objective, rank threshold, input and output contract, and tolerances are unchanged.
-The [walkthrough](../notebooks/lmm-math.qmd#cache-a-square-root-reduction-following-the-lme4-idea)
-derives the reduction and checks its residual norms numerically.
+phit follows lme4's penalized least-squares elimination. It separates within-group deviations from group means and caches an augmented QR square-root summary, so each trial variance ratio factors p + 1 + G rows rather than all n. Covariance is computed only for the selected solution. The [walkthrough](../notebooks/lmm-math.qmd#cache-a-square-root-reduction-following-the-lme4-idea) derives the reduction and checks its residual norms numerically.
 
-```{python}
-baseline=json.loads((ROOT/'docs/benchmarks/lmm-baseline-results.json').read_text())
-old_cases={(c['n'],c['p']):c for c in baseline['cases']}
-comparison=[]
-for case in sorted(report['cases'],key=lambda c:(c['n'],c['p'])):
-    old=old_cases[(case['n'],case['p'])]
-    assert old['data']['sha256']==case['data']['sha256']
-    before=old['implementations']['PHP']['median_fit_seconds']
-    after=case['implementations']['PHP']['median_fit_seconds']
-    comparison.append(dict(observations=case['n'],coefficients=case['p'],
-                           previous_full_fit_ms=1000*before,optimized_full_fit_ms=1000*after,
-                           speedup=before/after))
-display(pd.DataFrame(comparison))
-print('Baseline recorded:',baseline['recorded_at'])
-```
-
-The [baseline report](lmm-baseline-results.json) keeps the earlier timings and artifact hashes. The two are separate runs on the same machine with identical seeded CSVs, so the ratios include system noise. Both time complete PHP calls, including conversion and all observation-length outputs. phit uses nalgebra QR and SVD with no BLAS, LAPACK, or sparse backend. lme4 uses a general sparse Cholesky factorization; phit's specialized reduction applies the same elimination and keeps SVD rank checks.
+phit uses nalgebra QR and SVD with no BLAS, LAPACK, or sparse backend. lme4 uses a general sparse Cholesky factorization; phit's specialized reduction applies the same elimination and keeps SVD rank checks.
 
 ## Timing boundaries and methods
 

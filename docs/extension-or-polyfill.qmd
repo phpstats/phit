@@ -16,17 +16,7 @@ phit has two implementations of the `Phit\` functions. Code written against one 
 
 ## Versions
 
-Each polyfill release reproduces one phit release:
-
-| Polyfill | phit |
-| --- | --- |
-| 0.4.1 | v0.4.3 |
-| 0.4.0 | v0.4.0 |
-| 0.3.0 | v0.3.0 |
-| 0.2.0 | v0.2.0 |
-| 0.1.0 | v0.1.1 |
-
-phit v0.4.1 and v0.4.2 change only the CSV reader, which the polyfill does not provide. Polyfill 0.4.1 provides 242 of phit 0.4.3's 243 functions, including the ten deprecated 0.3 model names.
+Each polyfill release reproduces one phit release. Polyfill 0.4.1 reproduces phit v0.4.3 and provides 242 of its 243 functions, including the deprecated aliases.
 
 ## How they coexist
 
@@ -57,14 +47,6 @@ The polyfill's tests run the extension's reference fixtures, including the lme4 
 
 ## Speed
 
-These timings were recorded on an Apple M5 Ultra with PHP 8.5.10, OPcache on, and the JIT off.
-
-| Fit | Recorded | Polyfill | Extension | Ratio |
-| --- | --- | --- | --- | --- |
-| `fit_ols_matrix`, n = 100,000, 10 predictors | 2026-10-28, polyfill ab803fd, phit 3861d77 | 262 ms | 29 ms | 9.1× |
-| `fit_logistic_matrix`, same design | 2026-10-28, polyfill ab803fd, phit 3861d77 | 1.60 s | 72 ms | 22× |
-| Mixed model with 120 random coefficients | 2026-10-16 | 8.0 s | 103 ms | 78× |
-
-The mixed-model row predates polyfill 0.4.1. Since phit v0.4.3 and polyfill 0.4.1, a Gaussian mixed model with one grouping term or nested terms is factored block by block. Its cost no longer grows with the cube of the number of random coefficients. Crossed terms still use the dense calculation.
+The [benchmarks](https://phit.phpstats.org/benchmarks) time each workload with the extension and with the polyfill.
 
 The polyfill's own documentation is in the [phit-polyfill repository](https://github.com/phpstats/phit-polyfill).

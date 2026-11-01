@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Distribution performance and regression preservation – phit</title>
+<title>Distribution performance – phit</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -570,40 +570,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
- <span class="menu-text">History</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../v0.1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.1 stabilization assessment (historical)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../v0.2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.2 numerical API assessment (historical)</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
  <span class="menu-text">Contributing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../development.html" class="sidebar-item-text sidebar-link">
@@ -649,7 +626,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#methods" id="toc-methods" class="nav-link active" data-scroll-target="#methods">Methods</a></li>
   <li><a href="#numerical-comparisons-before-timings" id="toc-numerical-comparisons-before-timings" class="nav-link" data-scroll-target="#numerical-comparisons-before-timings">Numerical comparisons before timings</a></li>
   <li><a href="#timing-boundaries-and-interpretation" id="toc-timing-boundaries-and-interpretation" class="nav-link" data-scroll-target="#timing-boundaries-and-interpretation">Timing boundaries and interpretation</a></li>
-  <li><a href="#seven-model-preservation-v0.2-release-check" id="toc-seven-model-preservation-v0.2-release-check" class="nav-link" data-scroll-target="#seven-model-preservation-v0.2-release-check">Seven-model preservation (v0.2 release check)</a></li>
   <li><a href="#reproduction" id="toc-reproduction" class="nav-link" data-scroll-target="#reproduction">Reproduction</a></li>
   </ul>
 </nav>
@@ -659,7 +635,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../verification.html">Benchmarks and verification</a></li><li class="breadcrumb-item"><a href="../benchmarks/distributions.html">Distributions: performance</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Distribution performance and regression preservation</h1>
+<h1 class="title">Distribution performance</h1>
 </div>
 
 
@@ -1013,95 +989,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>JSON I/O, startup and output summaries are outside timed calls. PHP input/output conversion and native validation are included. R/SciPy start with native numeric vectors. Runtime reclamation/garbage collection of prior results contributes to the observed API cost. Peak RSS is the <strong>whole worker process</strong>, including imports, JSON parsing, inputs, outputs and summaries, not isolated kernel memory. Process elapsed time and input loading time are recorded separately.</p>
 <p>R’s timer has millisecond resolution. Small distribution cases batch 100 calls; mean/variance batch enough calls to process at least ten million input values per measurement, with a minimum of ten calls. Per-call times divide by the batch count. All raw timings must be positive. The thread settings do not make different numerical implementations equivalent. PHP scalar and batch worker order alternates by case. Machine load, timer precision, and garbage collection affect the measurements, which describe these workloads only.</p>
 </section>
-<section id="seven-model-preservation-v0.2-release-check" class="level2">
-<h2 class="anchored" data-anchor-id="seven-model-preservation-v0.2-release-check">Seven-model preservation (v0.2 release check)</h2>
-<p>This check was recorded for the v0.2 release. The <a href="v02-preservation-results.json">preservation report</a> compares the current extension with a rebuilt pre-v0.2 baseline at <code>6342562</code>, using the same PHP 8.5 headers/compiler. Both receive identical complete designs with intercept insertion disabled where supported. It exercises all seven existing fitters. Reference tolerance is <code>1e-7 + 1e-6*abs(reference)</code> for the compared inference/scalar outputs, group effects and ten sampled observation outputs. Fits materialize their complete public results before summarization.</p>
-<!-- BEGIN PRESERVATION EVIDENCE -->
-<p>Recorded: <strong>2026-10-12T15:18:25.373311+00:00</strong>; baseline revision <code>6342562</code>. All seven model comparisons passed.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Fitter</th>
-<th>Rows</th>
-<th>Largest compared absolute difference</th>
-<th>Current/baseline median time</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>ols</td>
-<td>100,000</td>
-<td>0</td>
-<td>1.024×</td>
-</tr>
-<tr class="even">
-<td>logistic</td>
-<td>100,000</td>
-<td>0</td>
-<td>1.024×</td>
-</tr>
-<tr class="odd">
-<td>probit</td>
-<td>100,000</td>
-<td>0</td>
-<td>0.974×</td>
-</tr>
-<tr class="even">
-<td>poisson</td>
-<td>100,000</td>
-<td>0</td>
-<td>0.970×</td>
-</tr>
-<tr class="odd">
-<td>lmm</td>
-<td>100,000</td>
-<td>0</td>
-<td>0.967×</td>
-</tr>
-<tr class="even">
-<td>lmm_fit</td>
-<td>1,000</td>
-<td>0</td>
-<td>1.006×</td>
-</tr>
-<tr class="odd">
-<td>logistic_mixed</td>
-<td>100,000</td>
-<td>0</td>
-<td>0.996×</td>
-</tr>
-</tbody>
-</table>
-<!-- END PRESERVATION EVIDENCE -->
-<p>This check does not establish bitwise agreement for every observation output or a performance bound on every future workload. Retained regression paths are also covered by the existing Rust/PHP reference and intercept/offset suites.</p>
-</section>
 <section id="reproduction" class="level2">
 <h2 class="anchored" data-anchor-id="reproduction">Reproduction</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv .context/v02/python</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.context/v02/python/bin/pip</span> install <span class="at">-r</span> tests/benchmarks/distribution-requirements.txt</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv .context/distributions-venv</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.context/distributions-venv/bin/pip</span> install <span class="at">-r</span> tests/benchmarks/distribution-requirements.txt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># R with jsonlite is a development-only reference dependency.</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> phit <span class="at">--release</span> <span class="at">--locked</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> stats-core <span class="at">--release</span> <span class="at">--locked</span> <span class="at">--example</span> distribution_bench</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">PHP</span><span class="op">=</span>/path/to/matching/php <span class="ex">.context/v02/python/bin/python</span> tests/benchmarks/run-distributions.py</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">PHP</span><span class="op">=</span>/path/to/matching/php <span class="ex">.context/distributions-venv/bin/python</span> tests/benchmarks/run-distributions.py</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/distribution-docs.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The runner accepts <code>--sizes</code>, <code>--operations</code>, <code>--repeats</code>, <code>--output</code> and <code>--resume</code>. A partial report is marked <code>complete: false</code>; resume requires matching binary hashes, seed, repetitions, thread settings and input hashes. It keeps completed verification/timings and recomputes any changed input. Use a new output file for a different build. Fixed seed 20261012 and saved NumPy/Python versions specify input generation; SHA-256 records the exact JSON values actually used.</p>
-<p>Rebuild the preservation baseline in an isolated source/target directory, using the same <a href="../development.html">PHP/Clang environment</a>, then run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> .context/v02/baseline-src</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> archive 6342562 <span class="kw">|</span> <span class="fu">tar</span> <span class="at">-x</span> <span class="at">-C</span> .context/v02/baseline-src</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">CARGO_TARGET_DIR</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/.context/v02/baseline-target"</span> <span class="ex">cargo</span> build <span class="dt">\</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--manifest-path</span> .context/v02/baseline-src/Cargo.toml <span class="at">-p</span> phit <span class="at">--release</span> <span class="at">--locked</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS; use libphit.so on Linux.</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="va">PHP</span><span class="op">=</span>/path/to/matching/php <span class="ex">.context/v02/python/bin/python</span> tests/benchmarks/run-v01.py <span class="dt">\</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">--baseline</span> .context/v02/baseline-target/release/libphit.dylib <span class="dt">\</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--baseline-revision</span> 6342562 <span class="at">--output</span> docs/benchmarks/v02-preservation-results.json</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> scripts/distribution-docs.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The worker reflects function parameters, so the older module name and API load without the current stubs.</p>
 
 
 </section>

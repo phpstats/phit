@@ -134,4 +134,4 @@ python3 scripts/distribution-docs.py
 - For documentation-only changes, check links, commands, and claims against the source. Rerun numerical tests when behavior or implementation changes.
 - Benchmarks run separately from the test suite. Check their numerical agreement before reporting timings.
 
-The [v0.1 assessment](v0.1.qmd) is the historical record of the first stabilization pass.
+

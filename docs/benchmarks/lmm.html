@@ -602,40 +602,17 @@ window.Quarto = {
 </li>
       </ul>
   </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
- <span class="menu-text">History</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../v0.1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.1 stabilization assessment (historical)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../v0.2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.2 numerical API assessment (historical)</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
  <span class="menu-text">Contributing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../development.html" class="sidebar-item-text sidebar-link">
@@ -678,12 +655,13 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#recorded-results" id="toc-recorded-results" class="nav-link active" data-scroll-target="#recorded-results">Recorded results</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link active" data-scroll-target="#methods">Methods</a></li>
+  <li><a href="#recorded-results" id="toc-recorded-results" class="nav-link" data-scroll-target="#recorded-results">Recorded results</a></li>
   <li><a href="#visual-comparison" id="toc-visual-comparison" class="nav-link" data-scroll-target="#visual-comparison">Visual comparison</a></li>
-  <li><a href="#native-rust-optimization" id="toc-native-rust-optimization" class="nav-link" data-scroll-target="#native-rust-optimization">Native Rust optimization</a></li>
+  <li><a href="#native-rust-optimization" id="toc-native-rust-optimization" class="nav-link" data-scroll-target="#native-rust-optimization">Algorithm</a></li>
   <li><a href="#timing-boundaries-and-methods" id="toc-timing-boundaries-and-methods" class="nav-link" data-scroll-target="#timing-boundaries-and-methods">Timing boundaries and methods</a></li>
   <li><a href="#simulation-and-numerical-checks" id="toc-simulation-and-numerical-checks" class="nav-link" data-scroll-target="#simulation-and-numerical-checks">Simulation and numerical checks</a></li>
-  <li><a href="#reproduce" id="toc-reproduce" class="nav-link" data-scroll-target="#reproduce">Reproduce</a></li>
+  <li><a href="#reproduction" id="toc-reproduction" class="nav-link" data-scroll-target="#reproduction">Reproduction</a></li>
   </ul>
 </nav>
     </div>
@@ -709,10 +687,63 @@ window.Quarto = {
 </header>
 
 
-<p>The release PHP extension, R lme4 lmer and Python statsmodels MixedLM fit identical synthetic observations, with marginal ML (not REML), one random intercept and plug-in GLS fixed-effect inference. The <a href="lmm-results.json">raw report</a> records versions, machine/thread settings, artifact/data hashes and every measurement.</p>
+<p>phit’s <code>fit_mixed_gaussian_intercept_matrix()</code>, R lme4 <code>lmer()</code>, and Python statsmodels <code>MixedLM</code> fit identical simulated observations with one random intercept, by marginal ML (not REML), with plug-in GLS fixed-effect inference. The <a href="lmm-results.json">raw report</a> records versions, machine and thread settings, artifact and data hashes, and every measurement.</p>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Setting</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Workloads</td>
+<td>1,000, 100,000, and 1,000,000 rows with 3 fixed coefficients; 100,000 rows with 11 (counts include the intercept); min(100, n/20) groups</td>
+</tr>
+<tr class="even">
+<td>Data</td>
+<td>Simulated with NumPy seed <code>20261011</code> (see <a href="#simulation-and-numerical-checks">Simulation and numerical checks</a>)</td>
+</tr>
+<tr class="odd">
+<td>Machine</td>
+<td>Apple M5 Ultra, macOS 27, recorded 2026-10-11</td>
+</tr>
+<tr class="even">
+<td>Builds</td>
+<td>phit release build; runtime versions are printed below</td>
+</tr>
+<tr class="odd">
+<td>Threads</td>
+<td>Common BLAS and OpenMP thread variables set to 1</td>
+</tr>
+<tr class="even">
+<td>Repetitions</td>
+<td>One untimed warm-up, then five timed fits per worker; workers run separately and alternate order</td>
+</tr>
+<tr class="odd">
+<td>Statistic</td>
+<td>Median and minimum in-process wall-clock time</td>
+</tr>
+<tr class="even">
+<td>Timed</td>
+<td>One complete fit with every output materialized (see <a href="#timing-boundaries-and-methods">Timing boundaries and methods</a>)</td>
+</tr>
+<tr class="odd">
+<td>Excluded</td>
+<td>Startup, CSV parsing, data generation, and JSON serialization</td>
+</tr>
+<tr class="even">
+<td>Memory</td>
+<td>Peak RSS of the whole worker process</td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="recorded-results" class="level2">
 <h2 class="anchored" data-anchor-id="recorded-results">Recorded results</h2>
-<div id="b711d8ca" class="cell" data-execution_count="1">
+<div id="65dafe85" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json,sys</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -882,11 +913,11 @@ Tolerance policy: {'absolute': 1e-07, 'relative': 1e-06, 'quantity_relative': {'
 </div>
 </div>
 </div>
-<p>Cases cover 1,000, 100,000 and one million observations with three fixed coefficients, and 100,000 observations with eleven fixed coefficients. There are min(100, n/20) groups; coefficient counts include the fixed intercept. Group count and group size affect mixed-model work, so these timings should not be generalized to many thousands of small groups or random slopes.</p>
+<p>Group count and group size affect mixed-model work, so these timings do not carry over to many thousands of small groups or to random slopes.</p>
 </section>
 <section id="visual-comparison" class="level2">
 <h2 class="anchored" data-anchor-id="visual-comparison">Visual comparison</h2>
-<div id="318fc21a" class="cell" data-execution_count="2">
+<div id="29db59dc" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>benchmarks/figures/lmm-fit-time.svg 
 benchmarks/figures/lmm-memory.svg </code></pre>
@@ -904,90 +935,19 @@ benchmarks/figures/lmm-memory.svg </code></pre>
 <figcaption>Random-intercept ML peak whole-process memory.</figcaption>
 </figure>
 </div>
-<p>Each panel uses its own labeled linear scale. Order/colors remain R, statsmodels, PHP. Download timing <a href="figures/lmm-fit-time.svg">SVG</a>/<a href="figures/lmm-fit-time.png">PNG</a> and memory <a href="figures/lmm-memory.svg">SVG</a>/<a href="figures/lmm-memory.png">PNG</a>.</p>
+<p>Each panel uses its own labeled linear scale. Download timing <a href="figures/lmm-fit-time.svg">SVG</a>/<a href="figures/lmm-fit-time.png">PNG</a> and memory <a href="figures/lmm-memory.svg">SVG</a>/<a href="figures/lmm-memory.png">PNG</a>.</p>
 </section>
 <section id="native-rust-optimization" class="level2">
-<h2 class="anchored" data-anchor-id="native-rust-optimization">Native Rust optimization</h2>
-<p>The first implementation repeatedly whitened and SVD-factorized all n rows at every trial variance ratio. The optimized implementation follows lme4’s penalized least-squares elimination idea: separate within-group deviations from group means and cache an augmented QR square-root summary. Each trial now factors p+1+G rows. Covariance is computed only for the selected solution. The same grid, score root refinements, ML objective, rank threshold, input/output contract and numerical tolerances are retained; this is a computational change. The <a href="../notebooks/lmm-math.html#cache-a-square-root-reduction-following-the-lme4-idea">walkthrough</a> derives the reduction and checks its residual norms numerically.</p>
-<div id="08a0af0f" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>baseline<span class="op">=</span>json.loads((ROOT<span class="op">/</span><span class="st">'docs/benchmarks/lmm-baseline-results.json'</span>).read_text())</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>old_cases<span class="op">=</span>{(c[<span class="st">'n'</span>],c[<span class="st">'p'</span>]):c <span class="cf">for</span> c <span class="kw">in</span> baseline[<span class="st">'cases'</span>]}</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>comparison<span class="op">=</span>[]</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> case <span class="kw">in</span> <span class="bu">sorted</span>(report[<span class="st">'cases'</span>],key<span class="op">=</span><span class="kw">lambda</span> c:(c[<span class="st">'n'</span>],c[<span class="st">'p'</span>])):</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    old<span class="op">=</span>old_cases[(case[<span class="st">'n'</span>],case[<span class="st">'p'</span>])]</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> old[<span class="st">'data'</span>][<span class="st">'sha256'</span>]<span class="op">==</span>case[<span class="st">'data'</span>][<span class="st">'sha256'</span>]</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    before<span class="op">=</span>old[<span class="st">'implementations'</span>][<span class="st">'PHP'</span>][<span class="st">'median_fit_seconds'</span>]</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    after<span class="op">=</span>case[<span class="st">'implementations'</span>][<span class="st">'PHP'</span>][<span class="st">'median_fit_seconds'</span>]</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    comparison.append(<span class="bu">dict</span>(observations<span class="op">=</span>case[<span class="st">'n'</span>],coefficients<span class="op">=</span>case[<span class="st">'p'</span>],</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                           previous_full_fit_ms<span class="op">=</span><span class="dv">1000</span><span class="op">*</span>before,optimized_full_fit_ms<span class="op">=</span><span class="dv">1000</span><span class="op">*</span>after,</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                           speedup<span class="op">=</span>before<span class="op">/</span>after))</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>display(pd.DataFrame(comparison))</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Baseline recorded:'</span>,baseline[<span class="st">'recorded_at'</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">observations</th>
-<th data-quarto-table-cell-role="th">coefficients</th>
-<th data-quarto-table-cell-role="th">previous_full_fit_ms</th>
-<th data-quarto-table-cell-role="th">optimized_full_fit_ms</th>
-<th data-quarto-table-cell-role="th">speedup</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>1000</td>
-<td>3</td>
-<td>1.630750</td>
-<td>0.288584</td>
-<td>5.650868</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>100000</td>
-<td>3</td>
-<td>219.741292</td>
-<td>13.142458</td>
-<td>16.719954</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>100000</td>
-<td>11</td>
-<td>1247.759875</td>
-<td>34.290750</td>
-<td>36.387652</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>1000000</td>
-<td>3</td>
-<td>3180.232500</td>
-<td>137.511500</td>
-<td>23.127029</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Baseline recorded: 2026-10-11T20:32:52.308299+00:00</code></pre>
-</div>
-</div>
-<p>The <a href="lmm-baseline-results.json">baseline report</a> preserves all original timings and artifact hashes. These are separate runs on the same machine and identical seeded CSVs, so timing ratios remain subject to system noise. Both reports time complete PHP calls, including conversion and all observation-length outputs. This is native nalgebra QR/SVD, with no BLAS/LAPACK or sparse backend dependency. lme4 uses a general sparse Cholesky implementation; our specialized square-root reduction reuses its mathematical elimination idea while retaining SVD rank checks.</p>
+<h2 class="anchored" data-anchor-id="native-rust-optimization">Algorithm</h2>
+<p>phit follows lme4’s penalized least-squares elimination. It separates within-group deviations from group means and caches an augmented QR square-root summary, so each trial variance ratio factors p + 1 + G rows rather than all n.&nbsp;Covariance is computed only for the selected solution. The <a href="../notebooks/lmm-math.html#cache-a-square-root-reduction-following-the-lme4-idea">walkthrough</a> derives the reduction and checks its residual norms numerically.</p>
+<p>phit uses nalgebra QR and SVD with no BLAS, LAPACK, or sparse backend. lme4 uses a general sparse Cholesky factorization; phit’s specialized reduction applies the same elimination and keeps SVD rank checks.</p>
 </section>
 <section id="timing-boundaries-and-methods" class="level2">
 <h2 class="anchored" data-anchor-id="timing-boundaries-and-methods">Timing boundaries and methods</h2>
-<p>Each worker loads one CSV, warms up once and fits five times. Timed calls include estimation, fixed-effect covariance and normal Wald inference, variance components, ICC, likelihood/AIC, all population/conditional fits and both residual vectors, and all conditional group estimates. PHP also validates/copies inputs and converts all output arrays and group/sample metadata inside the timer. Startup, CSV parsing, data generation and final compact JSON serialization are excluded.</p>
-<p>R uses lmer REML=FALSE with bobyqa rhoend=1e-10. Python uses MixedLM ML BFGS with gtol=1e-10 and recalculates plug-in GLS covariance to align with the documented convention. Its native joint observed-Hessian covariance is not compared as though it were identical. Rust scans a log-ratio profile grid and refines analytic-score roots with compact weighted SVD GLS fits, after a one-time QR reduction. These algorithms and stopping rules differ. The comparison measures complete declared API behavior, not a single common solver.</p>
-<div id="23f9c20a" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>display(ordered_table(memory))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Timed calls include estimation, fixed-effect covariance and normal Wald inference, variance components, ICC, likelihood/AIC, all population/conditional fits and both residual vectors, and all conditional group estimates. PHP also validates/copies inputs and converts all output arrays and group and sample metadata inside the timer.</p>
+<p>R uses lmer REML=FALSE with bobyqa rhoend=1e-10. Python uses MixedLM ML BFGS with gtol=1e-10 and recalculates plug-in GLS covariance to align with the documented convention. Its own joint observed-Hessian covariance is a different convention and is not compared. Rust scans a log-ratio profile grid and refines analytic-score roots with compact weighted SVD GLS fits, after a one-time QR reduction. The algorithms and stopping rules differ, so this compares complete API calls, not one common solver.</p>
+<div id="ba4f48bd" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>display(ordered_table(memory))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 
@@ -1119,7 +1079,7 @@ benchmarks/figures/lmm-memory.svg </code></pre>
 </div>
 </div>
 </div>
-<p>Whole-process time includes startup/imports, CSV loading, warm-up and all five fits. Peak RSS covers that entire process, not only the numerical solver. PHP’s memory limit is disabled for these large nested arrays. Thread environment variables are set to one, worker order alternates, and runtimes execute separately. Timer resolution, system activity and caches can affect results. See the <a href="../benchmarks/ols.html#timing-boundaries">OLS timing discussion</a>.</p>
+<p>Whole-process time includes startup/imports, CSV loading, warm-up and all five fits. Peak RSS covers that entire process, not only the numerical solver. PHP’s memory limit is disabled for these large nested arrays. Timer resolution, system activity, and caches can affect results; see the <a href="../benchmarks/ols.html#timing-boundaries">OLS timing discussion</a>.</p>
 </section>
 <section id="simulation-and-numerical-checks" class="level2">
 <h2 class="anchored" data-anchor-id="simulation-and-numerical-checks">Simulation and numerical checks</h2>
@@ -1129,11 +1089,11 @@ benchmarks/figures/lmm-memory.svg </code></pre>
 \quad b_g\sim N(0,6^2),\quad\epsilon_i\sim N(0,5^2).\]</span></p>
 <p>This sample is separate from the saved small teaching dataset. Identical 17-significant-digit CSVs are used by every worker. All coefficient-level fields, variance components, ICC, likelihood/AIC and all group effects are checked. Observation-length outputs are fully materialized, but cross-runtime checks sample ten evenly spaced rows; small fixtures check every row.</p>
 <p>Benchmark absolute tolerance is 1e-7. Relative tolerance is 1e-6 for ordinary outputs, 1e-5 for covariance, SE, z-statistics, variance components, sigma and ICC, and 1e-9 for likelihood/AIC. Small saved references use the tighter uniform 1e-7 + 1e-6 × abs(reference) policy.</p>
-<p>The first 100,000-row check found R’s between-group variance differed from the analytic-score solution by about 2.6e-6 relative while log-likelihood differed by only about 8e-10. The log-ratio profile score was approximately 2.55e-4 in R, -1.88e-6 in Python and 3.12e-11 in Rust. A flat likelihood and floating-point objective resolution limit independently optimized variance-component agreement; the variance-sensitive benchmark tolerances reflect that measured distinction. They do not replace the closed-form ML check or justify relaxing likelihood agreement. The finite Rust profile grid itself is not a global-optimum proof.</p>
-<div id="0bb6eb12" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>display(ordered_table([<span class="bu">dict</span>(observations<span class="op">=</span>case[<span class="st">'n'</span>],coefficients<span class="op">=</span>case[<span class="st">'p'</span>],implementation<span class="op">=</span>name,</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                           largest_absolute_difference_vs_R<span class="op">=</span><span class="bu">max</span>(errors.values()))</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                      <span class="cf">for</span> case <span class="kw">in</span> report[<span class="st">'cases'</span>] <span class="cf">for</span> name,errors <span class="kw">in</span> case[<span class="st">'max_absolute_errors_vs_R'</span>].items()]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>At 100,000 rows, R’s between-group variance differed from the analytic-score solution by about 2.6e-6 relative while log-likelihood differed by only about 8e-10. The log-ratio profile score was approximately 2.55e-4 in R, -1.88e-6 in Python and 3.12e-11 in Rust. A flat likelihood and the floating-point resolution of the objective limit how closely independently optimized variance components agree, and the variance-sensitive tolerances above reflect that measurement. Likelihood agreement keeps its tight tolerance. The finite profile grid is not a proof of global optimality.</p>
+<div id="5a234dcc" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>display(ordered_table([<span class="bu">dict</span>(observations<span class="op">=</span>case[<span class="st">'n'</span>],coefficients<span class="op">=</span>case[<span class="st">'p'</span>],implementation<span class="op">=</span>name,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                           largest_absolute_difference_vs_R<span class="op">=</span><span class="bu">max</span>(errors.values()))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                      <span class="cf">for</span> case <span class="kw">in</span> report[<span class="st">'cases'</span>] <span class="cf">for</span> name,errors <span class="kw">in</span> case[<span class="st">'max_absolute_errors_vs_R'</span>].items()]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 
@@ -1212,15 +1172,13 @@ benchmarks/figures/lmm-memory.svg </code></pre>
 </div>
 </div>
 </section>
-<section id="reproduce" class="level2">
-<h2 class="anchored" data-anchor-id="reproduce">Reproduce</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PHP</span><span class="op">=</span>/opt/homebrew/bin/php</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PHP_CONFIG</span><span class="op">=</span>/opt/homebrew/bin/php-config</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> php-stats <span class="at">--release</span> <span class="at">--locked</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">.context/notebooks-venv/bin/python</span> tests/benchmarks/run.py <span class="at">--model</span> lmm</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="va">QUARTO_PYTHON</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/.context/notebooks-venv/bin/python"</span> <span class="ex">quarto</span> render docs/benchmarks/lmm.qmd</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render docs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>R requires lme4 as a development package. Use matching PHP tools and <code>.so</code> on Linux. For a quick check preserving the published report, add <code>--cases 1000:3 --repeats 2 --output .context/lmm-smoke.json</code>. Numerical failures abort before publication. Ordinary renders read saved results and do not rerun these timings. See the <a href="../contracts.html#gaussian-random-intercept-mixed-model">contract</a> for model and inference limits.</p>
+<section id="reproduction" class="level2">
+<h2 class="anchored" data-anchor-id="reproduction">Reproduction</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> phit <span class="at">--release</span> <span class="at">--locked</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.context/notebooks-venv/bin/python</span> tests/benchmarks/run.py <span class="at">--model</span> lmm</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="va">QUARTO_PYTHON</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/.context/notebooks-venv/bin/python"</span> <span class="dt">\</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">quarto</span> render docs/benchmarks/lmm.qmd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>R needs lme4. Set matching <code>PHP</code> and <code>PHP_CONFIG</code>, and use <code>.so</code> on Linux. For a quick check that leaves the published report unchanged, add <code>--cases 1000:3 --repeats 2 --output .context/lmm-smoke.json</code>. A numerical failure aborts the run without writing results. See the <a href="../reference-models.html#gaussian-random-intercept-mixed-model">contract</a> for model and inference limits.</p>
 
 
 </section>

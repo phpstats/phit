@@ -33,11 +33,11 @@
       "inputs": [
         {
           "path": "verifications/logistic-mixed-results.json",
-          "md5": "483711cd24c2f49aaad21e210f729222"
+          "md5": "c76298d8d9aedaa5bbcfd1d27c3ea6b8"
         }
       ],
-      "svg_md5": "484d041908ab5266b630a27465803efc",
-      "png_md5": "2106221faf00f2b73993cbc030c3c0a2"
+      "svg_md5": "26b302275ae645a431960a18be714178",
+      "png_md5": "e8268870be2391126d9f831e4aff2e51"
     },
     "figures/logistic-mixed-node-sensitivity.svg": {
       "width_inches": 9,
@@ -46,24 +46,11 @@
       "inputs": [
         {
           "path": "verifications/logistic-mixed-results.json",
-          "md5": "483711cd24c2f49aaad21e210f729222"
+          "md5": "c76298d8d9aedaa5bbcfd1d27c3ea6b8"
         }
       ],
       "svg_md5": "e74873cd0ea3d8f177af8850d4d483cf",
       "png_md5": "5e3839631163fcdd1a1fee82402b32c3"
-    },
-    "figures/v01-preservation.svg": {
-      "width_inches": 10,
-      "height_inches": 10,
-      "png_dpi": 160,
-      "inputs": [
-        {
-          "path": "benchmarks/v01-preservation-results.json",
-          "md5": "30f926148a962d95f92be033899d4f06"
-        }
-      ],
-      "svg_md5": "7a92ef6d1a57d9c24de825ec3951bdc1",
-      "png_md5": "4f7de6c6441f0a827e1e0577decb610c"
     },
     "figures/lmm-public-agreement.svg": {
       "width_inches": 10,
@@ -72,7 +59,7 @@
       "inputs": [
         {
           "path": "verifications/lmm-public-results.json",
-          "md5": "ac02394d8e0ff6a6a5f65eded73d53ff"
+          "md5": "6c278f231dda84e689beeef540fb77b5"
         }
       ],
       "svg_md5": "7e42986b2a2b7fe56d4b31b61d28f08a",
@@ -85,11 +72,11 @@
       "inputs": [
         {
           "path": "verifications/r-compatibility-results.json",
-          "md5": "55ff7f405954f044877e03fd4bbd1c9f"
+          "md5": "43a5138ec947cec9fa62511f75c0b32a"
         },
         {
           "path": "../tests/fixtures/lmm-expanded-r.json",
-          "md5": "27feab4f191e7dac286019da0b1565bf"
+          "md5": "102305caabf52fc34c483ffc4cd4ceb1"
         },
         {
           "path": "data/lmm/sleepstudy.csv",
@@ -119,7 +106,7 @@
       "inputs": [
         {
           "path": "figures/data/logistic-mixed-posterior.json",
-          "md5": "7f1d728c994a1a42518fbdb9233568e6"
+          "md5": "00509654e0bb6bcf7de3fc77b9884a4d"
         }
       ],
       "svg_md5": "77c290cc495dbf6417377499d3f63e54",
@@ -256,7 +243,7 @@
       "png_md5": "561bcd1690fa611fa9f2e6ce51310d89"
     }
   },
-  "renderer_md5": "3ec3a1386bad9017b7f7c4d8a1b86b27",
+  "renderer_md5": "550aaf1c3d740232c9a5c632fb675965",
   "theme_md5": "b436da401b43e19efcbffbe31d02295d",
   "R": "R version 4.6.1 (2026-06-24)",
   "platform": "aarch64-apple-darwin27.0.0",

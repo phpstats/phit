@@ -570,40 +570,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
- <span class="menu-text">History</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./v0.1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.1 stabilization assessment (historical)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./v0.2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.2 numerical API assessment (historical)</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
  <span class="menu-text">Contributing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./development.html" class="sidebar-item-text sidebar-link">
@@ -652,7 +629,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#validation" id="toc-validation" class="nav-link" data-scroll-target="#validation">Validation</a></li>
   <li><a href="#warning-and-accounting" id="toc-warning-and-accounting" class="nav-link" data-scroll-target="#warning-and-accounting">Warning and accounting</a></li>
   <li><a href="#model-specific-rules" id="toc-model-specific-rules" class="nav-link" data-scroll-target="#model-specific-rules">Model-specific rules</a></li>
-  <li><a href="#implementation-and-history" id="toc-implementation-and-history" class="nav-link" data-scroll-target="#implementation-and-history">Implementation and history</a></li>
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation">Implementation</a></li>
   </ul>
 </nav>
     </div>
@@ -711,7 +688,7 @@ retained: 0, 1, 4, 5
 dropped:  2, 3
 4 residuals</code></pre>
 <p>The call also raises one PHP warning with this message:</p>
-<pre><code>Phit\fit_ols(): Phit\fit_ols dropped 2 of 6 observations with missing values (listwise deletion)</code></pre>
+<pre><code>Phit\fit_ols(): dropped 2 of 6 observations with missing values (listwise deletion)</code></pre>
 </section>
 <section id="behavior" class="level2">
 <h2 class="anchored" data-anchor-id="behavior">Behavior</h2>
@@ -795,10 +772,10 @@ dropped:  2, 3
 <p><strong>Weights, offsets, and random terms.</strong> Optional weights and offsets, and every random term’s <code>z</code> and <code>groups</code>, share one listwise deletion mask. Their original lengths, types, and values are validated before deletion. Grouped-binomial proportions with positive integer trial weights are allowed. Invalid success or trial counts are errors, even in rows that would otherwise be dropped. General mixed fits warn once and return original row positions like the other functions. <code>tests/r-compatibility.php</code> and <code>tests/lmm-expanded.php</code> cover these cases.</p>
 <p><strong>Mixed logistic.</strong> <code>fit_mixed_logistic_matrix()</code> applies the same policy across x, proportions, groups, trial counts, and offsets. Trial counts above 1,000,000 are rejected before rows are dropped. Near-integer success encodings within tolerance are canonicalized only after validation and deletion. A sample with no successes or no failures then fails, since an unpenalized fit would not be finite.</p>
 </section>
-<section id="implementation-and-history" class="level2">
-<h2 class="anchored" data-anchor-id="implementation-and-history">Implementation and history</h2>
-<p>The PHP binding applies the omission policy before calling the Rust core. The Rust <code>fit_ols()</code> contract still requires complete, finite numeric vectors.</p>
-<p>The first API rejected <code>null</code> and <code>NAN</code>. Callers that need that behavior should pass <code>missing: 'raise'</code>. Code that drops rows itself before calling phit must report that deletion itself, because phit can account only for the rows it receives.</p>
+<section id="implementation" class="level2">
+<h2 class="anchored" data-anchor-id="implementation">Implementation</h2>
+<p>The PHP binding applies the omission policy before calling the Rust core. The Rust <code>fit_ols()</code> contract requires complete, finite numeric vectors.</p>
+<p>Code that drops rows before calling phit must report that deletion itself, because phit can account only for the rows it receives.</p>
 
 
 </section>

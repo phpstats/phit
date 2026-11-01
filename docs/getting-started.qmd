@@ -130,7 +130,7 @@ foreach ($p['fit'] as $i => $value) {
 `null` and `NAN` are missing. By default, a row with a missing value in any column the formula uses is dropped, and the fit emits one `E_WARNING`. With `rent` set to `null` in the third row, the warning reads:
 
 ```
-Phit\fit_ols(): Phit\fit_ols dropped 1 of 10 observations with missing values (listwise deletion)
+Phit\fit_ols(): dropped 1 of 10 observations with missing values (listwise deletion)
 ```
 
 - The result reports `n_observations` 9, `n_input` 10, and `dropped_rows` `[2]`.

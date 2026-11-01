@@ -570,40 +570,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
- <span class="menu-text">History</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./v0.1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.1 stabilization assessment (historical)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./v0.2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.2 numerical API assessment (historical)</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
  <span class="menu-text">Contributing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./development.html" class="sidebar-item-text sidebar-link">
@@ -650,7 +627,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#release-workflow" id="toc-release-workflow" class="nav-link" data-scroll-target="#release-workflow">Release workflow</a></li>
   <li><a href="#binary-artifacts" id="toc-binary-artifacts" class="nav-link" data-scroll-target="#binary-artifacts">Binary artifacts</a></li>
   <li><a href="#deployment-verification" id="toc-deployment-verification" class="nav-link" data-scroll-target="#deployment-verification">Deployment verification</a></li>
-  <li><a href="#history-packaging-record-of-2026-10-12" id="toc-history-packaging-record-of-2026-10-12" class="nav-link" data-scroll-target="#history-packaging-record-of-2026-10-12">History: packaging record of 2026-10-12</a></li>
   </ul>
 </nav>
     </div>
@@ -710,7 +686,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>The dependency notices cover the Cargo dependency closure and build dependencies. MIT notices missing from published crate archives are kept under <code>third-party/</code> with provenance hashes.</li>
 </ul>
 <p>A binary matches the build environment in its manifest. It is not a universal Linux file. To install one by hand, verify its checksum, copy it to the matching PHP extension directory, enable it for each SAPI that needs it, restart the workers, and run a real fit.</p>
-<p>Releases up to v0.3.0 used archive names such as <code>phit-X.Y.Z-php8.4-aarch64-nts-bookworm.tar.gz</code>, which PIE does not recognize.</p>
 </section>
 <section id="deployment-verification" class="level2">
 <h2 class="anchored" data-anchor-id="deployment-verification">Deployment verification</h2>
@@ -741,52 +716,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>The scripts compare the CLI and FPM versions, coefficients, and fitted rates. They fail on a loader error or wrong output, instead of trusting <code>php -m</code>.</p>
-</section>
-<section id="history-packaging-record-of-2026-10-12" class="level2">
-<h2 class="anchored" data-anchor-id="history-packaging-record-of-2026-10-12">History: packaging record of 2026-10-12</h2>
-<p>This record predates the first tagged release. The <a href="verifications/packaging-results.json">packaging verification</a> lists the local image, PHP version, and architecture that passed.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Environment</th>
-<th>PHP</th>
-<th>Verified paths</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Linux aarch64, Debian Bookworm, glibc</td>
-<td>8.3.35</td>
-<td>PIE install; full checks; CLI and FPM in the production image; extracted binary; extracted source archive</td>
-</tr>
-<tr class="even">
-<td>Linux aarch64, Debian Bookworm, glibc</td>
-<td>8.4.26</td>
-<td>PIE install; full checks; CLI and FPM in the production image; extracted binary</td>
-</tr>
-<tr class="odd">
-<td>Linux aarch64, Debian Bookworm, glibc</td>
-<td>8.5.11</td>
-<td>PIE install; full checks; CLI and FPM in the production image; extracted binary</td>
-</tr>
-<tr class="even">
-<td>macOS arm64</td>
-<td>8.5.10</td>
-<td>phpize, make, and staged installation; native load; full checks</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>Each full run passed 56 Rust tests, 11 PHP suites, and 8 examples. The binary bundles kept 107 dependency notices with their ABI and library hashes.</li>
-<li>Linux amd64 was configured in CI but had no result at the time. macOS FPM, ZTS, Windows, musl, and other PHP versions were not covered.</li>
-<li>The distribution check added then compared 8,618 points at the original tolerances. For 25 cases where R and the high-precision reference disagree, it used the high-precision reference, and it kept 43 documented boundary-convention exceptions with separate assertions.</li>
-<li>That pass fixed a normal and lognormal density underflow before scale adjustment, with regression cases, and corrected four reference endpoints for degenerate count distributions in their generator. See the <a href="verifications/distributions-results.json">refreshed distribution comparison</a>.</li>
-</ul>
 
 
 </section>

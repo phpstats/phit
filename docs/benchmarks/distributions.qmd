@@ -1,5 +1,5 @@
 ---
-title: "Distribution performance and regression preservation"
+title: "Distribution performance"
 ---
 
 This benchmark times distribution and descriptive functions in five ways on identical inputs: a PHP loop of scalar calls, one PHP batch call, an internal Rust loop, vectorized R, and SciPy. [Raw results](distributions-results.json) keep every measurement, numerical summary, input hash, runtime version, thread setting, and peak RSS.
@@ -93,45 +93,15 @@ mean/variance batch enough calls to process at least ten million input values pe
 measurement, with a minimum of ten calls. Per-call times divide by the batch count.
 All raw timings must be positive. The thread settings do not make different numerical implementations equivalent. PHP scalar and batch worker order alternates by case. Machine load, timer precision, and garbage collection affect the measurements, which describe these workloads only.
 
-## Seven-model preservation (v0.2 release check)
-
-This check was recorded for the v0.2 release. The [preservation report](v02-preservation-results.json) compares the current
-extension with a rebuilt pre-v0.2 baseline at `6342562`, using the same PHP 8.5
-headers/compiler. Both receive identical complete designs with intercept insertion
-disabled where supported. It exercises all seven existing fitters. Reference
-tolerance is `1e-7 + 1e-6*abs(reference)` for the compared inference/scalar outputs,
-group effects and ten sampled observation outputs. Fits materialize their complete
-public results before summarization.
-
-<!-- BEGIN PRESERVATION EVIDENCE -->
-
-Recorded: **2026-10-12T15:18:25.373311+00:00**; baseline revision `6342562`. All seven model comparisons passed.
-
-| Fitter | Rows | Largest compared absolute difference | Current/baseline median time |
-| --- | --- | --- | --- |
-| ols | 100,000 | 0 | 1.024× |
-| logistic | 100,000 | 0 | 1.024× |
-| probit | 100,000 | 0 | 0.974× |
-| poisson | 100,000 | 0 | 0.970× |
-| lmm | 100,000 | 0 | 0.967× |
-| lmm_fit | 1,000 | 0 | 1.006× |
-| logistic_mixed | 100,000 | 0 | 0.996× |
-
-<!-- END PRESERVATION EVIDENCE -->
-
-This check does not establish bitwise agreement for every observation output or
-a performance bound on every future workload. Retained regression paths are also
-covered by the existing Rust/PHP reference and intercept/offset suites.
-
 ## Reproduction
 
 ```sh
-python3 -m venv .context/v02/python
-.context/v02/python/bin/pip install -r tests/benchmarks/distribution-requirements.txt
+python3 -m venv .context/distributions-venv
+.context/distributions-venv/bin/pip install -r tests/benchmarks/distribution-requirements.txt
 # R with jsonlite is a development-only reference dependency.
 cargo build -p phit --release --locked
 cargo build -p stats-core --release --locked --example distribution_bench
-PHP=/path/to/matching/php .context/v02/python/bin/python tests/benchmarks/run-distributions.py
+PHP=/path/to/matching/php .context/distributions-venv/bin/python tests/benchmarks/run-distributions.py
 python3 scripts/distribution-docs.py
 ```
 
@@ -141,20 +111,3 @@ hashes, seed, repetitions, thread settings and input hashes. It keeps completed
 verification/timings and recomputes any changed input. Use a new output file for
 a different build. Fixed seed 20261012 and saved NumPy/Python versions specify input
 generation; SHA-256 records the exact JSON values actually used.
-
-Rebuild the preservation baseline in an isolated source/target directory, using
-the same [PHP/Clang environment](../development.qmd), then run:
-
-```sh
-mkdir -p .context/v02/baseline-src
-git archive 6342562 | tar -x -C .context/v02/baseline-src
-CARGO_TARGET_DIR="$PWD/.context/v02/baseline-target" cargo build \
-  --manifest-path .context/v02/baseline-src/Cargo.toml -p phit --release --locked
-# macOS; use libphit.so on Linux.
-PHP=/path/to/matching/php .context/v02/python/bin/python tests/benchmarks/run-v01.py \
-  --baseline .context/v02/baseline-target/release/libphit.dylib \
-  --baseline-revision 6342562 --output docs/benchmarks/v02-preservation-results.json
-python3 scripts/distribution-docs.py
-```
-
-The worker reflects function parameters, so the older module name and API load without the current stubs.

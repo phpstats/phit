@@ -21,7 +21,7 @@ phit provides statistical models and numerical routines through PHP functions wi
 | `php-extension` | PHP value inspection, formula parsing and design construction, numeric conversion, missing-row filtering with warnings and accounting, exceptions, result arrays, and the CSV reader. |
 | Rust crates | Matrix decompositions, special functions, and optimizers. phit's own code expresses the statistical formulas. |
 
-phit uses Rust-native numerical crates. An external BLAS or LAPACK backend needs a demonstrated numerical, performance, or deployment benefit and must preserve the contract and reference agreement. An [Apple Accelerate experiment](benchmarks/ols.qmd#apple-accelerate-experiment) showed no speed advantage on the measured workloads and was removed.
+phit uses Rust-native numerical crates. An external BLAS or LAPACK backend needs a demonstrated numerical, performance, or deployment benefit and must preserve the contract and reference agreement.
 
 ## Scope
 

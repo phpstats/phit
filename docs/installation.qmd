@@ -94,8 +94,3 @@ The polyfill also satisfies `ext-phit`. See [Extension or polyfill](extension-or
 ## Upgrade
 
 Run `pie install phpstats/phit` again, or replace `phit.so` with the newer binary, then restart PHP-FPM. The [release notes](https://github.com/phpstats/phit/releases) and the [changelog](https://github.com/phpstats/phit/blob/main/CHANGELOG.md) describe each release.
-
-## Release history
-
-- Releases up to v0.3.0 used `.tar.gz` archives, such as `phit-0.3.0-php8.4-x86_64-nts-bookworm.tar.gz`, which PIE does not download.
-- The release workflow installs every archive in the matching official PHP image, and installs with PIE on PHP 8.3, 8.4, and 8.5 on both architectures. See [Releasing](releasing.qmd).

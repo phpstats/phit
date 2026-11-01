@@ -3250,6 +3250,20 @@
         0.07903267727850147,
         -4.87670670689903
       ],
+      "random_effects_cond_var": [
+        1.3069502514025715,
+        0.9982273742076849,
+        1.5460198861258891,
+        1.0835442947467633,
+        1.1848079642819127,
+        0.892782509443724,
+        1.2428854910841718,
+        1.1319158256468702,
+        1.4571704912108874,
+        0.9604163827206424,
+        1.0391375695164642,
+        1.1848079642819127
+      ],
       "group_sizes": [
         18,
         24,
@@ -3286,6 +3300,13 @@
       "boundary": false,
       "method": "ML",
       "converged": true,
+      "diagnostics": {
+        "converged": true,
+        "solver": "profile_variance_search",
+        "evaluations": 107,
+        "boundary": false,
+        "warnings": []
+      },
       "n_input": 250,
       "n_observations": 250,
       "n_dropped": 0,
@@ -3627,7 +3648,7 @@
       "absolute": 1e-07,
       "relative": 1e-06
     },
-    "extension_sha256": "2105dd47a15f21b0da6ae81a23461ef385285517e1af0519a0bb22238bc3ffc6"
+    "extension_sha256": "09d7a11614d97fa4d63553e219ac6eafbd76a35b6641bfbfaa66748570498242"
   },
   {
     "name": "simple",
@@ -6835,6 +6856,20 @@
         0.17772958241428888,
         -5.143022577221165
       ],
+      "random_effects_cond_var": [
+        1.4838944146939892,
+        1.1350801525073704,
+        1.7532907253463084,
+        1.2315814416459354,
+        1.3460158875891717,
+        1.015701337802244,
+        1.4115963011771033,
+        1.2862584613302113,
+        1.6532436815646434,
+        1.0922867661044369,
+        1.1813633635347365,
+        1.3460158875891717
+      ],
       "group_sizes": [
         18,
         24,
@@ -6871,6 +6906,13 @@
       "boundary": false,
       "method": "ML",
       "converged": true,
+      "diagnostics": {
+        "converged": true,
+        "solver": "profile_variance_search",
+        "evaluations": 107,
+        "boundary": false,
+        "warnings": []
+      },
       "n_input": 250,
       "n_observations": 250,
       "n_dropped": 0,
@@ -7212,7 +7254,7 @@
       "absolute": 1e-07,
       "relative": 1e-06
     },
-    "extension_sha256": "2105dd47a15f21b0da6ae81a23461ef385285517e1af0519a0bb22238bc3ffc6"
+    "extension_sha256": "09d7a11614d97fa4d63553e219ac6eafbd76a35b6641bfbfaa66748570498242"
   },
   {
     "name": "no_intercept",
@@ -10420,6 +10462,20 @@
         45.96525421577447,
         40.70013600862325
       ],
+      "random_effects_cond_var": [
+        1.4088715855847742,
+        1.0568288065668745,
+        1.6904218193040264,
+        1.1528520453008027,
+        1.268068475010402,
+        0.9394552817116799,
+        1.3347670120195079,
+        1.2077185704628484,
+        1.584849228390672,
+        1.0145758315707747,
+        1.1027540471771147,
+        1.268068475010402
+      ],
       "group_sizes": [
         18,
         24,
@@ -10456,6 +10512,13 @@
       "boundary": false,
       "method": "ML",
       "converged": true,
+      "diagnostics": {
+        "converged": true,
+        "solver": "profile_variance_search",
+        "evaluations": 107,
+        "boundary": false,
+        "warnings": []
+      },
       "n_input": 250,
       "n_observations": 250,
       "n_dropped": 0,
@@ -10797,7 +10860,7 @@
       "absolute": 1e-07,
       "relative": 1e-06
     },
-    "extension_sha256": "2105dd47a15f21b0da6ae81a23461ef385285517e1af0519a0bb22238bc3ffc6"
+    "extension_sha256": "09d7a11614d97fa4d63553e219ac6eafbd76a35b6641bfbfaa66748570498242"
   },
   {
     "name": "intercept_only",
@@ -13966,6 +14029,20 @@
         -0.6463802459038505,
         -6.641694687715093
       ],
+      "random_effects_cond_var": [
+        3.875023875380568,
+        3.044594140039659,
+        4.4869430239582595,
+        3.2788141847164773,
+        3.552074604423032,
+        2.749934371975611,
+        3.7065279090351355,
+        3.4099786887675374,
+        4.262570348887733,
+        2.9395998981155573,
+        3.1573663886245025,
+        3.552074604423032
+      ],
       "group_sizes": [
         18,
         24,
@@ -14002,6 +14079,13 @@
       "boundary": false,
       "method": "ML",
       "converged": true,
+      "diagnostics": {
+        "converged": true,
+        "solver": "profile_variance_search",
+        "evaluations": 107,
+        "boundary": false,
+        "warnings": []
+      },
       "n_input": 250,
       "n_observations": 250,
       "n_dropped": 0,
@@ -14343,7 +14427,7 @@
       "absolute": 1e-07,
       "relative": 1e-06
     },
-    "extension_sha256": "2105dd47a15f21b0da6ae81a23461ef385285517e1af0519a0bb22238bc3ffc6"
+    "extension_sha256": "09d7a11614d97fa4d63553e219ac6eafbd76a35b6641bfbfaa66748570498242"
   },
   {
     "name": "singleton_groups",
@@ -17599,6 +17683,21 @@
         0.2599311188702266,
         -4.694692891753957
       ],
+      "random_effects_cond_var": [
+        10.526804690937222,
+        1.3736633242994558,
+        0.9951127226677325,
+        1.5411708846609664,
+        1.0801606948995643,
+        1.1811045856960516,
+        0.8899996593865942,
+        1.238998435840318,
+        1.1283795501414753,
+        1.4526040034997145,
+        0.9574207862602467,
+        1.0358940088773332,
+        1.1811045856960516
+      ],
       "group_sizes": [
         1,
         17,
@@ -17637,6 +17736,13 @@
       "boundary": false,
       "method": "ML",
       "converged": true,
+      "diagnostics": {
+        "converged": true,
+        "solver": "profile_variance_search",
+        "evaluations": 107,
+        "boundary": false,
+        "warnings": []
+      },
       "n_input": 250,
       "n_observations": 250,
       "n_dropped": 0,
@@ -17978,7 +18084,7 @@
       "absolute": 1e-07,
       "relative": 1e-06
     },
-    "extension_sha256": "2105dd47a15f21b0da6ae81a23461ef385285517e1af0519a0bb22238bc3ffc6"
+    "extension_sha256": "09d7a11614d97fa4d63553e219ac6eafbd76a35b6641bfbfaa66748570498242"
   },
   {
     "name": "boundary",
@@ -18267,6 +18373,12 @@
         0,
         0
       ],
+      "random_effects_cond_var": [
+        0,
+        0,
+        0,
+        0
+      ],
       "group_sizes": [
         3,
         3,
@@ -18287,6 +18399,13 @@
       "boundary": true,
       "method": "ML",
       "converged": true,
+      "diagnostics": {
+        "converged": true,
+        "solver": "profile_variance_search",
+        "evaluations": 66,
+        "boundary": true,
+        "warnings": []
+      },
       "n_input": 12,
       "n_observations": 12,
       "n_dropped": 0,
@@ -18390,7 +18509,7 @@
       "absolute": 1e-07,
       "relative": 1e-06
     },
-    "extension_sha256": "2105dd47a15f21b0da6ae81a23461ef385285517e1af0519a0bb22238bc3ffc6"
+    "extension_sha256": "09d7a11614d97fa4d63553e219ac6eafbd76a35b6641bfbfaa66748570498242"
   },
   {
     "name": "listwise_missing",
@@ -21607,6 +21726,20 @@
         0.057527326374829664,
         -4.900015067523683
       ],
+      "random_effects_cond_var": [
+        1.5497990503439387,
+        1.0006786226255562,
+        1.5497990503439387,
+        1.0862031651658064,
+        1.1877128790250489,
+        0.8949767441687186,
+        1.2459313306550208,
+        1.134692278372367,
+        1.4607351039252456,
+        0.9627755218450589,
+        1.0416884114552505,
+        1.1877128790250489
+      ],
       "group_sizes": [
         15,
         24,
@@ -21643,6 +21776,15 @@
       "boundary": false,
       "method": "ML",
       "converged": true,
+      "diagnostics": {
+        "converged": true,
+        "solver": "profile_variance_search",
+        "evaluations": 107,
+        "boundary": false,
+        "warnings": [
+          "listwise deletion removed 3 of 250 original rows"
+        ]
+      },
       "n_input": 250,
       "n_observations": 247,
       "n_dropped": 3,
@@ -21909,7 +22051,7 @@
     "warnings": [
       {
         "severity": 2,
-        "message": "stats_lmm(): stats_lmm dropped 3 of 250 observations with missing values (listwise deletion)"
+        "message": "Phit\\fit_mixed_gaussian_intercept_matrix(): dropped 3 of 250 observations with missing values (listwise deletion)"
       }
     ],
     "max_absolute_errors_vs_R": {
@@ -21990,6 +22132,6 @@
       "absolute": 1e-07,
       "relative": 1e-06
     },
-    "extension_sha256": "2105dd47a15f21b0da6ae81a23461ef385285517e1af0519a0bb22238bc3ffc6"
+    "extension_sha256": "09d7a11614d97fa4d63553e219ac6eafbd76a35b6641bfbfaa66748570498242"
   }
 ]

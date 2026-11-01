@@ -80,7 +80,6 @@ The renderer draws:
 
 - the five fixed-effect and Gaussian random-intercept benchmarks, and the
   binomial mixed-model benchmark
-- the v0.1 comparisons with earlier results
 - Gaussian likelihood profiles, published-data agreement, and sleepstudy random
   slopes
 - binomial mixed-model integration error, node sensitivity, and conditional

@@ -40,8 +40,6 @@ docker build --target binaries \
 
 A binary matches the build environment in its manifest. It is not a universal Linux file. To install one by hand, verify its checksum, copy it to the matching PHP extension directory, enable it for each SAPI that needs it, restart the workers, and run a real fit.
 
-Releases up to v0.3.0 used archive names such as `phit-X.Y.Z-php8.4-aarch64-nts-bookworm.tar.gz`, which PIE does not recognize.
-
 ## Deployment verification
 
 | Check | What it does |
@@ -51,19 +49,3 @@ Releases up to v0.3.0 used archive names such as `phit-X.Y.Z-php8.4-aarch64-nts-
 | `scripts/check-container` | Checks the final runtime image through its normal FPM pool |
 
 The scripts compare the CLI and FPM versions, coefficients, and fitted rates. They fail on a loader error or wrong output, instead of trusting `php -m`.
-
-## History: packaging record of 2026-10-12
-
-This record predates the first tagged release. The [packaging verification](verifications/packaging-results.json) lists the local image, PHP version, and architecture that passed.
-
-| Environment | PHP | Verified paths |
-| --- | --- | --- |
-| Linux aarch64, Debian Bookworm, glibc | 8.3.35 | PIE install; full checks; CLI and FPM in the production image; extracted binary; extracted source archive |
-| Linux aarch64, Debian Bookworm, glibc | 8.4.26 | PIE install; full checks; CLI and FPM in the production image; extracted binary |
-| Linux aarch64, Debian Bookworm, glibc | 8.5.11 | PIE install; full checks; CLI and FPM in the production image; extracted binary |
-| macOS arm64 | 8.5.10 | phpize, make, and staged installation; native load; full checks |
-
-- Each full run passed 56 Rust tests, 11 PHP suites, and 8 examples. The binary bundles kept 107 dependency notices with their ABI and library hashes.
-- Linux amd64 was configured in CI but had no result at the time. macOS FPM, ZTS, Windows, musl, and other PHP versions were not covered.
-- The distribution check added then compared 8,618 points at the original tolerances. For 25 cases where R and the high-precision reference disagree, it used the high-precision reference, and it kept 43 documented boundary-convention exceptions with separate assertions.
-- That pass fixed a normal and lognormal density underflow before scale adjustment, with regression cases, and corrected four reference endpoints for degenerate count distributions in their generator. See the [refreshed distribution comparison](verifications/distributions-results.json).

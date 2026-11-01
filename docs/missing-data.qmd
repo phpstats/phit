@@ -45,7 +45,7 @@ dropped:  2, 3
 The call also raises one PHP warning with this message:
 
 ```
-Phit\fit_ols(): Phit\fit_ols dropped 2 of 6 observations with missing values (listwise deletion)
+Phit\fit_ols(): dropped 2 of 6 observations with missing values (listwise deletion)
 ```
 
 ## Behavior
@@ -117,8 +117,8 @@ Log or display the warning with your normal warning handling, and use the counts
 
 **Mixed logistic.** `fit_mixed_logistic_matrix()` applies the same policy across x, proportions, groups, trial counts, and offsets. Trial counts above 1,000,000 are rejected before rows are dropped. Near-integer success encodings within tolerance are canonicalized only after validation and deletion. A sample with no successes or no failures then fails, since an unpenalized fit would not be finite.
 
-## Implementation and history
+## Implementation
 
-The PHP binding applies the omission policy before calling the Rust core. The Rust `fit_ols()` contract still requires complete, finite numeric vectors.
+The PHP binding applies the omission policy before calling the Rust core. The Rust `fit_ols()` contract requires complete, finite numeric vectors.
 
-The first API rejected `null` and `NAN`. Callers that need that behavior should pass `missing: 'raise'`. Code that drops rows itself before calling phit must report that deletion itself, because phit can account only for the rows it receives.
+Code that drops rows before calling phit must report that deletion itself, because phit can account only for the rows it receives.

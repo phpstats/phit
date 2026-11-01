@@ -24,49 +24,9 @@ use function Phit\{fit_ols, predict, dist_normal_quantile};
 `stubs/phit.php` in the repository declares every signature with PHPDoc array
 shapes for IDEs and static analysis. Do not load it at runtime.
 
-## Names in phit 0.4
+## Deprecated aliases {#deprecated-aliases}
 
-phit 0.4.0 renamed the model functions. The 0.3 names still work in 0.4 as
-deprecated aliases. Each call raises one `E_USER_DEPRECATED` that names the
-replacement and returns exactly the replacement's result. phit 0.5 will remove
-them.
-
-| 0.3 name | 0.4 name | Input |
-| --- | --- | --- |
-| `fit_lm` | `fit_ols` | Formula |
-| `fit_glm` | `fit_generalized_linear` | Formula |
-| `fit_lmer` | `fit_mixed_gaussian` | Formula |
-| `fit_glmer` | `fit_mixed_logistic` | Formula |
-| `fit_ols` (matrix) | `fit_ols_matrix` | Matrix |
-| `fit_logistic` | `fit_logistic_matrix` | Matrix |
-| `fit_probit` | `fit_probit_matrix` | Matrix |
-| `fit_poisson` | `fit_poisson_matrix` | Matrix |
-| `fit_mixed` | `fit_mixed_gaussian_matrix` | Matrix |
-| `fit_mixed_intercept` | `fit_mixed_gaussian_intercept_matrix` | Matrix |
-| `fit_logistic_mixed` | `fit_mixed_logistic_matrix` | Matrix |
-
-`fit_ols` is the one name that 0.3 and 0.4 both use, so during 0.4 it accepts both forms and dispatches on its first argument:
-
-- A string, or the named arguments `formula:` and `data:`, is the formula fit.
-- An array, or the named arguments `x:` and `y:`, is the 0.3 matrix fit. It returns `fit_ols_matrix()`'s result and raises one deprecation.
-- In phit 0.5, an array passed to `fit_ols` will be an error that names `fit_ols_matrix()`.
-
-```php
-Phit\fit_ols(
-    mixed $formula = null,
-    mixed $data = null,
-    string $missing = 'drop',
-    mixed $weights = null,
-    ?array $offset = null,
-    bool $intercept = true,
-    ?array $x = null,
-    ?array $y = null,
-): array;
-```
-
-- `offset` and `intercept` belong to the matrix form. A formula writes them as `offset()` and `- 1`.
-- Mixing the two forms, such as a formula with `x:`, throws code 1001.
-- `fit_mixed_logistic` has no `family` or `link` arguments. The deprecated `fit_glmer` still accepts them and throws code 1007 for anything but the binomial family with the logit link.
+`fit_lm`, `fit_glm`, `fit_lmer`, `fit_glmer`, `fit_logistic`, `fit_probit`, `fit_poisson`, `fit_mixed`, `fit_mixed_intercept`, and `fit_logistic_mixed`, and `fit_ols` called with a matrix, still exist as deprecated aliases: each call raises `E_USER_DEPRECATED` that names the current function and returns its result.
 
 ## Signatures
 
@@ -203,4 +163,4 @@ pub fn fit_ols(
 - `StatsError::new(kind, message)` carries an explicit `ErrorKind`. `kind()` returns the category, and `.0` the message. The binding maps each `ErrorKind` to the codes above.
 - The binding converts values and errors. It does not implement statistical formulas.
 
-See [Design philosophy](design-philosophy.qmd) for the boundary between this API and optional convenience layers, and the [v0.1 assessment](v0.1.qmd) for the tested stress ranges.
+See [Design philosophy](design-philosophy.qmd) for the boundary between this API and optional convenience layers.

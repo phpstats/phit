@@ -10395,12 +10395,12 @@
     },
     {
       "path": "tests/fixtures/distributions-scipy.json",
-      "sha256": "8e00e2586a55e608f14c083a28097b35ba35b299da5ebcbf0649da70825fa662",
+      "sha256": "be3d74ca0adead259585d4519a0f5ec4b3281972015e9894d5488eaf984f1722",
       "generator": "docs/verifications/compare_distributions.py",
       "generator_sha256": "74a8fd7b12221a23f12137f5d69a915601849a0074f15f512f1b543f4def174c",
       "software_recorded_in_fixture": {
         "reference": "SciPy 1.18.1, NumPy 2.5.4",
-        "recorded_at": "2026-10-12T13:06:21.866254+00:00",
+        "recorded_at": "2026-11-01T19:23:00.594834+00:00",
         "generator": "docs/verifications/compare_distributions.py",
         "conventions": "scipy.stats frozen distributions; quantile is ppf; nonfinite numbers are strings"
       },
@@ -15947,47 +15947,14 @@
     },
     {
       "path": "tests/fixtures/distributions-mpmath.json",
-      "sha256": "9ed681a91b48a453b9c5e9cad77d38ea18d11c2cf4810505ccfc30b27838415c",
+      "sha256": "85dd7b67cbe51ab6d5af9e5a08301f03c3c8ff3c61bf922e4c929deded137075",
       "generator": "docs/verifications/compare_distributions.py",
       "generator_sha256": "74a8fd7b12221a23f12137f5d69a915601849a0074f15f512f1b543f4def174c",
       "software_recorded_in_fixture": {
         "reference": "mpmath 1.4.1 at 60 digits",
-        "recorded_at": "2026-10-12T13:06:21.866254+00:00",
+        "recorded_at": "2026-11-01T19:23:00.594834+00:00",
         "generator": "docs/verifications/compare_distributions.py",
-        "conventions": "correctly rounded double of the exact value; null where no reference was computed",
-        "corrections": {
-          "reason": "Degenerate count quantiles return their point mass before a generic upper-support endpoint. Implemented in the recorded generator; p=0 keeps the conventional lower endpoint.",
-          "cases": [
-            {
-              "case": 405,
-              "input_index": 14,
-              "input": 1,
-              "previous": 50.0,
-              "expected": 0.0
-            },
-            {
-              "case": 475,
-              "input_index": 14,
-              "input": 1,
-              "previous": "Inf",
-              "expected": 0.0
-            },
-            {
-              "case": 510,
-              "input_index": 14,
-              "input": 1,
-              "previous": "Inf",
-              "expected": 0.0
-            },
-            {
-              "case": 552,
-              "input_index": 14,
-              "input": 1,
-              "previous": "Inf",
-              "expected": 0.0
-            }
-          ]
-        }
+        "conventions": "correctly rounded double of the exact value; null where no reference was computed"
       },
       "tolerance_policy": "Same operation-specific policy as R; 60-digit references rounded once, null denotes unavailable. Reference choice uses only saved R/mpmath values, never the native result.",
       "model_specification": "Explicit distribution parameterization/evaluation points or numeric descriptive slices; no model fit or data filtering in reference generation.",

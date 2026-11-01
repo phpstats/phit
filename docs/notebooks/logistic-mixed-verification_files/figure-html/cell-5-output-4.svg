@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-labelledby="logistic-mixed-node-sensitivity-accessible-title" width="648.00pt" height="331.20pt" viewBox="0 0 648.00 331.20"><title id="logistic-mixed-node-sensitivity-accessible-title">Group standard deviation sensitivity to quadrature node count</title>
+<g class="svglite">
+<defs>
+  <style type="text/css"><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width="100%" height="100%" style="stroke: none; fill: #FFFFFF;"/>
+<defs>
+  <clipPath id="cpMC4wMHw2NDguMDB8MC4wMHwzMzEuMjA=">
+    <rect x="0.00" y="0.00" width="648.00" height="331.20"/>
+  </clipPath>
+</defs>
+<g clip-path="url(#cpMC4wMHw2NDguMDB8MC4wMHwzMzEuMjA=)">
+<rect x="-0.000000000000064" y="0.00" width="648.00" height="331.20" style="stroke-width: 1.16; stroke: none; fill: #FFFFFF;"/>
+</g>
+<defs>
+  <clipPath id="cpMzUuODV8NjMyLjA2fDM0LjYyfDI3Ny40OQ==">
+    <rect x="35.85" y="34.62" width="596.21" height="242.87"/>
+  </clipPath>
+</defs>
+<g clip-path="url(#cpMzUuODV8NjMyLjA2fDM0LjYyfDI3Ny40OQ==)">
+<polyline points="35.85,230.39 632.06,230.39 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="35.85,174.38 632.06,174.38 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="35.85,118.38 632.06,118.38 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="35.85,62.38 632.06,62.38 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="62.95,277.49 62.95,34.62 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="135.22,277.49 135.22,34.62 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="279.75,277.49 279.75,34.62 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="604.96,277.49 604.96,34.62 " style="stroke-width: 0.75; stroke: #E2E8F0; stroke-linecap: butt;"/>
+<polyline points="62.95,45.65 135.22,258.44 279.75,266.45 604.96,266.44 " style="stroke-width: 1.16; stroke: #009E73; stroke-linecap: butt;"/>
+<circle cx="62.95" cy="45.65" r="3.05" style="stroke-width: 0.77; stroke: #009E73; fill: #009E73;"/>
+<circle cx="135.22" cy="258.44" r="3.05" style="stroke-width: 0.77; stroke: #009E73; fill: #009E73;"/>
+<circle cx="279.75" cy="266.45" r="3.05" style="stroke-width: 0.77; stroke: #009E73; fill: #009E73;"/>
+<circle cx="604.96" cy="266.44" r="3.05" style="stroke-width: 0.77; stroke: #009E73; fill: #009E73;"/>
+</g>
+<g clip-path="url(#cpMC4wMHw2NDguMDB8MC4wMHwzMzEuMjA=)">
+<text x="30.47" y="233.82" text-anchor="end" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="5.33px" lengthAdjust="spacingAndGlyphs">4</text>
+<text x="30.47" y="177.82" text-anchor="end" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="5.33px" lengthAdjust="spacingAndGlyphs">5</text>
+<text x="30.47" y="121.81" text-anchor="end" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="5.33px" lengthAdjust="spacingAndGlyphs">6</text>
+<text x="30.47" y="65.81" text-anchor="end" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="5.33px" lengthAdjust="spacingAndGlyphs">7</text>
+<text x="62.95" y="289.74" text-anchor="middle" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="5.33px" lengthAdjust="spacingAndGlyphs">1</text>
+<text x="135.22" y="289.74" text-anchor="middle" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="5.33px" lengthAdjust="spacingAndGlyphs">9</text>
+<text x="279.75" y="289.74" text-anchor="middle" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="10.66px" lengthAdjust="spacingAndGlyphs">25</text>
+<text x="604.96" y="289.74" text-anchor="middle" style="font-size: 9.60px;fill: #4D4D4D; font-family: &quot;Arial&quot;;" textLength="10.66px" lengthAdjust="spacingAndGlyphs">61</text>
+<text x="333.95" y="302.62" text-anchor="middle" style="font-size: 11.00px;fill: #253247; font-family: &quot;Arial&quot;;" textLength="156.36px" lengthAdjust="spacingAndGlyphs">Quadrature nodes (1 = Laplace)</text>
+<text transform="translate(19.83,156.05) rotate(-90)" text-anchor="middle" style="font-size: 11.00px;fill: #253247; font-family: &quot;Arial&quot;;" textLength="232.44px" lengthAdjust="spacingAndGlyphs">Estimated random-intercept SD (log-odds units)</text>
+<text x="11.96" y="24.84" style="font-size: 18.00px; font-weight: bold;fill: #253247; font-family: &quot;Arial&quot;;" textLength="457.30px" lengthAdjust="spacingAndGlyphs">Rare events: the approximation changes the estimate</text>
+<text x="11.96" y="317.36" style="font-size: 9.00px;fill: #536174; font-family: &quot;Arial&quot;;" textLength="427.83px" lengthAdjust="spacingAndGlyphs">Same data and model at every node count; this is approximation sensitivity, not a comparison of languages.</text>
+</g>
+</g>
+</svg>

@@ -602,40 +602,17 @@ window.Quarto = {
 </li>
       </ul>
   </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
- <span class="menu-text">History</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../v0.1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.1 stabilization assessment (historical)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../v0.2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.2 numerical API assessment (historical)</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
  <span class="menu-text">Contributing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../development.html" class="sidebar-item-text sidebar-link">
@@ -678,12 +655,13 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#recorded-results" id="toc-recorded-results" class="nav-link active" data-scroll-target="#recorded-results">Recorded results</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link active" data-scroll-target="#methods">Methods</a></li>
+  <li><a href="#recorded-results" id="toc-recorded-results" class="nav-link" data-scroll-target="#recorded-results">Recorded results</a></li>
   <li><a href="#visual-comparison" id="toc-visual-comparison" class="nav-link" data-scroll-target="#visual-comparison">Visual comparison</a></li>
   <li><a href="#timing-boundaries" id="toc-timing-boundaries" class="nav-link" data-scroll-target="#timing-boundaries">Timing boundaries</a></li>
+  <li><a href="#memory-and-whole-process-time" id="toc-memory-and-whole-process-time" class="nav-link" data-scroll-target="#memory-and-whole-process-time">Memory and whole-process time</a></li>
   <li><a href="#simulation-and-numerical-agreement" id="toc-simulation-and-numerical-agreement" class="nav-link" data-scroll-target="#simulation-and-numerical-agreement">Simulation and numerical agreement</a></li>
-  <li><a href="#reproduce-and-maintain" id="toc-reproduce-and-maintain" class="nav-link" data-scroll-target="#reproduce-and-maintain">Reproduce and maintain</a></li>
-  <li><a href="#apple-accelerate-experiment" id="toc-apple-accelerate-experiment" class="nav-link" data-scroll-target="#apple-accelerate-experiment">Apple Accelerate experiment</a></li>
+  <li><a href="#reproduction" id="toc-reproduction" class="nav-link" data-scroll-target="#reproduction">Reproduction</a></li>
   </ul>
 </nav>
     </div>
@@ -709,10 +687,63 @@ window.Quarto = {
 </header>
 
 
-<p>We compare the public PHP extension, R <code>lm()</code>, and Python statsmodels <code>OLS</code> on identical simulated observations. The extension uses a <strong>release build</strong>. The <a href="ols-results.json">results JSON</a> records every timing sample, versions, input hashes, numerical outputs, agreement errors and machine information.</p>
+<p>phit’s <code>fit_ols_matrix()</code>, R <code>lm()</code>, and Python statsmodels <code>OLS</code> fit identical simulated observations at four sizes. The <a href="ols-results.json">results JSON</a> records every timing sample, versions, input hashes, numerical outputs, agreement errors, and machine details.</p>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Setting</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Workloads</td>
+<td>1,000, 100,000, and 1,000,000 rows with 3 coefficients; 100,000 rows with 11 coefficients (coefficient counts include the intercept)</td>
+</tr>
+<tr class="even">
+<td>Data</td>
+<td>Simulated rents, generated with NumPy seed <code>20261011</code>; all runtimes read the same 17-significant-digit CSV</td>
+</tr>
+<tr class="odd">
+<td>Machine</td>
+<td>Apple M5 Ultra, macOS 27, recorded 2026-10-16</td>
+</tr>
+<tr class="even">
+<td>Builds</td>
+<td>phit release build; versions of R, statsmodels, NumPy, PHP, and Rust are printed below</td>
+</tr>
+<tr class="odd">
+<td>Threads</td>
+<td>Common BLAS and OpenMP thread variables set to 1. phit has no BLAS backend</td>
+</tr>
+<tr class="even">
+<td>Repetitions</td>
+<td>One untimed warm-up, then five timed fits per worker; workers run separately and alternate order between cases</td>
+</tr>
+<tr class="odd">
+<td>Statistic</td>
+<td>Median and minimum in-process wall-clock time</td>
+</tr>
+<tr class="even">
+<td>Timed</td>
+<td>One complete fit with all outputs materialized (see <a href="#timing-boundaries">Timing boundaries</a>)</td>
+</tr>
+<tr class="odd">
+<td>Excluded</td>
+<td>Data generation, CSV parsing, process startup, and JSON serialization</td>
+</tr>
+<tr class="even">
+<td>Memory</td>
+<td>Peak RSS of the whole worker process, from <code>/usr/bin/time</code></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="recorded-results" class="level2">
 <h2 class="anchored" data-anchor-id="recorded-results">Recorded results</h2>
-<div id="29e93e1c" class="cell" data-execution_count="1">
+<div id="54c87673" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -881,11 +912,11 @@ Measured repetitions: 5 after 1 warm-up fit</code></pre>
 </div>
 </div>
 </div>
-<p>Coefficient counts include the intercept. Cases cover 1,000, 100,000 and one million observations with two predictors, plus 100,000 observations with ten predictors. A tall model with few predictors and a wider model are different workloads. R’s elapsed timer has millisecond resolution on the recorded Mac; small fits can have coarse or zero readings. Use the larger cases to assess scale.</p>
+<p>R’s elapsed timer has millisecond resolution on the recorded Mac, so the 1,000-row fits can read as zero. Use the larger cases to assess scale. A tall model with few predictors and a wider model are different workloads.</p>
 </section>
 <section id="visual-comparison" class="level2">
 <h2 class="anchored" data-anchor-id="visual-comparison">Visual comparison</h2>
-<div id="efbd03af" class="cell" data-execution_count="2">
+<div id="a3accd58" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>benchmarks/figures/ols-fit-time.svg 
 benchmarks/figures/ols-memory.svg </code></pre>
@@ -903,14 +934,47 @@ benchmarks/figures/ols-memory.svg </code></pre>
 <figcaption>Peak whole-process memory for R, statsmodels and PHP in four workloads.</figcaption>
 </figure>
 </div>
-<p>R, statsmodels and PHP use the same order and colors throughout. Each panel has its own linear scale so small workloads remain readable; compare labeled values across panels. Memory covers the entire worker process. It is not the solver’s allocation count. All workloads passed the numerical checks described below.</p>
-<p>Download the timing <a href="figures/ols-fit-time.svg">SVG</a> or <a href="figures/ols-fit-time.png">PNG</a>, and memory <a href="figures/ols-memory.svg">SVG</a> or <a href="figures/ols-memory.png">PNG</a>. Charts refresh from saved measurements when this page is executed; they do not rerun the benchmarks.</p>
+<p>Each panel has its own linear scale, so compare labeled values across panels. Download the timing <a href="figures/ols-fit-time.svg">SVG</a> or <a href="figures/ols-fit-time.png">PNG</a> and memory <a href="figures/ols-memory.svg">SVG</a> or <a href="figures/ols-memory.png">PNG</a>. Rendering redraws the charts from the saved measurements without rerunning the benchmark.</p>
 </section>
 <section id="timing-boundaries" class="level2">
 <h2 class="anchored" data-anchor-id="timing-boundaries">Timing boundaries</h2>
-<p>Each worker loads its inputs once, runs one untimed warm-up, and fits five times. The table reports median and minimum in-process elapsed wall-clock times. Inputs are already PHP arrays, an R data frame or NumPy arrays. Generation, CSV parsing, process startup and final JSON serialization are excluded. Each timed fit materializes coefficients, covariance, standard errors, Student t tests, p-values, 95% confidence intervals, all fitted values and residuals, RSS, variance, R-squared and Gaussian log-likelihood.</p>
-<p>PHP timing includes validation, copying PHP inputs into Rust, SVD estimation, and converting the complete public output into PHP arrays with row metadata. R uses <code>lm()</code> with model/formula construction and inference. Python uses <code>OLS(...).fit(use_t=True)</code> and forces lazy inference and full observation-length outputs within the timer. Between-fit cleanup occurs outside the fit timer. These are <strong>API-level comparisons</strong>, not isolated matrix-kernel or language-speed measurements. R uses QR; statsmodels defaults to pseudoinverse/SVD; the extension uses column-scaled SVD.</p>
-<div id="eded7fc0" class="cell" data-execution_count="3">
+<p>Inputs are already PHP arrays, an R data frame, or NumPy arrays when the timer starts. Each timed fit materializes coefficients, covariance, standard errors, Student t tests, p-values, 95% confidence intervals, all fitted values and residuals, RSS, variance, R-squared, and the Gaussian log-likelihood. Cleanup between fits is outside the timer.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Implementation</th>
+<th>Timed work</th>
+<th>Solver</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>phit</td>
+<td>Validation, copying PHP inputs into Rust, estimation, and converting the full result into PHP arrays with row metadata</td>
+<td>Column-scaled SVD</td>
+</tr>
+<tr class="even">
+<td>R</td>
+<td><code>lm()</code>, including model and formula construction, and inference</td>
+<td>QR</td>
+</tr>
+<tr class="odd">
+<td>statsmodels</td>
+<td><code>OLS(...).fit(use_t=True)</code>, forcing lazy inference and full observation-length outputs</td>
+<td>Pseudoinverse (SVD)</td>
+</tr>
+</tbody>
+</table>
+<p>These are API-level comparisons, not matrix-kernel or language-speed measurements. The thread settings control common threading differences but do not prove every backend honors them. System activity, caches, and thermal state can affect the timings, and five warm fits on one machine do not establish a general ranking.</p>
+</section>
+<section id="memory-and-whole-process-time" class="level2">
+<h2 class="anchored" data-anchor-id="memory-and-whole-process-time">Memory and whole-process time</h2>
+<div id="e85a1895" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>display(ordered_table(memory))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -1043,18 +1107,17 @@ benchmarks/figures/ols-memory.svg </code></pre>
 </div>
 </div>
 </div>
-<p>Whole-process time includes startup/imports, loading, warm-up, all measured fits, cleanup and compact report serialization. It is not a single cold-fit time. Peak resident memory covers that entire worker process, including runtime, inputs, temporary arrays and results; it is not the Rust solver’s allocation count. PHP’s memory limit is disabled for these runs because a million nested arrays can exceed a web application’s configured limit.</p>
-<p>Workers run separately on the same machine, with order alternated between cases. Common numerical-library thread environment variables are set to 1. The extension has no BLAS backend; installed R/NumPy backends and requested settings are recorded. This controls common threading differences without proving every backend honors the settings. System activity, caches and thermal state can affect observations. Five consecutive warm fits do not establish a universal performance ranking.</p>
+<p>Whole-process time covers startup and imports, loading, the warm-up, all timed fits, cleanup, and report serialization. It is not a single cold-fit time. Peak RSS covers the whole worker process, including the runtime, inputs, temporary arrays, and results. PHP’s memory limit is disabled for these runs, because a million nested arrays can exceed a web application’s limit.</p>
 </section>
 <section id="simulation-and-numerical-agreement" class="level2">
 <h2 class="anchored" data-anchor-id="simulation-and-numerical-agreement">Simulation and numerical agreement</h2>
-<p>NumPy’s default RNG uses seed <code>20261011</code> for each case. Area is uniform between 35 and 110 square metres; bedrooms depend on area plus noise, rounded and bounded to 1–4. Wider models add independent standard-normal amenity scores. Fictional monthly rent follows</p>
+<p>Area is uniform between 35 and 110 square meters. Bedrooms depend on area plus noise, rounded and bounded to 1–4. Wider models add independent standard-normal amenity scores. Rent follows</p>
 <p><span class="math display">\[y_i=650+18\,\mathrm{area}_i+60\,\mathrm{bedrooms}_i
 +0.5\sum_j\mathrm{amenity}_{ij}+\epsilon_i,
 \qquad\epsilon_i\sim N(0,180^2).\]</span></p>
-<p>These are synthetic observations. This generating model includes a bedroom effect; the small teaching notebook deliberately has an area-only generating equation. Large samples contain fresh observations rather than copies of the eight teaching rows. All runtimes read the same 17-significant-digit CSV; its hash, population coefficients and sample correlations are recorded. Input files are temporary and generation is outside worker timings.</p>
-<p>The harness checks all coefficients, covariance entries, standard errors, t-statistics, p-values, confidence bounds and scalar statistics against R using <code>1e-9 + 1e-7 * abs(reference)</code>. Residual df is checked exactly. Full fitted/residual vectors are calculated, but cross-runtime verification samples ten evenly spaced observations rather than exporting every value. Small reference tests compare full vectors. Extremely small p-values can underflow; the absolute tolerance does not establish relative tail accuracy.</p>
-<div id="7ad35a4d" class="cell" data-execution_count="4">
+<p>The large samples are fresh draws, not copies of the eight teaching rows, and their generating model includes a bedroom effect. The CSV hash, population coefficients, and sample correlations are recorded.</p>
+<p>The harness checks every coefficient, covariance entry, standard error, t statistic, p-value, confidence bound, and scalar statistic against R at <code>1e-9 + 1e-7 * abs(reference)</code>, and residual df exactly. Fitted values and residuals are computed in full but compared at ten evenly spaced observations; the small reference tests compare full vectors. The absolute tolerance does not establish relative accuracy for very small p-values.</p>
+<div id="29cc7fbc" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>agreement <span class="op">=</span> []</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> case <span class="kw">in</span> report[<span class="st">"cases"</span>]:</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name, errors <span class="kw">in</span> case[<span class="st">"max_absolute_errors_vs_R"</span>].items():</span>
@@ -1148,135 +1211,23 @@ benchmarks/figures/ols-memory.svg </code></pre>
 </div>
 </div>
 </div>
-<p>The initial large-sample run exposed inaccurate 95% Student-t quantiles from statrs’ inverse-beta calculation. The core now finds the critical value by bisecting the Student-t survival function at probability 0.025. A focused Rust test checks R <code>qt()</code> references through 999,997 residual df with absolute error below 1e-8. The large-data comparisons keep the original numerical tolerances.</p>
+<p>The first large-sample run exposed inaccurate 95% Student-t quantiles from statrs’ inverse-beta calculation. phit now finds the critical value by bisecting the Student-t survival function at probability 0.025, and a Rust test checks R <code>qt()</code> references up to 999,997 residual df with absolute error below 1e-8.</p>
 </section>
-<section id="reproduce-and-maintain" class="level2">
-<h2 class="anchored" data-anchor-id="reproduce-and-maintain">Reproduce and maintain</h2>
-<p>Use the <a href="../development.html">development setup</a> and pinned <a href="../notebooks/index.html">notebook dependencies</a>. From the repository root on macOS:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PHP</span><span class="op">=</span>/opt/homebrew/bin/php</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PHP_CONFIG</span><span class="op">=</span>/opt/homebrew/bin/php-config</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> php-stats <span class="at">--release</span> <span class="at">--locked</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="ex">.context/notebooks-venv/bin/python</span> tests/benchmarks/run.py</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="va">QUARTO_PYTHON</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/.context/notebooks-venv/bin/python"</span> <span class="ex">quarto</span> render docs/benchmarks/ols.qmd</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render docs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>On Linux, choose matching PHP and php-config; the driver defaults to the release <code>.so</code>. Override <code>STATS_EXTENSION</code> or <code>RSCRIPT</code> when needed. A quick harness check that preserves the published report is:</p>
+<section id="reproduction" class="level2">
+<h2 class="anchored" data-anchor-id="reproduction">Reproduction</h2>
+<p>Use the <a href="../development.html">development setup</a> and the pinned <a href="../notebooks/index.html">notebook dependencies</a>. From the repository root on macOS:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> phit <span class="at">--release</span> <span class="at">--locked</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.context/notebooks-venv/bin/python</span> tests/benchmarks/run.py</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="va">QUARTO_PYTHON</span><span class="op">=</span><span class="st">"</span><span class="va">$PWD</span><span class="st">/.context/notebooks-venv/bin/python"</span> <span class="dt">\</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">quarto</span> render docs/benchmarks/ols.qmd</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>On Linux, set matching <code>PHP</code> and <code>PHP_CONFIG</code>. The driver defaults to the release <code>.so</code>. Override <code>STATS_EXTENSION</code> or <code>RSCRIPT</code> when needed.</li>
+<li><code>--cases</code> takes comma-separated <code>n:p</code> pairs, with the intercept included in p and n &gt; p ≥ 3. <code>--repeats</code> sets the number of timed fits.</li>
+<li>The driver writes a report only after every case passes. Worker errors and numerical discrepancies fail the run, and workers time out after ten minutes.</li>
+</ul>
+<p>A quick harness check that leaves the published report unchanged:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">.context/notebooks-venv/bin/python</span> tests/benchmarks/run.py <span class="dt">\</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--cases</span> 1000:3 <span class="at">--repeats</span> 2 <span class="at">--output</span> .context/benchmark-smoke.json</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>--cases</code> accepts comma-separated <code>n:p</code> pairs with the intercept included in <span class="math inline">\(p\)</span> and <span class="math inline">\(n&gt;p\ge3\)</span>. <code>--repeats</code> changes the measured fit count. The driver writes a report only after all cases pass; worker errors and numerical discrepancies fail the run. Peak RSS uses <code>/usr/bin/time</code> on macOS/Linux when available. Workers have a ten-minute timeout. Benchmarks run explicitly, separate from <code>cargo test</code> and normal documentation rendering. Saved outputs allow rendering without running them.</p>
-<p>Future estimators should maintain equivalent R/statsmodels comparisons where supported: shared simulated inputs, complete requested outputs, numerical checks, release builds, raw timings, versions, machine details and stated boundaries. Run this suite when changing numerical implementation. Keep observed results with verification evidence; optimize only when measurements establish a need.</p>
-</section>
-<section id="apple-accelerate-experiment" class="level2">
-<h2 class="anchored" data-anchor-id="apple-accelerate-experiment">Apple Accelerate experiment</h2>
-<p><strong>Historical experiment:</strong> the optional macOS <code>accelerate</code> feature was removed after choosing to keep the numerical engine Rust-native until a concrete need justifies an external backend. This section preserves the observed results, not a currently available build option.</p>
-<p>The trial replaced the column-scaled SVD with Apple Accelerate’s LAPACK <code>DGESDD</code> in thin mode. PHP conversion, validation, rank threshold, coefficient solving, covariance and inference remain shared. This experiment accelerates the decomposition; it does not route every nalgebra matrix multiplication through BLAS. The default build stays portable Rust.</p>
-<p>Both variants passed the Rust R-reference and invalid-input tests. The Accelerate extension also passed PHP integration tests. The following independently timed runs use identical generated CSVs, verified by their hashes; both check numerical agreement with R and statsmodels using the same tolerances and sampled outputs. The <a href="ols-accelerate-results.json">Accelerate raw results</a> accompany the <a href="ols-accelerate-baseline.json">archived baseline</a>, with separate extension hashes and every timing sample.</p>
-<div id="074dc0f3" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>accelerate <span class="op">=</span> json.loads((ROOT <span class="op">/</span> <span class="st">"docs/benchmarks/ols-accelerate-results.json"</span>).read_text())</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> accelerate[<span class="st">"backend_label"</span>] <span class="op">==</span> <span class="st">"Apple Accelerate"</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>experiment_baseline <span class="op">=</span> json.loads((ROOT <span class="op">/</span> <span class="st">"docs/benchmarks/ols-accelerate-baseline.json"</span>).read_text())</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> accelerate[<span class="st">"cpu"</span>] <span class="op">==</span> experiment_baseline[<span class="st">"cpu"</span>]</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> accelerate[<span class="st">"thread_environment"</span>] <span class="op">==</span> experiment_baseline[<span class="st">"thread_environment"</span>]</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>baseline_cases <span class="op">=</span> {(case[<span class="st">"n"</span>], case[<span class="st">"p"</span>]): case <span class="cf">for</span> case <span class="kw">in</span> experiment_baseline[<span class="st">"cases"</span>]}</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>comparison <span class="op">=</span> []</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> case <span class="kw">in</span> accelerate[<span class="st">"cases"</span>]:</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    baseline <span class="op">=</span> baseline_cases[case[<span class="st">"n"</span>], case[<span class="st">"p"</span>]]</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> case[<span class="st">"data"</span>][<span class="st">"sha256"</span>] <span class="op">==</span> baseline[<span class="st">"data"</span>][<span class="st">"sha256"</span>]</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> case[<span class="st">"agreement_passed"</span>] <span class="kw">and</span> baseline[<span class="st">"agreement_passed"</span>]</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    pure <span class="op">=</span> baseline[<span class="st">"implementations"</span>][<span class="st">"PHP"</span>]</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    native <span class="op">=</span> case[<span class="st">"implementations"</span>][<span class="st">"PHP"</span>]</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    comparison.append({<span class="st">"observations"</span>: case[<span class="st">"n"</span>], <span class="st">"coefficients"</span>: case[<span class="st">"p"</span>],</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"PHP nalgebra (ms)"</span>: <span class="dv">1000</span> <span class="op">*</span> pure[<span class="st">"median_fit_seconds"</span>],</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"PHP Accelerate (ms)"</span>: <span class="dv">1000</span> <span class="op">*</span> native[<span class="st">"median_fit_seconds"</span>],</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"speedup (nalgebra / Accelerate)"</span>: pure[<span class="st">"median_fit_seconds"</span>] <span class="op">/</span> native[<span class="st">"median_fit_seconds"</span>],</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"R in Accelerate run (ms)"</span>: <span class="dv">1000</span> <span class="op">*</span> case[<span class="st">"implementations"</span>][<span class="st">"R"</span>][<span class="st">"median_fit_seconds"</span>],</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"statsmodels in Accelerate run (ms)"</span>: <span class="dv">1000</span> <span class="op">*</span> case[<span class="st">"implementations"</span>][<span class="st">"statsmodels"</span>][<span class="st">"median_fit_seconds"</span>],</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"PHP nalgebra peak RSS (MiB)"</span>: pure[<span class="st">"peak_rss_bytes"</span>] <span class="op">/</span> <span class="dv">2</span><span class="op">**</span><span class="dv">20</span>,</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"PHP Accelerate peak RSS (MiB)"</span>: native[<span class="st">"peak_rss_bytes"</span>] <span class="op">/</span> <span class="dv">2</span><span class="op">**</span><span class="dv">20</span>})</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Baseline recorded:"</span>, experiment_baseline[<span class="st">"recorded_at"</span>])</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Accelerate recorded:"</span>, accelerate[<span class="st">"recorded_at"</span>])</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>display(pd.DataFrame(comparison).sort_values([<span class="st">"observations"</span>, <span class="st">"coefficients"</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Baseline recorded: 2026-10-11T18:58:48.838183+00:00
-Accelerate recorded: 2026-10-11T18:59:32.136883+00:00</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">observations</th>
-<th data-quarto-table-cell-role="th">coefficients</th>
-<th data-quarto-table-cell-role="th">PHP nalgebra (ms)</th>
-<th data-quarto-table-cell-role="th">PHP Accelerate (ms)</th>
-<th data-quarto-table-cell-role="th">speedup (nalgebra / Accelerate)</th>
-<th data-quarto-table-cell-role="th">R in Accelerate run (ms)</th>
-<th data-quarto-table-cell-role="th">statsmodels in Accelerate run (ms)</th>
-<th data-quarto-table-cell-role="th">PHP nalgebra peak RSS (MiB)</th>
-<th data-quarto-table-cell-role="th">PHP Accelerate peak RSS (MiB)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">0</th>
-<td>1000</td>
-<td>3</td>
-<td>0.131959</td>
-<td>0.137375</td>
-<td>0.960575</td>
-<td>1.0</td>
-<td>0.222667</td>
-<td>27.343750</td>
-<td>27.343750</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">1</th>
-<td>100000</td>
-<td>3</td>
-<td>10.595292</td>
-<td>10.687125</td>
-<td>0.991407</td>
-<td>17.0</td>
-<td>5.003500</td>
-<td>79.031250</td>
-<td>87.015625</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">2</th>
-<td>100000</td>
-<td>11</td>
-<td>40.014375</td>
-<td>42.412708</td>
-<td>0.943452</td>
-<td>22.0</td>
-<td>11.309625</td>
-<td>146.250000</td>
-<td>146.390625</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">3</th>
-<td>1000000</td>
-<td>3</td>
-<td>113.052792</td>
-<td>132.560458</td>
-<td>0.852839</td>
-<td>185.0</td>
-<td>92.352458</td>
-<td>809.109375</td>
-<td>809.062500</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-</div>
-</div>
-<p>A ratio above 1 means the Accelerate variant was faster in this run. These are two sequential five-repeat experiments, not randomized paired trials. Variation in the R/Python control measurements helps show why small differences should not be treated as conclusive. Matrix shape matters, and PHP input/output allocation still contributes to complete-fit time and memory.</p>
-<p><strong>Observed outcome:</strong> this experiment did not establish a speed advantage for Accelerate on these shapes. The 100,000-row, three-coefficient case was roughly tied; the million-row case took about 133 ms with Accelerate versus 113 ms with nalgebra, and the eleven-coefficient case took about 42 ms versus 40 ms. The nalgebra implementation is now the sole maintained path. The experimental feature and LAPACK dependencies were removed; recorded results remain available. These timings alone do not isolate decomposition time from PHP conversion or native allocations, so they do not establish the cause of the differences.</p>
-<p>Symbol inspection reveals a backend-interface difference: the Rust <code>lapack</code> bindings call <code>_dgesdd_</code>, while this NumPy installation calls <code>_dgesdd$NEWLAPACK$ILP64</code>. Both link Apple’s Accelerate framework, but these are different LAPACK interfaces. This trial therefore does not establish how Rust would perform through NumPy’s newer interface, nor whether that difference caused the observed timings. The report records the imported symbols; only the legacy LAPACK binding was used for this trial.</p>
-<p>The historical reports retain individual timings, input hashes, imported symbols and artifact hashes. Their implementation is no longer maintained in this checkout; there is no current <code>accelerate</code> build feature. Keeping a separate archived baseline preserves this comparison when the standard Rust/R/statsmodels report is refreshed. Linux/OpenBLAS was not implemented or verified by this experiment.</p>
 
 
 </section>

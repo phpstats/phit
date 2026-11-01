@@ -1,5 +1,5 @@
 {
- "recorded_at": "2026-10-12T15:18:49.923101+00:00",
+ "recorded_at": "2026-11-01T19:23:00.594834+00:00",
  "generator": "docs/verifications/compare_distributions.py",
  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
  "php": "8.5.10",
@@ -38511,59 +38511,5 @@
    }
   }
  ],
- "native_refreshed_at": "2026-10-12T15:18:49.923101+00:00",
- "native_refresh_method": "Re-evaluated every native scalar/batch against immutable saved R/SciPy/60-digit mpmath references. No reference values were recomputed.",
- "reference_metadata": {
-  "scipy": {
-   "reference": "SciPy 1.18.1, NumPy 2.5.4",
-   "recorded_at": "2026-10-12T13:06:21.866254+00:00",
-   "generator": "docs/verifications/compare_distributions.py",
-   "conventions": "scipy.stats frozen distributions; quantile is ppf; nonfinite numbers are strings"
-  },
-  "mpmath": {
-   "reference": "mpmath 1.4.1 at 60 digits",
-   "recorded_at": "2026-10-12T13:06:21.866254+00:00",
-   "generator": "docs/verifications/compare_distributions.py",
-   "conventions": "correctly rounded double of the exact value; null where no reference was computed",
-   "corrections": {
-    "reason": "Degenerate count quantiles return their point mass before a generic upper-support endpoint. Implemented in the recorded generator; p=0 keeps the conventional lower endpoint.",
-    "cases": [
-     {
-      "case": 405,
-      "input_index": 14,
-      "input": 1,
-      "previous": 50.0,
-      "expected": 0.0
-     },
-     {
-      "case": 475,
-      "input_index": 14,
-      "input": 1,
-      "previous": "Inf",
-      "expected": 0.0
-     },
-     {
-      "case": 510,
-      "input_index": 14,
-      "input": 1,
-      "previous": "Inf",
-      "expected": 0.0
-     },
-     {
-      "case": 552,
-      "input_index": 14,
-      "input": 1,
-      "previous": "Inf",
-      "expected": 0.0
-     }
-    ]
-   }
-  }
- },
- "reference_sha256": {
-  "r": "1fe8e3b1a799ebc0ab689234a379dad61311486c18e012d57bfda84cc1a9defa",
-  "scipy": "8e00e2586a55e608f14c083a28097b35ba35b299da5ebcbf0649da70825fa662",
-  "mpmath": "9ed681a91b48a453b9c5e9cad77d38ea18d11c2cf4810505ccfc30b27838415c"
- },
  "release_gate_policy": "Original operation-specific PHP tolerances retained; independent mpmath adjudicates saved R disagreements. Documented boundary conventions have separate assertions."
 }

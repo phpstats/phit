@@ -6,20 +6,14 @@ project:
     - "**/*.qmd"
   resources:
     - figures/
-    - verifications/packaging-results.json
-    - verifications/v01-validation.json
     - verifications/reference-manifest.json
-    - benchmarks/v01-preservation-results.json
     - benchmarks/draws-results.json
     - benchmarks/distributions-results.json
     - benchmarks/rng-results.json
-    - benchmarks/v02-preservation-results.json
     - verifications/distributions-results.json
     - verifications/distributions-audit.json
     - verifications/distributions-reuse.json
     - benchmarks/ols-results.json
-    - benchmarks/ols-accelerate-results.json
-    - benchmarks/ols-accelerate-baseline.json
     - data/housing.csv
     - data/learning.csv
     - benchmarks/logistic-results.json
@@ -43,7 +37,6 @@ project:
     - verifications/lmm.php
     - verifications/compare_lmm.py
     - benchmarks/lmm-results.json
-    - benchmarks/lmm-baseline-results.json
     - verifications/r-compatibility-results.json
     - verifications/compare_r_compatibility.py
     - notebooks/requirements.txt
@@ -178,10 +171,6 @@ website:
                 text: "Random slopes and REML"
               - href: notebooks/logistic-mixed-math.qmd
                 text: "Binomial random intercept"
-          - section: "History"
-            contents:
-              - v0.1.qmd
-              - v0.2.qmd
       - section: "Contributing"
         contents:
           - development.qmd

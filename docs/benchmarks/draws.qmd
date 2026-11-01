@@ -21,7 +21,7 @@ phit's posterior-draw kernels are timed against equivalent R matrix calculations
 
 ## Numerical agreement first
 
-The 2026-10-12 run compared weighted means, both covariance normalizations,
+The run compared weighted means, both covariance normalizations,
 covariance maps and log determinants, and **every transformed draw value** against
 R. All quantities passed $10^{-11}+10^{-11}|\mathrm{reference}|$.
 

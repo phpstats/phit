@@ -24,6 +24,14 @@ def max_diff(actual, expected):
     if isinstance(expected,bool):return int(actual!=expected)
     return abs(actual-expected)
 
+def expanded_term(term, spec):
+    """A PHP random term in the reference's shape: (x || g) keeps only conditional-variance diagonals, as lme4
+    reports them (tests/lmm-expanded.php does the same)."""
+    out=dict(covariance=term['covariance'],effects=term['effects'])
+    if spec.get('correlated',True):out['effects_cond_var']=term['effects_cond_var']
+    else:out['effects_cond_var_diagonal']=[[block[j][j] for j in range(len(block))] for block in term['effects_cond_var']]
+    return out
+
 def sleepstudy_python(case):
     import numpy as np
     import scipy.linalg as la
@@ -62,7 +70,7 @@ def run():
         native={}
         for optimizer in ['bobyqa','nelder_mead']:
             fit=fit_php(dict(case,optimizer=optimizer))
-            fit['terms']=[dict(covariance=t['covariance'],effects=t['effects']) for t in fit['random']]
+            fit['terms']=[expanded_term(t,term) for t,term in zip(fit['random'],case['terms'])]
             native[optimizer]=fit
         errors=[]
         for optimizer,reference in case['references'].items():
@@ -84,6 +92,9 @@ def run():
             py,py_warnings=sleepstudy_python(case)
             for key,value in case['references']['bobyqa']['result'].items():
                 tol=(5e-6,1e-9) if key in ['log_likelihood','aic','bic'] else (1e-3,3e-4)
+                if key=='terms':
+                    # statsmodels reports no conditional variances of the random effects.
+                    value=[dict(covariance=v['covariance'],effects=v['effects']) for v in value]
                 check(py[key],value,*tol,path=case['name']+'/statsmodels/'+key)
             row.update(statsmodels=py,statsmodels_warnings=py_warnings)
         mixed_results.append(row)

@@ -190,7 +190,7 @@ phibble tokenizes with vroom's (readr 2's) quote rules. It uses a fast reader wh
 
 ### Timing
 
-On an Apple M5 Ultra with PHP 8.5 and phit 0.4.3, a 1,000,000-row, 57 MB file with int, float, string, date, and datetime columns reads in about 0.28 seconds with guessed types and 0.16 seconds with every type given. Both include building the PHP arrays.
+<!-- csv timing: Linux record pending -->
 
 ## Verification
 

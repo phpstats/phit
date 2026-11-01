@@ -573,40 +573,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
- <span class="menu-text">History</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../v0.1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.1 stabilization assessment (historical)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../v0.2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.2 numerical API assessment (historical)</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
  <span class="menu-text">Contributing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../development.html" class="sidebar-item-text sidebar-link">
@@ -649,9 +626,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#timing-boundaries-and-correctness" id="toc-timing-boundaries-and-correctness" class="nav-link active" data-scroll-target="#timing-boundaries-and-correctness">Timing boundaries and correctness</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link active" data-scroll-target="#methods">Methods</a></li>
+  <li><a href="#timing-boundaries-and-correctness" id="toc-timing-boundaries-and-correctness" class="nav-link" data-scroll-target="#timing-boundaries-and-correctness">Timing boundaries and correctness</a></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
-  <li><a href="#reproduce" id="toc-reproduce" class="nav-link" data-scroll-target="#reproduce">Reproduce</a></li>
+  <li><a href="#reproduction" id="toc-reproduction" class="nav-link" data-scroll-target="#reproduction">Reproduction</a></li>
   </ul>
 </nav>
     </div>
@@ -677,17 +655,65 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This benchmark fits the same <strong>Laplace marginal ML</strong> model in R lme4, an independent Python/SciPy reference implementation, and the native PHP extension. It uses shared deterministic binary data, correlated study/practice predictors, three fixed coefficients and 50 groups at 1,000, 10,000 and 100,000 observations.</p>
-<p>The Python worker is our likelihood/optimizer reference, <strong>not</strong> statsmodels’ Bayesian mixed-model estimator and not an optimized Python GLMM package. These measurements compare the named implementations; they do not establish a general Rust-versus-Python speed ranking.</p>
+<p>phit’s <code>fit_mixed_logistic_matrix()</code>, R lme4 <code>glmer()</code>, and an independent Python/SciPy implementation fit the same Laplace marginal ML model. The Python worker is phit’s likelihood and optimizer reference. It is not statsmodels’ Bayesian mixed-model estimator or an optimized Python GLMM package.</p>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Setting</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Workloads</td>
+<td>1,000, 10,000, and 100,000 rows; 50 groups; 3 fixed coefficients; one random intercept; Laplace approximation</td>
+</tr>
+<tr class="even">
+<td>Data</td>
+<td>Shared deterministic binary outcomes with correlated study and practice predictors</td>
+</tr>
+<tr class="odd">
+<td>Machine</td>
+<td>Apple M5 Ultra, macOS 27, recorded 2026-10-11</td>
+</tr>
+<tr class="even">
+<td>Threads</td>
+<td>Pinned to 1</td>
+</tr>
+<tr class="odd">
+<td>Repetitions</td>
+<td>One warm-up, then three timed fits per worker</td>
+</tr>
+<tr class="even">
+<td>Timed</td>
+<td>One complete fit with inference and observation-length outputs</td>
+</tr>
+<tr class="odd">
+<td>Excluded</td>
+<td>Compact output sampling and JSON serialization</td>
+</tr>
+<tr class="even">
+<td>Memory</td>
+<td>Peak RSS of the whole worker process</td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="timing-boundaries-and-correctness" class="level2">
 <h2 class="anchored" data-anchor-id="timing-boundaries-and-correctness">Timing boundaries and correctness</h2>
-<p>Each worker loads the same CSV, performs one warm-up fit, then runs three timed fits. PHP times the complete native call, including conversion and all returned inference/observation arrays. R/Python materialize covariance, standard errors, conditional modes and full fixed/conditional fitted values and residuals. Compact sample output and JSON serialization happen outside the timed fit. Process time includes startup, CSV load, warm-up and all timed fits; peak RSS covers the whole worker process. Threads are pinned to one.</p>
-<p>Every report is published only after coefficients, covariance/standard errors, group SD/modes, normalized likelihood and common observation samples agree. Likelihood tolerance is absolute 1e-6 plus relative 1e-8; inference uses absolute 2e-5 plus relative 2e-3; estimates use absolute 2e-5 plus relative 2e-4. Group modes use absolute 5e-5 because large-sample flat-profile optimization produced shifts around 2e-5 in modes near zero; relative error there is not informative.</p>
+<p>PHP times the complete native call, including conversion and all returned inference/observation arrays. R/Python materialize covariance, standard errors, conditional modes and full fixed/conditional fitted values and residuals. Process time includes startup, CSV load, warm-up and all timed fits.</p>
+<p>A report is written only after coefficients, covariance/standard errors, group SD/modes, normalized likelihood and common observation samples agree. Likelihood tolerance is absolute 1e-6 plus relative 1e-8; inference uses absolute 2e-5 plus relative 2e-3; estimates use absolute 2e-5 plus relative 2e-4. Group modes use absolute 5e-5 because large-sample flat-profile optimization produced shifts around 2e-5 in modes near zero; relative error there is not informative.</p>
 <p>The installed lme4 version disables derivative checks automatically at large n. The benchmark explicitly enables the final joint Hessian. Its initial BOBYQA run also stopped short on the 10,000-row case; an R-only restart from that fit, with rhobeg=0.001 and nAGQ0initStep=FALSE, resolved it. <strong>Both R stages are included in its fit time.</strong> The report records these controls, versions and data/binary hashes. Native estimates never seed the R worker.</p>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
-<div id="0223113d" class="cell" data-execution_count="1">
+<div id="ab75c9c2" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -842,7 +868,7 @@ benchmarks/figures/logistic-mixed-fit-time.svg
 benchmarks/figures/logistic-mixed-memory.svg </code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>CompletedProcess(args=['Rscript', '/Users/erik/.polyscope/clones/ac9532b1/serene-whale/docs/figures/render.R', 'logistic-mixed'], returncode=0)</code></pre>
+<pre><code>CompletedProcess(args=['Rscript', '/Users/erik/Projects/phit/docs/figures/render.R', 'logistic-mixed'], returncode=0)</code></pre>
 </div>
 </div>
 <div class="quarto-figure quarto-figure-center">
@@ -857,14 +883,14 @@ benchmarks/figures/logistic-mixed-memory.svg </code></pre>
 <figcaption>Peak whole-process memory, in fixed R/Python/PHP order.</figcaption>
 </figure>
 </div>
-<p>These are 50-group, three-coefficient, one-intercept models using the one-node approximation. They do not benchmark 61-node integration, random slopes or multiple grouping terms. A larger dataset does not by itself establish approximation accuracy; see the <a href="../notebooks/logistic-mixed-verification.html">independent integration checks</a>. The full measurements and errors are in the <a href="logistic-mixed-results.json">saved report</a>.</p>
+<p>These models use the one-node approximation. They do not benchmark 61-node integration, random slopes or multiple grouping terms. A larger dataset does not by itself establish approximation accuracy; see the <a href="../notebooks/logistic-mixed-verification.html">independent integration checks</a>. The full measurements and errors are in the <a href="logistic-mixed-results.json">saved report</a>.</p>
 </section>
-<section id="reproduce" class="level2">
-<h2 class="anchored" data-anchor-id="reproduce">Reproduce</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> php-stats <span class="at">--release</span> <span class="at">--locked</span></span>
+<section id="reproduction" class="level2">
+<h2 class="anchored" data-anchor-id="reproduction">Reproduction</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> build <span class="at">-p</span> phit <span class="at">--release</span> <span class="at">--locked</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">PHP</span><span class="op">=</span>/opt/homebrew/bin/php <span class="ex">.context/notebooks-venv/bin/python</span> <span class="dt">\</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  tests/benchmarks/run-logistic-mixed.py <span class="at">--sizes</span> 1000,10000,100000 <span class="at">--repeats</span> 3</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Use a matching PHP/php-config installation and <code>.so</code> on Linux. This is a developer command; unit tests do not execute performance benchmarks.</p>
+<p>Use a matching PHP and php-config, and <code>.so</code> on Linux.</p>
 
 
 </section>

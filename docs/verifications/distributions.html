@@ -570,40 +570,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false">
- <span class="menu-text">History</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../v0.1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.1 stabilization assessment (historical)</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../v0.2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">v0.2 numerical API assessment (historical)</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
  <span class="menu-text">Contributing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../development.html" class="sidebar-item-text sidebar-link">
@@ -652,7 +629,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#tolerance-and-checks" id="toc-tolerance-and-checks" class="nav-link" data-scroll-target="#tolerance-and-checks">Tolerance and checks</a></li>
   <li><a href="#known-exceptions" id="toc-known-exceptions" class="nav-link" data-scroll-target="#known-exceptions">Known exceptions</a></li>
   <li><a href="#reproduction" id="toc-reproduction" class="nav-link" data-scroll-target="#reproduction">Reproduction</a></li>
-  <li><a href="#implementation-history-backend-and-model-path-audit" id="toc-implementation-history-backend-and-model-path-audit" class="nav-link" data-scroll-target="#implementation-history-backend-and-model-path-audit">Implementation history: backend and model-path audit</a></li>
+  <li><a href="#implementation-notes" id="toc-implementation-notes" class="nav-link" data-scroll-target="#implementation-notes">Implementation notes</a></li>
   </ul>
 </nav>
     </div>
@@ -686,7 +663,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
 <!-- BEGIN REFERENCE EVIDENCE -->
-<p>Native refresh: <strong>2026-10-12T15:18:49.923101+00:00</strong>. PHP 8.5.10; R version 4.6.1 (2026-06-24); SciPy 1.18.1; mpmath 1.4.1 at 60 digits.</p>
+<p>Native refresh: <strong>2026-11-01T19:23:00.594834+00:00</strong>. PHP 8.5.10; R version 4.6.1 (2026-06-24); SciPy 1.18.1; mpmath 1.4.1 at 60 digits.</p>
 <p>553 cases, 8,661 points, 27 unavailable independent reference points.</p>
 <table class="caption-top table">
 <thead>
@@ -845,13 +822,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="reproduction">Reproduction</h2>
 <p>See the commands under <a href="#inputs-and-references">Inputs and references</a> and run <code>./scripts/check</code> with a matching PHP for the full suite.</p>
 </section>
-<section id="implementation-history-backend-and-model-path-audit" class="level2">
-<h2 class="anchored" data-anchor-id="implementation-history-backend-and-model-path-audit">Implementation history: backend and model-path audit</h2>
-<p>The <a href="distributions-audit.json">raw statrs report</a> and executable <code>crates/stats-core/examples/statrs_audit.rs</code> document why statrs alone is not used for the new distribution API. The <a href="distributions-reuse.json">reuse experiment</a> compares the public Normal log-CDF and Student-t quantile with the existing probit and OLS formulas. Candidate t quantiles improve large-df reference error, but all six tested critical values and 17 tested normal log-CDF values differ in rounding, so the regression code keeps its existing paths.</p>
+<section id="implementation-notes" class="level2">
+<h2 class="anchored" data-anchor-id="implementation-notes">Implementation notes</h2>
+<ul>
+<li>statrs alone is not used for the distribution functions. The <a href="distributions-audit.json">statrs report</a> and <code>crates/stats-core/examples/statrs_audit.rs</code> record the cases it fails.</li>
+<li>The regression code keeps its own normal log-CDF and Student-t quantile paths. The <a href="distributions-reuse.json">reuse comparison</a> shows that the distribution functions’ versions differ from them in rounding on all six tested critical values and 17 tested log-CDF values.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> run <span class="at">-p</span> stats-core <span class="at">--release</span> <span class="at">--locked</span> <span class="at">--example</span> statrs_audit</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> run <span class="at">-p</span> stats-core <span class="at">--release</span> <span class="at">--locked</span> <span class="at">--example</span> distribution_reuse_audit</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">PHP</span><span class="op">=</span>/path/to/matching/php <span class="va">PHP_CONFIG</span><span class="op">=</span>/path/to/php-config <span class="ex">./scripts/check</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The <a href="../v0.2.html">v0.2 assessment</a> is the historical record of that release’s scope.</p>
 
 
 </section>

@@ -83,25 +83,6 @@ approximation <- function(){
   scale_x_continuous(breaks=c(1,9,25,61))+labs(title='Rare events: the approximation changes the estimate',x='Quadrature nodes (1 = Laplace)',y='Estimated random-intercept SD (log-odds units)',caption='Same data and model at every node count; this is approximation sensitivity, not a comparison of languages.')
  save_figure(p,file.path(HERE,'logistic-mixed-node-sensitivity'),9,4.6)
 }
-preservation <- function(){
- path<-file.path(DOCS,'benchmarks','v01-preservation-results.json');current_inputs<<-path;r<-read_json(path)
- labels<-c(ols='OLS',logistic='Logistic',probit='Probit',poisson='Poisson',lmm='Gaussian intercept',lmm_fit='General Gaussian slopes',logistic_mixed='Logistic mixed')
- rows<-samples<-list()
- for(case in r$cases){
-  panel<-paste(labels[[case$model]],'|',number_label(case$n),'rows')
-  for(j in 1:2){key<-c('baseline','v01')[j];fit<-case$implementations[[key]]
-   rows[[length(rows)+1]]<-data.frame(panel=panel,stage=c('Before','v0.1')[j],x=j,value=fit$median_fit_seconds*1000)
-   samples[[length(samples)+1]]<-data.frame(panel=panel,x=j+seq(-.14,.14,length.out=length(v(fit$fit_seconds))),value=v(fit$fit_seconds)*1000)
-  }
- }
- d<-bind(rows);s<-bind(samples);d$panel<-factor(d$panel,levels=unique(d$panel));s$panel<-factor(s$panel,levels=levels(d$panel))
- p<-ggplot(d,aes(x,value,fill=stage))+geom_col(width=.58)+geom_point(data=s,aes(x,value),inherit.aes=FALSE,size=1.3,color='#253247')+
-  scale_fill_manual(values=c(Before='#64748B',`v0.1`='#009E73'))+scale_x_continuous(breaks=1:2,labels=c('Before','v0.1'))+
-  scale_y_continuous(expand=expansion(mult=c(0,.15)))+facet_wrap(~panel,ncol=2,scales='free_y',axes='all_x')+
-  labs(title='Full PHP fitting before and after stabilization',subtitle='Identical inputs within each panel; all numerical comparisons passed',x=NULL,y='Full fit (ms)',
-   caption='Median bars and individual timed fits. Each panel has its own linear scale. Input conversion and all results included; JSON excluded.')+theme(legend.position='none')
- save_figure(p,file.path(HERE,'v01-preservation'),10,10)
-}
 public_agreement <- function(){
  path<-file.path(DOCS,'verifications','lmm-public-results.json');current_inputs<<-path;r<-read_json(path)
  d<-bind(lapply(r,function(c){ref<-v(c$R$fitted);data.frame(dataset=c$name,reference=ref,difference=1e6*(v(c[['phit']]$fitted)-ref))}))
@@ -150,11 +131,11 @@ posterior <- function(){
   labs(title=paste('Rare events: conditional distribution of group',r$group),subtitle='Vertical line: conditional mode',x='Standardized random intercept u (b = tau * u)',y='Conditional density',caption='Independently normalized points from the walkthrough; a Gaussian approximation can miss skewness and tail shape.')
  save_figure(p,file.path(HERE,'logistic-mixed-posterior'),10,4.8)
 }
-choices<-c('ols','logistic','probit','poisson','lmm','logistic-mixed','approximation','preservation','public-agreement','sleepstudy','profile','posterior')
+choices<-c('ols','logistic','probit','poisson','lmm','logistic-mixed','approximation','public-agreement','sleepstudy','profile','posterior')
 jobs<-if(length(args)==0 || args[1]=='--all')choices else args
 if(any(!jobs%in%choices))stop('Unknown figure job. Choose: ',paste(choices,collapse=', '))
 for(job in jobs){
- if(job%in%choices[1:6])benchmark(job) else switch(job,approximation=approximation(),preservation=preservation(),`public-agreement`=public_agreement(),sleepstudy=sleepstudy(),profile=profile(),posterior=posterior())
+ if(job%in%choices[1:6])benchmark(job) else switch(job,approximation=approximation(),`public-agreement`=public_agreement(),sleepstudy=sleepstudy(),profile=profile(),posterior=posterior())
 }
 manifest$renderer_md5<-md5(file.path(HERE,'render.R'));manifest$theme_md5<-md5(file.path(HERE,'style.R'))
 manifest$R<-R.version.string;manifest$platform<-R.version$platform

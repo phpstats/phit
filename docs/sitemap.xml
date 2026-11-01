@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://phit.phpstats.org/docs/visualization</loc>
-    <lastmod>2026-11-01T19:02:37.975Z</lastmod>
+    <lastmod>2026-11-01T19:23:30.033Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/verifications/poisson</loc>
@@ -14,11 +14,7 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/verifications/distributions</loc>
-    <lastmod>2026-11-01T19:02:42.939Z</lastmod>
-  </url>
-  <url>
-    <loc>https://phit.phpstats.org/docs/v0.2</loc>
-    <lastmod>2026-11-01T19:03:06.134Z</lastmod>
+    <lastmod>2026-11-01T19:25:41.671Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/rng</loc>
@@ -26,7 +22,7 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/reference-utilities</loc>
-    <lastmod>2026-11-01T19:04:05.858Z</lastmod>
+    <lastmod>2026-11-01T19:21:28.846Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/r-compatibility</loc>
@@ -70,11 +66,11 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/missing-data</loc>
-    <lastmod>2026-11-01T18:14:38.041Z</lastmod>
+    <lastmod>2026-11-01T19:23:16.243Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/io</loc>
-    <lastmod>2026-11-01T19:00:56.288Z</lastmod>
+    <lastmod>2026-11-01T19:23:30.032Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs</loc>
@@ -102,7 +98,7 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/development</loc>
-    <lastmod>2026-11-01T19:01:39.165Z</lastmod>
+    <lastmod>2026-11-01T19:22:40.867Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/descriptive</loc>
@@ -114,7 +110,7 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/benchmarks/rng</loc>
-    <lastmod>2026-11-01T19:02:42.942Z</lastmod>
+    <lastmod>2026-11-01T19:25:41.673Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/benchmarks/poisson</loc>
@@ -126,15 +122,15 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/benchmarks/lmm</loc>
-    <lastmod>2026-11-01T19:02:09.864Z</lastmod>
+    <lastmod>2026-11-01T19:22:56.453Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/benchmarks/distributions</loc>
-    <lastmod>2026-11-01T19:02:42.941Z</lastmod>
+    <lastmod>2026-11-01T19:25:41.672Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/benchmarks/draws</loc>
-    <lastmod>2026-11-01T19:02:40.345Z</lastmod>
+    <lastmod>2026-11-01T19:23:37.856Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/benchmarks/logistic-mixed</loc>
@@ -142,7 +138,7 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/benchmarks/ols</loc>
-    <lastmod>2026-11-01T19:01:09.388Z</lastmod>
+    <lastmod>2026-11-01T19:22:34.690Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/benchmarks/probit</loc>
@@ -150,7 +146,7 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/contracts</loc>
-    <lastmod>2026-11-01T19:01:47.277Z</lastmod>
+    <lastmod>2026-11-01T19:21:21.192Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/deployment</loc>
@@ -158,7 +154,7 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/design-philosophy</loc>
-    <lastmod>2026-11-01T18:59:15.721Z</lastmod>
+    <lastmod>2026-11-01T19:22:40.867Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/distributions</loc>
@@ -178,15 +174,15 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/extension-or-polyfill</loc>
-    <lastmod>2026-11-01T19:00:07.934Z</lastmod>
+    <lastmod>2026-11-01T19:23:25.605Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/getting-started</loc>
-    <lastmod>2026-11-01T18:59:32.844Z</lastmod>
+    <lastmod>2026-11-01T19:20:47.162Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/installation</loc>
-    <lastmod>2026-11-01T18:59:05.215Z</lastmod>
+    <lastmod>2026-11-01T19:23:04.240Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/licensing</loc>
@@ -230,7 +226,7 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/ols-math</loc>
-    <lastmod>2026-11-01T13:07:21.609Z</lastmod>
+    <lastmod>2026-11-01T19:22:40.867Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/reference-models</loc>
@@ -238,15 +234,11 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/releasing</loc>
-    <lastmod>2026-11-01T19:01:54.430Z</lastmod>
-  </url>
-  <url>
-    <loc>https://phit.phpstats.org/docs/v0.1</loc>
-    <lastmod>2026-11-01T19:03:10.856Z</lastmod>
+    <lastmod>2026-11-01T19:23:04.240Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/verification</loc>
-    <lastmod>2026-11-01T19:00:28.123Z</lastmod>
+    <lastmod>2026-11-01T19:21:28.846Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/verifications/lmm</loc>

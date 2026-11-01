@@ -88,9 +88,7 @@ php -n -d "extension=$STATS_EXTENSION" examples/ols.php
 - The general mixed fitter uses the pinned Rust-native `bobyqa` and `argmin`
   (Nelder–Mead) crates, which add no C, Fortran, BLAS, or LAPACK requirement.
 - An external numerical backend needs a concrete requirement that justifies the
-  extra build and deployment work. An earlier Apple Accelerate trial was removed;
-  its results are kept as
-  [historical benchmark evidence](benchmarks/ols.qmd#apple-accelerate-experiment).
+  extra build and deployment work.
 
 ## Changing the implementation
 

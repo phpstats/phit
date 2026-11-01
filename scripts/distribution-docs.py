@@ -75,16 +75,6 @@ text = (f"Recorded: **{bench['recorded_at']}**; {bench.get('cpu',bench['platform
          'per-worker memory, load/startup times and every timing sample are retained in the raw report.')
 replace('docs/benchmarks/distributions.qmd','BENCHMARK EVIDENCE',text)
 
-preservation = read('docs/benchmarks/v02-preservation-results.json')
-rows = []
-for c in preservation['cases']:
-    assert c['numerical_agreement']
-    largest = max(c['max_absolute_differences'].values())
-    rows.append([c['model'],f"{c['n']:,}",f'{largest:.3g}',f"{c['fit_time_ratio']:.3f}×"])
-text = (f"Recorded: **{preservation['recorded_at']}**; baseline revision `{preservation['baseline_revision']}`. "
-        'All seven model comparisons passed.\n\n'
-        +table(['Fitter','Rows','Largest compared absolute difference','Current/baseline median time'],rows))
-replace('docs/benchmarks/distributions.qmd','PRESERVATION EVIDENCE',text)
 rng = read('docs/benchmarks/rng-results.json')
 rows = []
 for c in rng['cases']:

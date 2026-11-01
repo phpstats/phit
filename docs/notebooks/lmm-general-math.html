@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Gaussian random slopes, penalized least squares and REML – phit</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5a69534754b34dc075d7f980428dccec.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../verification.html">Benchmarks and verification</a></li><li class="breadcrumb-item"><a href="../notebooks/index.html">Mathematics</a></li><li class="breadcrumb-item"><a href="../notebooks/lmm-general-math.html">Random slopes and REML</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">phit</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Getting started</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../installation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Installation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../extension-or-polyfill.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Extension or polyfill</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../getting-started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">A first model</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Guides</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../formulas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Model formulas</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear and generalized linear models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../mixed-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Mixed models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../missing-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Missing values and sample accounting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probability distributions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../descriptive.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Descriptive statistics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../rng.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Seeded batch sampling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../draw-numerics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Posterior-draw numerical kernels</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../io.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reading CSV files</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../deployment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Deploying to servers</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Examples</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/linear-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fit a linear model and predict</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/glm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fit logistic and Poisson models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/mixed-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fit a mixed model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Densities, quantiles, and random draws</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/polars-mixed-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fit a mixed model to a Polars table and chart it</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Reference</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../contracts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">API overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Matrix model functions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../reference-utilities.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions, statistics, draws, optimization and CSV</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../licensing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Licensing</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Compatibility and limitations</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r-compatibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">R compatibility: target, coverage and remaining work</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Benchmarks and verification</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verifications/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Distributions: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/rng.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Seeded sampling: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/draws.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Posterior draws: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verifications/ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ols-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: R and statsmodels comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verifications/logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/logistic-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic: R and statsmodels comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verifications/probit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probit: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/probit-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probit: R and statsmodels comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/probit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probit: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verifications/poisson.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/poisson-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson: R and statsmodels comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/poisson.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../verifications/lmm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/lmm-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: synthetic comparison</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/lmm-public-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: published data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/r-compatibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: lme4 optimizer audit</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/lmm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian mixed: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/logistic-mixed-verification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Binomial mixed: verification</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../benchmarks/logistic-mixed.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Binomial mixed: performance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../data/lmm/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Published data sets</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Mathematics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth2 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Walkthroughs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ols-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../ols-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">OLS: Rust implementation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/logistic-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Logistic regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/probit-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Probit regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/poisson-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Poisson regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/lmm-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gaussian random intercept</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/lmm-general-math.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Random slopes and REML</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/logistic-mixed-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Binomial random intercept</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Contributing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../development.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Development</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../releasing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Releasing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../documentation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Building and maintaining the documentation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Figure conventions and reproducibility</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../design-philosophy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Design philosophy</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#observations-and-matrices" id="toc-observations-and-matrices" class="nav-link active" data-scroll-target="#observations-and-matrices">Observations and matrices</a></li>
+  <li><a href="#covariance-through-a-cholesky-factor" id="toc-covariance-through-a-cholesky-factor" class="nav-link" data-scroll-target="#covariance-through-a-cholesky-factor">Covariance through a Cholesky factor</a></li>
+  <li><a href="#penalized-least-squares-profiles-out-beta-and-random-effects" id="toc-penalized-least-squares-profiles-out-beta-and-random-effects" class="nav-link" data-scroll-target="#penalized-least-squares-profiles-out-beta-and-random-effects">Penalized least squares profiles out beta and random effects</a></li>
+  <li><a href="#ml-and-reml-are-different-objectives" id="toc-ml-and-reml-are-different-objectives" class="nav-link" data-scroll-target="#ml-and-reml-are-different-objectives">ML and REML are different objectives</a></li>
+  <li><a href="#fixed-effect-uncertainty" id="toc-fixed-effect-uncertainty" class="nav-link" data-scroll-target="#fixed-effect-uncertainty">Fixed-effect uncertainty</a></li>
+  <li><a href="#four-grouping-levels-which-observations-share-variation" id="toc-four-grouping-levels-which-observations-share-variation" class="nav-link" data-scroll-target="#four-grouping-levels-which-observations-share-variation">Four grouping levels: which observations share variation?</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../verification.html">Benchmarks and verification</a></li><li class="breadcrumb-item"><a href="../notebooks/index.html">Mathematics</a></li><li class="breadcrumb-item"><a href="../notebooks/lmm-general-math.html">Random slopes and REML</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Gaussian random slopes, penalized least squares and REML</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The <a href="../notebooks/lmm-math.html">random-intercept walkthrough</a> introduces clustering. Here we allow each subject both a different starting reaction time and a different response to days of sleep deprivation, using the published sleepstudy data. The <a href="../notebooks/r-compatibility.html">optimizer audit</a> verifies this model against R lme4 and statsmodels under ML and REML.</p>
+<section id="observations-and-matrices" class="level2">
+<h2 class="anchored" data-anchor-id="observations-and-matrices">Observations and matrices</h2>
+<p><span class="math display">\[
+y_i=o_i+x_i^\top\beta+z_i^\top b_{g(i)}+\epsilon_i,
+\qquad b_g\sim N(0,\Sigma),\quad
+\epsilon_i\sim N(0,\sigma^2/w_i).
+\]</span></p>
+<p>Here o is a known offset, w is a positive prior weight, x contains fixed predictors and z contains random predictors. For sleepstudy, o=0, w=1 and both local designs have <code>[1, Days]</code> columns. The ones construct an intercept; Days is observed data. Beta contains the population intercept and slope. Each group’s b contains deviations from those population coefficients, not a second set of observed predictors.</p>
+<div id="0db066cf" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> display,Math</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>ROOT<span class="op">=</span><span class="bu">next</span>(p <span class="cf">for</span> p <span class="kw">in</span> [Path.cwd(),<span class="op">*</span>Path.cwd().parents] <span class="cf">if</span> (p<span class="op">/</span><span class="st">'Cargo.toml'</span>).exists())</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>fixtures<span class="op">=</span>json.loads((ROOT<span class="op">/</span><span class="st">'tests/fixtures/lmm-expanded-r.json'</span>).read_text())</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>c<span class="op">=</span><span class="bu">next</span>(c <span class="cf">for</span> c <span class="kw">in</span> fixtures[<span class="st">'cases'</span>] <span class="cf">if</span> c[<span class="st">'name'</span>]<span class="op">==</span><span class="st">'sleepstudy_reml'</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>x<span class="op">=</span>np.array(c[<span class="st">'x'</span>])<span class="op">;</span>y<span class="op">=</span>np.array(c[<span class="st">'y'</span>])<span class="op">;</span>z<span class="op">=</span>np.array(c[<span class="st">'terms'</span>][<span class="dv">0</span>][<span class="st">'z'</span>])<span class="op">;</span>groups<span class="op">=</span>np.array(c[<span class="st">'terms'</span>][<span class="dv">0</span>][<span class="st">'groups'</span>])</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>raw<span class="op">=</span>pd.read_csv(ROOT<span class="op">/</span><span class="st">'docs/data/lmm/sleepstudy.csv'</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>display(raw.head(<span class="dv">8</span>))</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'X:'</span>,x.shape,<span class="st">'y:'</span>,y.shape,<span class="st">'local random design:'</span>,z.shape)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> matrix_tex(a,name):</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    a<span class="op">=</span>np.atleast_2d(a)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    body<span class="op">=</span><span class="vs">r' </span><span class="ch">\\</span><span class="vs"> '</span>.join(<span class="st">' &amp; '</span>.join(<span class="ss">f'</span><span class="sc">{</span>v<span class="sc">:.5g}</span><span class="ss">'</span> <span class="cf">for</span> v <span class="kw">in</span> row) <span class="cf">for</span> row <span class="kw">in</span> a)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    display(Math(name<span class="op">+</span><span class="vs">r'=</span><span class="dv">\b</span><span class="vs">egin{bmatrix}'</span><span class="op">+</span>body<span class="op">+</span><span class="vs">r'</span><span class="er">\</span><span class="vs">end{bmatrix}'</span>))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Show observed inputs, not guesses at beta.</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>matrix_tex(x[:<span class="dv">4</span>],<span class="st">'X_{</span><span class="er">\</span><span class="st">mathrm{first</span><span class="er">\</span><span class="st"> four</span><span class="sc">}}</span><span class="st">'</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>matrix_tex(y[:<span class="dv">4</span>,<span class="va">None</span>],<span class="st">'y_{</span><span class="er">\</span><span class="st">mathrm{first</span><span class="er">\</span><span class="st"> four</span><span class="sc">}}</span><span class="st">'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>&lt;&gt;:18: SyntaxWarning: "\m" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\m"? A raw string is also an option.
+&lt;&gt;:19: SyntaxWarning: "\m" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\m"? A raw string is also an option.
+&lt;&gt;:18: SyntaxWarning: "\m" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\m"? A raw string is also an option.
+&lt;&gt;:19: SyntaxWarning: "\m" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\m"? A raw string is also an option.
+/var/folders/mq/50j_6vm53pgg8py4j1v2bgsm0000gn/T/ipykernel_257/3297029571.py:18: SyntaxWarning: "\m" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\m"? A raw string is also an option.
+  matrix_tex(x[:4],'X_{\mathrm{first\ four}}')
+/var/folders/mq/50j_6vm53pgg8py4j1v2bgsm0000gn/T/ipykernel_257/3297029571.py:19: SyntaxWarning: "\m" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\m"? A raw string is also an option.
+  matrix_tex(y[:4,None],'y_{\mathrm{first\ four}}')</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Reaction</th>
+<th data-quarto-table-cell-role="th">Days</th>
+<th data-quarto-table-cell-role="th">Subject</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>249.5600</td>
+<td>0</td>
+<td>308</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>258.7047</td>
+<td>1</td>
+<td>308</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>250.8006</td>
+<td>2</td>
+<td>308</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>321.4398</td>
+<td>3</td>
+<td>308</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>356.8519</td>
+<td>4</td>
+<td>308</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>414.6901</td>
+<td>5</td>
+<td>308</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>382.2038</td>
+<td>6</td>
+<td>308</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>290.1486</td>
+<td>7</td>
+<td>308</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>X: (180, 2) y: (180,) local random design: (180, 2)</code></pre>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle X_{\mathrm{first\ four}}=\begin{bmatrix}1 &amp; 0 \\ 1 &amp; 1 \\ 1 &amp; 2 \\ 1 &amp; 3\end{bmatrix}\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle y_{\mathrm{first\ four}}=\begin{bmatrix}249.56 \\ 258.7 \\ 250.8 \\ 321.44\end{bmatrix}\)</span></p>
+</div>
+</div>
+<p>The global Z has separate columns for each subject. Four rows for each of the first two groups illustrate its block pattern:</p>
+<div id="2dbb7b30" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>order<span class="op">=</span><span class="bu">list</span>(<span class="bu">dict</span>.fromkeys(groups))<span class="op">;</span>g_index<span class="op">=</span>{g:i <span class="cf">for</span> i,g <span class="kw">in</span> <span class="bu">enumerate</span>(order)}</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Z<span class="op">=</span>np.zeros((<span class="bu">len</span>(y),<span class="dv">2</span><span class="op">*</span><span class="bu">len</span>(order)))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i,g <span class="kw">in</span> <span class="bu">enumerate</span>(groups):Z[i,<span class="dv">2</span><span class="op">*</span>g_index[g]:<span class="dv">2</span><span class="op">*</span>g_index[g]<span class="op">+</span><span class="dv">2</span>]<span class="op">=</span>z[i]</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>ids<span class="op">=</span>np.r_[np.flatnonzero(groups<span class="op">==</span>order[<span class="dv">0</span>])[:<span class="dv">4</span>],np.flatnonzero(groups<span class="op">==</span>order[<span class="dv">1</span>])[:<span class="dv">4</span>]]</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>matrix_tex(Z[np.ix_(ids,<span class="bu">range</span>(<span class="dv">4</span>))],<span class="st">'Z_{</span><span class="er">\</span><span class="st">mathrm</span><span class="sc">{excerpt}</span><span class="st">}'</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Full Z:'</span>,Z.shape,<span class="st">'= observations × all random coefficients'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>&lt;&gt;:5: SyntaxWarning: "\m" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\m"? A raw string is also an option.
+&lt;&gt;:5: SyntaxWarning: "\m" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\m"? A raw string is also an option.
+/var/folders/mq/50j_6vm53pgg8py4j1v2bgsm0000gn/T/ipykernel_257/1377049571.py:5: SyntaxWarning: "\m" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\m"? A raw string is also an option.
+  matrix_tex(Z[np.ix_(ids,range(4))],'Z_{\mathrm{excerpt}}')</code></pre>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle Z_{\mathrm{excerpt}}=\begin{bmatrix}1 &amp; 0 &amp; 0 &amp; 0 \\ 1 &amp; 1 &amp; 0 &amp; 0 \\ 1 &amp; 2 &amp; 0 &amp; 0 \\ 1 &amp; 3 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 &amp; 1 \\ 0 &amp; 0 &amp; 1 &amp; 2 \\ 0 &amp; 0 &amp; 1 &amp; 3\end{bmatrix}\)</span></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Full Z: (180, 36) = observations × all random coefficients</code></pre>
+</div>
+</div>
+<p>A zero means that another subject’s random coefficients do not contribute to this observation. Crossed models add more independent blocks, for example subject and site. Nested models supply distinct parent/child identifiers. Independent slopes constrain the corresponding covariance to a diagonal matrix.</p>
+</section>
+<section id="covariance-through-a-cholesky-factor" class="level2">
+<h2 class="anchored" data-anchor-id="covariance-through-a-cholesky-factor">Covariance through a Cholesky factor</h2>
+<p>Instead of optimizing variance/correlation entries directly, optimize a lower triangular relative factor:</p>
+<p><span class="math display">\[
+L=\begin{bmatrix}a&amp;0\\c&amp;d\end{bmatrix},\qquad a,d\geq0,
+\qquad\Sigma=\sigma^2LL^\top
+=\sigma^2\begin{bmatrix}a^2&amp;ac\\ac&amp;c^2+d^2\end{bmatrix}.
+\]</span></p>
+<p>This guarantees positive semidefinite covariance, including valid zero-variance or perfect-correlation boundaries. A negative c can represent negative intercept/slope covariance. lme4’s lower-triangle parameter ordering is column-major: <code>[a, c, d]</code>. Several terms concatenate their parameters in supplied term order.</p>
+<div id="0e976aa4" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.linalg <span class="im">import</span> cholesky</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>reference<span class="op">=</span>c[<span class="st">'references'</span>][<span class="st">'bobyqa'</span>][<span class="st">'result'</span>]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>Sigma<span class="op">=</span>np.array(reference[<span class="st">'terms'</span>][<span class="dv">0</span>][<span class="st">'covariance'</span>])</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>sigma2<span class="op">=</span>reference[<span class="st">'residual_variance'</span>]<span class="op">;</span>L<span class="op">=</span>cholesky(Sigma<span class="op">/</span>sigma2,lower<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>matrix_tex(L,<span class="st">'L'</span>)<span class="op">;</span>matrix_tex(sigma2<span class="op">*</span>L<span class="op">@</span>L.T,<span class="vs">r'</span><span class="dv">\w</span><span class="vs">idehat</span><span class="dv">\S</span><span class="vs">igma'</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Intercept SD (ms):'</span>,np.sqrt(Sigma[<span class="dv">0</span>,<span class="dv">0</span>]))</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Slope SD (ms/day):'</span>,np.sqrt(Sigma[<span class="dv">1</span>,<span class="dv">1</span>]))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Intercept/slope correlation:'</span>,Sigma[<span class="dv">0</span>,<span class="dv">1</span>]<span class="op">/</span>np.sqrt(Sigma[<span class="dv">0</span>,<span class="dv">0</span>]<span class="op">*</span>Sigma[<span class="dv">1</span>,<span class="dv">1</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle L=\begin{bmatrix}0.96673 &amp; 0 \\ 0.015169 &amp; 0.23091\end{bmatrix}\)</span></p>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle \widehat\Sigma=\begin{bmatrix}612.09 &amp; 9.6043 \\ 9.6043 &amp; 35.072\end{bmatrix}\)</span></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Intercept SD (ms): 24.740448320046763
+Slope SD (ms/day): 5.922133032515655
+Intercept/slope correlation: 0.06555126695736169</code></pre>
+</div>
+</div>
+<p>These are estimates from the full sample. The off-diagonal dot product <code>a*c + 0*d</code> produces the covariance after multiplying by sigma². Variances have different physical units because the second coefficient is measured in milliseconds per day.</p>
+</section>
+<section id="penalized-least-squares-profiles-out-beta-and-random-effects" class="level2">
+<h2 class="anchored" data-anchor-id="penalized-least-squares-profiles-out-beta-and-random-effects">Penalized least squares profiles out beta and random effects</h2>
+<p>Repeat L once per group to construct block-diagonal Lambda. Write b=Lambda u, where u has spherical covariance sigma²I. Given theta, minimize</p>
+<p><span class="math display">\[
+q(\theta)=\min_{u,\beta}
+\left\|W^{1/2}(y-o-X\beta-Z\Lambda u)\right\|^2+\|u\|^2.
+\]</span></p>
+<p>The first term fits observed reaction times; the second penalizes implausibly large standardized random effects. This is a consequence of their Gaussian likelihood, not an arbitrary regularization parameter chosen by the user. It is the least-squares problem</p>
+<p><span class="math display">\[
+\begin{bmatrix}W^{1/2}Z\Lambda&amp;W^{1/2}X\\I&amp;0\end{bmatrix}
+\begin{bmatrix}u\\\beta\end{bmatrix}
+\approx\begin{bmatrix}W^{1/2}(y-o)\\0\end{bmatrix}.
+\]</span></p>
+<p>For a selected theta, linear algebra finds u and beta. The nonlinear optimizer searches theta only. We solve with QR; coefficients do not come from explicitly inverting a normal-equation matrix.</p>
+<div id="7ffbcd10" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.linalg <span class="im">import</span> block_diag,solve_triangular</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>Lambda<span class="op">=</span>block_diag(<span class="op">*</span>([L]<span class="op">*</span><span class="bu">len</span>(order)))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>A<span class="op">=</span>np.block([[Z<span class="op">@</span>Lambda,x],[np.eye(Z.shape[<span class="dv">1</span>]),np.zeros((Z.shape[<span class="dv">1</span>],x.shape[<span class="dv">1</span>]))]])</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>b<span class="op">=</span>np.r_[y,np.zeros(Z.shape[<span class="dv">1</span>])]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>Q,R<span class="op">=</span>np.linalg.qr(A,mode<span class="op">=</span><span class="st">'reduced'</span>)<span class="op">;</span>solution<span class="op">=</span>solve_triangular(R,Q.T<span class="op">@</span>b)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>u<span class="op">=</span>solution[:Z.shape[<span class="dv">1</span>]]<span class="op">;</span>beta<span class="op">=</span>solution[Z.shape[<span class="dv">1</span>]:]<span class="op">;</span>effects<span class="op">=</span>Lambda<span class="op">@</span>u</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>residual<span class="op">=</span>y<span class="op">-</span>x<span class="op">@</span>beta<span class="op">-</span>Z<span class="op">@</span>effects</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>q<span class="op">=</span>residual<span class="op">@</span>residual<span class="op">+</span>u<span class="op">@</span>u</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Augmented design:'</span>,A.shape)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'beta:'</span>,beta)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Observation residual contribution:'</span>,residual<span class="op">@</span>residual)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Random-effect penalty contribution:'</span>,u<span class="op">@</span>u)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Total profiled q:'</span>,q)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.allclose(beta,reference[<span class="st">'coefficients'</span>],rtol<span class="op">=</span><span class="fl">1e-8</span>,atol<span class="op">=</span><span class="fl">1e-8</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.allclose(effects.reshape(<span class="op">-</span><span class="dv">1</span>,<span class="dv">2</span>),reference[<span class="st">'terms'</span>][<span class="dv">0</span>][<span class="st">'effects'</span>],rtol<span class="op">=</span><span class="fl">1e-8</span>,atol<span class="op">=</span><span class="fl">1e-8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Augmented design: (216, 38)
+beta: [251.40510485  10.46728596]
+Observation residual contribution: 98881.64284605399
+Random-effect penalty contribution: 17697.86289393207
+Total profiled q: 116579.50573998605</code></pre>
+</div>
+</div>
+<p>The code uses an additional QR compression before optimization. QR of weighted <code>[Z, X/scales, y-offset]</code> preserves every trial residual norm. Each trial needs only that compact square-root summary plus identity penalty rows. This extends the earlier cached random-intercept idea. The current general summary is dense; lme4 uses sparse factorization to support larger random designs.</p>
+</section>
+<section id="ml-and-reml-are-different-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="ml-and-reml-are-different-objectives">ML and REML are different objectives</h2>
+<p>With C=W⁻¹+Z Lambda Lambdaᵀ Zᵀ, the profiled Gaussian ML scale is</p>
+<p><span class="math display">\[\hat\sigma^2_{ML}=q/n.\]</span></p>
+<p>The negative profiled marginal log-likelihood is</p>
+<p><span class="math display">\[
+-\ell_{ML}(\theta)=\tfrac12\left[
+n\{\log(2\pi)+1+\log(q/n)\}+\log|C|
+\right].
+\]</span></p>
+<p>REML adjusts for estimating the p fixed coefficients. It uses</p>
+<p><span class="math display">\[
+\hat\sigma^2_{REML}=q/(n-p),
+\]</span></p>
+<p>and the restricted criterion</p>
+<p><span class="math display">\[
+-\ell_{REML}(\theta)=\tfrac12\left[
+(n-p)\{\log(2\pi)+1+\log(q/(n-p))\}
++\log|C|+\log|X^\top C^{-1}X|
+\right].
+\]</span></p>
+<p>REML changes the optimization objective, not merely the final denominator. Its extra determinant accounts for fixed-effect estimation. Both determinants come from triangular QR factors in our implementation. Scaling fixed columns requires restoring their determinant contribution, even though scaling does not change the fitted mean. REML likelihood values should not compare different fixed-effect designs.</p>
+<div id="f970ee1e" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>qr_random<span class="op">=</span>R[:Z.shape[<span class="dv">1</span>],:Z.shape[<span class="dv">1</span>]]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>qr_fixed<span class="op">=</span>R[Z.shape[<span class="dv">1</span>]:,Z.shape[<span class="dv">1</span>]:]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>logdet_C<span class="op">=</span><span class="dv">2</span><span class="op">*</span>np.log(<span class="bu">abs</span>(np.diag(qr_random))).<span class="bu">sum</span>()</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>logdet_info<span class="op">=</span><span class="dv">2</span><span class="op">*</span>np.log(<span class="bu">abs</span>(np.diag(qr_fixed))).<span class="bu">sum</span>()</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>df<span class="op">=</span><span class="bu">len</span>(y)<span class="op">-</span>x.shape[<span class="dv">1</span>]</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>reml_variance<span class="op">=</span>q<span class="op">/</span>df</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>reml_ll<span class="op">=-</span><span class="fl">.5</span><span class="op">*</span>(df<span class="op">*</span>(np.log(<span class="dv">2</span><span class="op">*</span>np.pi)<span class="op">+</span><span class="dv">1</span><span class="op">+</span>np.log(reml_variance))<span class="op">+</span>logdet_C<span class="op">+</span>logdet_info)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'n, p, n-p:'</span>,<span class="bu">len</span>(y),x.shape[<span class="dv">1</span>],df)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'q/(n-p):'</span>,reml_variance)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'log determinant C:'</span>,logdet_C)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'log determinant fixed information:'</span>,logdet_info)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Restricted log-likelihood:'</span>,reml_ll)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.isclose(reml_ll,reference[<span class="st">'log_likelihood'</span>],rtol<span class="op">=</span><span class="dv">0</span>,atol<span class="op">=</span><span class="fl">1e-8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n, p, n-p: 180 2 178
+q/(n-p): 654.9410434830677
+log determinant C: 75.9610353012799
+log determinant fixed information: 8.276069385389237
+Restricted log-likelihood: -871.8141359792456</code></pre>
+</div>
+</div>
+</section>
+<section id="fixed-effect-uncertainty" class="level2">
+<h2 class="anchored" data-anchor-id="fixed-effect-uncertainty">Fixed-effect uncertainty</h2>
+<p>At the fitted variance components, the plug-in covariance is</p>
+<p><span class="math display">\[\widehat{\mathrm{Var}}(\hat\beta)=\hat\sigma^2(X^\top C^{-1}X)^{-1}.\]</span></p>
+<p>The fixed triangular QR block supplies this through triangular solves. Standard errors are square roots of its diagonal. Our mixed-model z tests and 95% intervals are normal Wald approximations; this does not supply finite-group Student t degrees of freedom or variance-component confidence intervals.</p>
+<div id="067e63f0" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>R_inv<span class="op">=</span>solve_triangular(qr_fixed,np.eye(x.shape[<span class="dv">1</span>]))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>cov_beta<span class="op">=</span>reml_variance<span class="op">*</span>R_inv<span class="op">@</span>R_inv.T</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>matrix_tex(cov_beta,<span class="vs">r'</span><span class="dv">\w</span><span class="vs">idehat{</span><span class="dv">\m</span><span class="vs">athrm{Var}}</span><span class="kw">(</span><span class="er">\</span><span class="vs">hat</span><span class="dv">\b</span><span class="vs">eta</span><span class="kw">)</span><span class="vs">'</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Standard errors:'</span>,np.sqrt(cov_beta.diagonal()))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.allclose(cov_beta,reference[<span class="st">'covariance'</span>],rtol<span class="op">=</span><span class="fl">1e-8</span>,atol<span class="op">=</span><span class="fl">1e-8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle \widehat{\mathrm{Var}}(\hat\beta)=\begin{bmatrix}46.575 &amp; -1.4511 \\ -1.4511 &amp; 2.3895\end{bmatrix}\)</span></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Standard errors: [6.82455592 1.54578888]</code></pre>
+</div>
+</div>
+<p>The implementation is <code>crates/stats-core/src/lmm.rs</code>. Owned Vec inputs become nalgebra matrices; term/result structs preserve the array shapes and term order. <code>Result</code> propagates invalid designs, failed controls and nonconvergence to the PHP binding as exceptions. The binding validates and filters all aligned inputs, then returns plain arrays.</p>
+</section>
+<section id="four-grouping-levels-which-observations-share-variation" class="level2">
+<h2 class="anchored" data-anchor-id="four-grouping-levels-which-observations-share-variation">Four grouping levels: which observations share variation?</h2>
+<p>The same construction handles multiple nested terms. For repeated assessments within students, classes, schools and districts,</p>
+<p><span class="math display">\[
+y_i=x_i^\top\beta+d_{D(i)}+s_{S(i)}+c_{C(i)}+t_{T(i)}+\epsilon_i.
+\]</span></p>
+<p>Each term has its own Gaussian variance and is independent of the other terms. Conditional on the fixed design, two different observations share covariance only through common groups:</p>
+<p><span class="math display">\[
+\operatorname{Cov}(y_i,y_j\mid X)
+=\tau_D^2\mathbf{1}_{D(i)=D(j)}
++\tau_S^2\mathbf{1}_{S(i)=S(j)}
++\tau_C^2\mathbf{1}_{C(i)=C(j)}
++\tau_T^2\mathbf{1}_{T(i)=T(j)},\quad i\ne j.
+\]</span></p>
+<p>On the diagonal, add the observation variance sigma² (or sigma²/w_i with weights). The grouping IDs must be globally unique within each term: a local school number needs its district in the key, and a local student number needs all its parents. Three grouping terms plus observations are often called a four-level model; here we name the number of grouping terms explicitly.</p>
+<div id="6e7ea198" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Demonstrate the covariance implied by the fitted four-grouping-level model.</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This small matrix is for teaching; the native engine never constructs full V.</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>report<span class="op">=</span>json.loads((ROOT<span class="op">/</span><span class="st">'docs/verifications/r-compatibility-results.json'</span>).read_text())</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>case<span class="op">=</span><span class="bu">next</span>(r <span class="cf">for</span> r <span class="kw">in</span> report[<span class="st">'mixed'</span>] <span class="cf">if</span> r[<span class="st">'name'</span>]<span class="op">==</span><span class="st">'nested_4_grouping_levels_reml'</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>fit<span class="op">=</span>case[<span class="st">'PHP'</span>][<span class="st">'bobyqa'</span>]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>input_case<span class="op">=</span><span class="bu">next</span>(r <span class="cf">for</span> r <span class="kw">in</span> fixtures[<span class="st">'cases'</span>] <span class="cf">if</span> r[<span class="st">'name'</span>]<span class="op">==</span>case[<span class="st">'name'</span>])</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>variances<span class="op">=</span>np.array([t[<span class="st">'covariance'</span>][<span class="dv">0</span>][<span class="dv">0</span>] <span class="cf">for</span> t <span class="kw">in</span> fit[<span class="st">'random'</span>]])</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># First pair: same student; then different student, class, school and district.</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>selected<span class="op">=</span>[<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">4</span>,<span class="dv">8</span>,<span class="dv">16</span>,<span class="dv">32</span>]</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>V<span class="op">=</span>np.eye(<span class="bu">len</span>(selected))<span class="op">*</span>fit[<span class="st">'residual_variance'</span>]</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> term,var <span class="kw">in</span> <span class="bu">zip</span>(input_case[<span class="st">'terms'</span>],variances):</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    ids<span class="op">=</span>np.array(term[<span class="st">'groups'</span>])[selected]</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    V<span class="op">+=</span>var<span class="op">*</span>(ids[:,<span class="va">None</span>]<span class="op">==</span>ids[<span class="va">None</span>,:])</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>display(pd.DataFrame(<span class="bu">dict</span>(grouping<span class="op">=</span>[<span class="st">'district'</span>,<span class="st">'school'</span>,<span class="st">'class'</span>,<span class="st">'student'</span>],</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                          groups<span class="op">=</span>[<span class="bu">len</span>(t[<span class="st">'group_labels'</span>]) <span class="cf">for</span> t <span class="kw">in</span> fit[<span class="st">'random'</span>]],</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>                          variance<span class="op">=</span>variances)))</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>matrix_tex(V,<span class="vs">r'V_{</span><span class="dv">\m</span><span class="vs">athrm{six</span><span class="ch">\ </span><span class="vs">observations}}'</span>)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Same student:'</span>,V[<span class="dv">0</span>,<span class="dv">1</span>])</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Same class, different students:'</span>,V[<span class="dv">0</span>,<span class="dv">2</span>])</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Same school, different classes:'</span>,V[<span class="dv">0</span>,<span class="dv">3</span>])</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Same district, different schools:'</span>,V[<span class="dv">0</span>,<span class="dv">4</span>])</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Different districts:'</span>,V[<span class="dv">0</span>,<span class="dv">5</span>])</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.isclose(V[<span class="dv">0</span>,<span class="dv">1</span>],variances.<span class="bu">sum</span>())</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.isclose(V[<span class="dv">0</span>,<span class="dv">2</span>],variances[:<span class="dv">3</span>].<span class="bu">sum</span>())</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.isclose(V[<span class="dv">0</span>,<span class="dv">3</span>],variances[:<span class="dv">2</span>].<span class="bu">sum</span>())</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> np.isclose(V[<span class="dv">0</span>,<span class="dv">4</span>],variances[<span class="dv">0</span>])</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> V[<span class="dv">0</span>,<span class="dv">5</span>]<span class="op">==</span><span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">grouping</th>
+<th data-quarto-table-cell-role="th">groups</th>
+<th data-quarto-table-cell-role="th">variance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>district</td>
+<td>8</td>
+<td>18.321782</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>school</td>
+<td>16</td>
+<td>20.017855</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>class</td>
+<td>32</td>
+<td>2.988052</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>student</td>
+<td>64</td>
+<td>2.534411</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell-output cell-output-display cell-output-markdown">
+<p><span class="math inline">\(\displaystyle V_{\mathrm{six\ observations}}=\begin{bmatrix}44.455 &amp; 43.862 &amp; 41.328 &amp; 38.34 &amp; 18.322 &amp; 0 \\ 43.862 &amp; 44.455 &amp; 41.328 &amp; 38.34 &amp; 18.322 &amp; 0 \\ 41.328 &amp; 41.328 &amp; 44.455 &amp; 38.34 &amp; 18.322 &amp; 0 \\ 38.34 &amp; 38.34 &amp; 38.34 &amp; 44.455 &amp; 18.322 &amp; 0 \\ 18.322 &amp; 18.322 &amp; 18.322 &amp; 18.322 &amp; 44.455 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 44.455\end{bmatrix}\)</span></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Same student: 43.862101329818195
+Same class, different students: 41.327689940469966
+Same school, different classes: 38.339637782365116
+Same district, different schools: 18.321782447600587
+Different districts: 0.0</code></pre>
+</div>
+</div>
+<p>The <a href="../notebooks/r-compatibility.html#more-than-two-grouping-levels">expanded audit</a> checks all observations and effects in three- and four-grouping-level cases, under ML and REML, with both native optimizers and all four actual lme4 wrappers. There is no two-level restriction in the API; the current dense size limits still apply.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/phit\.phpstats\.org\/docs\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
