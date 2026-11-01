@@ -883,6 +883,7 @@ herd SD 0.6475, adaptive_gauss_hermite</code></pre>
 <li><code>quadraturePoints</code> is lme4’s <code>nAGQ</code>. The Laplace default (1) is fastest.</li>
 <li>More points approximate the likelihood more closely, which matters most for small groups and rare events.</li>
 <li>No number of points guarantees accuracy for every data set. Compare a few values when the estimates matter.</li>
+<li>A row may have at most 1,000,000 trials, counted as <code>cbind()</code> successes plus failures or as <code>weights</code>. Larger counts throw an exception with code 1007.</li>
 </ul>
 <p>A <code>fit_mixed_logistic</code> result has the fixed-effect keys of <code>fit_mixed_gaussian</code> and these:</p>
 <table class="caption-top table">

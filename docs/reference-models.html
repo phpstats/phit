@@ -1324,7 +1324,7 @@ fitted[0] 1.3462</code></pre>
 <p><strong>Model.</strong> <code>successes_i ~ Binomial(trials_i, logistic(offset_i + x_i β + b_g))</code>, with independent Gaussian group intercepts of variance τ². One grouping factor and a random intercept only: random slopes, several random terms, Poisson or probit mixed likelihoods, and REML are not implemented. <code>fit_mixed_gaussian_matrix</code> supports the broader Gaussian designs.</p>
 <p><strong>Input.</strong></p>
 <ul>
-<li>Unit weights mean one trial per row. For grouped data, <code>y</code> is successes/trials and <code>weights</code> are positive integer trial counts, at most 1,000,000 per row.</li>
+<li>Unit weights mean one trial per row. For grouped data, <code>y</code> is successes/trials and <code>weights</code> are positive integer trial counts, at most 1,000,000 per row. Larger counts throw code 1007.</li>
 <li>Success counts must be integers within 1e-8. Accepted values are rounded to integer successes before fitting, so rounding cannot create events.</li>
 <li>The fixed design must be finite and full rank, with n &gt; p, at least two groups, and a repeated group. Successes and failures must both remain after deletion; individual groups may contain only one outcome.</li>
 <li>Fixed-design separation has no finite unpenalized estimate and raises an exception.</li>

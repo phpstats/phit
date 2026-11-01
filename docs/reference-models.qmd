@@ -412,7 +412,7 @@ Phit\fit_mixed_logistic_matrix(
 
 **Input.**
 
-- Unit weights mean one trial per row. For grouped data, `y` is successes/trials and `weights` are positive integer trial counts, at most 1,000,000 per row.
+- Unit weights mean one trial per row. For grouped data, `y` is successes/trials and `weights` are positive integer trial counts, at most 1,000,000 per row. Larger counts throw code 1007.
 - Success counts must be integers within 1e-8. Accepted values are rounded to integer successes before fitting, so rounding cannot create events.
 - The fixed design must be finite and full rank, with n > p, at least two groups, and a repeated group. Successes and failures must both remain after deletion; individual groups may contain only one outcome.
 - Fixed-design separation has no finite unpenalized estimate and raises an exception.
