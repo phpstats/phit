@@ -21,28 +21,47 @@ if (workload == "distributions") {
 start <- Sys.time()
 if (workload == "ols") {
   # [ols]
-  fit <- lm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10, data = d)
+  fit <- lm(
+    y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10,
+    data = d
+  )
   table <- coef(summary(fit))
   # [/ols]
 } else if (workload == "mixed") {
   # [mixed]
-  fit <- lmer(y ~ x1 + x2 + x3 + (1 | g), data = d, REML = TRUE)
+  fit <- lmer(
+    y ~ x1 + x2 + x3 + (1 | g),
+    data = d,
+    REML = TRUE
+  )
   table <- coef(summary(fit))
   # [/mixed]
 } else if (workload == "logistic") {
   # [logistic]
-  fit <- glm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10, data = d, family = binomial)
+  fit <- glm(
+    y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10,
+    data = d,
+    family = binomial
+  )
   table <- coef(summary(fit))
   # [/logistic]
 } else if (workload == "probit") {
   # [probit]
-  fit <- glm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10, data = d, family = binomial("probit"))
+  fit <- glm(
+    y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10,
+    data = d,
+    family = binomial("probit")
+  )
   table <- coef(summary(fit))
   # [/probit]
 } else if (workload == "mixed-logistic") {
   # [mixed-logistic]
-  fit <- glmer(y ~ x1 + x2 + x3 + (1 | g), data = d, family = binomial,
-    control = glmerControl(tolPwrss = 1e-10))
+  fit <- glmer(
+    y ~ x1 + x2 + x3 + (1 | g),
+    data = d,
+    family = binomial,
+    control = glmerControl(tolPwrss = 1e-10)
+  )
   table <- coef(summary(fit))
   # [/mixed-logistic]
 } else {

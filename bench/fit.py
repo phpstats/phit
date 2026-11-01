@@ -37,28 +37,48 @@ else:
 start = time.perf_counter()
 if workload == 'ols':
     # [ols]
-    fit = smf.ols('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', data=d).fit()
+    fit = smf.ols(
+        'y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10',
+        data=d,
+    ).fit()
     coefficients, standard_errors = fit.params, fit.bse
     # [/ols]
 elif workload == 'mixed':
     # [mixed]
-    fit = smf.mixedlm('y ~ x1 + x2 + x3', d, groups=d['g']).fit(reml=True)
-    coefficients, standard_errors = fit.fe_params, fit.bse_fe
+    fit = smf.mixedlm(
+        'y ~ x1 + x2 + x3',
+        d,
+        groups=d['g'],
+    ).fit(reml=True)
+    coefficients = fit.fe_params
+    standard_errors = fit.bse_fe
     # [/mixed]
 elif workload == 'logistic':
     # [logistic]
-    fit = smf.logit('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', data=d).fit(method='newton', disp=0)
+    fit = smf.logit(
+        'y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10',
+        data=d,
+    ).fit(method='newton', disp=0)
     coefficients, standard_errors = fit.params, fit.bse
     # [/logistic]
 elif workload == 'probit':
     # [probit]
-    fit = smf.probit('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', data=d).fit(method='newton', disp=0)
+    fit = smf.probit(
+        'y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10',
+        data=d,
+    ).fit(method='newton', disp=0)
     coefficients, standard_errors = fit.params, fit.bse
     # [/probit]
 elif workload == 'mixed-logistic':
     # [mixed-logistic]
-    model = gpb.GPModel(group_data=d['g'], likelihood='bernoulli_logit')
-    model.set_optim_params(params={'optimizer_cov': 'lbfgs', 'delta_rel_conv': 1e-12})
+    model = gpb.GPModel(
+        group_data=d['g'],
+        likelihood='bernoulli_logit',
+    )
+    model.set_optim_params(params={
+        'optimizer_cov': 'lbfgs',
+        'delta_rel_conv': 1e-12,
+    })
     model.fit(y=y, X=X)
     table = model.get_coef(std_err=True)
     # [/mixed-logistic]

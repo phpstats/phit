@@ -37,7 +37,10 @@ The per-model benchmarks in `tests/benchmarks` are separate.
   every 1000th output. This is not a verification; the verification pages compare the models
   with R at stated tolerances.
 - The record's `code` holds each script's timed lines, the lines between its
-  `[workload]` and `[/workload]` comments, without their indentation.
+  `[workload]` and `[/workload]` comments, without their indentation. The
+  scripts keep those lines within 60 characters, for display.
+  `run.py --code-only` rewrites only the records' `code` from the scripts and
+  sets `environment.code_commit`, without running anything.
 
 Each size is set so the polyfill finishes in under a minute per run. Each record states the optimizers and their convergence settings.
 

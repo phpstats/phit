@@ -41,24 +41,41 @@ if ($workload === 'distributions') {
 $start = hrtime(true);
 if ($workload === 'ols') {
     // [ols]
-    $fit = fit_ols('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', $data);
+    $fit = fit_ols(
+        'y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10',
+        $data,
+    );
     // [/ols]
 } elseif ($workload === 'mixed') {
     // [mixed]
-    $fit = fit_mixed_gaussian('y ~ x1 + x2 + x3 + (1 | g)', $data);
+    $fit = fit_mixed_gaussian(
+        'y ~ x1 + x2 + x3 + (1 | g)',
+        $data,
+    );
     // [/mixed]
 } elseif ($workload === 'logistic') {
     // [logistic]
-    $fit = fit_generalized_linear('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', $data, family: 'binomial');
+    $fit = fit_generalized_linear(
+        'y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10',
+        $data,
+        family: 'binomial',
+    );
     // [/logistic]
 } elseif ($workload === 'probit') {
     // [probit]
-    $fit = fit_generalized_linear('y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10', $data,
-        family: 'binomial', link: 'probit');
+    $fit = fit_generalized_linear(
+        'y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10',
+        $data,
+        family: 'binomial',
+        link: 'probit',
+    );
     // [/probit]
 } elseif ($workload === 'mixed-logistic') {
     // [mixed-logistic]
-    $fit = fit_mixed_logistic('y ~ x1 + x2 + x3 + (1 | g)', $data);
+    $fit = fit_mixed_logistic(
+        'y ~ x1 + x2 + x3 + (1 | g)',
+        $data,
+    );
     // [/mixed-logistic]
 } else {
     // [distributions]

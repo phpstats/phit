@@ -243,6 +243,7 @@ def benchmark(workload, args):
                        '(OpenMP). '
                        'phit and phit-polyfill are single-threaded.',
             'repeats': args.repeats, 'date': datetime.now(timezone.utc).date().isoformat(), 'commit': commit,
+            'code_commit': commit,
         },
         'method': 'Each run is a fresh process. Each implementation runs once as a warm-up, then the '
                   f'{len(implementations)} alternate for {args.repeats} rounds in a rotated order. ' + (
@@ -268,7 +269,7 @@ def benchmark(workload, args):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--polyfill', required=True, help='phit-polyfill checkout with vendor/ installed')
+    parser.add_argument('--polyfill', help='phit-polyfill checkout with vendor/ installed')
     parser.add_argument('--polyfill-version', default='', help='recorded when composer.json has no version')
     parser.add_argument('--workload', choices=[*WORKLOADS, 'all'], default='all')
     parser.add_argument('--repeats', type=int, default=7)
@@ -277,7 +278,22 @@ def main():
     parser.add_argument('--extension', default=str(ROOT / 'target' / 'release' / 'libphit.dylib'))
     parser.add_argument('--python', default=str(ROOT / '.context' / 'bench-venv' / 'bin' / 'python'))
     parser.add_argument('--time', default='/usr/bin/time')
+    parser.add_argument('--code-only', action='store_true',
+                        help="rewrite only each existing record's code from the scripts, with code_commit set to HEAD")
     args = parser.parse_args()
+    if args.code_only:
+        commit = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True,
+                                cwd=ROOT).stdout.strip()
+        for workload in list(WORKLOADS) if args.workload == 'all' else [args.workload]:
+            out = ROOT / 'site' / 'benchmarks' / f'{workload}-workload.json'
+            record = json.loads(out.read_text())
+            record['code'] = {i: timed_code(i, workload) for i in record['code']}
+            record['environment']['code_commit'] = commit
+            out.write_text(json.dumps(record, indent=1) + '\n')
+            print(f'rewrote the code of {out.relative_to(ROOT)}', file=sys.stderr)
+        return
+    if not args.polyfill:
+        parser.error('--polyfill is required to run the benchmarks')
     for workload in list(WORKLOADS) if args.workload == 'all' else [args.workload]:
         record = benchmark(workload, args)
         out = ROOT / 'site' / 'benchmarks' / f'{workload}-workload.json'
