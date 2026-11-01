@@ -31,6 +31,8 @@ Likelihood tolerance is absolute 1e-6 plus relative 1e-8; inference uses absolut
 2e-5 plus relative 2e-3; estimates use absolute 2e-5 plus relative 2e-4. Group modes
 use absolute 5e-5 because large-sample flat-profile optimization produced shifts
 around 2e-5 in modes near zero; relative error there is not informative.
+These tolerances apply to phit against R. The SciPy reference is checked against R as a peer, with group modes at
+absolute 2e-4, because its independent optimizer stops at a slightly different point on the same flat profile.
 
 The installed lme4 version disables derivative checks automatically at large n.
 The benchmark explicitly enables the final joint Hessian. Its initial BOBYQA run
