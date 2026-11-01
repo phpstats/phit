@@ -331,6 +331,25 @@ valueError(fn () => new Phit\CsvReader("$dir/names.csv", ['delimter' => ',']), "
 valueError(fn () => new Phit\CsvReader("$dir/names.csv", ['block_size' => 0]), "'block_size' must be an int of at least 1");
 valueError(fn () => (new Phit\CsvReader("$dir/names.csv"))->next(0), 'rows must be at least 1');
 
+// A value repeated in a string column is one shared PHP string; the values are unchanged.
+function refcount(mixed $value): int {
+    ob_start();
+    debug_zval_dump($value);
+    return preg_match('/refcount\((\d+)\)/', (string) ob_get_clean(), $m) ? (int) $m[1] : 0;
+}
+$categories = ['north', 'south', 'east', 'west'];
+$rows = array_map(fn ($i) => $categories[$i % 4] . ',' . ($i % 7 === 0 ? 'NA' : "id$i"), range(0, 39999));
+file_put_contents("$dir/shared.csv", "region,id\n" . implode("\n", $rows) . "\n");
+$r = Phit\read_csv("$dir/shared.csv");
+$region = $r['columns'][0]['values'];
+same($region, array_map(fn ($i) => $categories[$i % 4], range(0, 39999)), 'shared values are unchanged');
+check(refcount($region[0]) > 10000, 'a repeated value is one shared string: refcount ' . refcount($region[0]));
+// A column of mostly distinct values stops sharing; its values and missing values are unchanged.
+same($r['columns'][1]['values'], array_map(fn ($i) => $i % 7 === 0 ? null : "id$i", range(0, 39999)), 'distinct values are unchanged');
+check(refcount($r['columns'][1]['values'][1]) <= 3, 'distinct values are not shared'); // the array, the parameter and debug_zval_dump()
+$c = (new Phit\CsvReader("$dir/shared.csv"))->next(30000);
+check(refcount($c['columns'][0]['values'][0]) > 5000, 'CsvReader chunks share repeated values');
+
 array_map(unlink(...), glob("$dir/*"));
 rmdir($dir);
 echo "csv: $checked checks passed\n";

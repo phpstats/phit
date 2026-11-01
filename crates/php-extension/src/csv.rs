@@ -8,6 +8,7 @@ use ext_php_rs::{
     types::{ZendHashTable, ZendStr, Zval},
 };
 use stats_core::csv::{self, Column, Options, Span, TypeCode, Values};
+use std::collections::HashMap;
 
 fn value_error(message: impl Into<String>) -> PhpException {
     PhpException::new(message.into(), 0, ext_php_rs::zend::ce::value_error())
@@ -190,6 +191,43 @@ fn names_list(names: &[Vec<u8>]) -> ZBox<ZendHashTable> {
     out
 }
 
+/// Distinct values a string column shares at most; later new values get their own strings.
+const SHARED_MAX: usize = 65_536;
+/// Rows read before a column whose values are mostly distinct stops looking values up.
+const SHARED_PROBE: usize = 16_384;
+
+/// A string column's values. A value repeated in the column is one shared PHP string, as phibble's PHP reader
+/// shares them, so a column of a few categories holds a few strings. A column stops sharing when more than half
+/// of its values so far are distinct, and stops adding values once it shares SHARED_MAX of them.
+fn strings<'a>(spans: &[Span], bytes: &impl Fn(Span) -> &'a [u8]) -> ZBox<ZendHashTable> {
+    let mut values = ZendHashTable::with_capacity(spans.len() as u32);
+    let mut shared: Option<HashMap<&'a [u8], Zval>> = Some(HashMap::new());
+    for (i, &span) in spans.iter().enumerate() {
+        if span.is_na() {
+            let mut z = Zval::new();
+            z.set_null();
+            let _ = values.push(z);
+            continue;
+        }
+        let text = bytes(span);
+        if let Some(z) = shared.as_ref().and_then(|s| s.get(text)) {
+            let _ = values.push(z.shallow_clone());
+            continue;
+        }
+        let mut z = Zval::new();
+        z.set_zend_string(ZendStr::new(text, false));
+        if let Some(s) = shared.as_mut() {
+            if i >= SHARED_PROBE && 2 * s.len() > i {
+                shared = None;
+            } else if s.len() < SHARED_MAX {
+                s.insert(text, z.shallow_clone());
+            }
+        }
+        let _ = values.push(z);
+    }
+    values
+}
+
 /// The `columns` list: per column its type, values and failed count, or null
 /// for a skipped column.
 fn columns_list<'a>(
@@ -208,19 +246,7 @@ fn columns_list<'a>(
                 list(v, |z, &n| z.set_long(n))
             }
             Values::Float(v) => list(v, |z, &x| z.set_double(x)),
-            Values::Str(v) => {
-                let mut values = ZendHashTable::with_capacity(v.len() as u32);
-                for &span in v {
-                    let mut z = Zval::new();
-                    if span.is_na() {
-                        z.set_null();
-                    } else {
-                        z.set_zend_string(ZendStr::new(bytes(span), false));
-                    }
-                    let _ = values.push(z);
-                }
-                values
-            }
+            Values::Str(v) => strings(v, &bytes),
         };
         let mut entry = ZendHashTable::with_capacity(3);
         let _ = entry.insert("type", column.values.type_name());
