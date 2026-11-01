@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.4.2
+
+`read_csv()` no longer holds the whole file while it reads it. It reads the
+file in blocks of 65,536 rows and converts each block to PHP values before
+reading the next. When a column's type is guessed, two earlier passes count the
+rows and keep the rows readr would guess from, so the types, values, missing
+values and problems are unchanged. Giving every column's type skips those
+passes.
+
+On the seeded orders files read with phibble's `fromCsv()`, the data frame's
+heap is unchanged (225 MiB at 2,000,000 rows, 3,585 MiB at 20,000,000). The
+peak memory footprint fell from 593 to 278 MiB at 2,000,000 rows and from 5,600
+to 2,220 MiB at 20,000,000. With the file in the page cache, the two extra
+passes cost about half again in time: 0.43 to 0.65 s at 2,000,000 rows, and
+3.9 to 6.0 s at 20,000,000. With every type given, the time is unchanged and the
+footprint falls the same way.
+
 ## 0.4.1
 
 `read_csv()` and `CsvReader` share repeated strings within a column. A value

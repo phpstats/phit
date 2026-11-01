@@ -67,6 +67,14 @@ column's explicit or guessed type; those values are `null`. phibble turns
 nonzero counts into its `column 'x': n values could not be parsed as type`
 problems.
 
+`read_csv()` reads the file in blocks of 65,536 rows and converts each block
+to PHP values before reading the next, so it holds one block of the file's
+text at a time. When a column's type is guessed, it first reads the file twice
+more: once to count the rows, and once to keep the rows it guesses from, which
+are spread across the whole file as readr spreads them. Giving every column's
+type in `types` skips those two passes. A string value repeated in a column is
+one shared PHP string.
+
 `problems` holds one entry per ragged row, such as
 `row 7: expected 5 columns, got 4`. The row number is the record's position in
 the file, counting skipped lines and the header. A multi-line quoted field

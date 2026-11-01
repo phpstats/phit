@@ -196,36 +196,109 @@ const SHARED_MAX: usize = 65_536;
 /// Rows read before a column whose values are mostly distinct stops looking values up.
 const SHARED_PROBE: usize = 16_384;
 
-/// A string column's values. A value repeated in the column is one shared PHP string, as phibble's PHP reader
-/// shares them, so a column of a few categories holds a few strings. A column stops sharing when more than half
-/// of its values so far are distinct, and stops adding values once it shares SHARED_MAX of them.
-fn strings<'a>(spans: &[Span], bytes: &impl Fn(Span) -> &'a [u8]) -> ZBox<ZendHashTable> {
-    let mut values = ZendHashTable::with_capacity(spans.len() as u32);
-    let mut shared: Option<HashMap<&'a [u8], Zval>> = Some(HashMap::new());
-    for (i, &span) in spans.iter().enumerate() {
-        if span.is_na() {
+/// Appends a string column's values. A value repeated in the column is one shared PHP string, as phibble's PHP
+/// reader shares them, so a column of a few categories holds a few strings. A column stops sharing when more than
+/// half of its values so far are distinct, and stops adding values once it shares SHARED_MAX of them.
+struct Strings {
+    shared: Option<HashMap<Box<[u8]>, Zval>>,
+    rows: usize,
+}
+
+impl Strings {
+    fn new() -> Self {
+        Self {
+            shared: Some(HashMap::new()),
+            rows: 0,
+        }
+    }
+
+    fn push(&mut self, values: &mut ZendHashTable, text: Option<&[u8]>) {
+        let i = self.rows;
+        self.rows += 1;
+        let Some(text) = text else {
             let mut z = Zval::new();
             z.set_null();
             let _ = values.push(z);
-            continue;
-        }
-        let text = bytes(span);
-        if let Some(z) = shared.as_ref().and_then(|s| s.get(text)) {
+            return;
+        };
+        if let Some(z) = self.shared.as_ref().and_then(|s| s.get(text)) {
             let _ = values.push(z.shallow_clone());
-            continue;
+            return;
         }
         let mut z = Zval::new();
         z.set_zend_string(ZendStr::new(text, false));
-        if let Some(s) = shared.as_mut() {
+        if let Some(s) = self.shared.as_mut() {
             if i >= SHARED_PROBE && 2 * s.len() > i {
-                shared = None;
+                self.shared = None;
             } else if s.len() < SHARED_MAX {
-                s.insert(text, z.shallow_clone());
+                s.insert(text.into(), z.shallow_clone());
             }
         }
         let _ = values.push(z);
     }
+}
+
+fn strings<'a>(spans: &[Span], bytes: &impl Fn(Span) -> &'a [u8]) -> ZBox<ZendHashTable> {
+    let mut values = ZendHashTable::with_capacity(spans.len() as u32);
+    let mut strings = Strings::new();
+    for &span in spans {
+        strings.push(&mut values, (!span.is_na()).then(|| bytes(span)));
+    }
     values
+}
+
+/// One column of read_csv()'s result, built a block at a time.
+struct Builder {
+    type_name: &'static str,
+    values: ZBox<ZendHashTable>,
+    failed: usize,
+    strings: Strings,
+}
+
+impl Builder {
+    fn new(column: &Column, rows: Option<usize>) -> Self {
+        Self {
+            type_name: column.values.type_name(),
+            values: ZendHashTable::with_capacity(rows.unwrap_or(0) as u32),
+            failed: 0,
+            strings: Strings::new(),
+        }
+    }
+
+    fn append<'a>(&mut self, column: &Column, bytes: impl Fn(Span) -> &'a [u8]) {
+        fn push<T>(out: &mut ZendHashTable, values: &[Option<T>], set: impl Fn(&mut Zval, &T)) {
+            for v in values {
+                let mut z = Zval::new();
+                match v {
+                    Some(v) => set(&mut z, v),
+                    None => z.set_null(),
+                }
+                let _ = out.push(z);
+            }
+        }
+        self.failed += column.failed;
+        match &column.values {
+            Values::Bool(v) => push(&mut self.values, v, |z, &b| z.set_bool(b)),
+            Values::Int(v) | Values::Date(v) | Values::DateTime(v) => {
+                push(&mut self.values, v, |z, &n| z.set_long(n))
+            }
+            Values::Float(v) => push(&mut self.values, v, |z, &x| z.set_double(x)),
+            Values::Str(v) => {
+                for &span in v {
+                    self.strings
+                        .push(&mut self.values, (!span.is_na()).then(|| bytes(span)));
+                }
+            }
+        }
+    }
+
+    fn finish(self) -> ZBox<ZendHashTable> {
+        let mut entry = ZendHashTable::with_capacity(3);
+        let _ = entry.insert("type", self.type_name);
+        let _ = entry.insert("values", self.values);
+        let _ = entry.insert("failed", self.failed as i64);
+        entry
+    }
 }
 
 /// The `columns` list: per column its type, values and failed count, or null
@@ -270,13 +343,61 @@ fn problems_list(problems: &[String]) -> ZBox<ZendHashTable> {
 pub fn read_csv(path: Bytes, options: CsvOptions) -> PhpResult<ZBox<ZendHashTable>> {
     const FUNCTION: &str = "Phit\\read_csv()";
     let o = self::options(options.0).map_err(|e| value_error(format!("{FUNCTION}: {e}")))?;
-    let file = open(FUNCTION, path.0)?;
-    let table =
-        csv::read_from(Box::new(file), &o).map_err(|e| value_error(format!("{FUNCTION}: {e}")))?;
+    // The file is read up to three times, a block at a time; see csv::read_in_blocks.
+    let mut first = Some(open(FUNCTION, path.0)?);
+    let mut reopen = || -> std::io::Result<Box<dyn std::io::Read + Send>> {
+        Ok(match first.take() {
+            Some(file) => Box::new(file),
+            None => Box::new(std::fs::File::open(os_path(path.0))?),
+        })
+    };
+    let (mut reader, rows) = csv::read_in_blocks(&mut reopen, &o)
+        .map_err(|e| value_error(format!("{FUNCTION}: {e}")))?;
+    let names = names_list(reader.names());
+    let mut builders: Option<Vec<Option<Builder>>> = None;
+    let mut problems = Vec::new();
+    while let Some(chunk) = reader
+        .next_chunk(csv::BLOCK_ROWS)
+        .map_err(|e| value_error(format!("{FUNCTION}: cannot read the input: {e}")))?
+    {
+        problems.extend(chunk.problems.iter().cloned());
+        if chunk.rows == 0 {
+            continue;
+        }
+        let builders = builders.get_or_insert_with(|| {
+            chunk
+                .columns
+                .iter()
+                .map(|c| c.as_ref().map(|c| Builder::new(c, rows)))
+                .collect()
+        });
+        for (builder, column) in builders.iter_mut().zip(&chunk.columns) {
+            if let (Some(builder), Some(column)) = (builder, column) {
+                builder.append(column, |s| chunk.bytes(s));
+            }
+        }
+    }
+    let columns = match builders {
+        Some(builders) => {
+            let mut out = ZendHashTable::with_capacity(builders.len() as u32);
+            for builder in builders {
+                match builder {
+                    Some(builder) => {
+                        let _ = out.push(builder.finish());
+                    }
+                    None => {
+                        let _ = out.push(Zval::new());
+                    }
+                }
+            }
+            out
+        }
+        None => columns_list(&reader.empty_columns(), |_| &[][..]),
+    };
     let mut out = ZendHashTable::with_capacity(3);
-    let _ = out.insert("names", names_list(&table.names));
-    let _ = out.insert("columns", columns_list(&table.columns, |s| table.bytes(s)));
-    let _ = out.insert("problems", problems_list(&table.problems));
+    let _ = out.insert("names", names);
+    let _ = out.insert("columns", columns);
+    let _ = out.insert("problems", problems_list(&problems));
     Ok(out)
 }
 

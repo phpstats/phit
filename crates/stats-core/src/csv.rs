@@ -867,6 +867,73 @@ pub fn read_from(source: Box<dyn Read + Send>, o: &Options) -> Result<Table, Str
     })
 }
 
+/// Opens the input from its start; [`read_in_blocks`] reads it more than once.
+pub type Open<'a> = dyn FnMut() -> io::Result<Box<dyn Read + Send>> + 'a;
+
+/// Rows a pass reads at a time. Each block's text is freed before the next block is read.
+pub const BLOCK_ROWS: usize = 65_536;
+
+/// A reader for the whole input in blocks, whose columns have exactly the types [`read_from`] gives the whole
+/// input, and the number of data rows when it was counted.
+///
+/// [`read_from`] holds the whole text and a span per cell until it can guess the types from rows sampled across
+/// the input. This reads the input up to three times instead, holding one block at a time: once to count the
+/// rows, once to keep the same sampled rows and guess from them, and once, through the returned reader, to parse
+/// every block as those types. When no column is guessed, only the last pass runs. Rows, problems and missing
+/// values come out as [`read_from`] gives them.
+pub fn read_in_blocks(open: &mut Open, o: &Options) -> Result<(Reader, Option<usize>), String> {
+    read_in_blocks_of(open, o, BLOCK_ROWS)
+}
+
+fn read_in_blocks_of(
+    open: &mut Open,
+    o: &Options,
+    block_rows: usize,
+) -> Result<(Reader, Option<usize>), String> {
+    let mut reader = Reader::new(open().map_err(input_error)?, o.clone())?;
+    let guessed = (0..reader.names.len()).any(|i| reader.code(i) == TypeCode::Guess);
+    if !guessed || reader.done {
+        return Ok((reader, None));
+    }
+    let mut count = 0;
+    while let Some((_, n, _, _)) = reader.read_rows(block_rows).map_err(input_error)? {
+        count += n;
+    }
+    let sample = sample_rows(count, o.guess_max);
+    let mut sampler = Reader::new(open().map_err(input_error)?, o.clone())?;
+    let mut values: Vec<Vec<Option<Vec<u8>>>> =
+        vec![Vec::with_capacity(sample.len()); sampler.names.len()];
+    let mut next = 0;
+    while next < sample.len() {
+        let Some((start, n, cells, _)) = sampler.read_rows(block_rows).map_err(input_error)? else {
+            break;
+        };
+        while next < sample.len() && sample[next] < start + n {
+            let row = sample[next] - start;
+            for (column, kept) in cells.iter().zip(values.iter_mut()) {
+                let span = column[row];
+                kept.push((!span.is_na()).then(|| sampler.tok.bytes(span).to_vec()));
+            }
+            next += 1;
+        }
+    }
+    let parser = Parser {
+        decimal: o.decimal_mark,
+        grouping: o.grouping(),
+    };
+    let codes = values
+        .iter()
+        .enumerate()
+        .map(|(i, column)| match sampler.code(i) {
+            TypeCode::Guess => (parser.guess(column.iter().map(|v| v.as_deref())), true),
+            code => (code, false),
+        })
+        .collect();
+    let mut reader = Reader::new(open().map_err(input_error)?, o.clone())?;
+    reader.codes = Some(codes);
+    Ok((reader, Some(count)))
+}
+
 fn input_error(e: io::Error) -> String {
     format!("cannot read the input: {e}")
 }
@@ -980,6 +1047,11 @@ impl Reader {
         }
     }
 
+    /// The columns of an input without data rows, typed as [`read_from`] types them.
+    pub fn empty_columns(&self) -> Vec<Option<Column>> {
+        self.header_only()
+    }
+
     /// Column names: the header's, or X1..Xn without one. Empty for empty input.
     pub fn names(&self) -> &[Vec<u8>] {
         &self.names
@@ -1001,6 +1073,29 @@ impl Reader {
     }
 
     fn batch(&mut self, size: usize) -> io::Result<Option<Batch>> {
+        let Some((start, n, cells, problems)) = self.read_rows(size)? else {
+            return Ok(None);
+        };
+        let columns = if n == 0 {
+            self.header_only()
+        } else {
+            self.columns(cells, n)
+        };
+        Ok(Some(Batch {
+            position: start + 1,
+            rows: n,
+            columns,
+            problems,
+        }))
+    }
+
+    /// The next at most `size` rows as untyped cells, with the index of the first and their problems; None when no
+    /// rows and no problems remain. The cells are spans of the text until the next call.
+    #[allow(clippy::type_complexity)]
+    fn read_rows(
+        &mut self,
+        size: usize,
+    ) -> io::Result<Option<(usize, usize, Vec<Vec<Span>>, Vec<String>)>> {
         if self.done {
             return Ok(None);
         }
@@ -1065,17 +1160,7 @@ impl Reader {
         if n == 0 && problems.is_empty() {
             return Ok(None);
         }
-        let columns = if n == 0 {
-            self.header_only()
-        } else {
-            self.columns(rows.cells, n)
-        };
-        Ok(Some(Batch {
-            position: start + 1,
-            rows: n,
-            columns,
-            problems,
-        }))
+        Ok(Some((start, n, rows.cells, problems)))
     }
 
     fn code(&self, i: usize) -> TypeCode {
@@ -1782,6 +1867,140 @@ mod tests {
     /// Every column as text, or the type name for typed columns.
     fn texts(t: &Table) -> Vec<Vec<Option<String>>> {
         (0..t.columns.len()).map(|i| strings(t, i)).collect()
+    }
+
+    /// A column's type, failed count and values, comparable across readers.
+    type Shown = (String, usize, Vec<String>);
+
+    fn shown(column: &Option<Column>, bytes: impl Fn(Span) -> Vec<u8>) -> Option<Shown> {
+        column.as_ref().map(|c| {
+            let values = match &c.values {
+                Values::Str(v) => v
+                    .iter()
+                    .map(|&s| format!("{:?}", (!s.is_na()).then(|| bytes(s))))
+                    .collect(),
+                Values::Bool(v) => v.iter().map(|x| format!("{x:?}")).collect(),
+                Values::Int(v) | Values::Date(v) | Values::DateTime(v) => {
+                    v.iter().map(|x| format!("{x:?}")).collect()
+                }
+                Values::Float(v) => v
+                    .iter()
+                    .map(|x| format!("{:?}", x.map(f64::to_bits)))
+                    .collect(),
+            };
+            (c.values.type_name().to_string(), c.failed, values)
+        })
+    }
+
+    #[test]
+    fn blocks_match_the_whole_read() {
+        let mut long = String::from("id,n,x,when,word\n");
+        for i in 0..300 {
+            // n is an integer until row 250, so only a sample that reaches it guesses double.
+            let n = if i == 250 {
+                "2.5".to_string()
+            } else {
+                i.to_string()
+            };
+            let x = if i % 17 == 0 {
+                "NA".to_string()
+            } else {
+                format!("{}.25", i % 9)
+            };
+            let word = ["a", "b", "\"c,d\"", ""][i % 4];
+            long += &format!("{i},{n},{x},2024-01-{:02},{word}\n", 1 + i % 28);
+            if i == 120 {
+                long += "short,row\n";
+            }
+            if i == 200 {
+                long += "1,2,3,2024-01-01,extra,fields\n";
+            }
+        }
+        long += "\"open";
+        let inputs = [
+            long.as_str(),
+            "a,b\n",
+            "",
+            "a,b\n1,x\n2,y\n3,\n",
+            "1,2\n3,4\n5,6\n",
+        ];
+        for (n, input) in inputs.iter().enumerate() {
+            for guess_max in [1, 3, 1000] {
+                for (types, col_names, n_max) in [
+                    (vec![], true, None),
+                    (vec![TypeCode::Int, TypeCode::Guess], true, Some(7)),
+                    (vec![TypeCode::String; 5], true, None),
+                    (vec![], false, None),
+                ] {
+                    let o = Options {
+                        types,
+                        col_names,
+                        n_max,
+                        guess_max,
+                        ..Options::default()
+                    };
+                    let whole = run(input, &o);
+                    let expected: Vec<_> = whole
+                        .columns
+                        .iter()
+                        .map(|c| shown(c, |s| whole.bytes(s).to_vec()))
+                        .collect();
+                    for block_rows in [1, 2, 3, 7, 64, BLOCK_ROWS] {
+                        let mut open = || -> io::Result<Box<dyn Read + Send>> {
+                            Ok(Box::new(io::Cursor::new(input.as_bytes().to_vec())))
+                        };
+                        let (mut reader, count) =
+                            read_in_blocks_of(&mut open, &o, block_rows).unwrap();
+                        let mut columns: Option<Vec<Option<Shown>>> = None;
+                        let mut problems = Vec::new();
+                        let mut rows = 0;
+                        while let Some(chunk) = reader.next_chunk(block_rows).unwrap() {
+                            problems.extend(chunk.problems.iter().cloned());
+                            rows += chunk.rows;
+                            if chunk.rows == 0 {
+                                continue;
+                            }
+                            let shown: Vec<_> = chunk
+                                .columns
+                                .iter()
+                                .map(|c| shown(c, |s| chunk.bytes(s).to_vec()))
+                                .collect();
+                            match &mut columns {
+                                None => columns = Some(shown),
+                                Some(all) => {
+                                    for (a, b) in all.iter_mut().zip(shown) {
+                                        if let (Some(a), Some(b)) = (a, b) {
+                                            assert_eq!(
+                                                a.0, b.0,
+                                                "input {n}: a column's type changed between blocks"
+                                            );
+                                            a.1 += b.1;
+                                            a.2.extend(b.2);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        let columns = columns.unwrap_or_else(|| {
+                            reader
+                                .empty_columns()
+                                .iter()
+                                .map(|c| shown(c, |_| Vec::new()))
+                                .collect()
+                        });
+                        let label = format!(
+                            "input {n}, guess_max {guess_max}, col_names {col_names}, n_max {n_max:?}, block {block_rows}"
+                        );
+                        assert_eq!(reader.names(), &whole.names[..], "{label}");
+                        assert_eq!(columns, expected, "{label}");
+                        assert_eq!(problems, whole.problems, "{label}");
+                        if let Some(count) = count {
+                            assert_eq!(count, rows, "{label}");
+                        }
+                    }
+                }
+            }
+        }
     }
 
     #[test]
