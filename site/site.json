@@ -148,7 +148,9 @@
   "site/benchmarks/lmm.json",
   "site/benchmarks/logistic-mixed.json",
   "site/benchmarks/distributions.json",
-  "site/benchmarks/draws.json"
+  "site/benchmarks/draws.json",
+  "site/benchmarks/ols-workload.json",
+  "site/benchmarks/mixed-workload.json"
  ],
  "verifications": [
   "site/verifications/ols.json",
