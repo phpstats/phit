@@ -543,7 +543,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="uniform-categorical-and-permutations">Uniform, categorical, and permutations</h2>
 <section id="dist_uniform_rng" class="level3">
 <h3 class="anchored" data-anchor-id="dist_uniform_rng"><code>dist_uniform_rng()</code></h3>
-<p>Uniform(min, max) samples as R’s runif(): min + (max - min) * u; min == max gives min. Local ChaCha20 stream restarted at the seed, one uniform per draw; same seed/arguments reproduce prefixes within the pinned version.</p>
+<p>Seeded uniform samples on [<code>min</code>, <code>max</code>], like R’s <code>runif()</code>: min + (max − min) · u.</p>
+<ul>
+<li><code>min</code> equal to <code>max</code> returns <code>min</code>.</li>
+<li>Each call starts its own ChaCha20 stream from <code>seed</code>, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\dist_uniform_rng(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$n</span><span class="ot">,</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$seed</span><span class="ot">,</span></span>
@@ -593,12 +597,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>list&lt;float&gt;</code></p>
-<p><strong>Errors</strong> Invalid input (1001), nonfinite input (1003) or more than 1000000 draws (1007).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001 for invalid input, 1003 for nonfinite input, or 1007 for more than 1,000,000 draws.</p>
 <p><strong>See also</strong> <a href="../rng.html#uniform-categorical-and-permutation-sampling">Details</a> · <a href="../examples/distributions.html">Example</a></p>
 </section>
 <section id="dist_categorical_rng" class="level3">
 <h3 class="anchored" data-anchor-id="dist_categorical_rng"><code>dist_categorical_rng()</code></h3>
-<p>0-based indices into prob drawn with those probabilities, as R’s sample(x, n, replace = TRUE, prob = prob): the first k with u * sum(prob) &lt; prob[0] + … + prob[k]. Weights are divided by their sum. Local ChaCha20 stream restarted at the seed, one uniform per draw; same seed/arguments reproduce prefixes within the pinned version.</p>
+<p>Seeded 0-based category indices drawn with probabilities <code>prob</code>, like R’s <code>sample(x, n, replace = TRUE, prob = prob)</code>.</p>
+<ul>
+<li>Weights are divided by their sum. Each draw is the first k with u · sum(prob) &lt; prob[0] + … + prob[k].</li>
+<li>Each call starts its own ChaCha20 stream from <code>seed</code>, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Phit\dist_categorical_rng(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$n</span><span class="ot">,</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$seed</span><span class="ot">,</span></span>
@@ -641,12 +649,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>list&lt;int&gt;</code></p>
-<p><strong>Errors</strong> Invalid input (1001), nonfinite input (1003) or more than 1000000 draws (1007).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001 for invalid input, 1003 for nonfinite input, or 1007 for more than 1,000,000 draws.</p>
 <p><strong>See also</strong> <a href="../rng.html#uniform-categorical-and-permutation-sampling">Details</a></p>
 </section>
 <section id="dist_categorical_rows_rng" class="level3">
 <h3 class="anchored" data-anchor-id="dist_categorical_rows_rng"><code>dist_categorical_rows_rng()</code></h3>
-<p>One 0-based index per row of prob, drawn with that row’s probabilities (e.g.&nbsp;ordered-logit outcomes). Draw i uses the i-th uniform, so equal rows give dist_categorical_rng()’s result. Local ChaCha20 stream restarted at the seed, one uniform per draw; same seed/arguments reproduce prefixes within the pinned version.</p>
+<p>One seeded 0-based category index per row of <code>prob</code>, drawn with that row’s probabilities, as for ordered-logit outcomes.</p>
+<ul>
+<li>Draw i uses the i-th uniform, so equal rows give the result of <code>dist_categorical_rng()</code>.</li>
+<li>Each call starts its own ChaCha20 stream from <code>seed</code>, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Phit\dist_categorical_rows_rng(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$seed</span><span class="ot">,</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$prob</span><span class="ot">,</span></span>
@@ -682,12 +694,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>list&lt;int&gt;</code></p>
-<p><strong>Errors</strong> Invalid input (1001), nonfinite input (1003) or more than 1000000 draws (1007).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001 for invalid input, 1003 for nonfinite input, or 1007 for more than 1,000,000 draws.</p>
 <p><strong>See also</strong> <a href="../rng.html#uniform-categorical-and-permutation-sampling">Details</a></p>
 </section>
 <section id="permutation_rng" class="level3">
 <h3 class="anchored" data-anchor-id="permutation_rng"><code>permutation_rng()</code></h3>
-<p>size distinct 0-based indices from 0..n-1 in random order, as R’s sample(n, size) less one; size null gives all n.&nbsp;Partial Fisher-Yates: step i swaps position i with i + floor(u * (n - i)). Local ChaCha20 stream restarted at the seed, one uniform per draw; same seed/arguments reproduce prefixes within the pinned version.</p>
+<p>Seeded sample of <code>size</code> distinct 0-based indices from 0 to n − 1 in random order, like R’s <code>sample(n, size)</code> minus one.</p>
+<ul>
+<li><code>size: null</code> gives a permutation of all n.</li>
+<li>Uses a partial Fisher–Yates shuffle: step i swaps position i with i + floor(u · (n − i)).</li>
+<li>Each call starts its own ChaCha20 stream from <code>seed</code>, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Phit\permutation_rng(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$n</span><span class="ot">,</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$seed</span><span class="ot">,</span></span>
@@ -725,12 +742,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$size</code></td>
 <td><code>?int</code></td>
 <td><code>NULL</code></td>
-<td>Draws in [0, n]; null gives a permutation</td>
+<td>Draws in [0, n]; <code>null</code> gives a permutation</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>list&lt;int&gt;</code></p>
-<p><strong>Errors</strong> Invalid input (1001), nonfinite input (1003) or more than 1000000 draws (1007).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001 for invalid input, 1003 for nonfinite input, or 1007 for more than 1,000,000 draws.</p>
 <p><strong>See also</strong> <a href="../rng.html#uniform-categorical-and-permutation-sampling">Details</a></p>
 
 

@@ -10,7 +10,12 @@ Numerical kernels for posterior draws. See [Posterior draws](../draw-numerics.qm
 
 ### `draws_moments()` {#draws_moments}
 
-Weighted draw mean and covariance; weights normalized internally. Normalization 'population' or 'unbiased' (reliability weights, never frequency counts). Singular covariance is valid. Rows are draws; columns are parameters. Preserves iteration order; no row deletion or intercept insertion. null/NAN/INF and nonnumeric elements are rejected.
+Weighted mean and covariance of posterior draws.
+
+- Weights are normalized internally. `normalization: 'unbiased'` treats them as reliability weights, never frequency counts.
+- A singular covariance is a valid result.
+- Rows are draws and columns are parameters. Row order is kept; no row is dropped and no intercept is added.
+- `null`, `NAN`, `INF`, and nonnumeric elements are rejected.
 
 ```php
 Phit\draws_moments(
@@ -23,18 +28,21 @@ Phit\draws_moments(
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
 | `$draws` | `array` | required | Draws: one row per draw and one column per parameter |
-| `$weights` | `?array` | `NULL` | Nonnegative weights, one per draw, normalized internally; null weights draws equally |
-| `$normalization` | `string` | `'population'` | 'population' or 'unbiased' (reliability weights) |
+| `$weights` | `?array` | `NULL` | Nonnegative weights, one per draw, normalized internally; `null` weights draws equally |
+| `$normalization` | `string` | `'population'` | `'population'` or `'unbiased'` (reliability weights) |
 
 **Returns** `array{mean: list<float>, covariance: list<list<float>>}`
 
-**Errors** Input/numerical error (codes 1001–1005).
+**Errors** `Exception`: a code from 1001 to 1005 for an input or numerical error.
 
 **See also** [Details](../draw-numerics.qmd#weighted-moments)
 
 ### `draws_covariance_map()` {#draws_covariance_map}
 
-Cholesky/triangular-solve map A: A * source * A^T = target. Finite symmetric positive-definite covariances of equal size; tolerances in docs/draw-numerics.qmd. Failure is explicit; no regularization. Rows are draws; columns are parameters. Preserves iteration order; no row deletion or intercept insertion. null/NAN/INF and nonnumeric elements are rejected.
+Matrix A with A · source · Aᵀ = target, from Cholesky factors and triangular solves.
+
+- Both covariances must be finite, symmetric, positive definite, and of equal size. Failure throws; there is no regularization.
+- `null`, `NAN`, `INF`, and nonnumeric elements are rejected.
 
 ```php
 Phit\draws_covariance_map(
@@ -50,13 +58,17 @@ Phit\draws_covariance_map(
 
 **Returns** `array{matrix: list<list<float>>, log_abs_det: float}`
 
-**Errors** Input/numerical error (codes 1001–1005).
+**Errors** `Exception`: a code from 1001 to 1005 for an input or numerical error.
 
 **See also** [Details](../draw-numerics.qmd#covariance-map)
 
 ### `draws_affine()` {#draws_affine}
 
-Apply y = A*x + b to each draw: Y = X*A^T + b. Square invertible A; return log(abs(det(A))). Numerical rank tolerance in docs/draw-numerics.qmd. Rows are draws; columns are parameters. Preserves iteration order; no row deletion or intercept insertion. null/NAN/INF and nonnumeric elements are rejected.
+Applies y = A·x + b to every draw: Y = X·Aᵀ + b.
+
+- `matrix` must be square and invertible. Also returns log |det(A)|.
+- Rows are draws and columns are parameters. Row order is kept; no row is dropped and no intercept is added.
+- `null`, `NAN`, `INF`, and nonnumeric elements are rejected.
 
 ```php
 Phit\draws_affine(
@@ -74,6 +86,6 @@ Phit\draws_affine(
 
 **Returns** `array{draws: list<list<float>>, log_abs_det: float}`
 
-**Errors** Input/numerical error (codes 1001–1005).
+**Errors** `Exception`: a code from 1001 to 1005 for an input or numerical error.
 
 **See also** [Details](../draw-numerics.qmd#affine-transformation)

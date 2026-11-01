@@ -542,7 +542,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="kernels">Kernels</h2>
 <section id="draws_moments" class="level3">
 <h3 class="anchored" data-anchor-id="draws_moments"><code>draws_moments()</code></h3>
-<p>Weighted draw mean and covariance; weights normalized internally. Normalization ‘population’ or ‘unbiased’ (reliability weights, never frequency counts). Singular covariance is valid. Rows are draws; columns are parameters. Preserves iteration order; no row deletion or intercept insertion. null/NAN/INF and nonnumeric elements are rejected.</p>
+<p>Weighted mean and covariance of posterior draws.</p>
+<ul>
+<li>Weights are normalized internally. <code>normalization: 'unbiased'</code> treats them as reliability weights, never frequency counts.</li>
+<li>A singular covariance is a valid result.</li>
+<li>Rows are draws and columns are parameters. Row order is kept; no row is dropped and no intercept is added.</li>
+<li><code>null</code>, <code>NAN</code>, <code>INF</code>, and nonnumeric elements are rejected.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\draws_moments(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$draws</span><span class="ot">,</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">NULL</span><span class="ot">,</span></span>
@@ -574,23 +580,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$weights</code></td>
 <td><code>?array</code></td>
 <td><code>NULL</code></td>
-<td>Nonnegative weights, one per draw, normalized internally; null weights draws equally</td>
+<td>Nonnegative weights, one per draw, normalized internally; <code>null</code> weights draws equally</td>
 </tr>
 <tr class="odd">
 <td><code>$normalization</code></td>
 <td><code>string</code></td>
 <td><code>'population'</code></td>
-<td>‘population’ or ‘unbiased’ (reliability weights)</td>
+<td><code>'population'</code> or <code>'unbiased'</code> (reliability weights)</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>array{mean: list&lt;float&gt;, covariance: list&lt;list&lt;float&gt;&gt;}</code></p>
-<p><strong>Errors</strong> Input/numerical error (codes 1001–1005).</p>
+<p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1005 for an input or numerical error.</p>
 <p><strong>See also</strong> <a href="../draw-numerics.html#weighted-moments">Details</a></p>
 </section>
 <section id="draws_covariance_map" class="level3">
 <h3 class="anchored" data-anchor-id="draws_covariance_map"><code>draws_covariance_map()</code></h3>
-<p>Cholesky/triangular-solve map A: A * source * A^T = target. Finite symmetric positive-definite covariances of equal size; tolerances in docs/draw-numerics.qmd. Failure is explicit; no regularization. Rows are draws; columns are parameters. Preserves iteration order; no row deletion or intercept insertion. null/NAN/INF and nonnumeric elements are rejected.</p>
+<p>Matrix A with A · source · Aᵀ = target, from Cholesky factors and triangular solves.</p>
+<ul>
+<li>Both covariances must be finite, symmetric, positive definite, and of equal size. Failure throws; there is no regularization.</li>
+<li><code>null</code>, <code>NAN</code>, <code>INF</code>, and nonnumeric elements are rejected.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Phit\draws_covariance_map(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$sourceCovariance</span><span class="ot">,</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$targetCovariance</span><span class="ot">,</span></span>
@@ -626,12 +636,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>array{matrix: list&lt;list&lt;float&gt;&gt;, log_abs_det: float}</code></p>
-<p><strong>Errors</strong> Input/numerical error (codes 1001–1005).</p>
+<p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1005 for an input or numerical error.</p>
 <p><strong>See also</strong> <a href="../draw-numerics.html#covariance-map">Details</a></p>
 </section>
 <section id="draws_affine" class="level3">
 <h3 class="anchored" data-anchor-id="draws_affine"><code>draws_affine()</code></h3>
-<p>Apply y = A<em>x + b to each draw: Y = X</em>A^T + b. Square invertible A; return log(abs(det(A))). Numerical rank tolerance in docs/draw-numerics.qmd. Rows are draws; columns are parameters. Preserves iteration order; no row deletion or intercept insertion. null/NAN/INF and nonnumeric elements are rejected.</p>
+<p>Applies y = A·x + b to every draw: Y = X·Aᵀ + b.</p>
+<ul>
+<li><code>matrix</code> must be square and invertible. Also returns log |det(A)|.</li>
+<li>Rows are draws and columns are parameters. Row order is kept; no row is dropped and no intercept is added.</li>
+<li><code>null</code>, <code>NAN</code>, <code>INF</code>, and nonnumeric elements are rejected.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Phit\draws_affine(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$draws</span><span class="ot">,</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$matrix</span><span class="ot">,</span></span>
@@ -674,7 +689,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>array{draws: list&lt;list&lt;float&gt;&gt;, log_abs_det: float}</code></p>
-<p><strong>Errors</strong> Input/numerical error (codes 1001–1005).</p>
+<p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1005 for an input or numerical error.</p>
 <p><strong>See also</strong> <a href="../draw-numerics.html#affine-transformation">Details</a></p>
 
 

@@ -10,7 +10,10 @@ The native CSV reader, which requires the extension. See [Reading CSV files](../
 
 ### `read_csv()` {#read_csv}
 
-Read a delimited text file the way phibble's PHP reader (after readr::read_delim()) does: same records, names, guessed types, values and problem messages. Contract and phibble/readr differences: docs/io.qmd. Dates are int days since 1970-01-01; datetimes are int microseconds since the epoch (UTC); NA is null. failed counts values that did not parse under the column's type (they are null). Skipped ('_') columns are null.
+Reads a delimited text file into typed columns, with the records, names, guessed types, values, and problem messages of phibble's PHP reader and `readr::read_delim()`.
+
+- Dates are int days since 1970-01-01, and datetimes are int microseconds since the epoch, in UTC. `NA` values are `null`.
+- `failed` counts values that did not parse under the column's type; they are `null`. Skipped columns are `null`.
 
 ```php
 Phit\read_csv(
@@ -26,7 +29,7 @@ Phit\read_csv(
 
 **Returns** `array{names: list<string>, columns: list<null\|array{type: 'bool'\|'int'\|'float'\|'string'\|'date'\|'datetime', values: list<bool\|int\|float\|string\|null>, failed: int}>, problems: list<string>}`
 
-**Errors** \ValueError Missing or unreadable file, or an invalid option.
+**Errors** `ValueError`: a missing or unreadable file, or an invalid option.
 
 **See also** [Details](../io.qmd)
 
@@ -49,7 +52,7 @@ public function __construct(string $path, array $options = [])
 | `$path` | A readable file |
 | `$options` |  |
 
-**Errors** \ValueError Missing or unreadable file, or an invalid option.
+**Errors** `ValueError`: missing or unreadable file, or an invalid option.
 
 #### `CsvReader::names()` {#CsvReader-names}
 
@@ -71,4 +74,4 @@ public function next(int $rows): ?array
 
 **Returns** `null\|array{position: int, rows: int, names: list<string>, columns: list<null\|array{type: 'bool'\|'int'\|'float'\|'string'\|'date'\|'datetime', values: list<bool\|int\|float\|string\|null>, failed: int}>, problems: list<string>}`
 
-**Errors** \ValueError rows below 1, or a read error.
+**Errors** `ValueError`: rows below 1, or a read error.

@@ -544,7 +544,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="reading-a-file">Reading a file</h2>
 <section id="read_csv" class="level3">
 <h3 class="anchored" data-anchor-id="read_csv"><code>read_csv()</code></h3>
-<p>Read a delimited text file the way phibble’s PHP reader (after readr::read_delim()) does: same records, names, guessed types, values and problem messages. Contract and phibble/readr differences: docs/io.qmd. Dates are int days since 1970-01-01; datetimes are int microseconds since the epoch (UTC); NA is null. failed counts values that did not parse under the column’s type (they are null). Skipped (’_’) columns are null.</p>
+<p>Reads a delimited text file into typed columns, with the records, names, guessed types, values, and problem messages of phibble’s PHP reader and <code>readr::read_delim()</code>.</p>
+<ul>
+<li>Dates are int days since 1970-01-01, and datetimes are int microseconds since the epoch, in UTC. <code>NA</code> values are <code>null</code>.</li>
+<li><code>failed</code> counts values that did not parse under the column’s type; they are <code>null</code>. Skipped columns are <code>null</code>.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\read_csv(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$path</span><span class="ot">,</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$options</span> <span class="op">=</span> []<span class="ot">,</span></span>
@@ -580,7 +584,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>array{names: list&lt;string&gt;, columns: list&lt;null\|array{type: 'bool'\|'int'\|'float'\|'string'\|'date'\|'datetime', values: list&lt;bool\|int\|float\|string\|null&gt;, failed: int}&gt;, problems: list&lt;string&gt;}</code></p>
-<p><strong>Errors</strong> Missing or unreadable file, or an invalid option.</p>
+<p><strong>Errors</strong> <code>ValueError</code>: a missing or unreadable file, or an invalid option.</p>
 <p><strong>See also</strong> <a href="../io.html">Details</a></p>
 </section>
 </section>
@@ -611,7 +615,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p><strong>Errors</strong> Missing or unreadable file, or an invalid option.</p>
+<p><strong>Errors</strong> <code>ValueError</code>: missing or unreadable file, or an invalid option.</p>
 </section>
 <section id="CsvReader-names" class="level4">
 <h4 class="anchored" data-anchor-id="CsvReader-names"><code>CsvReader::names()</code></h4>
@@ -624,7 +628,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The next chunk of at most $rows rows in read_csv()’s shape, with the 1-based position of its first row and its row count; null once no rows remain. A chunk without rows comes only to carry problems found after the last row.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">function</span> <span class="fu">next</span>(<span class="dt">int</span> <span class="va">$rows</span>)<span class="ot">:</span> <span class="ot">?</span><span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Returns</strong> <code>null\|array{position: int, rows: int, names: list&lt;string&gt;, columns: list&lt;null\|array{type: 'bool'\|'int'\|'float'\|'string'\|'date'\|'datetime', values: list&lt;bool\|int\|float\|string\|null&gt;, failed: int}&gt;, problems: list&lt;string&gt;}</code></p>
-<p><strong>Errors</strong> rows below 1, or a read error.</p>
+<p><strong>Errors</strong> <code>ValueError</code>: rows below 1, or a read error.</p>
 
 
 </section>

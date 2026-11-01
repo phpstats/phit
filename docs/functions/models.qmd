@@ -10,31 +10,30 @@ Linear and generalized linear models from a formula or a numeric design. Result 
 
 ### `fit_ols()` {#fit_ols}
 
-Linear model from a formula, like R's lm(): builds the model matrix and fits by least squares, weighted least squares when weights are given (as lm(weights = )), with offset() terms. Until phit 0.5, an array first argument (or named x:/y:) runs the deprecated matrix fit, Phit\fit_ols_matrix(), with one E_USER_DEPRECATED; its result has no formula keys. Factor levels unused after deletion are dropped, as lm() does. Rank deficiency raises 1004 instead of R's NA coefficients. Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
+Fits a linear model from a formula, like R's `lm()`.
+
+- Builds the model matrix from named columns and fits by least squares, or by weighted least squares when `weights` is given, as `lm(weights = )` does.
+- `offset()` terms in the formula are added to the linear predictor.
+- Factor levels left unused after missing rows are dropped are removed, as `lm()` does.
+- A rank-deficient design throws instead of returning R's `NA` coefficients.
+- Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+- An array as the first argument is deprecated; use `fit_ols_matrix()`.
 
 ```php
 Phit\fit_ols(
-    mixed $formula = NULL,
-    mixed $data = NULL,
+    string $formula,
+    array|object $data,
     string $missing = 'drop',
-    mixed $weights = NULL,
-    ?array $offset = NULL,
-    bool $intercept = true,
-    ?array $x = NULL,
-    ?array $y = NULL,
+    array|string|null $weights = NULL,
 ): array
 ```
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$formula` | `mixed` | `NULL` | R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))' (deprecated until 0.5: a matrix x) |
-| `$data` | `mixed` | `NULL` | Named columns or factor descriptors; objects use toModelData(), else toColumns() (deprecated: y) |
-| `$missing` | `string` | `'drop'` | 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them |
-| `$weights` | `mixed` | `NULL` | Positive prior weights aligned with the original rows, or a column name |
-| `$offset` | `?array` | `NULL` | Deprecated matrix form only; in a formula write offset() |
-| `$intercept` | `bool` | `true` | Deprecated matrix form only; in a formula write - 1 |
-| `$x` | `?array` | `NULL` | Deprecated: use Phit\fit_ols_matrix() |
-| `$y` | `?array` | `NULL` | Deprecated: use Phit\fit_ols_matrix() |
+| `$formula` | `string` | required | R formula, such as `'y ~ log(x) + f * z + offset(log(t))'`; an array here is the deprecated matrix form |
+| `$data` | `array\|object` | required | Named columns or factor descriptors; objects use `toModelData()`, else `toColumns()` |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
+| `$weights` | `array\|string\|null` | `NULL` | Positive prior weights aligned with the original rows, or a column name |
 
 **Returns**
 
@@ -72,33 +71,37 @@ array{
 }
 ```
 
-**Errors** Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
 
 **See also** [Details](../formulas.qmd#fit_ols-and-fit_generalized_linear) · [Example](../examples/linear-model.qmd)
 
 ### `fit_generalized_linear()` {#fit_generalized_linear}
 
-Generalized linear model from a formula, like R's glm(): gaussian/identity (the OLS core), binomial/logit, binomial/probit and poisson/log (the matrix GLM cores). Binomial responses: 0/1, logical, factor/string (first level = failure), proportions with trial weights, or cbind(successes, failures). The empty link selects the canonical link. Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
+Fits a generalized linear model from a formula, like R's `glm()`.
+
+- Families and links: `gaussian` with `identity`, `binomial` with `logit` or `probit`, and `poisson` with `log`. An empty `link` selects the canonical link.
+- A binomial response can be 0/1 numbers, booleans, a factor or string column (the first level is failure), proportions with integer trial weights, or `cbind(successes, failures)`.
+- Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
 
 ```php
 Phit\fit_generalized_linear(
     string $formula,
-    mixed $data,
+    array|object $data,
     string $family = 'gaussian',
     string $link = '',
     string $missing = 'drop',
-    mixed $weights = NULL,
+    array|string|null $weights = NULL,
 ): array
 ```
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$formula` | `string` | required | R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))' |
-| `$data` | `mixed` | required | Named columns or factor descriptors; objects use toModelData(), else toColumns() |
-| `$family` | `string` | `'gaussian'` | 'gaussian', 'binomial' or 'poisson' |
-| `$link` | `string` | `''` | '' (canonical), 'identity', 'logit', 'probit' or 'log' |
-| `$missing` | `string` | `'drop'` | 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them |
-| `$weights` | `mixed` | `NULL` | Positive prior weights aligned with the original rows, or a column name |
+| `$formula` | `string` | required | R formula, such as `'y ~ log(x) + f * z + offset(log(t))'` |
+| `$data` | `array\|object` | required | Named columns or factor descriptors; objects use `toModelData()`, else `toColumns()` |
+| `$family` | `string` | `'gaussian'` | `'gaussian'`, `'binomial'`, or `'poisson'` |
+| `$link` | `string` | `''` | `''` (canonical), `'identity'`, `'logit'`, `'probit'`, or `'log'` |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
+| `$weights` | `array\|string\|null` | `NULL` | Positive prior weights aligned with the original rows, or a column name |
 
 **Returns**
 
@@ -144,27 +147,32 @@ array{
 }
 ```
 
-**Errors** Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
 
 **See also** [Details](../formulas.qmd#fit_ols-and-fit_generalized_linear) · [Example](../examples/glm.qmd)
 
 ### `model_matrix()` {#model_matrix}
 
-R-compatible model.matrix() for a formula over named columns: treatment contrasts (first level is the reference), contr.poly for ordered factors, R column names/term order, inline transforms, offset() and random-effect bars. Unused factor levels are kept, as in model.matrix(); x includes the "(Intercept)" column when present. Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
+Builds the numeric design of a formula over named columns, like R's `model.matrix()`.
+
+- Factors use treatment contrasts with the first level as the reference; ordered factors use `contr.poly`.
+- Column names, term order, inline transforms, `offset()`, and random-effect bars follow R.
+- Unused factor levels are kept, as in `model.matrix()`, and `x` includes the `(Intercept)` column when present.
+- Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
 
 ```php
 Phit\model_matrix(
     string $formula,
-    mixed $data,
+    array|object $data,
     string $missing = 'drop',
 ): array
 ```
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$formula` | `string` | required | R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))' |
-| `$data` | `mixed` | required | Named columns or factor descriptors; objects use toModelData(), else toColumns() |
-| `$missing` | `string` | `'drop'` | 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them |
+| `$formula` | `string` | required | R formula, such as `'y ~ log(x) + f * z + offset(log(t))'` |
+| `$data` | `array\|object` | required | Named columns or factor descriptors; objects use `toModelData()`, else `toColumns()` |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
 
 **Returns**
 
@@ -189,18 +197,25 @@ array{
 }
 ```
 
-**Errors** Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
 
 **See also** [Details](../formulas.qmd#model_matrix)
 
 ### `predict()` {#predict}
 
-Predictions for new data from a fit_ols (formula), fit_generalized_linear, fit_mixed_gaussian or fit_mixed_logistic result, like R's predict(): the fit's formula is rebuilt over newdata with the fitted factor levels and poly() basis (its predvars key). A level the fit never saw is an error. Rows with missing predictors predict null and are listed in missing_rows. type 'response' applies the inverse link; seFit uses the delta method on that scale. Intervals ('confidence' or 'prediction', t with df_residual) are for fit_ols fits. Mixed fits add random effects of known groups (random: false gives population predictions; allowNewLevels predicts unseen groups at zero). GLM standard errors use the covariance at the final coefficients (docs/r-compatibility.qmd).
+Predicts new data from a `fit_ols()`, `fit_generalized_linear()`, `fit_mixed_gaussian()`, or `fit_mixed_logistic()` result, like R's `predict()`.
+
+- The fit's formula is rebuilt over `newdata` with the fitted factor levels and `poly()` basis, from the fit's `predvars` key. A level the fit never saw throws.
+- A row with a missing predictor predicts `null` and is listed in `missing_rows`.
+- `type: 'response'` applies the inverse link, and `seFit` then uses the delta method on that scale.
+- `interval: 'confidence'` or `'prediction'` adds `lower` and `upper` for `fit_ols()` fits, using t with `df_residual`.
+- Mixed fits add the random effects of known groups. `random: false` gives population predictions, and `allowNewLevels` predicts unseen groups at the population level.
+- GLM standard errors use the covariance at the final coefficients, which differs slightly from R's `predict.glm()`.
 
 ```php
 Phit\predict(
     array $fit,
-    mixed $newdata,
+    array|object $newdata,
     string $type = 'link',
     bool $seFit = false,
     string $interval = 'none',
@@ -212,14 +227,14 @@ Phit\predict(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$fit` | `array` | required | A formula fit result (needs formula, coefficients, covariance, columns and predvars) |
-| `$newdata` | `mixed` | required | Named columns, as for the fit; the response may be absent |
-| `$type` | `string` | `'link'` | 'link' (linear predictor) or 'response' |
+| `$fit` | `array` | required | A formula fit result, with the keys `formula`, `coefficients`, `covariance`, `columns`, and `predvars` |
+| `$newdata` | `array\|object` | required | Named columns, as for the fit; the response may be absent |
+| `$type` | `string` | `'link'` | `'link'` (linear predictor) or `'response'` |
 | `$seFit` | `bool` | `false` | Also return standard errors of the predictions; fixed-effect fits only |
-| `$interval` | `string` | `'none'` | 'none', 'confidence' or 'prediction' |
+| `$interval` | `string` | `'none'` | `'none'`, `'confidence'`, or `'prediction'` |
 | `$level` | `float` | `0.95` | Confidence level of the interval |
-| `$random` | `bool` | `true` | Mixed fits: include random effects (lme4 re.form = NULL) or not (re.form = NA) |
-| `$allowNewLevels` | `bool` | `false` | Predict a group the fit never saw at the population level instead of raising 1001 |
+| `$random` | `bool` | `true` | Mixed fits: include the random effects of known groups, as lme4's `re.form = NULL`; `false` predicts at the population level, as `re.form = NA` |
+| `$allowNewLevels` | `bool` | `false` | Predict a group the fit never saw at the population level instead of throwing |
 
 **Returns**
 
@@ -238,7 +253,7 @@ array{
 }
 ```
 
-**Errors** Input error (1001), malformed fit, new levels, or unsupported options (1007).
+**Errors** `Exception`: code 1001 for invalid input, a malformed fit, or a new factor level, or 1007 for an unsupported option.
 
 **See also** [Details](../formulas.qmd#prediction-predict) · [Example](../examples/linear-model.qmd)
 
@@ -246,7 +261,11 @@ array{
 
 ### `fit_ols_matrix()` {#fit_ols_matrix}
 
-Least-squares fit of a numeric design, like R's lm.fit() with the full summary. Predictor matrix: rows are observations. A fixed intercept is prepended by default. null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+Fits a linear model by least squares on a numeric design, like R's `lm.fit()` with the full summary.
+
+- `weights` gives weighted least squares, as `lm(weights = )` does.
+- An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+- Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
 
 ```php
 Phit\fit_ols_matrix(
@@ -261,11 +280,11 @@ Phit\fit_ols_matrix(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing |
-| `$y` | `array` | required | Numeric response, one value per row; null or NAN is missing |
-| `$missing` | `string` | `'drop'` | 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them |
+| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; `null` or `NAN` is missing |
+| `$y` | `array` | required | Numeric response, one value per row; `null` or `NAN` is missing |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
 | `$weights` | `?array` | `NULL` | Positive weights: weighted least squares, as lm(weights = ) |
-| `$offset` | `?array` | `NULL` | Known part of the linear predictor, aligned with the rows; null is zero |
+| `$offset` | `?array` | `NULL` | Known part of the linear predictor, aligned with the rows; `null` is zero |
 | `$intercept` | `bool` | `true` | False uses x exactly (including any caller-supplied ones). |
 
 **Returns**
@@ -296,13 +315,16 @@ array{
 }
 ```
 
-**Errors** Statistical or input error (codes 1001–1008).
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error.
 
 **See also** [Details](../reference-models.qmd#ols-input-and-output)
 
 ### `fit_logistic_matrix()` {#fit_logistic_matrix}
 
-Binomial logit fit of a numeric design by Newton steps, like R's glm(family = binomial). Predictor matrix: rows are observations. A fixed intercept is prepended by default. null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+Fits a binomial logit model on a numeric design by Newton steps, like R's `glm(family = binomial)`.
+
+- An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+- Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
 
 ```php
 Phit\fit_logistic_matrix(
@@ -317,11 +339,11 @@ Phit\fit_logistic_matrix(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing |
-| `$y` | `array` | required | 0/1 outcomes, or proportions with integer trial weights; null or NAN is missing |
-| `$missing` | `string` | `'drop'` | 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them |
-| `$weights` | `?array` | `NULL` | Positive integer trial counts aligned with the rows; null is one trial per row |
-| `$offset` | `?array` | `NULL` | Known part of the linear predictor, aligned with the rows; null is zero |
+| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; `null` or `NAN` is missing |
+| `$y` | `array` | required | 0/1 outcomes, or proportions with integer trial weights; `null` or `NAN` is missing |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
+| `$weights` | `?array` | `NULL` | Positive integer trial counts aligned with the rows; `null` is one trial per row |
+| `$offset` | `?array` | `NULL` | Known part of the linear predictor, aligned with the rows; `null` is zero |
 | `$intercept` | `bool` | `true` | False uses x exactly (including any caller-supplied ones). |
 
 **Returns**
@@ -352,13 +374,16 @@ array{
 }
 ```
 
-**Errors** Statistical or input error (codes 1001–1008).
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error.
 
 **See also** [Details](../reference-models.qmd#binary-logistic-regression)
 
 ### `fit_probit_matrix()` {#fit_probit_matrix}
 
-Binomial probit fit of a numeric design by Fisher scoring, like R's glm(family = binomial(link = "probit")). Predictor matrix: rows are observations. A fixed intercept is prepended by default. null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+Fits a binomial probit model on a numeric design by Fisher scoring, like R's `glm(family = binomial(link = "probit"))`.
+
+- An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+- Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
 
 ```php
 Phit\fit_probit_matrix(
@@ -373,11 +398,11 @@ Phit\fit_probit_matrix(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing |
-| `$y` | `array` | required | 0/1 outcomes, or proportions with integer trial weights; null or NAN is missing |
-| `$missing` | `string` | `'drop'` | 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them |
-| `$weights` | `?array` | `NULL` | Positive integer trial counts aligned with the rows; null is one trial per row |
-| `$offset` | `?array` | `NULL` | Known part of the linear predictor, aligned with the rows; null is zero |
+| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; `null` or `NAN` is missing |
+| `$y` | `array` | required | 0/1 outcomes, or proportions with integer trial weights; `null` or `NAN` is missing |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
+| `$weights` | `?array` | `NULL` | Positive integer trial counts aligned with the rows; `null` is one trial per row |
+| `$offset` | `?array` | `NULL` | Known part of the linear predictor, aligned with the rows; `null` is zero |
 | `$intercept` | `bool` | `true` | False uses x exactly (including any caller-supplied ones). |
 
 **Returns**
@@ -408,13 +433,16 @@ array{
 }
 ```
 
-**Errors** Statistical or input error (codes 1001–1008).
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error.
 
 **See also** [Details](../reference-models.qmd#probit-regression)
 
 ### `fit_poisson_matrix()` {#fit_poisson_matrix}
 
-Poisson log-link fit of a numeric design by Newton steps, like R's glm(family = poisson). Predictor matrix: rows are observations. A fixed intercept is prepended by default. null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+Fits a Poisson log-link model on a numeric design by Newton steps, like R's `glm(family = poisson)`.
+
+- An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+- Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
 
 ```php
 Phit\fit_poisson_matrix(
@@ -429,11 +457,11 @@ Phit\fit_poisson_matrix(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing |
-| `$y` | `array` | required | Nonnegative integer counts, one per row; null or NAN is missing |
-| `$missing` | `string` | `'drop'` | 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them |
+| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; `null` or `NAN` is missing |
+| `$y` | `array` | required | Nonnegative integer counts, one per row; `null` or `NAN` is missing |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
 | `$weights` | `?array` | `NULL` | Positive prior weights aligned with the rows |
-| `$offset` | `?array` | `NULL` | Known part of the linear predictor, aligned with the rows; null is zero |
+| `$offset` | `?array` | `NULL` | Known part of the linear predictor, aligned with the rows; `null` is zero |
 | `$intercept` | `bool` | `true` | False uses x exactly (including any caller-supplied ones). |
 
 **Returns**
@@ -464,6 +492,6 @@ array{
 }
 ```
 
-**Errors** Statistical or input error (codes 1001–1008).
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error.
 
 **See also** [Details](../reference-models.qmd#poisson-regression)

@@ -7,2001 +7,2147 @@
 namespace Phit;
 
 /**
- * Beta(alpha, beta) on [0, 1]: P(X <= x).
+ * Lower-tail probability P(X ≤ x) of the beta distribution with shapes `alpha` and `beta`.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_cdf(float $x, float $alpha, float $beta): float {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: P(X <= x).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Lower-tail probability P(X ≤ x) of the beta distribution with shapes `alpha` and `beta`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_cdf_array(array $values, float $alpha, float $beta): array {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: ln P(X <= x), accurate after P underflows.
+ * Log lower-tail probability ln P(X ≤ x) of the beta distribution with shapes `alpha` and `beta`.
+ * - Accurate after P(X ≤ x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_logcdf(float $x, float $alpha, float $beta): float {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: ln P(X <= x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log lower-tail probability ln P(X ≤ x) of the beta distribution with shapes `alpha` and `beta`.
+ * - Accurate after P(X ≤ x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_logcdf_array(array $values, float $alpha, float $beta): array {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: log density ln f(x); -INF outside the support.
+ * Log density ln f(x) of the beta distribution with shapes `alpha` and `beta`.
+ * - `-INF` outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_logpdf(float $x, float $alpha, float $beta): float {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: log density ln f(x); -INF outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log density ln f(x) of the beta distribution with shapes `alpha` and `beta`.
+ * - `-INF` outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_logpdf_array(array $values, float $alpha, float $beta): array {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: ln P(X > x), accurate after P underflows.
+ * Log upper-tail probability ln P(X > x) of the beta distribution with shapes `alpha` and `beta`.
+ * - Accurate after P(X > x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_logsf(float $x, float $alpha, float $beta): float {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: ln P(X > x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log upper-tail probability ln P(X > x) of the beta distribution with shapes `alpha` and `beta`.
+ * - Accurate after P(X > x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_logsf_array(array $values, float $alpha, float $beta): array {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: density f(x); 0 outside the support.
+ * Density f(x) of the beta distribution with shapes `alpha` and `beta`.
+ * - 0 outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_pdf(float $x, float $alpha, float $beta): float {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: density f(x); 0 outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Density f(x) of the beta distribution with shapes `alpha` and `beta`.
+ * - 0 outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_pdf_array(array $values, float $alpha, float $beta): array {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: smallest x with P(X <= x) >= p.
+ * Quantile of the beta distribution with shapes `alpha` and `beta`: the smallest x with P(X ≤ x) ≥ p.
  * @param float $p Probability in [0, 1]
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_quantile(float $p, float $alpha, float $beta): float {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: smallest x with P(X <= x) >= p.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Quantile of the beta distribution with shapes `alpha` and `beta`: the smallest x with P(X ≤ x) ≥ p.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $probabilities Probabilities in [0, 1]; null or NAN rejects the batch
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_quantile_array(array $probabilities, float $alpha, float $beta): array {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: explicitly seeded batch samples.
- * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.
+ * Seeded samples from the beta distribution with shapes `alpha` and `beta`.
+ * - Returns a list of `n` floats; discrete counts are floats.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]; empty batches still validate parameters.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream.
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
  * @return list<float> Finite samples; discrete counts are floats.
- * @throws \Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
  */
 function dist_beta_rng(int $n, int $seed, float $alpha, float $beta): array {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: survival P(X > x), computed directly.
+ * Upper-tail probability P(X > x) of the beta distribution with shapes `alpha` and `beta`.
+ * - Computed directly, not as 1 − P(X ≤ x).
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_sf(float $x, float $alpha, float $beta): float {}
 
 /**
- * Beta(alpha, beta) on [0, 1]: survival P(X > x), computed directly.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Upper-tail probability P(X > x) of the beta distribution with shapes `alpha` and `beta`.
+ * - Computed directly, not as 1 − P(X ≤ x).
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $alpha First shape parameter, > 0
  * @param float $beta Second shape parameter, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_beta_sf_array(array $values, float $alpha, float $beta): array {}
 
 /**
- * Binomial: successes in size trials with success probability prob: P(X <= x).
+ * Lower-tail probability P(X ≤ x) of the binomial distribution with `size` trials and success probability `prob`.
  * @param float $k Count at which to evaluate
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_cdf(float $k, int $size, float $prob): float {}
 
 /**
- * Binomial: successes in size trials with success probability prob: P(X <= x).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Lower-tail probability P(X ≤ x) of the binomial distribution with `size` trials and success probability `prob`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_cdf_array(array $counts, int $size, float $prob): array {}
 
 /**
- * Binomial: successes in size trials with success probability prob: ln P(X <= x), accurate after P underflows.
+ * Log lower-tail probability ln P(X ≤ x) of the binomial distribution with `size` trials and success probability `prob`.
+ * - Accurate after P(X ≤ x) underflows.
  * @param float $k Count at which to evaluate
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_logcdf(float $k, int $size, float $prob): float {}
 
 /**
- * Binomial: successes in size trials with success probability prob: ln P(X <= x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log lower-tail probability ln P(X ≤ x) of the binomial distribution with `size` trials and success probability `prob`.
+ * - Accurate after P(X ≤ x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_logcdf_array(array $counts, int $size, float $prob): array {}
 
 /**
- * Binomial: successes in size trials with success probability prob: log probability ln P(X = k).
+ * Log probability ln P(X = k) of the binomial distribution with `size` trials and success probability `prob`.
+ * - `-INF` for a non-integer or out-of-support `k`.
  * @param float $k Count at which to evaluate
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_logpmf(float $k, int $size, float $prob): float {}
 
 /**
- * Binomial: successes in size trials with success probability prob: log probability ln P(X = k).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log probability ln P(X = k) of the binomial distribution with `size` trials and success probability `prob`.
+ * - `-INF` for a non-integer or out-of-support `k`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_logpmf_array(array $counts, int $size, float $prob): array {}
 
 /**
- * Binomial: successes in size trials with success probability prob: ln P(X > x), accurate after P underflows.
+ * Log upper-tail probability ln P(X > x) of the binomial distribution with `size` trials and success probability `prob`.
+ * - Accurate after P(X > x) underflows.
  * @param float $k Count at which to evaluate
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_logsf(float $k, int $size, float $prob): float {}
 
 /**
- * Binomial: successes in size trials with success probability prob: ln P(X > x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log upper-tail probability ln P(X > x) of the binomial distribution with `size` trials and success probability `prob`.
+ * - Accurate after P(X > x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_logsf_array(array $counts, int $size, float $prob): array {}
 
 /**
- * Binomial: successes in size trials with success probability prob: probability P(X = k); 0 for non-integer or out-of-support k.
+ * Probability P(X = k) of the binomial distribution with `size` trials and success probability `prob`.
+ * - 0 for a non-integer or out-of-support `k`.
  * @param float $k Count at which to evaluate
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_pmf(float $k, int $size, float $prob): float {}
 
 /**
- * Binomial: successes in size trials with success probability prob: probability P(X = k); 0 for non-integer or out-of-support k.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Probability P(X = k) of the binomial distribution with `size` trials and success probability `prob`.
+ * - 0 for a non-integer or out-of-support `k`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_pmf_array(array $counts, int $size, float $prob): array {}
 
 /**
- * Binomial: successes in size trials with success probability prob: smallest x with P(X <= x) >= p.
+ * Quantile of the binomial distribution with `size` trials and success probability `prob`: the smallest x with P(X ≤ x) ≥ p.
  * @param float $p Probability in [0, 1]
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_quantile(float $p, int $size, float $prob): float {}
 
 /**
- * Binomial: successes in size trials with success probability prob: smallest x with P(X <= x) >= p.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Quantile of the binomial distribution with `size` trials and success probability `prob`: the smallest x with P(X ≤ x) ≥ p.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $probabilities Probabilities in [0, 1]; null or NAN rejects the batch
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_quantile_array(array $probabilities, int $size, float $prob): array {}
 
 /**
- * Binomial: successes in size trials with success probability prob: explicitly seeded batch samples.
- * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.
+ * Seeded samples from the binomial distribution with `size` trials and success probability `prob`.
+ * - Returns a list of `n` floats; discrete counts are floats.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]; empty batches still validate parameters.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream.
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
  * @return list<float> Finite samples; discrete counts are floats.
- * @throws \Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
  */
 function dist_binomial_rng(int $n, int $seed, int $size, float $prob): array {}
 
 /**
- * Binomial: successes in size trials with success probability prob: survival P(X > x), computed directly.
+ * Upper-tail probability P(X > x) of the binomial distribution with `size` trials and success probability `prob`.
+ * - Computed directly, not as 1 − P(X ≤ x).
  * @param float $k Count at which to evaluate
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_sf(float $k, int $size, float $prob): float {}
 
 /**
- * Binomial: successes in size trials with success probability prob: survival P(X > x), computed directly.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Upper-tail probability P(X > x) of the binomial distribution with `size` trials and success probability `prob`.
+ * - Computed directly, not as 1 − P(X ≤ x).
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param int $size Number of trials, an integer in [0, 2^53]
  * @param float $prob Success probability in [0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_binomial_sf_array(array $counts, int $size, float $prob): array {}
 
 /**
- * 0-based indices into prob drawn with those probabilities, as R's sample(x, n, replace = TRUE, prob = prob):
- * the first k with u * sum(prob) < prob[0] + ... + prob[k]. Weights are divided by their sum.
- * Local ChaCha20 stream restarted at the seed, one uniform per draw; same seed/arguments reproduce prefixes within the pinned version.
+ * Seeded 0-based category indices drawn with probabilities `prob`, like R's `sample(x, n, replace = TRUE, prob = prob)`.
+ * - Weights are divided by their sum. Each draw is the first k with u · sum(prob) < prob[0] + … + prob[k].
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream
  * @param list<int|float> $prob Finite, nonnegative weights with a positive sum
  * @return list<int>
- * @throws \Exception Invalid input (1001), nonfinite input (1003) or more than 1000000 draws (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for nonfinite input, or 1007 for more than 1,000,000 draws.
  */
 function dist_categorical_rng(int $n, int $seed, array $prob): array {}
 
 /**
- * One 0-based index per row of prob, drawn with that row's probabilities (e.g. ordered-logit outcomes).
- * Draw i uses the i-th uniform, so equal rows give dist_categorical_rng()'s result.
- * Local ChaCha20 stream restarted at the seed, one uniform per draw; same seed/arguments reproduce prefixes within the pinned version.
+ * One seeded 0-based category index per row of `prob`, drawn with that row's probabilities, as for ordered-logit outcomes.
+ * - Draw i uses the i-th uniform, so equal rows give the result of `dist_categorical_rng()`.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream
  * @param list<list<int|float>> $prob At most 1000000 rows of finite, nonnegative weights with a positive sum
  * @return list<int>
- * @throws \Exception Invalid input (1001), nonfinite input (1003) or more than 1000000 draws (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for nonfinite input, or 1007 for more than 1,000,000 draws.
  */
 function dist_categorical_rows_rng(int $seed, array $prob): array {}
 
 /**
- * Chi-square with df degrees of freedom: P(X <= x).
+ * Lower-tail probability P(X ≤ x) of the chi-square distribution with `df` degrees of freedom.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_cdf(float $x, float $df): float {}
 
 /**
- * Chi-square with df degrees of freedom: P(X <= x).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Lower-tail probability P(X ≤ x) of the chi-square distribution with `df` degrees of freedom.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_cdf_array(array $values, float $df): array {}
 
 /**
- * Chi-square with df degrees of freedom: ln P(X <= x), accurate after P underflows.
+ * Log lower-tail probability ln P(X ≤ x) of the chi-square distribution with `df` degrees of freedom.
+ * - Accurate after P(X ≤ x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_logcdf(float $x, float $df): float {}
 
 /**
- * Chi-square with df degrees of freedom: ln P(X <= x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log lower-tail probability ln P(X ≤ x) of the chi-square distribution with `df` degrees of freedom.
+ * - Accurate after P(X ≤ x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_logcdf_array(array $values, float $df): array {}
 
 /**
- * Chi-square with df degrees of freedom: log density ln f(x); -INF outside the support.
+ * Log density ln f(x) of the chi-square distribution with `df` degrees of freedom.
+ * - `-INF` outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_logpdf(float $x, float $df): float {}
 
 /**
- * Chi-square with df degrees of freedom: log density ln f(x); -INF outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log density ln f(x) of the chi-square distribution with `df` degrees of freedom.
+ * - `-INF` outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_logpdf_array(array $values, float $df): array {}
 
 /**
- * Chi-square with df degrees of freedom: ln P(X > x), accurate after P underflows.
+ * Log upper-tail probability ln P(X > x) of the chi-square distribution with `df` degrees of freedom.
+ * - Accurate after P(X > x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_logsf(float $x, float $df): float {}
 
 /**
- * Chi-square with df degrees of freedom: ln P(X > x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log upper-tail probability ln P(X > x) of the chi-square distribution with `df` degrees of freedom.
+ * - Accurate after P(X > x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_logsf_array(array $values, float $df): array {}
 
 /**
- * Chi-square with df degrees of freedom: density f(x); 0 outside the support.
+ * Density f(x) of the chi-square distribution with `df` degrees of freedom.
+ * - 0 outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_pdf(float $x, float $df): float {}
 
 /**
- * Chi-square with df degrees of freedom: density f(x); 0 outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Density f(x) of the chi-square distribution with `df` degrees of freedom.
+ * - 0 outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_pdf_array(array $values, float $df): array {}
 
 /**
- * Chi-square with df degrees of freedom: smallest x with P(X <= x) >= p.
+ * Quantile of the chi-square distribution with `df` degrees of freedom: the smallest x with P(X ≤ x) ≥ p.
  * @param float $p Probability in [0, 1]
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_quantile(float $p, float $df): float {}
 
 /**
- * Chi-square with df degrees of freedom: smallest x with P(X <= x) >= p.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Quantile of the chi-square distribution with `df` degrees of freedom: the smallest x with P(X ≤ x) ≥ p.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $probabilities Probabilities in [0, 1]; null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_quantile_array(array $probabilities, float $df): array {}
 
 /**
- * Chi-square with df degrees of freedom: explicitly seeded batch samples.
- * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.
+ * Seeded samples from the chi-square distribution with `df` degrees of freedom.
+ * - Returns a list of `n` floats; discrete counts are floats.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]; empty batches still validate parameters.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream.
  * @param float $df Degrees of freedom, > 0
  * @return list<float> Finite samples; discrete counts are floats.
- * @throws \Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
  */
 function dist_chisquare_rng(int $n, int $seed, float $df): array {}
 
 /**
- * Chi-square with df degrees of freedom: survival P(X > x), computed directly.
+ * Upper-tail probability P(X > x) of the chi-square distribution with `df` degrees of freedom.
+ * - Computed directly, not as 1 − P(X ≤ x).
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_sf(float $x, float $df): float {}
 
 /**
- * Chi-square with df degrees of freedom: survival P(X > x), computed directly.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Upper-tail probability P(X > x) of the chi-square distribution with `df` degrees of freedom.
+ * - Computed directly, not as 1 − P(X ≤ x).
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_chisquare_sf_array(array $values, float $df): array {}
 
 /**
- * Exponential with rate (mean 1/rate): P(X <= x).
+ * Lower-tail probability P(X ≤ x) of the exponential distribution with `rate`.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $rate Rate, > 0; the mean is 1 / rate
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_cdf(float $x, float $rate = 1.0): float {}
 
 /**
- * Exponential with rate (mean 1/rate): P(X <= x).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Lower-tail probability P(X ≤ x) of the exponential distribution with `rate`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $rate Rate, > 0; the mean is 1 / rate
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_cdf_array(array $values, float $rate = 1.0): array {}
 
 /**
- * Exponential with rate (mean 1/rate): ln P(X <= x), accurate after P underflows.
+ * Log lower-tail probability ln P(X ≤ x) of the exponential distribution with `rate`.
+ * - Accurate after P(X ≤ x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $rate Rate, > 0; the mean is 1 / rate
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_logcdf(float $x, float $rate = 1.0): float {}
 
 /**
- * Exponential with rate (mean 1/rate): ln P(X <= x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log lower-tail probability ln P(X ≤ x) of the exponential distribution with `rate`.
+ * - Accurate after P(X ≤ x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $rate Rate, > 0; the mean is 1 / rate
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_logcdf_array(array $values, float $rate = 1.0): array {}
 
 /**
- * Exponential with rate (mean 1/rate): log density ln f(x); -INF outside the support.
+ * Log density ln f(x) of the exponential distribution with `rate`.
+ * - `-INF` outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $rate Rate, > 0; the mean is 1 / rate
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_logpdf(float $x, float $rate = 1.0): float {}
 
 /**
- * Exponential with rate (mean 1/rate): log density ln f(x); -INF outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log density ln f(x) of the exponential distribution with `rate`.
+ * - `-INF` outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $rate Rate, > 0; the mean is 1 / rate
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_logpdf_array(array $values, float $rate = 1.0): array {}
 
 /**
- * Exponential with rate (mean 1/rate): ln P(X > x), accurate after P underflows.
+ * Log upper-tail probability ln P(X > x) of the exponential distribution with `rate`.
+ * - Accurate after P(X > x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $rate Rate, > 0; the mean is 1 / rate
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_logsf(float $x, float $rate = 1.0): float {}
 
 /**
- * Exponential with rate (mean 1/rate): ln P(X > x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log upper-tail probability ln P(X > x) of the exponential distribution with `rate`.
+ * - Accurate after P(X > x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $rate Rate, > 0; the mean is 1 / rate
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_logsf_array(array $values, float $rate = 1.0): array {}
 
 /**
- * Exponential with rate (mean 1/rate): density f(x); 0 outside the support.
+ * Density f(x) of the exponential distribution with `rate`.
+ * - 0 outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $rate Rate, > 0; the mean is 1 / rate
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_pdf(float $x, float $rate = 1.0): float {}
 
 /**
- * Exponential with rate (mean 1/rate): density f(x); 0 outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Density f(x) of the exponential distribution with `rate`.
+ * - 0 outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $rate Rate, > 0; the mean is 1 / rate
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_pdf_array(array $values, float $rate = 1.0): array {}
 
 /**
- * Exponential with rate (mean 1/rate): smallest x with P(X <= x) >= p.
+ * Quantile of the exponential distribution with `rate`: the smallest x with P(X ≤ x) ≥ p.
  * @param float $p Probability in [0, 1]
  * @param float $rate Rate, > 0; the mean is 1 / rate
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_quantile(float $p, float $rate = 1.0): float {}
 
 /**
- * Exponential with rate (mean 1/rate): smallest x with P(X <= x) >= p.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Quantile of the exponential distribution with `rate`: the smallest x with P(X ≤ x) ≥ p.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $probabilities Probabilities in [0, 1]; null or NAN rejects the batch
  * @param float $rate Rate, > 0; the mean is 1 / rate
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_quantile_array(array $probabilities, float $rate = 1.0): array {}
 
 /**
- * Exponential with rate (mean 1/rate): explicitly seeded batch samples.
- * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.
+ * Seeded samples from the exponential distribution with `rate`.
+ * - Returns a list of `n` floats; discrete counts are floats.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]; empty batches still validate parameters.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream.
  * @param float $rate Rate, > 0; the mean is 1 / rate
  * @return list<float> Finite samples; discrete counts are floats.
- * @throws \Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
  */
 function dist_exponential_rng(int $n, int $seed, float $rate = 1.0): array {}
 
 /**
- * Exponential with rate (mean 1/rate): survival P(X > x), computed directly.
+ * Upper-tail probability P(X > x) of the exponential distribution with `rate`.
+ * - Computed directly, not as 1 − P(X ≤ x).
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $rate Rate, > 0; the mean is 1 / rate
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_sf(float $x, float $rate = 1.0): float {}
 
 /**
- * Exponential with rate (mean 1/rate): survival P(X > x), computed directly.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Upper-tail probability P(X > x) of the exponential distribution with `rate`.
+ * - Computed directly, not as 1 − P(X ≤ x).
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $rate Rate, > 0; the mean is 1 / rate
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_exponential_sf_array(array $values, float $rate = 1.0): array {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: P(X <= x).
+ * Lower-tail probability P(X ≤ x) of the F distribution with `df1` and `df2` degrees of freedom.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_cdf(float $x, float $df1, float $df2): float {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: P(X <= x).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Lower-tail probability P(X ≤ x) of the F distribution with `df1` and `df2` degrees of freedom.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_cdf_array(array $values, float $df1, float $df2): array {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: ln P(X <= x), accurate after P underflows.
+ * Log lower-tail probability ln P(X ≤ x) of the F distribution with `df1` and `df2` degrees of freedom.
+ * - Accurate after P(X ≤ x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_logcdf(float $x, float $df1, float $df2): float {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: ln P(X <= x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log lower-tail probability ln P(X ≤ x) of the F distribution with `df1` and `df2` degrees of freedom.
+ * - Accurate after P(X ≤ x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_logcdf_array(array $values, float $df1, float $df2): array {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: log density ln f(x); -INF outside the support.
+ * Log density ln f(x) of the F distribution with `df1` and `df2` degrees of freedom.
+ * - `-INF` outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_logpdf(float $x, float $df1, float $df2): float {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: log density ln f(x); -INF outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log density ln f(x) of the F distribution with `df1` and `df2` degrees of freedom.
+ * - `-INF` outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_logpdf_array(array $values, float $df1, float $df2): array {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: ln P(X > x), accurate after P underflows.
+ * Log upper-tail probability ln P(X > x) of the F distribution with `df1` and `df2` degrees of freedom.
+ * - Accurate after P(X > x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_logsf(float $x, float $df1, float $df2): float {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: ln P(X > x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log upper-tail probability ln P(X > x) of the F distribution with `df1` and `df2` degrees of freedom.
+ * - Accurate after P(X > x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_logsf_array(array $values, float $df1, float $df2): array {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: density f(x); 0 outside the support.
+ * Density f(x) of the F distribution with `df1` and `df2` degrees of freedom.
+ * - 0 outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_pdf(float $x, float $df1, float $df2): float {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: density f(x); 0 outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Density f(x) of the F distribution with `df1` and `df2` degrees of freedom.
+ * - 0 outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_pdf_array(array $values, float $df1, float $df2): array {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: smallest x with P(X <= x) >= p.
+ * Quantile of the F distribution with `df1` and `df2` degrees of freedom: the smallest x with P(X ≤ x) ≥ p.
  * @param float $p Probability in [0, 1]
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_quantile(float $p, float $df1, float $df2): float {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: smallest x with P(X <= x) >= p.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Quantile of the F distribution with `df1` and `df2` degrees of freedom: the smallest x with P(X ≤ x) ≥ p.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $probabilities Probabilities in [0, 1]; null or NAN rejects the batch
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_quantile_array(array $probabilities, float $df1, float $df2): array {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: explicitly seeded batch samples.
- * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.
+ * Seeded samples from the F distribution with `df1` and `df2` degrees of freedom.
+ * - Returns a list of `n` floats; discrete counts are floats.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]; empty batches still validate parameters.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream.
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
  * @return list<float> Finite samples; discrete counts are floats.
- * @throws \Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
  */
 function dist_f_rng(int $n, int $seed, float $df1, float $df2): array {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: survival P(X > x), computed directly.
+ * Upper-tail probability P(X > x) of the F distribution with `df1` and `df2` degrees of freedom.
+ * - Computed directly, not as 1 − P(X ≤ x).
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_sf(float $x, float $df1, float $df2): float {}
 
 /**
- * F with numerator df1 and denominator df2 degrees of freedom: survival P(X > x), computed directly.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Upper-tail probability P(X > x) of the F distribution with `df1` and `df2` degrees of freedom.
+ * - Computed directly, not as 1 − P(X ≤ x).
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df1 Numerator degrees of freedom, > 0
  * @param float $df2 Denominator degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_f_sf_array(array $values, float $df1, float $df2): array {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): P(X <= x).
+ * Lower-tail probability P(X ≤ x) of the gamma distribution with `shape` and `scale`.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_cdf(float $x, float $shape, float $scale = 1.0): float {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): P(X <= x).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Lower-tail probability P(X ≤ x) of the gamma distribution with `shape` and `scale`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_cdf_array(array $values, float $shape, float $scale = 1.0): array {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): ln P(X <= x), accurate after P underflows.
+ * Log lower-tail probability ln P(X ≤ x) of the gamma distribution with `shape` and `scale`.
+ * - Accurate after P(X ≤ x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_logcdf(float $x, float $shape, float $scale = 1.0): float {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): ln P(X <= x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log lower-tail probability ln P(X ≤ x) of the gamma distribution with `shape` and `scale`.
+ * - Accurate after P(X ≤ x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_logcdf_array(array $values, float $shape, float $scale = 1.0): array {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): log density ln f(x); -INF outside the support.
+ * Log density ln f(x) of the gamma distribution with `shape` and `scale`.
+ * - `-INF` outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_logpdf(float $x, float $shape, float $scale = 1.0): float {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): log density ln f(x); -INF outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log density ln f(x) of the gamma distribution with `shape` and `scale`.
+ * - `-INF` outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_logpdf_array(array $values, float $shape, float $scale = 1.0): array {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): ln P(X > x), accurate after P underflows.
+ * Log upper-tail probability ln P(X > x) of the gamma distribution with `shape` and `scale`.
+ * - Accurate after P(X > x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_logsf(float $x, float $shape, float $scale = 1.0): float {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): ln P(X > x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log upper-tail probability ln P(X > x) of the gamma distribution with `shape` and `scale`.
+ * - Accurate after P(X > x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_logsf_array(array $values, float $shape, float $scale = 1.0): array {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): density f(x); 0 outside the support.
+ * Density f(x) of the gamma distribution with `shape` and `scale`.
+ * - 0 outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_pdf(float $x, float $shape, float $scale = 1.0): float {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): density f(x); 0 outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Density f(x) of the gamma distribution with `shape` and `scale`.
+ * - 0 outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_pdf_array(array $values, float $shape, float $scale = 1.0): array {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): smallest x with P(X <= x) >= p.
+ * Quantile of the gamma distribution with `shape` and `scale`: the smallest x with P(X ≤ x) ≥ p.
  * @param float $p Probability in [0, 1]
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_quantile(float $p, float $shape, float $scale = 1.0): float {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): smallest x with P(X <= x) >= p.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Quantile of the gamma distribution with `shape` and `scale`: the smallest x with P(X ≤ x) ≥ p.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $probabilities Probabilities in [0, 1]; null or NAN rejects the batch
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_quantile_array(array $probabilities, float $shape, float $scale = 1.0): array {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): explicitly seeded batch samples.
- * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.
+ * Seeded samples from the gamma distribution with `shape` and `scale`.
+ * - Returns a list of `n` floats; discrete counts are floats.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]; empty batches still validate parameters.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream.
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
  * @return list<float> Finite samples; discrete counts are floats.
- * @throws \Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
  */
 function dist_gamma_rng(int $n, int $seed, float $shape, float $scale = 1.0): array {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): survival P(X > x), computed directly.
+ * Upper-tail probability P(X > x) of the gamma distribution with `shape` and `scale`.
+ * - Computed directly, not as 1 − P(X ≤ x).
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_sf(float $x, float $shape, float $scale = 1.0): float {}
 
 /**
- * Gamma with shape and scale (mean shape*scale): survival P(X > x), computed directly.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Upper-tail probability P(X > x) of the gamma distribution with `shape` and `scale`.
+ * - Computed directly, not as 1 − P(X ≤ x).
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $shape Shape, > 0
  * @param float $scale Scale, > 0; the mean is shape × scale
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_gamma_sf_array(array $values, float $shape, float $scale = 1.0): array {}
 
 /**
- * Logistic(location, scale): P(X <= x).
+ * Lower-tail probability P(X ≤ x) of the logistic distribution with `location` and `scale`.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_cdf(float $x, float $location = 0.0, float $scale = 1.0): float {}
 
 /**
- * Logistic(location, scale): P(X <= x).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Lower-tail probability P(X ≤ x) of the logistic distribution with `location` and `scale`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_cdf_array(array $values, float $location = 0.0, float $scale = 1.0): array {}
 
 /**
- * Logistic(location, scale): ln P(X <= x), accurate after P underflows.
+ * Log lower-tail probability ln P(X ≤ x) of the logistic distribution with `location` and `scale`.
+ * - Accurate after P(X ≤ x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_logcdf(float $x, float $location = 0.0, float $scale = 1.0): float {}
 
 /**
- * Logistic(location, scale): ln P(X <= x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log lower-tail probability ln P(X ≤ x) of the logistic distribution with `location` and `scale`.
+ * - Accurate after P(X ≤ x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_logcdf_array(array $values, float $location = 0.0, float $scale = 1.0): array {}
 
 /**
- * Logistic(location, scale): log density ln f(x); -INF outside the support.
+ * Log density ln f(x) of the logistic distribution with `location` and `scale`.
+ * - `-INF` outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_logpdf(float $x, float $location = 0.0, float $scale = 1.0): float {}
 
 /**
- * Logistic(location, scale): log density ln f(x); -INF outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log density ln f(x) of the logistic distribution with `location` and `scale`.
+ * - `-INF` outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_logpdf_array(array $values, float $location = 0.0, float $scale = 1.0): array {}
 
 /**
- * Logistic(location, scale): ln P(X > x), accurate after P underflows.
+ * Log upper-tail probability ln P(X > x) of the logistic distribution with `location` and `scale`.
+ * - Accurate after P(X > x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_logsf(float $x, float $location = 0.0, float $scale = 1.0): float {}
 
 /**
- * Logistic(location, scale): ln P(X > x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log upper-tail probability ln P(X > x) of the logistic distribution with `location` and `scale`.
+ * - Accurate after P(X > x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_logsf_array(array $values, float $location = 0.0, float $scale = 1.0): array {}
 
 /**
- * Logistic(location, scale): density f(x); 0 outside the support.
+ * Density f(x) of the logistic distribution with `location` and `scale`.
+ * - 0 outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_pdf(float $x, float $location = 0.0, float $scale = 1.0): float {}
 
 /**
- * Logistic(location, scale): density f(x); 0 outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Density f(x) of the logistic distribution with `location` and `scale`.
+ * - 0 outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_pdf_array(array $values, float $location = 0.0, float $scale = 1.0): array {}
 
 /**
- * Logistic(location, scale): smallest x with P(X <= x) >= p.
+ * Quantile of the logistic distribution with `location` and `scale`: the smallest x with P(X ≤ x) ≥ p.
  * @param float $p Probability in [0, 1]
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_quantile(float $p, float $location = 0.0, float $scale = 1.0): float {}
 
 /**
- * Logistic(location, scale): smallest x with P(X <= x) >= p.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Quantile of the logistic distribution with `location` and `scale`: the smallest x with P(X ≤ x) ≥ p.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $probabilities Probabilities in [0, 1]; null or NAN rejects the batch
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_quantile_array(array $probabilities, float $location = 0.0, float $scale = 1.0): array {}
 
 /**
- * Logistic(location, scale): explicitly seeded batch samples.
- * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.
+ * Seeded samples from the logistic distribution with `location` and `scale`.
+ * - Returns a list of `n` floats; discrete counts are floats.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]; empty batches still validate parameters.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream.
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
  * @return list<float> Finite samples; discrete counts are floats.
- * @throws \Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
  */
 function dist_logistic_rng(int $n, int $seed, float $location = 0.0, float $scale = 1.0): array {}
 
 /**
- * Logistic(location, scale): survival P(X > x), computed directly.
+ * Upper-tail probability P(X > x) of the logistic distribution with `location` and `scale`.
+ * - Computed directly, not as 1 − P(X ≤ x).
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_sf(float $x, float $location = 0.0, float $scale = 1.0): float {}
 
 /**
- * Logistic(location, scale): survival P(X > x), computed directly.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Upper-tail probability P(X > x) of the logistic distribution with `location` and `scale`.
+ * - Computed directly, not as 1 − P(X ≤ x).
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $location Location: the mean and median
  * @param float $scale Scale, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_logistic_sf_array(array $values, float $location = 0.0, float $scale = 1.0): array {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): P(X <= x).
+ * Lower-tail probability P(X ≤ x) of the log-normal distribution with `meanlog` and `sdlog`.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_cdf(float $x, float $meanlog = 0.0, float $sdlog = 1.0): float {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): P(X <= x).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Lower-tail probability P(X ≤ x) of the log-normal distribution with `meanlog` and `sdlog`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_cdf_array(array $values, float $meanlog = 0.0, float $sdlog = 1.0): array {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): ln P(X <= x), accurate after P underflows.
+ * Log lower-tail probability ln P(X ≤ x) of the log-normal distribution with `meanlog` and `sdlog`.
+ * - Accurate after P(X ≤ x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_logcdf(float $x, float $meanlog = 0.0, float $sdlog = 1.0): float {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): ln P(X <= x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log lower-tail probability ln P(X ≤ x) of the log-normal distribution with `meanlog` and `sdlog`.
+ * - Accurate after P(X ≤ x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_logcdf_array(array $values, float $meanlog = 0.0, float $sdlog = 1.0): array {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): log density ln f(x); -INF outside the support.
+ * Log density ln f(x) of the log-normal distribution with `meanlog` and `sdlog`.
+ * - `-INF` outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_logpdf(float $x, float $meanlog = 0.0, float $sdlog = 1.0): float {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): log density ln f(x); -INF outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log density ln f(x) of the log-normal distribution with `meanlog` and `sdlog`.
+ * - `-INF` outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_logpdf_array(array $values, float $meanlog = 0.0, float $sdlog = 1.0): array {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): ln P(X > x), accurate after P underflows.
+ * Log upper-tail probability ln P(X > x) of the log-normal distribution with `meanlog` and `sdlog`.
+ * - Accurate after P(X > x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_logsf(float $x, float $meanlog = 0.0, float $sdlog = 1.0): float {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): ln P(X > x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log upper-tail probability ln P(X > x) of the log-normal distribution with `meanlog` and `sdlog`.
+ * - Accurate after P(X > x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_logsf_array(array $values, float $meanlog = 0.0, float $sdlog = 1.0): array {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): density f(x); 0 outside the support.
+ * Density f(x) of the log-normal distribution with `meanlog` and `sdlog`.
+ * - 0 outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_pdf(float $x, float $meanlog = 0.0, float $sdlog = 1.0): float {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): density f(x); 0 outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Density f(x) of the log-normal distribution with `meanlog` and `sdlog`.
+ * - 0 outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_pdf_array(array $values, float $meanlog = 0.0, float $sdlog = 1.0): array {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): smallest x with P(X <= x) >= p.
+ * Quantile of the log-normal distribution with `meanlog` and `sdlog`: the smallest x with P(X ≤ x) ≥ p.
  * @param float $p Probability in [0, 1]
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_quantile(float $p, float $meanlog = 0.0, float $sdlog = 1.0): float {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): smallest x with P(X <= x) >= p.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Quantile of the log-normal distribution with `meanlog` and `sdlog`: the smallest x with P(X ≤ x) ≥ p.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $probabilities Probabilities in [0, 1]; null or NAN rejects the batch
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_quantile_array(array $probabilities, float $meanlog = 0.0, float $sdlog = 1.0): array {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): explicitly seeded batch samples.
- * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.
+ * Seeded samples from the log-normal distribution with `meanlog` and `sdlog`.
+ * - Returns a list of `n` floats; discrete counts are floats.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]; empty batches still validate parameters.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream.
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
  * @return list<float> Finite samples; discrete counts are floats.
- * @throws \Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
  */
 function dist_lognormal_rng(int $n, int $seed, float $meanlog = 0.0, float $sdlog = 1.0): array {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): survival P(X > x), computed directly.
+ * Upper-tail probability P(X > x) of the log-normal distribution with `meanlog` and `sdlog`.
+ * - Computed directly, not as 1 − P(X ≤ x).
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_sf(float $x, float $meanlog = 0.0, float $sdlog = 1.0): float {}
 
 /**
- * Log-normal: ln X ~ Normal(meanlog, sdlog): survival P(X > x), computed directly.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Upper-tail probability P(X > x) of the log-normal distribution with `meanlog` and `sdlog`.
+ * - Computed directly, not as 1 − P(X ≤ x).
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $meanlog Mean of log X
  * @param float $sdlog Standard deviation of log X, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_lognormal_sf_array(array $values, float $meanlog = 0.0, float $sdlog = 1.0): array {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: P(X <= x).
+ * Lower-tail probability P(X ≤ x) of the negative binomial distribution with `size` and success probability `prob`.
  * @param float $k Count at which to evaluate
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_cdf(float $k, float $size, float $prob): float {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: P(X <= x).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Lower-tail probability P(X ≤ x) of the negative binomial distribution with `size` and success probability `prob`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_cdf_array(array $counts, float $size, float $prob): array {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: ln P(X <= x), accurate after P underflows.
+ * Log lower-tail probability ln P(X ≤ x) of the negative binomial distribution with `size` and success probability `prob`.
+ * - Accurate after P(X ≤ x) underflows.
  * @param float $k Count at which to evaluate
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_logcdf(float $k, float $size, float $prob): float {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: ln P(X <= x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log lower-tail probability ln P(X ≤ x) of the negative binomial distribution with `size` and success probability `prob`.
+ * - Accurate after P(X ≤ x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_logcdf_array(array $counts, float $size, float $prob): array {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: log probability ln P(X = k).
+ * Log probability ln P(X = k) of the negative binomial distribution with `size` and success probability `prob`.
+ * - `-INF` for a non-integer or out-of-support `k`.
  * @param float $k Count at which to evaluate
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_logpmf(float $k, float $size, float $prob): float {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: log probability ln P(X = k).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log probability ln P(X = k) of the negative binomial distribution with `size` and success probability `prob`.
+ * - `-INF` for a non-integer or out-of-support `k`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_logpmf_array(array $counts, float $size, float $prob): array {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: ln P(X > x), accurate after P underflows.
+ * Log upper-tail probability ln P(X > x) of the negative binomial distribution with `size` and success probability `prob`.
+ * - Accurate after P(X > x) underflows.
  * @param float $k Count at which to evaluate
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_logsf(float $k, float $size, float $prob): float {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: ln P(X > x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log upper-tail probability ln P(X > x) of the negative binomial distribution with `size` and success probability `prob`.
+ * - Accurate after P(X > x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_logsf_array(array $counts, float $size, float $prob): array {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): P(X <= x).
+ * Lower-tail probability P(X ≤ x) of the negative binomial distribution with `size` and mean `mu`.
  * @param float $k Count at which to evaluate
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_cdf(float $k, float $size, float $mu): float {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): P(X <= x).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Lower-tail probability P(X ≤ x) of the negative binomial distribution with `size` and mean `mu`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_cdf_array(array $counts, float $size, float $mu): array {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): ln P(X <= x), accurate after P underflows.
+ * Log lower-tail probability ln P(X ≤ x) of the negative binomial distribution with `size` and mean `mu`.
+ * - Accurate after P(X ≤ x) underflows.
  * @param float $k Count at which to evaluate
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_logcdf(float $k, float $size, float $mu): float {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): ln P(X <= x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log lower-tail probability ln P(X ≤ x) of the negative binomial distribution with `size` and mean `mu`.
+ * - Accurate after P(X ≤ x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_logcdf_array(array $counts, float $size, float $mu): array {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): log probability ln P(X = k).
+ * Log probability ln P(X = k) of the negative binomial distribution with `size` and mean `mu`.
+ * - `-INF` for a non-integer or out-of-support `k`.
  * @param float $k Count at which to evaluate
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_logpmf(float $k, float $size, float $mu): float {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): log probability ln P(X = k).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log probability ln P(X = k) of the negative binomial distribution with `size` and mean `mu`.
+ * - `-INF` for a non-integer or out-of-support `k`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_logpmf_array(array $counts, float $size, float $mu): array {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): ln P(X > x), accurate after P underflows.
+ * Log upper-tail probability ln P(X > x) of the negative binomial distribution with `size` and mean `mu`.
+ * - Accurate after P(X > x) underflows.
  * @param float $k Count at which to evaluate
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_logsf(float $k, float $size, float $mu): float {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): ln P(X > x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log upper-tail probability ln P(X > x) of the negative binomial distribution with `size` and mean `mu`.
+ * - Accurate after P(X > x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_logsf_array(array $counts, float $size, float $mu): array {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): probability P(X = k); 0 for non-integer or out-of-support k.
+ * Probability P(X = k) of the negative binomial distribution with `size` and mean `mu`.
+ * - 0 for a non-integer or out-of-support `k`.
  * @param float $k Count at which to evaluate
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_pmf(float $k, float $size, float $mu): float {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): probability P(X = k); 0 for non-integer or out-of-support k.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Probability P(X = k) of the negative binomial distribution with `size` and mean `mu`.
+ * - 0 for a non-integer or out-of-support `k`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_pmf_array(array $counts, float $size, float $mu): array {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): smallest x with P(X <= x) >= p.
+ * Quantile of the negative binomial distribution with `size` and mean `mu`: the smallest x with P(X ≤ x) ≥ p.
  * @param float $p Probability in [0, 1]
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_quantile(float $p, float $size, float $mu): float {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): smallest x with P(X <= x) >= p.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Quantile of the negative binomial distribution with `size` and mean `mu`: the smallest x with P(X ≤ x) ≥ p.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $probabilities Probabilities in [0, 1]; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_quantile_array(array $probabilities, float $size, float $mu): array {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): explicitly seeded batch samples.
- * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.
+ * Seeded samples from the negative binomial distribution with `size` and mean `mu`.
+ * - Returns a list of `n` floats; discrete counts are floats.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]; empty batches still validate parameters.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream.
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
  * @return list<float> Finite samples; discrete counts are floats.
- * @throws \Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
  */
 function dist_nbinom_mu_rng(int $n, int $seed, float $size, float $mu): array {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): survival P(X > x), computed directly.
+ * Upper-tail probability P(X > x) of the negative binomial distribution with `size` and mean `mu`.
+ * - Computed directly, not as 1 − P(X ≤ x).
  * @param float $k Count at which to evaluate
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_sf(float $k, float $size, float $mu): float {}
 
 /**
- * Negative binomial with mean mu and size (variance mu + mu^2/size): survival P(X > x), computed directly.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Upper-tail probability P(X > x) of the negative binomial distribution with `size` and mean `mu`.
+ * - Computed directly, not as 1 − P(X ≤ x).
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $mu Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_mu_sf_array(array $counts, float $size, float $mu): array {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: probability P(X = k); 0 for non-integer or out-of-support k.
+ * Probability P(X = k) of the negative binomial distribution with `size` and success probability `prob`.
+ * - 0 for a non-integer or out-of-support `k`.
  * @param float $k Count at which to evaluate
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_pmf(float $k, float $size, float $prob): float {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: probability P(X = k); 0 for non-integer or out-of-support k.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Probability P(X = k) of the negative binomial distribution with `size` and success probability `prob`.
+ * - 0 for a non-integer or out-of-support `k`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_pmf_array(array $counts, float $size, float $prob): array {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: smallest x with P(X <= x) >= p.
+ * Quantile of the negative binomial distribution with `size` and success probability `prob`: the smallest x with P(X ≤ x) ≥ p.
  * @param float $p Probability in [0, 1]
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_quantile(float $p, float $size, float $prob): float {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: smallest x with P(X <= x) >= p.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Quantile of the negative binomial distribution with `size` and success probability `prob`: the smallest x with P(X ≤ x) ≥ p.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $probabilities Probabilities in [0, 1]; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_quantile_array(array $probabilities, float $size, float $prob): array {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: explicitly seeded batch samples.
- * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.
+ * Seeded samples from the negative binomial distribution with `size` and success probability `prob`.
+ * - Returns a list of `n` floats; discrete counts are floats.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]; empty batches still validate parameters.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream.
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
  * @return list<float> Finite samples; discrete counts are floats.
- * @throws \Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
  */
 function dist_nbinom_rng(int $n, int $seed, float $size, float $prob): array {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: survival P(X > x), computed directly.
+ * Upper-tail probability P(X > x) of the negative binomial distribution with `size` and success probability `prob`.
+ * - Computed directly, not as 1 − P(X ≤ x).
  * @param float $k Count at which to evaluate
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_sf(float $k, float $size, float $prob): float {}
 
 /**
- * Negative binomial: failures before the size-th success, success probability prob: survival P(X > x), computed directly.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Upper-tail probability P(X > x) of the negative binomial distribution with `size` and success probability `prob`.
+ * - Computed directly, not as 1 − P(X ≤ x).
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $size Dispersion: a positive real, not a trial count
  * @param float $prob Success probability in (0, 1]
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_nbinom_sf_array(array $counts, float $size, float $prob): array {}
 
 /**
- * Normal(mean, sd): P(X <= x).
+ * Lower-tail probability P(X ≤ x) of the normal distribution with `mean` and `sd`.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_cdf(float $x, float $mean = 0.0, float $sd = 1.0): float {}
 
 /**
- * Normal(mean, sd): P(X <= x).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Lower-tail probability P(X ≤ x) of the normal distribution with `mean` and `sd`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_cdf_array(array $values, float $mean = 0.0, float $sd = 1.0): array {}
 
 /**
- * Normal(mean, sd): ln P(X <= x), accurate after P underflows.
+ * Log lower-tail probability ln P(X ≤ x) of the normal distribution with `mean` and `sd`.
+ * - Accurate after P(X ≤ x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_logcdf(float $x, float $mean = 0.0, float $sd = 1.0): float {}
 
 /**
- * Normal(mean, sd): ln P(X <= x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log lower-tail probability ln P(X ≤ x) of the normal distribution with `mean` and `sd`.
+ * - Accurate after P(X ≤ x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_logcdf_array(array $values, float $mean = 0.0, float $sd = 1.0): array {}
 
 /**
- * Normal(mean, sd): log density ln f(x); -INF outside the support.
+ * Log density ln f(x) of the normal distribution with `mean` and `sd`.
+ * - `-INF` outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_logpdf(float $x, float $mean = 0.0, float $sd = 1.0): float {}
 
 /**
- * Normal(mean, sd): log density ln f(x); -INF outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log density ln f(x) of the normal distribution with `mean` and `sd`.
+ * - `-INF` outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_logpdf_array(array $values, float $mean = 0.0, float $sd = 1.0): array {}
 
 /**
- * Normal(mean, sd): ln P(X > x), accurate after P underflows.
+ * Log upper-tail probability ln P(X > x) of the normal distribution with `mean` and `sd`.
+ * - Accurate after P(X > x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_logsf(float $x, float $mean = 0.0, float $sd = 1.0): float {}
 
 /**
- * Normal(mean, sd): ln P(X > x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log upper-tail probability ln P(X > x) of the normal distribution with `mean` and `sd`.
+ * - Accurate after P(X > x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_logsf_array(array $values, float $mean = 0.0, float $sd = 1.0): array {}
 
 /**
- * Normal(mean, sd): density f(x); 0 outside the support.
+ * Density f(x) of the normal distribution with `mean` and `sd`.
+ * - 0 outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_pdf(float $x, float $mean = 0.0, float $sd = 1.0): float {}
 
 /**
- * Normal(mean, sd): density f(x); 0 outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Density f(x) of the normal distribution with `mean` and `sd`.
+ * - 0 outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_pdf_array(array $values, float $mean = 0.0, float $sd = 1.0): array {}
 
 /**
- * Normal(mean, sd): smallest x with P(X <= x) >= p.
+ * Quantile of the normal distribution with `mean` and `sd`: the smallest x with P(X ≤ x) ≥ p.
  * @param float $p Probability in [0, 1]
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_quantile(float $p, float $mean = 0.0, float $sd = 1.0): float {}
 
 /**
- * Normal(mean, sd): smallest x with P(X <= x) >= p.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Quantile of the normal distribution with `mean` and `sd`: the smallest x with P(X ≤ x) ≥ p.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $probabilities Probabilities in [0, 1]; null or NAN rejects the batch
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_quantile_array(array $probabilities, float $mean = 0.0, float $sd = 1.0): array {}
 
 /**
- * Normal(mean, sd): explicitly seeded batch samples.
- * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.
+ * Seeded samples from the normal distribution with `mean` and `sd`.
+ * - Returns a list of `n` floats; discrete counts are floats.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]; empty batches still validate parameters.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream.
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
  * @return list<float> Finite samples; discrete counts are floats.
- * @throws \Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
  */
 function dist_normal_rng(int $n, int $seed, float $mean = 0.0, float $sd = 1.0): array {}
 
 /**
- * Normal(mean, sd): survival P(X > x), computed directly.
+ * Upper-tail probability P(X > x) of the normal distribution with `mean` and `sd`.
+ * - Computed directly, not as 1 − P(X ≤ x).
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_sf(float $x, float $mean = 0.0, float $sd = 1.0): float {}
 
 /**
- * Normal(mean, sd): survival P(X > x), computed directly.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Upper-tail probability P(X > x) of the normal distribution with `mean` and `sd`.
+ * - Computed directly, not as 1 − P(X ≤ x).
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $mean Mean
  * @param float $sd Standard deviation, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_normal_sf_array(array $values, float $mean = 0.0, float $sd = 1.0): array {}
 
 /**
- * Poisson with mean lambda: P(X <= x).
+ * Lower-tail probability P(X ≤ x) of the Poisson distribution with mean `lambda`.
  * @param float $k Count at which to evaluate
  * @param float $lambda Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_cdf(float $k, float $lambda): float {}
 
 /**
- * Poisson with mean lambda: P(X <= x).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Lower-tail probability P(X ≤ x) of the Poisson distribution with mean `lambda`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $lambda Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_cdf_array(array $counts, float $lambda): array {}
 
 /**
- * Poisson with mean lambda: ln P(X <= x), accurate after P underflows.
+ * Log lower-tail probability ln P(X ≤ x) of the Poisson distribution with mean `lambda`.
+ * - Accurate after P(X ≤ x) underflows.
  * @param float $k Count at which to evaluate
  * @param float $lambda Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_logcdf(float $k, float $lambda): float {}
 
 /**
- * Poisson with mean lambda: ln P(X <= x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log lower-tail probability ln P(X ≤ x) of the Poisson distribution with mean `lambda`.
+ * - Accurate after P(X ≤ x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $lambda Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_logcdf_array(array $counts, float $lambda): array {}
 
 /**
- * Poisson with mean lambda: log probability ln P(X = k).
+ * Log probability ln P(X = k) of the Poisson distribution with mean `lambda`.
+ * - `-INF` for a non-integer or out-of-support `k`.
  * @param float $k Count at which to evaluate
  * @param float $lambda Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_logpmf(float $k, float $lambda): float {}
 
 /**
- * Poisson with mean lambda: log probability ln P(X = k).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log probability ln P(X = k) of the Poisson distribution with mean `lambda`.
+ * - `-INF` for a non-integer or out-of-support `k`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $lambda Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_logpmf_array(array $counts, float $lambda): array {}
 
 /**
- * Poisson with mean lambda: ln P(X > x), accurate after P underflows.
+ * Log upper-tail probability ln P(X > x) of the Poisson distribution with mean `lambda`.
+ * - Accurate after P(X > x) underflows.
  * @param float $k Count at which to evaluate
  * @param float $lambda Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_logsf(float $k, float $lambda): float {}
 
 /**
- * Poisson with mean lambda: ln P(X > x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log upper-tail probability ln P(X > x) of the Poisson distribution with mean `lambda`.
+ * - Accurate after P(X > x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $lambda Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_logsf_array(array $counts, float $lambda): array {}
 
 /**
- * Poisson with mean lambda: probability P(X = k); 0 for non-integer or out-of-support k.
+ * Probability P(X = k) of the Poisson distribution with mean `lambda`.
+ * - 0 for a non-integer or out-of-support `k`.
  * @param float $k Count at which to evaluate
  * @param float $lambda Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_pmf(float $k, float $lambda): float {}
 
 /**
- * Poisson with mean lambda: probability P(X = k); 0 for non-integer or out-of-support k.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Probability P(X = k) of the Poisson distribution with mean `lambda`.
+ * - 0 for a non-integer or out-of-support `k`.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $lambda Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_pmf_array(array $counts, float $lambda): array {}
 
 /**
- * Poisson with mean lambda: smallest x with P(X <= x) >= p.
+ * Quantile of the Poisson distribution with mean `lambda`: the smallest x with P(X ≤ x) ≥ p.
  * @param float $p Probability in [0, 1]
  * @param float $lambda Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_quantile(float $p, float $lambda): float {}
 
 /**
- * Poisson with mean lambda: smallest x with P(X <= x) >= p.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Quantile of the Poisson distribution with mean `lambda`: the smallest x with P(X ≤ x) ≥ p.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $probabilities Probabilities in [0, 1]; null or NAN rejects the batch
  * @param float $lambda Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_quantile_array(array $probabilities, float $lambda): array {}
 
 /**
- * Poisson with mean lambda: explicitly seeded batch samples.
- * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.
+ * Seeded samples from the Poisson distribution with mean `lambda`.
+ * - Returns a list of `n` floats; discrete counts are floats.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]; empty batches still validate parameters.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream.
  * @param float $lambda Mean, ≥ 0
  * @return list<float> Finite samples; discrete counts are floats.
- * @throws \Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
  */
 function dist_poisson_rng(int $n, int $seed, float $lambda): array {}
 
 /**
- * Poisson with mean lambda: survival P(X > x), computed directly.
+ * Upper-tail probability P(X > x) of the Poisson distribution with mean `lambda`.
+ * - Computed directly, not as 1 − P(X ≤ x).
  * @param float $k Count at which to evaluate
  * @param float $lambda Mean, ≥ 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_sf(float $k, float $lambda): float {}
 
 /**
- * Poisson with mean lambda: survival P(X > x), computed directly.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Upper-tail probability P(X > x) of the Poisson distribution with mean `lambda`.
+ * - Computed directly, not as 1 − P(X ≤ x).
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $counts Counts at which to evaluate; null or NAN rejects the batch
  * @param float $lambda Mean, ≥ 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_poisson_sf_array(array $counts, float $lambda): array {}
 
 /**
- * Student's t with df degrees of freedom: P(X <= x).
+ * Lower-tail probability P(X ≤ x) of Student's t distribution with `df` degrees of freedom.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_cdf(float $x, float $df): float {}
 
 /**
- * Student's t with df degrees of freedom: P(X <= x).
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Lower-tail probability P(X ≤ x) of Student's t distribution with `df` degrees of freedom.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_cdf_array(array $values, float $df): array {}
 
 /**
- * Student's t with df degrees of freedom: ln P(X <= x), accurate after P underflows.
+ * Log lower-tail probability ln P(X ≤ x) of Student's t distribution with `df` degrees of freedom.
+ * - Accurate after P(X ≤ x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_logcdf(float $x, float $df): float {}
 
 /**
- * Student's t with df degrees of freedom: ln P(X <= x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log lower-tail probability ln P(X ≤ x) of Student's t distribution with `df` degrees of freedom.
+ * - Accurate after P(X ≤ x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_logcdf_array(array $values, float $df): array {}
 
 /**
- * Student's t with df degrees of freedom: log density ln f(x); -INF outside the support.
+ * Log density ln f(x) of Student's t distribution with `df` degrees of freedom.
+ * - `-INF` outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_logpdf(float $x, float $df): float {}
 
 /**
- * Student's t with df degrees of freedom: log density ln f(x); -INF outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log density ln f(x) of Student's t distribution with `df` degrees of freedom.
+ * - `-INF` outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_logpdf_array(array $values, float $df): array {}
 
 /**
- * Student's t with df degrees of freedom: ln P(X > x), accurate after P underflows.
+ * Log upper-tail probability ln P(X > x) of Student's t distribution with `df` degrees of freedom.
+ * - Accurate after P(X > x) underflows.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_logsf(float $x, float $df): float {}
 
 /**
- * Student's t with df degrees of freedom: ln P(X > x), accurate after P underflows.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Log upper-tail probability ln P(X > x) of Student's t distribution with `df` degrees of freedom.
+ * - Accurate after P(X > x) underflows.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_logsf_array(array $values, float $df): array {}
 
 /**
- * Student's t with df degrees of freedom: density f(x); 0 outside the support.
+ * Density f(x) of Student's t distribution with `df` degrees of freedom.
+ * - 0 outside the support.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_pdf(float $x, float $df): float {}
 
 /**
- * Student's t with df degrees of freedom: density f(x); 0 outside the support.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Density f(x) of Student's t distribution with `df` degrees of freedom.
+ * - 0 outside the support.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_pdf_array(array $values, float $df): array {}
 
 /**
- * Student's t with df degrees of freedom: smallest x with P(X <= x) >= p.
+ * Quantile of Student's t distribution with `df` degrees of freedom: the smallest x with P(X ≤ x) ≥ p.
  * @param float $p Probability in [0, 1]
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_quantile(float $p, float $df): float {}
 
 /**
- * Student's t with df degrees of freedom: smallest x with P(X <= x) >= p.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Quantile of Student's t distribution with `df` degrees of freedom: the smallest x with P(X ≤ x) ≥ p.
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $probabilities Probabilities in [0, 1]; null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_quantile_array(array $probabilities, float $df): array {}
 
 /**
- * Student's t with df degrees of freedom: explicitly seeded batch samples.
- * Local ChaCha20 + inverse CDF; same seed/parameters reproduce prefixes within the pinned version.
+ * Seeded samples from Student's t distribution with `df` degrees of freedom.
+ * - Returns a list of `n` floats; discrete counts are floats.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]; empty batches still validate parameters.
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream.
  * @param float $df Degrees of freedom, > 0
  * @return list<float> Finite samples; discrete counts are floats.
- * @throws \Exception Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
  */
 function dist_t_rng(int $n, int $seed, float $df): array {}
 
 /**
- * Student's t with df degrees of freedom: survival P(X > x), computed directly.
+ * Upper-tail probability P(X > x) of Student's t distribution with `df` degrees of freedom.
+ * - Computed directly, not as 1 − P(X ≤ x).
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $df Degrees of freedom, > 0
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_sf(float $x, float $df): float {}
 
 /**
- * Student's t with df degrees of freedom: survival P(X > x), computed directly.
- * Batch form: one native call; returns one value per element in iteration order (keys are not kept).
+ * Upper-tail probability P(X > x) of Student's t distribution with `df` degrees of freedom.
+ * - Computed directly, not as 1 − P(X ≤ x).
+ * - Batch form: one call over a list, returning one value per element in input order, without the keys.
  * @param array<int|float> $values Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch
  * @param float $df Degrees of freedom, > 0
  * @return list<float>
- * @throws \Exception Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+ * @throws \Exception Code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
  */
 function dist_t_sf_array(array $values, float $df): array {}
 
 /**
- * Uniform(min, max) samples as R's runif(): min + (max - min) * u; min == max gives min.
- * Local ChaCha20 stream restarted at the seed, one uniform per draw; same seed/arguments reproduce prefixes within the pinned version.
+ * Seeded uniform samples on [`min`, `max`], like R's `runif()`: min + (max − min) · u.
+ * - `min` equal to `max` returns `min`.
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Sample count in [0, 1000000]
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream
  * @param float $min Lower bound
  * @param float $max Upper bound, ≥ min
  * @return list<float>
- * @throws \Exception Invalid input (1001), nonfinite input (1003) or more than 1000000 draws (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for nonfinite input, or 1007 for more than 1,000,000 draws.
  */
 function dist_uniform_rng(int $n, int $seed, float $min = 0.0, float $max = 1.0): array {}
 
 /**
- * Apply y = A*x + b to each draw: Y = X*A^T + b. Square invertible A; return log(abs(det(A))). Numerical rank tolerance in docs/draw-numerics.qmd.
- * Rows are draws; columns are parameters. Preserves iteration order; no row deletion or intercept insertion.
- * null/NAN/INF and nonnumeric elements are rejected.
+ * Applies y = A·x + b to every draw: Y = X·Aᵀ + b.
+ * - `matrix` must be square and invertible. Also returns log |det(A)|.
+ * - Rows are draws and columns are parameters. Row order is kept; no row is dropped and no intercept is added.
+ * - `null`, `NAN`, `INF`, and nonnumeric elements are rejected.
  * @param array<array<int|float>> $draws Draws: one row per draw and one column per parameter
  * @param array<array<int|float>> $matrix Square invertible matrix A
  * @param array<int|float> $shift Shift b, one value per parameter
  * @return array{draws: list<list<float>>, log_abs_det: float}
- * @throws \Exception Input/numerical error (codes 1001–1005).
+ * @throws \Exception A code from 1001 to 1005 for an input or numerical error.
  */
 function draws_affine(array $draws, array $matrix, array $shift): array {}
 
 /**
- * Cholesky/triangular-solve map A: A * source * A^T = target. Finite symmetric positive-definite covariances of equal size; tolerances in docs/draw-numerics.qmd. Failure is explicit; no regularization.
- * Rows are draws; columns are parameters. Preserves iteration order; no row deletion or intercept insertion.
- * null/NAN/INF and nonnumeric elements are rejected.
+ * Matrix A with A · source · Aᵀ = target, from Cholesky factors and triangular solves.
+ * - Both covariances must be finite, symmetric, positive definite, and of equal size. Failure throws; there is no regularization.
+ * - `null`, `NAN`, `INF`, and nonnumeric elements are rejected.
  * @param array<array<int|float>> $sourceCovariance Symmetric positive-definite covariance of the source draws
  * @param array<array<int|float>> $targetCovariance Symmetric positive-definite target covariance, of the same size
  * @return array{matrix: list<list<float>>, log_abs_det: float}
- * @throws \Exception Input/numerical error (codes 1001–1005).
+ * @throws \Exception A code from 1001 to 1005 for an input or numerical error.
  */
 function draws_covariance_map(array $sourceCovariance, array $targetCovariance): array {}
 
 /**
- * Weighted draw mean and covariance; weights normalized internally. Normalization 'population' or 'unbiased' (reliability weights, never frequency counts). Singular covariance is valid.
- * Rows are draws; columns are parameters. Preserves iteration order; no row deletion or intercept insertion.
- * null/NAN/INF and nonnumeric elements are rejected.
+ * Weighted mean and covariance of posterior draws.
+ * - Weights are normalized internally. `normalization: 'unbiased'` treats them as reliability weights, never frequency counts.
+ * - A singular covariance is a valid result.
+ * - Rows are draws and columns are parameters. Row order is kept; no row is dropped and no intercept is added.
+ * - `null`, `NAN`, `INF`, and nonnumeric elements are rejected.
  * @param array<array<int|float>> $draws Draws: one row per draw and one column per parameter
  * @param array<int|float>|null $weights Nonnegative weights, one per draw, normalized internally; null weights draws equally
  * @param string $normalization 'population' or 'unbiased' (reliability weights)
  * @return array{mean: list<float>, covariance: list<list<float>>}
- * @throws \Exception Input/numerical error (codes 1001–1005).
+ * @throws \Exception A code from 1001 to 1005 for an input or numerical error.
  */
 function draws_moments(array $draws, ?array $weights = NULL, string $normalization = 'population'): array {}
 
 /**
- * Generalized linear model from a formula, like R's glm(): gaussian/identity (the OLS core), binomial/logit, binomial/probit
- * and poisson/log (the matrix GLM cores). Binomial responses: 0/1, logical, factor/string (first level = failure),
- * proportions with trial weights, or cbind(successes, failures). The empty link selects the canonical link.
- * Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are
- * dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
- * @param string $formula R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))'
+ * Fits a generalized linear model from a formula, like R's `glm()`.
+ * - Families and links: `gaussian` with `identity`, `binomial` with `logit` or `probit`, and `poisson` with `log`. An empty `link` selects the canonical link.
+ * - A binomial response can be 0/1 numbers, booleans, a factor or string column (the first level is failure), proportions with integer trial weights, or `cbind(successes, failures)`.
+ * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+ * @param string $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
- * @param string $family 'gaussian', 'binomial' or 'poisson'
- * @param string $link '' (canonical), 'identity', 'logit', 'probit' or 'log'
+ * @param string $family 'gaussian', 'binomial', or 'poisson'
+ * @param string $link '' (canonical), 'identity', 'logit', 'probit', or 'log'
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @return array{
@@ -2043,20 +2189,19 @@ function draws_moments(array $draws, ?array $weights = NULL, string $normalizati
  *   r_squared?: float,
  *   adj_r_squared?: float,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  */
 function fit_generalized_linear(string $formula, mixed $data, string $family = 'gaussian', string $link = '', string $missing = 'drop', mixed $weights = NULL): array {}
 
 /**
- * Generalized linear model from a formula, like R's glm(): gaussian/identity (the OLS core), binomial/logit, binomial/probit
- * and poisson/log (the matrix GLM cores). Binomial responses: 0/1, logical, factor/string (first level = failure),
- * proportions with trial weights, or cbind(successes, failures). The empty link selects the canonical link.
- * Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are
- * dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
- * @param string $formula R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))'
+ * Fits a generalized linear model from a formula, like R's `glm()`.
+ * - Families and links: `gaussian` with `identity`, `binomial` with `logit` or `probit`, and `poisson` with `log`. An empty `link` selects the canonical link.
+ * - A binomial response can be 0/1 numbers, booleans, a factor or string column (the first level is failure), proportions with integer trial weights, or `cbind(successes, failures)`.
+ * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+ * @param string $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
- * @param string $family 'gaussian', 'binomial' or 'poisson'
- * @param string $link '' (canonical), 'identity', 'logit', 'probit' or 'log'
+ * @param string $family 'gaussian', 'binomial', or 'poisson'
+ * @param string $link '' (canonical), 'identity', 'logit', 'probit', or 'log'
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @return array{
@@ -2098,22 +2243,22 @@ function fit_generalized_linear(string $formula, mixed $data, string $family = '
  *   r_squared?: float,
  *   adj_r_squared?: float,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  * @deprecated Since phit 0.4.0; use \Phit\fit_generalized_linear(). Removed in phit 0.5.
  */
 function fit_glm(string $formula, mixed $data, string $family = 'gaussian', string $link = '', string $missing = 'drop', mixed $weights = NULL): array {}
 
 /**
- * Binomial logit random-intercept model from a formula, like lme4::glmer(family = binomial): exactly one (1 | g) term over
- * the fit_mixed_logistic_matrix core (Laplace by default, adaptive quadrature with quadraturePoints > 1). It fits only the
- * binomial family with the logit link, so it takes no family or link. Responses as in fit_generalized_linear.
- * random_effects_cond_var holds each conditional mode's variance, as ranef(condVar = TRUE).
- * Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are
- * dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
- * @param string $formula R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))'
+ * Fits a binomial logit model with one random intercept from a formula, like `lme4::glmer(family = binomial)`.
+ * - The formula has exactly one `(1 | g)` term. The model is binomial with the logit link only, so the function takes no family or link.
+ * - Uses the Laplace approximation by default, and adaptive quadrature when `quadraturePoints` is above 1.
+ * - Responses are as in `fit_generalized_linear()`.
+ * - `random_effects_cond_var` holds the variance of each conditional mode, as `ranef(condVar = TRUE)`.
+ * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+ * @param string $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
- * @param string $family 'gaussian', 'binomial' or 'poisson'
- * @param string $link '' (canonical), 'identity', 'logit', 'probit' or 'log'
+ * @param string $family 'gaussian', 'binomial', or 'poisson'
+ * @param string $link '' (canonical), 'identity', 'logit', 'probit', or 'log'
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @param int $quadraturePoints 1 for the Laplace approximation, or 2 to 61 for adaptive Gauss–Hermite quadrature
@@ -2170,19 +2315,20 @@ function fit_glm(string $formula, mixed $data, string $family = 'gaussian', stri
  *   named: array<string,float>,
  *   predvars: array{levels:array<string,list<string>>,poly:array<string,array{alpha:list<float>,norm2:list<float>}>},
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  * @deprecated Since phit 0.4.0; use \Phit\fit_mixed_logistic(). Removed in phit 0.5.
  */
 function fit_glmer(string $formula, mixed $data, string $family = 'binomial', string $link = '', string $missing = 'drop', mixed $weights = NULL, int $quadraturePoints = 1, int $maxEvaluations = 20000, float $tolerance = 1.0E-7): array {}
 
 /**
- * Linear model from a formula, like R's lm(): builds the model matrix and fits by least squares, weighted least squares
- * when weights are given (as lm(weights = )), with offset() terms. Until phit 0.5, an array first argument (or named x:/y:) runs the deprecated
- * matrix fit, Phit\fit_ols_matrix(), with one E_USER_DEPRECATED; its result has no formula keys.
- * Factor levels unused after deletion are dropped, as lm() does. Rank deficiency raises 1004 instead of R's NA coefficients.
- * Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are
- * dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
- * @param string $formula R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))'
+ * Fits a linear model from a formula, like R's `lm()`.
+ * - Builds the model matrix from named columns and fits by least squares, or by weighted least squares when `weights` is given, as `lm(weights = )` does.
+ * - `offset()` terms in the formula are added to the linear predictor.
+ * - Factor levels left unused after missing rows are dropped are removed, as `lm()` does.
+ * - A rank-deficient design throws instead of returning R's `NA` coefficients.
+ * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+ * - An array as the first argument is deprecated; use `fit_ols_matrix()`.
+ * @param string $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
@@ -2217,19 +2363,19 @@ function fit_glmer(string $formula, mixed $data, string $family = 'binomial', st
  *   named: array<string,float>,
  *   predvars: array{levels:array<string,list<string>>,poly:array<string,array{alpha:list<float>,norm2:list<float>}>},
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  * @deprecated Since phit 0.4.0; use \Phit\fit_ols(). Removed in phit 0.5.
  */
 function fit_lm(string $formula, mixed $data, string $missing = 'drop', mixed $weights = NULL): array {}
 
 /**
- * Gaussian mixed model from an lme4-style formula, like lme4::lmer(): fixed terms as in fit_ols and random bars
- * (x | g), (x || g), (1 | g1) + (1 | g2), (1 | g1:g2), (1 | g1/g2) mapped onto the fit_mixed_gaussian_matrix core. REML by default.
- * Groups and effects follow first appearance after deletion, not lme4's sorted levels; terms keep formula order.
- * Each random term's effects_cond_var holds one k x k conditional covariance per group, as ranef(condVar = TRUE).
- * Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are
- * dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
- * @param string $formula R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))'
+ * Fits a Gaussian mixed model from an lme4 formula, like `lme4::lmer()`.
+ * - Fixed terms are as in `fit_ols()`. Random terms can be `(x | g)`, `(x || g)`, `(1 | g1) + (1 | g2)`, `(1 | g1:g2)`, and `(1 | g1/g2)`.
+ * - Fits by REML unless `reml` is false.
+ * - Groups and effects follow first appearance after missing rows are dropped, not lme4's sorted levels; terms keep formula order.
+ * - Each random term's `effects_cond_var` holds one k × k conditional covariance per group, as `ranef(condVar = TRUE)`.
+ * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+ * @param string $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
  * @param bool $reml true for REML, false for ML
@@ -2280,15 +2426,15 @@ function fit_lm(string $formula, mixed $data, string $missing = 'drop', mixed $w
  *   named: array<string,float>,
  *   predvars: array{levels:array<string,list<string>>,poly:array<string,array{alpha:list<float>,norm2:list<float>}>},
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  * @deprecated Since phit 0.4.0; use \Phit\fit_mixed_gaussian(). Removed in phit 0.5.
  */
 function fit_lmer(string $formula, mixed $data, bool $reml = true, string $missing = 'drop', mixed $weights = NULL, ?array $start = NULL, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, string $optimizer = 'bobyqa', float $objectiveTolerance = 1.0E-12): array {}
 
 /**
- * Binomial logit fit of a numeric design by Newton steps, like R's glm(family = binomial).
- * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
- * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+ * Fits a binomial logit model on a numeric design by Newton steps, like R's `glm(family = binomial)`.
+ * - An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+ * - Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param array<array<int|float|null>> $x Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing
  * @param array<int|float|null> $y Numeric response, one value per row; null or NAN is missing
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
@@ -2318,15 +2464,15 @@ function fit_lmer(string $formula, mixed $data, bool $reml = true, string $missi
  *   iterations: int,
  *   converged: bool,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008).
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  * @deprecated Since phit 0.4.0; use \Phit\fit_logistic_matrix(). Removed in phit 0.5.
  */
 function fit_logistic(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): array {}
 
 /**
- * Binomial logit fit of a numeric design by Newton steps, like R's glm(family = binomial).
- * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
- * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+ * Fits a binomial logit model on a numeric design by Newton steps, like R's `glm(family = binomial)`.
+ * - An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+ * - Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param array<array<int|float|null>> $x Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing
  * @param array<int|float|null> $y 0/1 outcomes, or proportions with integer trial weights; null or NAN is missing
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
@@ -2356,14 +2502,15 @@ function fit_logistic(array $x, array $y, string $missing = 'drop', ?array $weig
  *   iterations: int,
  *   converged: bool,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008).
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
 function fit_logistic_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): array {}
 
 /**
- * Binomial logit model with one random intercept on a numeric design, like lme4::glmer(family = binomial).
- * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
- * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+ * Fits a binomial logit model with one random intercept on a numeric design, like `lme4::glmer(family = binomial)`.
+ * - Uses the Laplace approximation by default, and adaptive quadrature when `quadraturePoints` is above 1.
+ * - An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+ * - Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param array<array<int|float|null>> $x Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing
  * @param array<int|float|null> $y Numeric response, one value per row; null or NAN is missing
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
@@ -2416,15 +2563,16 @@ function fit_logistic_matrix(array $x, array $y, string $missing = 'drop', ?arra
  *   boundary: bool,
  *   singular: bool,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008).
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  * @deprecated Since phit 0.4.0; use \Phit\fit_mixed_logistic_matrix(). Removed in phit 0.5.
  */
 function fit_logistic_mixed(array $x, array $y, array $groups, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, int $quadraturePoints = 1, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, bool $intercept = true): array {}
 
 /**
- * Gaussian mixed model on a numeric design and explicit random terms, like lme4::lmer().
- * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
- * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+ * Fits a Gaussian mixed model on a numeric design with explicit random terms, like `lme4::lmer()`.
+ * - Fits by ML unless `reml` is true.
+ * - An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+ * - Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param array<array<int|float|null>> $x Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing
  * @param array<int|float|null> $y Numeric response, one value per row; null or NAN is missing
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
@@ -2471,19 +2619,19 @@ function fit_logistic_mixed(array $x, array $y, array $groups, string $missing =
  *   evaluations: int,
  *   random: list<array{covariance:list<list<float>>,effects:list<list<float>>,effects_cond_var:list<list<list<float>>>,group_labels:list<int|string>,group_sizes:list<int>}>,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008).
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  * @deprecated Since phit 0.4.0; use \Phit\fit_mixed_gaussian_matrix(). Removed in phit 0.5.
  */
 function fit_mixed(array $x, array $y, array $random, string $missing = 'drop', bool $reml = false, ?array $weights = NULL, ?array $offset = NULL, ?array $start = NULL, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, string $optimizer = 'bobyqa', float $objectiveTolerance = 1.0E-12, bool $intercept = true): array {}
 
 /**
- * Gaussian mixed model from an lme4-style formula, like lme4::lmer(): fixed terms as in fit_ols and random bars
- * (x | g), (x || g), (1 | g1) + (1 | g2), (1 | g1:g2), (1 | g1/g2) mapped onto the fit_mixed_gaussian_matrix core. REML by default.
- * Groups and effects follow first appearance after deletion, not lme4's sorted levels; terms keep formula order.
- * Each random term's effects_cond_var holds one k x k conditional covariance per group, as ranef(condVar = TRUE).
- * Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are
- * dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
- * @param string $formula R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))'
+ * Fits a Gaussian mixed model from an lme4 formula, like `lme4::lmer()`.
+ * - Fixed terms are as in `fit_ols()`. Random terms can be `(x | g)`, `(x || g)`, `(1 | g1) + (1 | g2)`, `(1 | g1:g2)`, and `(1 | g1/g2)`.
+ * - Fits by REML unless `reml` is false.
+ * - Groups and effects follow first appearance after missing rows are dropped, not lme4's sorted levels; terms keep formula order.
+ * - Each random term's `effects_cond_var` holds one k × k conditional covariance per group, as `ranef(condVar = TRUE)`.
+ * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+ * @param string $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
  * @param bool $reml true for REML, false for ML
@@ -2534,14 +2682,15 @@ function fit_mixed(array $x, array $y, array $random, string $missing = 'drop', 
  *   named: array<string,float>,
  *   predvars: array{levels:array<string,list<string>>,poly:array<string,array{alpha:list<float>,norm2:list<float>}>},
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  */
 function fit_mixed_gaussian(string $formula, mixed $data, bool $reml = true, string $missing = 'drop', mixed $weights = NULL, ?array $start = NULL, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, string $optimizer = 'bobyqa', float $objectiveTolerance = 1.0E-12): array {}
 
 /**
- * Gaussian model with one random intercept, fitted by ML on a numeric design.
- * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
- * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+ * Fits a Gaussian model with one random intercept by ML on a numeric design.
+ * - Has no random slopes, additional grouping terms, offsets, weights, or REML; use `fit_mixed_gaussian_matrix()` for those.
+ * - An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+ * - Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param array<array<int|float|null>> $x Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing
  * @param array<int|float|null> $y Numeric response, one value per row; null or NAN is missing
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
@@ -2581,14 +2730,15 @@ function fit_mixed_gaussian(string $formula, mixed $data, bool $reml = true, str
  *   icc: float,
  *   boundary: bool,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008).
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
 function fit_mixed_gaussian_intercept_matrix(array $x, array $y, array $groups, string $missing = 'drop', bool $intercept = true): array {}
 
 /**
- * Gaussian mixed model on a numeric design and explicit random terms, like lme4::lmer().
- * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
- * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+ * Fits a Gaussian mixed model on a numeric design with explicit random terms, like `lme4::lmer()`.
+ * - Fits by ML unless `reml` is true.
+ * - An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+ * - Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param array<array<int|float|null>> $x Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing
  * @param array<int|float|null> $y Numeric response, one value per row; null or NAN is missing
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
@@ -2635,14 +2785,15 @@ function fit_mixed_gaussian_intercept_matrix(array $x, array $y, array $groups, 
  *   evaluations: int,
  *   random: list<array{covariance:list<list<float>>,effects:list<list<float>>,effects_cond_var:list<list<list<float>>>,group_labels:list<int|string>,group_sizes:list<int>}>,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008).
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
 function fit_mixed_gaussian_matrix(array $x, array $y, array $random, string $missing = 'drop', bool $reml = false, ?array $weights = NULL, ?array $offset = NULL, ?array $start = NULL, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, string $optimizer = 'bobyqa', float $objectiveTolerance = 1.0E-12, bool $intercept = true): array {}
 
 /**
- * Gaussian model with one random intercept, fitted by ML on a numeric design.
- * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
- * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+ * Fits a Gaussian model with one random intercept by ML on a numeric design.
+ * - Has no random slopes, additional grouping terms, offsets, weights, or REML; use `fit_mixed_gaussian_matrix()` for those.
+ * - An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+ * - Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param array<array<int|float|null>> $x Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing
  * @param array<int|float|null> $y Numeric response, one value per row; null or NAN is missing
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
@@ -2682,19 +2833,19 @@ function fit_mixed_gaussian_matrix(array $x, array $y, array $random, string $mi
  *   icc: float,
  *   boundary: bool,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008).
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  * @deprecated Since phit 0.4.0; use \Phit\fit_mixed_gaussian_intercept_matrix(). Removed in phit 0.5.
  */
 function fit_mixed_intercept(array $x, array $y, array $groups, string $missing = 'drop', bool $intercept = true): array {}
 
 /**
- * Binomial logit random-intercept model from a formula, like lme4::glmer(family = binomial): exactly one (1 | g) term over
- * the fit_mixed_logistic_matrix core (Laplace by default, adaptive quadrature with quadraturePoints > 1). It fits only the
- * binomial family with the logit link, so it takes no family or link. Responses as in fit_generalized_linear.
- * random_effects_cond_var holds each conditional mode's variance, as ranef(condVar = TRUE).
- * Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are
- * dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
- * @param string $formula R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))'
+ * Fits a binomial logit model with one random intercept from a formula, like `lme4::glmer(family = binomial)`.
+ * - The formula has exactly one `(1 | g)` term. The model is binomial with the logit link only, so the function takes no family or link.
+ * - Uses the Laplace approximation by default, and adaptive quadrature when `quadraturePoints` is above 1.
+ * - Responses are as in `fit_generalized_linear()`.
+ * - `random_effects_cond_var` holds the variance of each conditional mode, as `ranef(condVar = TRUE)`.
+ * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+ * @param string $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
@@ -2752,14 +2903,15 @@ function fit_mixed_intercept(array $x, array $y, array $groups, string $missing 
  *   named: array<string,float>,
  *   predvars: array{levels:array<string,list<string>>,poly:array<string,array{alpha:list<float>,norm2:list<float>}>},
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  */
 function fit_mixed_logistic(string $formula, mixed $data, string $missing = 'drop', mixed $weights = NULL, int $quadraturePoints = 1, int $maxEvaluations = 20000, float $tolerance = 1.0E-7): array {}
 
 /**
- * Binomial logit model with one random intercept on a numeric design, like lme4::glmer(family = binomial).
- * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
- * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+ * Fits a binomial logit model with one random intercept on a numeric design, like `lme4::glmer(family = binomial)`.
+ * - Uses the Laplace approximation by default, and adaptive quadrature when `quadraturePoints` is above 1.
+ * - An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+ * - Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param array<array<int|float|null>> $x Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing
  * @param array<int|float|null> $y 0/1 outcomes, or proportions with integer trial weights; null or NAN is missing
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
@@ -2812,22 +2964,23 @@ function fit_mixed_logistic(string $formula, mixed $data, string $missing = 'dro
  *   boundary: bool,
  *   singular: bool,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008).
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
 function fit_mixed_logistic_matrix(array $x, array $y, array $groups, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, int $quadraturePoints = 1, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, bool $intercept = true): array {}
 
 /**
- * Linear model from a formula, like R's lm(): builds the model matrix and fits by least squares, weighted least squares
- * when weights are given (as lm(weights = )), with offset() terms. Until phit 0.5, an array first argument (or named x:/y:) runs the deprecated
- * matrix fit, Phit\fit_ols_matrix(), with one E_USER_DEPRECATED; its result has no formula keys.
- * Factor levels unused after deletion are dropped, as lm() does. Rank deficiency raises 1004 instead of R's NA coefficients.
- * Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are
- * dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
- * @param string|array<array<int|float|null>> $formula R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))' (deprecated until 0.5: a matrix x)
- * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object|array<int|float|null> $data Named columns or factor descriptors; objects use toModelData(), else toColumns() (deprecated: y)
+ * Fits a linear model from a formula, like R's `lm()`.
+ * - Builds the model matrix from named columns and fits by least squares, or by weighted least squares when `weights` is given, as `lm(weights = )` does.
+ * - `offset()` terms in the formula are added to the linear predictor.
+ * - Factor levels left unused after missing rows are dropped are removed, as `lm()` does.
+ * - A rank-deficient design throws instead of returning R's `NA` coefficients.
+ * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+ * - An array as the first argument is deprecated; use `fit_ols_matrix()`.
+ * @param string|array<array<int|float|null>> $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'; an array here is the deprecated matrix form
+ * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object|array<int|float|null> $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
- * @param array<int|float|null>|null $offset Deprecated matrix form only; in a formula write offset()
- * @param bool $intercept Deprecated matrix form only; in a formula write - 1
+ * @param array<int|float|null>|null $offset Deprecated matrix form; in a formula, write offset()
+ * @param bool $intercept Deprecated matrix form; in a formula, write - 1
  * @param array<array<int|float|null>>|null $x Deprecated: use Phit\fit_ols_matrix()
  * @param array<int|float|null>|null $y Deprecated: use Phit\fit_ols_matrix()
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
@@ -2862,14 +3015,15 @@ function fit_mixed_logistic_matrix(array $x, array $y, array $groups, string $mi
  *   named: array<string,float>,
  *   predvars: array{levels:array<string,list<string>>,poly:array<string,array{alpha:list<float>,norm2:list<float>}>},
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  */
 function fit_ols(mixed $formula = NULL, mixed $data = NULL, string $missing = 'drop', mixed $weights = NULL, ?array $offset = NULL, bool $intercept = true, ?array $x = NULL, ?array $y = NULL): array {}
 
 /**
- * Least-squares fit of a numeric design, like R's lm.fit() with the full summary.
- * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
- * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+ * Fits a linear model by least squares on a numeric design, like R's `lm.fit()` with the full summary.
+ * - `weights` gives weighted least squares, as `lm(weights = )` does.
+ * - An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+ * - Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param array<array<int|float|null>> $x Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing
  * @param array<int|float|null> $y Numeric response, one value per row; null or NAN is missing
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
@@ -2899,14 +3053,14 @@ function fit_ols(mixed $formula = NULL, mixed $data = NULL, string $missing = 'd
  *   r_squared: float,
  *   adj_r_squared: float,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008).
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
 function fit_ols_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): array {}
 
 /**
- * Poisson log-link fit of a numeric design by Newton steps, like R's glm(family = poisson).
- * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
- * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+ * Fits a Poisson log-link model on a numeric design by Newton steps, like R's `glm(family = poisson)`.
+ * - An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+ * - Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param array<array<int|float|null>> $x Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing
  * @param array<int|float|null> $y Numeric response, one value per row; null or NAN is missing
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
@@ -2936,15 +3090,15 @@ function fit_ols_matrix(array $x, array $y, string $missing = 'drop', ?array $we
  *   iterations: int,
  *   converged: bool,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008).
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  * @deprecated Since phit 0.4.0; use \Phit\fit_poisson_matrix(). Removed in phit 0.5.
  */
 function fit_poisson(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): array {}
 
 /**
- * Poisson log-link fit of a numeric design by Newton steps, like R's glm(family = poisson).
- * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
- * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+ * Fits a Poisson log-link model on a numeric design by Newton steps, like R's `glm(family = poisson)`.
+ * - An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+ * - Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param array<array<int|float|null>> $x Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing
  * @param array<int|float|null> $y Nonnegative integer counts, one per row; null or NAN is missing
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
@@ -2974,14 +3128,14 @@ function fit_poisson(array $x, array $y, string $missing = 'drop', ?array $weigh
  *   iterations: int,
  *   converged: bool,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008).
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
 function fit_poisson_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): array {}
 
 /**
- * Binomial probit fit of a numeric design by Fisher scoring, like R's glm(family = binomial(link = "probit")).
- * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
- * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+ * Fits a binomial probit model on a numeric design by Fisher scoring, like R's `glm(family = binomial(link = "probit"))`.
+ * - An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+ * - Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param array<array<int|float|null>> $x Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing
  * @param array<int|float|null> $y Numeric response, one value per row; null or NAN is missing
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
@@ -3011,15 +3165,15 @@ function fit_poisson_matrix(array $x, array $y, string $missing = 'drop', ?array
  *   iterations: int,
  *   converged: bool,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008).
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  * @deprecated Since phit 0.4.0; use \Phit\fit_probit_matrix(). Removed in phit 0.5.
  */
 function fit_probit(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): array {}
 
 /**
- * Binomial probit fit of a numeric design by Fisher scoring, like R's glm(family = binomial(link = "probit")).
- * Predictor matrix: rows are observations. A fixed intercept is prepended by default.
- * null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+ * Fits a binomial probit model on a numeric design by Fisher scoring, like R's `glm(family = binomial(link = "probit"))`.
+ * - An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+ * - Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param array<array<int|float|null>> $x Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing
  * @param array<int|float|null> $y 0/1 outcomes, or proportions with integer trial weights; null or NAN is missing
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
@@ -3049,17 +3203,17 @@ function fit_probit(array $x, array $y, string $missing = 'drop', ?array $weight
  *   iterations: int,
  *   converged: bool,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008).
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
 function fit_probit_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): array {}
 
 /**
- * R-compatible model.matrix() for a formula over named columns: treatment contrasts (first level is the reference),
- * contr.poly for ordered factors, R column names/term order, inline transforms, offset() and random-effect bars.
- * Unused factor levels are kept, as in model.matrix(); x includes the "(Intercept)" column when present.
- * Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are
- * dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
- * @param string $formula R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))'
+ * Builds the numeric design of a formula over named columns, like R's `model.matrix()`.
+ * - Factors use treatment contrasts with the first level as the reference; ordered factors use `contr.poly`.
+ * - Column names, term order, inline transforms, `offset()`, and random-effect bars follow R.
+ * - Unused factor levels are kept, as in `model.matrix()`, and `x` includes the `(Intercept)` column when present.
+ * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+ * @param string $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @return array{
@@ -3080,53 +3234,55 @@ function fit_probit_matrix(array $x, array $y, string $missing = 'drop', ?array 
  *   retained_rows: list<int>,
  *   dropped_rows: list<int>,
  * }
- * @throws \Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  */
 function model_matrix(string $formula, mixed $data, string $missing = 'drop'): array {}
 
 /**
- * Minimize f on [lower, upper] (or maximize, with maximum: true) as R's optimize(): Brent's golden-section and parabolic search.
- * Returns 'minimum' or 'maximum', and the objective f(x).
- * f receives one float and returns an int or float; an exception from f propagates. Nonfinite values during the search
- * are replaced by +/-PHP_FLOAT_MAX, as R does, with one E_WARNING.
+ * Minimizes `f` on [`lower`, `upper`], or maximizes it with `maximum: true`, like R's `optimize()`.
+ * - Uses Brent's golden-section and parabolic search, step for step as R does.
+ * - Returns `minimum` (or `maximum`) and `objective`, the value of `f` there.
+ * - `f` takes one float and returns an int or float. An exception thrown by `f` propagates.
+ * - A nonfinite value during the search is replaced by the largest finite value, as in R, with one warning.
  * @param callable(float): (int|float) $f Objective: takes one float and returns an int or float
  * @param float|null $tol Default PHP_FLOAT_EPSILON ** 0.25, as R
  * @param float $lower Lower end of the search interval
  * @param float $upper Upper end of the search interval
  * @param bool $maximum Maximize instead of minimize
  * @return array{minimum: float, objective: float}|array{maximum: float, objective: float}
- * @throws \Exception Input error (code 1001).
+ * @throws \Exception Code 1001 for an input error.
  */
 function optimize(callable $f, float $lower, float $upper, ?float $tol = NULL, bool $maximum = false): array {}
 
 /**
- * size distinct 0-based indices from 0..n-1 in random order, as R's sample(n, size) less one; size null gives all n.
- * Partial Fisher-Yates: step i swaps position i with i + floor(u * (n - i)).
- * Local ChaCha20 stream restarted at the seed, one uniform per draw; same seed/arguments reproduce prefixes within the pinned version.
+ * Seeded sample of `size` distinct 0-based indices from 0 to n − 1 in random order, like R's `sample(n, size)` minus one.
+ * - `size: null` gives a permutation of all n.
+ * - Uses a partial Fisher–Yates shuffle: step i swaps position i with i + floor(u · (n − i)).
+ * - Each call starts its own ChaCha20 stream from `seed`, one uniform per draw. The same seed and arguments reproduce the same draws, and a longer request extends a shorter one.
  * @param int $n Population size in [0, 1000000]
  * @param int $seed Nonnegative PHP integer; every call restarts its own stream
  * @param int|null $size Draws in [0, n]; null gives a permutation
  * @return list<int>
- * @throws \Exception Invalid input (1001), nonfinite input (1003) or more than 1000000 draws (1007).
+ * @throws \Exception Code 1001 for invalid input, 1003 for nonfinite input, or 1007 for more than 1,000,000 draws.
  */
 function permutation_rng(int $n, int $seed, ?int $size = NULL): array {}
 
 /**
- * Predictions for new data from a fit_ols (formula), fit_generalized_linear, fit_mixed_gaussian or fit_mixed_logistic result, like R's predict():
- * the fit's formula is rebuilt over newdata with the fitted factor levels and poly() basis (its predvars key).
- * A level the fit never saw is an error. Rows with missing predictors predict null and are listed in missing_rows.
- * type 'response' applies the inverse link; seFit uses the delta method on that scale. Intervals ('confidence' or
- * 'prediction', t with df_residual) are for fit_ols fits. Mixed fits add random effects of known groups (random: false
- * gives population predictions; allowNewLevels predicts unseen groups at zero). GLM standard errors use the
- * covariance at the final coefficients (docs/r-compatibility.qmd).
- * @param array<string,mixed> $fit A formula fit result (needs formula, coefficients, covariance, columns and predvars)
+ * Predicts new data from a `fit_ols()`, `fit_generalized_linear()`, `fit_mixed_gaussian()`, or `fit_mixed_logistic()` result, like R's `predict()`.
+ * - The fit's formula is rebuilt over `newdata` with the fitted factor levels and `poly()` basis, from the fit's `predvars` key. A level the fit never saw throws.
+ * - A row with a missing predictor predicts `null` and is listed in `missing_rows`.
+ * - `type: 'response'` applies the inverse link, and `seFit` then uses the delta method on that scale.
+ * - `interval: 'confidence'` or `'prediction'` adds `lower` and `upper` for `fit_ols()` fits, using t with `df_residual`.
+ * - Mixed fits add the random effects of known groups. `random: false` gives population predictions, and `allowNewLevels` predicts unseen groups at the population level.
+ * - GLM standard errors use the covariance at the final coefficients, which differs slightly from R's `predict.glm()`.
+ * @param array<string,mixed> $fit A formula fit result, with the keys `formula`, `coefficients`, `covariance`, `columns`, and `predvars`
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $newdata Named columns, as for the fit; the response may be absent
  * @param string $type 'link' (linear predictor) or 'response'
- * @param string $interval 'none', 'confidence' or 'prediction'
- * @param bool $random Mixed fits: include random effects (lme4 re.form = NULL) or not (re.form = NA)
+ * @param string $interval 'none', 'confidence', or 'prediction'
+ * @param bool $random Mixed fits: include the random effects of known groups, as lme4's `re.form = NULL`; false predicts at the population level, as `re.form = NA`
  * @param bool $seFit Also return standard errors of the predictions; fixed-effect fits only
  * @param float $level Confidence level of the interval
- * @param bool $allowNewLevels Predict a group the fit never saw at the population level instead of raising 1001
+ * @param bool $allowNewLevels Predict a group the fit never saw at the population level instead of throwing
  * @return array{
  *   fit: list<float|null>,
  *   se_fit?: list<float|null>,
@@ -3139,30 +3295,33 @@ function permutation_rng(int $n, int $seed, ?int $size = NULL): array {}
  *   n_predicted: int,
  *   missing_rows: list<int>,
  * }
- * @throws \Exception Input error (1001), malformed fit, new levels, or unsupported options (1007).
+ * @throws \Exception Code 1001 for invalid input, a malformed fit, or a new factor level, or 1007 for an unsupported option.
  */
 function predict(array $fit, mixed $newdata, string $type = 'link', bool $seFit = false, string $interval = 'none', float $level = 0.95, bool $random = true, bool $allowNewLevels = false): array {}
 
 /**
- * Read a delimited text file the way phibble's PHP reader (after readr::read_delim()) does: same records,
- * names, guessed types, values and problem messages. Contract and phibble/readr differences: docs/io.qmd.
- * Dates are int days since 1970-01-01; datetimes are int microseconds since the epoch (UTC); NA is null.
- * failed counts values that did not parse under the column's type (they are null). Skipped ('_') columns are null.
+ * Reads a delimited text file into typed columns, with the records, names, guessed types, values, and problem messages of phibble's PHP reader and `readr::read_delim()`.
+ * - Dates are int days since 1970-01-01, and datetimes are int microseconds since the epoch, in UTC. `NA` values are `null`.
+ * - `failed` counts values that did not parse under the column's type; they are `null`. Skipped columns are `null`.
  * @param string $path A readable file (bytes are passed through; no encoding validation)
  * @param array{delimiter?: string, quote?: string, escape_double?: bool, escape_backslash?: bool, na?: list<string>, trim_ws?: bool,
  *   skip?: int, n_max?: ?int, comment?: string, skip_empty_rows?: bool, col_names?: bool, types?: array<int, '?'|'l'|'i'|'d'|'c'|'D'|'T'|'_'>,
  *   guess_max?: int, decimal_mark?: string, grouping_mark?: ?string, block_size?: int} $options readr's defaults when omitted
  * @return array{names: list<string>, columns: list<null|array{type: 'bool'|'int'|'float'|'string'|'date'|'datetime', values: list<bool|int|float|string|null>, failed: int}>, problems: list<string>}
- * @throws \ValueError Missing or unreadable file, or an invalid option.
+ * @throws \ValueError A missing or unreadable file, or an invalid option.
  */
 function read_csv(string $path, array $options = []): array {}
 
 /**
- * Interpolate (x, y) at xout as R's approx(): method 'linear' or 'constant' (f weights the right-hand value),
- * rule 1 gives NAN outside [min(x), max(x)], rule 2 the nearest end value; tied x collapse by ties 'mean', 'min' or 'max'.
- * Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+ * Interpolates the points (x, y) at `xout`, like R's `approx()`.
+ * - `method: 'linear'` interpolates linearly; `'constant'` uses a step function in which `f` weights the right-hand value.
+ * - Outside [min(x), max(x)], `rule: 1` returns `NAN` and `rule: 2` the value at the nearer end.
+ * - Tied x values collapse by `ties`: `'mean'`, `'min'`, or `'max'`.
+ * - A `null` or `NAN` in `xout` returns `NAN`.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $x Abscissae of the points; null and NAN are missing
- * @param array<int|float|null> $y Ordinates, aligned with x; null and NAN are missing
+ * @param array<int|float|null> $y Ordinates, aligned with `x`; null and NAN are missing
  * @param array<int|float|null> $xout Evaluation points; null or NAN gives NAN
  * @param string $method 'linear' or 'constant'
  * @param int $rule 1 returns NAN outside the data range; 2 returns the value at the nearer end
@@ -3170,59 +3329,64 @@ function read_csv(string $path, array $options = []): array {}
  * @param float $f For method 'constant', the weight of the right-hand value, in [0, 1]
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
  * @return list<float>
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_approx(array $x, array $y, array $xout, string $method = 'linear', int $rule = 1, string $ties = 'mean', float $f = 0.0, string $missing = 'raise'): array {}
 
 /**
- * R's bw.nrd: 1.06 * min(sd, IQR/1.34) * n^(-1/5).
- * Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+ * Scott's variation of the rule-of-thumb bandwidth, like R's `bw.nrd()`: 1.06 · min(sd, IQR/1.34) · n^(−1/5).
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $x Data; null and NAN are missing
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_bw_nrd(array $x, string $missing = 'raise'): float {}
 
 /**
- * R's bw.nrd0: 0.9 * min(sd, IQR/1.34) * n^(-1/5), with R's fallbacks when that is zero.
- * Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+ * Silverman's rule-of-thumb bandwidth, like R's `bw.nrd0()`: 0.9 · min(sd, IQR/1.34) · n^(−1/5), with R's fallbacks when that is zero.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $x Data; null and NAN are missing
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_bw_nrd0(array $x, string $missing = 'raise'): float {}
 
 /**
- * Pearson correlation; NAN when either input is constant.
- * null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays).
- * Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+ * Pearson correlation of two aligned arrays.
+ * - Returns `NAN` when either input is constant.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $x Data; null and NAN are missing
  * @param array<int|float|null> $y Second variable, aligned with the first; null and NAN are missing
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_cor(array $x, array $y, string $missing = 'raise'): float {}
 
 /**
- * Covariance; type 'sample' (n - 1) or 'population' (n).
- * null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays).
- * Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+ * Covariance of two aligned arrays: `type: 'sample'` divides by n − 1, and `'population'` by n.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $x Data; null and NAN are missing
  * @param array<int|float|null> $y Second variable, aligned with the first; null and NAN are missing
  * @param string $type 'sample' divides by n − 1, 'population' by n
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_cov(array $x, array $y, string $type = 'sample', string $missing = 'raise'): float {}
 
 /**
- * Kernel density estimate as R's density(): linear binning, FFT convolution, then interpolation onto n points from `from` to `to`.
- * bw: 'nrd0' (default), 'nrd' or a number, multiplied by adjust. Kernels: 'gaussian', 'epanechnikov', 'rectangular', 'triangular', 'biweight', 'cosine', 'optcosine'.
- * Weights are not normalized; as in R, weights summing to one are renormalized after missing values are dropped.
- * Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+ * Kernel density estimate, like R's `density()`.
+ * - Bins the data linearly, convolves with the kernel by FFT, and interpolates onto `n` points from `from` to `to`.
+ * - `bw` is `nrd0`, `nrd`, or a positive number, multiplied by `adjust`.
+ * - Weights are used as given; as in R, weights that sum to one are renormalized after missing values are removed.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $x Data; null and NAN are missing
- * @param string|float $bw 'nrd0', 'nrd' or a positive bandwidth
- * @param array<int|float|null>|null $weights Nonnegative weights aligned with x, used as given; null weights all points equally
+ * @param string|float $bw 'nrd0', 'nrd', or a positive bandwidth
+ * @param array<int|float|null>|null $weights Nonnegative weights aligned with `x`, used as given; null weights all points equally
  * @param float $adjust Multiplier applied to the bandwidth
  * @param string $kernel 'gaussian', 'epanechnikov', 'rectangular', 'triangular', 'biweight', 'cosine', or 'optcosine'
  * @param int $n Number of output points
@@ -3231,121 +3395,126 @@ function stat_cov(array $x, array $y, string $type = 'sample', string $missing =
  * @param float $cut Bandwidths beyond the data range for the default grid
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
  * @return array{x: list<float>, y: list<float>, bw: float, n: int}
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_density(array $x, mixed $bw = 'nrd0', float $adjust = 1.0, string $kernel = 'gaussian', int $n = 512, ?float $from = NULL, ?float $to = NULL, float $cut = 3.0, ?array $weights = NULL, string $missing = 'raise'): array {}
 
 /**
- * Empirical CDF of x at each q: the proportion of x at or below q, as R's ecdf(x)(q).
- * Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+ * Empirical CDF of `x` at each `q`: the proportion of `x` at or below `q`, as R's `ecdf(x)(q)`.
+ * - A `null` or `NAN` in `q` returns `NAN`.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $x Data; null and NAN are missing
  * @param array<int|float|null> $q Evaluation points; null or NAN gives NAN
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
  * @return list<float>
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_ecdf(array $x, array $q, string $missing = 'raise'): array {}
 
 /**
  * Arithmetic mean.
- * null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays).
- * Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $values Data; null and NAN are missing
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_mean(array $values, string $missing = 'raise'): float {}
 
 /**
- * Median (type 7 quantile at 0.5).
- * null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays).
- * Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+ * Median: the type 7 quantile at 0.5.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $values Data; null and NAN are missing
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_median(array $values, string $missing = 'raise'): float {}
 
 /**
- * Sample quantile, R's default type 7 (linear interpolation).
- * null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays).
- * Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+ * Sample quantile by R's default type 7, linear interpolation.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $values Data; null and NAN are missing
  * @param float $p Probability in [0, 1]
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_quantile(array $values, float $p, string $missing = 'raise'): float {}
 
 /**
  * Several type 7 quantiles from one sort.
- * null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays).
- * Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $values Data; null and NAN are missing
  * @param array<int|float|null> $probabilities Probabilities in [0, 1]
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
  * @return list<float>
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_quantile_array(array $values, array $probabilities, string $missing = 'raise'): array {}
 
 /**
- * Standard deviation: square root of stat_var.
- * null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays).
- * Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+ * Standard deviation: the square root of `stat_var()`.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $values Data; null and NAN are missing
  * @param string $type 'sample' divides by n − 1, 'population' by n
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_sd(array $values, string $type = 'sample', string $missing = 'raise'): float {}
 
 /**
- * Variance; type 'sample' divides by n - 1, 'population' by n.
- * null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays).
- * Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+ * Variance: `type: 'sample'` divides by n − 1, and `'population'` by n.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $values Data; null and NAN are missing
  * @param string $type 'sample' divides by n − 1, 'population' by n
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_var(array $values, string $type = 'sample', string $missing = 'raise'): float {}
 
 /**
- * Weighted mean sum(w*x)/sum(w); weights must be nonnegative with a positive sum. Negative weights reject before missing deletion.
- * null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays).
- * Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+ * Weighted mean: sum(w·x) / sum(w).
+ * - Weights must be nonnegative with a positive sum. A negative weight is rejected before missing values are removed.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $values Data; null and NAN are missing
  * @param array<int|float|null> $weights Nonnegative weights with a positive sum, aligned with the values
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_weighted_mean(array $values, array $weights, string $missing = 'raise'): float {}
 
 /**
- * Weighted variance; type 'frequency' (W - 1), 'reliability' (W - sum(w^2)/W) or 'population' (W). Negative weights reject before missing deletion.
- * null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays).
- * Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+ * Weighted variance: `type: 'frequency'` divides by W − 1, `'reliability'` by W − sum(w²)/W, and `'population'` by W, with W = sum(w).
+ * - A negative weight is rejected before missing values are removed.
+ * - `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+ * - Infinite input, or arithmetic that overflows, throws.
  * @param array<int|float|null> $values Data; null and NAN are missing
  * @param array<int|float|null> $weights Nonnegative weights with a positive sum, aligned with the values
  * @param string $type 'frequency' divides by W − 1, 'reliability' by W − sum(w²)/W, 'population' by W, with W = sum(w)
  * @param string $missing 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs
- * @throws \Exception Input error (codes 1001–1003).
+ * @throws \Exception Code 1001, 1002, or 1003 for an input error.
  */
 function stat_weighted_var(array $values, array $weights, string $type = 'frequency', string $missing = 'raise'): float {}
 
 /**
- * A root of f in [lower, upper] as R's uniroot(): Brent's method; f(lower) and f(upper) must not have the same sign.
- * Returns the root, f(root), the iterations used and the estimated precision; E_WARNING and iter = maxiter when not converged.
- * f receives one float and returns an int or float; an exception from f propagates. Nonfinite values during the search
- * are replaced by +/-PHP_FLOAT_MAX, as R does, with one E_WARNING.
+ * Finds a root of `f` in [`lower`, `upper`], like R's `uniroot()`.
+ * - Uses Brent's method, step for step as R does. `f(lower)` and `f(upper)` must not have the same sign.
+ * - Returns `root`, `f_root`, `iter`, and `estim_prec`. When it runs out of iterations it warns, sets `iter` to `maxiter`, and returns its last estimate.
+ * - `f` takes one float and returns an int or float. An exception thrown by `f` propagates.
+ * - A nonfinite value during the search is replaced by the largest finite value, as in R, with one warning.
  * @param callable(float): (int|float) $f Function whose root is sought: takes one float and returns an int or float
  * @param float|null $tol Default PHP_FLOAT_EPSILON ** 0.25, as R
  * @param float $lower Lower end of the search interval
  * @param float $upper Upper end of the search interval
  * @param int $maxiter Largest number of iterations
  * @return array{root: float, f_root: float, iter: int, estim_prec: float}
- * @throws \Exception Input error (code 1001).
+ * @throws \Exception Code 1001 for an input error.
  */
 function uniroot(callable $f, float $lower, float $upper, ?float $tol = NULL, int $maxiter = 1000): array {}
 

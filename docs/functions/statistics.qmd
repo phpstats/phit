@@ -10,7 +10,10 @@ Descriptive statistics, density estimation, interpolation, the ECDF, and one-dim
 
 ### `stat_mean()` {#stat_mean}
 
-Arithmetic mean. null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+Arithmetic mean.
+
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_mean(
@@ -21,18 +24,21 @@ Phit\stat_mean(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$values` | `array` | required | Data; null and NAN are missing |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$values` | `array` | required | Data; `null` and `NAN` are missing |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `float`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#summaries)
 
 ### `stat_median()` {#stat_median}
 
-Median (type 7 quantile at 0.5). null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+Median: the type 7 quantile at 0.5.
+
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_median(
@@ -43,18 +49,21 @@ Phit\stat_median(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$values` | `array` | required | Data; null and NAN are missing |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$values` | `array` | required | Data; `null` and `NAN` are missing |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `float`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#summaries)
 
 ### `stat_var()` {#stat_var}
 
-Variance; type 'sample' divides by n - 1, 'population' by n. null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+Variance: `type: 'sample'` divides by n − 1, and `'population'` by n.
+
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_var(
@@ -66,19 +75,22 @@ Phit\stat_var(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$values` | `array` | required | Data; null and NAN are missing |
-| `$type` | `string` | `'sample'` | 'sample' divides by n − 1, 'population' by n |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$values` | `array` | required | Data; `null` and `NAN` are missing |
+| `$type` | `string` | `'sample'` | `'sample'` divides by n − 1, `'population'` by n |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `float`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#summaries)
 
 ### `stat_sd()` {#stat_sd}
 
-Standard deviation: square root of stat_var. null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+Standard deviation: the square root of `stat_var()`.
+
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_sd(
@@ -90,19 +102,22 @@ Phit\stat_sd(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$values` | `array` | required | Data; null and NAN are missing |
-| `$type` | `string` | `'sample'` | 'sample' divides by n − 1, 'population' by n |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$values` | `array` | required | Data; `null` and `NAN` are missing |
+| `$type` | `string` | `'sample'` | `'sample'` divides by n − 1, `'population'` by n |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `float`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#summaries)
 
 ### `stat_quantile()` {#stat_quantile}
 
-Sample quantile, R's default type 7 (linear interpolation). null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+Sample quantile by R's default type 7, linear interpolation.
+
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_quantile(
@@ -114,19 +129,22 @@ Phit\stat_quantile(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$values` | `array` | required | Data; null and NAN are missing |
+| `$values` | `array` | required | Data; `null` and `NAN` are missing |
 | `$p` | `float` | required | Probability in [0, 1] |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `float`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#summaries)
 
 ### `stat_quantile_array()` {#stat_quantile_array}
 
-Several type 7 quantiles from one sort. null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+Several type 7 quantiles from one sort.
+
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_quantile_array(
@@ -138,19 +156,23 @@ Phit\stat_quantile_array(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$values` | `array` | required | Data; null and NAN are missing |
+| `$values` | `array` | required | Data; `null` and `NAN` are missing |
 | `$probabilities` | `array` | required | Probabilities in [0, 1] |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `list<float>`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#summaries)
 
 ### `stat_weighted_mean()` {#stat_weighted_mean}
 
-Weighted mean sum(w*x)/sum(w); weights must be nonnegative with a positive sum. Negative weights reject before missing deletion. null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+Weighted mean: sum(w·x) / sum(w).
+
+- Weights must be nonnegative with a positive sum. A negative weight is rejected before missing values are removed.
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_weighted_mean(
@@ -162,19 +184,23 @@ Phit\stat_weighted_mean(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$values` | `array` | required | Data; null and NAN are missing |
+| `$values` | `array` | required | Data; `null` and `NAN` are missing |
 | `$weights` | `array` | required | Nonnegative weights with a positive sum, aligned with the values |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `float`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#summaries)
 
 ### `stat_weighted_var()` {#stat_weighted_var}
 
-Weighted variance; type 'frequency' (W - 1), 'reliability' (W - sum(w^2)/W) or 'population' (W). Negative weights reject before missing deletion. null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+Weighted variance: `type: 'frequency'` divides by W − 1, `'reliability'` by W − sum(w²)/W, and `'population'` by W, with W = sum(w).
+
+- A negative weight is rejected before missing values are removed.
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_weighted_var(
@@ -187,20 +213,23 @@ Phit\stat_weighted_var(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$values` | `array` | required | Data; null and NAN are missing |
+| `$values` | `array` | required | Data; `null` and `NAN` are missing |
 | `$weights` | `array` | required | Nonnegative weights with a positive sum, aligned with the values |
-| `$type` | `string` | `'frequency'` | 'frequency' divides by W − 1, 'reliability' by W − sum(w²)/W, 'population' by W, with W = sum(w) |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$type` | `string` | `'frequency'` | `'frequency'` divides by W − 1, `'reliability'` by W − sum(w²)/W, `'population'` by W, with W = sum(w) |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `float`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#summaries)
 
 ### `stat_cov()` {#stat_cov}
 
-Covariance; type 'sample' (n - 1) or 'population' (n). null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+Covariance of two aligned arrays: `type: 'sample'` divides by n − 1, and `'population'` by n.
+
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_cov(
@@ -213,20 +242,24 @@ Phit\stat_cov(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Data; null and NAN are missing |
-| `$y` | `array` | required | Second variable, aligned with the first; null and NAN are missing |
-| `$type` | `string` | `'sample'` | 'sample' divides by n − 1, 'population' by n |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$x` | `array` | required | Data; `null` and `NAN` are missing |
+| `$y` | `array` | required | Second variable, aligned with the first; `null` and `NAN` are missing |
+| `$type` | `string` | `'sample'` | `'sample'` divides by n − 1, `'population'` by n |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `float`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#summaries)
 
 ### `stat_cor()` {#stat_cor}
 
-Pearson correlation; NAN when either input is constant. null/NAN are missing: missing 'raise' (default) rejects them, 'drop' removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.
+Pearson correlation of two aligned arrays.
+
+- Returns `NAN` when either input is constant.
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_cor(
@@ -238,13 +271,13 @@ Phit\stat_cor(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Data; null and NAN are missing |
-| `$y` | `array` | required | Second variable, aligned with the first; null and NAN are missing |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$x` | `array` | required | Data; `null` and `NAN` are missing |
+| `$y` | `array` | required | Second variable, aligned with the first; `null` and `NAN` are missing |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `float`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#summaries)
 
@@ -252,12 +285,18 @@ Phit\stat_cor(
 
 ### `stat_density()` {#stat_density}
 
-Kernel density estimate as R's density(): linear binning, FFT convolution, then interpolation onto n points from `from` to `to`. bw: 'nrd0' (default), 'nrd' or a number, multiplied by adjust. Kernels: 'gaussian', 'epanechnikov', 'rectangular', 'triangular', 'biweight', 'cosine', 'optcosine'. Weights are not normalized; as in R, weights summing to one are renormalized after missing values are dropped. Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+Kernel density estimate, like R's `density()`.
+
+- Bins the data linearly, convolves with the kernel by FFT, and interpolates onto `n` points from `from` to `to`.
+- `bw` is `nrd0`, `nrd`, or a positive number, multiplied by `adjust`.
+- Weights are used as given; as in R, weights that sum to one are renormalized after missing values are removed.
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_density(
     array $x,
-    mixed $bw = 'nrd0',
+    string|float $bw = 'nrd0',
     float $adjust = 1.0,
     string $kernel = 'gaussian',
     int $n = 512,
@@ -271,26 +310,29 @@ Phit\stat_density(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Data; null and NAN are missing |
-| `$bw` | `mixed` | `'nrd0'` | 'nrd0', 'nrd' or a positive bandwidth |
+| `$x` | `array` | required | Data; `null` and `NAN` are missing |
+| `$bw` | `string\|float` | `'nrd0'` | `'nrd0'`, `'nrd'`, or a positive bandwidth |
 | `$adjust` | `float` | `1.0` | Multiplier applied to the bandwidth |
-| `$kernel` | `string` | `'gaussian'` | 'gaussian', 'epanechnikov', 'rectangular', 'triangular', 'biweight', 'cosine', or 'optcosine' |
+| `$kernel` | `string` | `'gaussian'` | `'gaussian'`, `'epanechnikov'`, `'rectangular'`, `'triangular'`, `'biweight'`, `'cosine'`, or `'optcosine'` |
 | `$n` | `int` | `512` | Number of output points |
-| `$from` | `?float` | `NULL` | Left end of the output grid; null extends the data range by cut bandwidths |
-| `$to` | `?float` | `NULL` | Right end of the output grid; null extends the data range by cut bandwidths |
+| `$from` | `?float` | `NULL` | Left end of the output grid; `null` extends the data range by cut bandwidths |
+| `$to` | `?float` | `NULL` | Right end of the output grid; `null` extends the data range by cut bandwidths |
 | `$cut` | `float` | `3.0` | Bandwidths beyond the data range for the default grid |
-| `$weights` | `?array` | `NULL` | Nonnegative weights aligned with x, used as given; null weights all points equally |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$weights` | `?array` | `NULL` | Nonnegative weights aligned with `x`, used as given; `null` weights all points equally |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `array{x: list<float>, y: list<float>, bw: float, n: int}`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#density-estimation-interpolation-and-the-ecdf)
 
 ### `stat_bw_nrd0()` {#stat_bw_nrd0}
 
-R's bw.nrd0: 0.9 * min(sd, IQR/1.34) * n^(-1/5), with R's fallbacks when that is zero. Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+Silverman's rule-of-thumb bandwidth, like R's `bw.nrd0()`: 0.9 · min(sd, IQR/1.34) · n^(−1/5), with R's fallbacks when that is zero.
+
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_bw_nrd0(
@@ -301,18 +343,21 @@ Phit\stat_bw_nrd0(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Data; null and NAN are missing |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$x` | `array` | required | Data; `null` and `NAN` are missing |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `float`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#density-estimation-interpolation-and-the-ecdf)
 
 ### `stat_bw_nrd()` {#stat_bw_nrd}
 
-R's bw.nrd: 1.06 * min(sd, IQR/1.34) * n^(-1/5). Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+Scott's variation of the rule-of-thumb bandwidth, like R's `bw.nrd()`: 1.06 · min(sd, IQR/1.34) · n^(−1/5).
+
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_bw_nrd(
@@ -323,18 +368,25 @@ Phit\stat_bw_nrd(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Data; null and NAN are missing |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$x` | `array` | required | Data; `null` and `NAN` are missing |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `float`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#density-estimation-interpolation-and-the-ecdf)
 
 ### `stat_approx()` {#stat_approx}
 
-Interpolate (x, y) at xout as R's approx(): method 'linear' or 'constant' (f weights the right-hand value), rule 1 gives NAN outside [min(x), max(x)], rule 2 the nearest end value; tied x collapse by ties 'mean', 'min' or 'max'. Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+Interpolates the points (x, y) at `xout`, like R's `approx()`.
+
+- `method: 'linear'` interpolates linearly; `'constant'` uses a step function in which `f` weights the right-hand value.
+- Outside [min(x), max(x)], `rule: 1` returns `NAN` and `rule: 2` the value at the nearer end.
+- Tied x values collapse by `ties`: `'mean'`, `'min'`, or `'max'`.
+- A `null` or `NAN` in `xout` returns `NAN`.
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_approx(
@@ -351,24 +403,28 @@ Phit\stat_approx(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Abscissae of the points; null and NAN are missing |
-| `$y` | `array` | required | Ordinates, aligned with x; null and NAN are missing |
-| `$xout` | `array` | required | Evaluation points; null or NAN gives NAN |
-| `$method` | `string` | `'linear'` | 'linear' or 'constant' |
-| `$rule` | `int` | `1` | 1 returns NAN outside the data range; 2 returns the value at the nearer end |
-| `$ties` | `string` | `'mean'` | 'mean', 'min', or 'max' for tied x values |
-| `$f` | `float` | `0.0` | For method 'constant', the weight of the right-hand value, in [0, 1] |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$x` | `array` | required | Abscissae of the points; `null` and `NAN` are missing |
+| `$y` | `array` | required | Ordinates, aligned with `x`; `null` and `NAN` are missing |
+| `$xout` | `array` | required | Evaluation points; `null` or `NAN` gives `NAN` |
+| `$method` | `string` | `'linear'` | `'linear'` or `'constant'` |
+| `$rule` | `int` | `1` | 1 returns `NAN` outside the data range; 2 returns the value at the nearer end |
+| `$ties` | `string` | `'mean'` | `'mean'`, `'min'`, or `'max'` for tied x values |
+| `$f` | `float` | `0.0` | For method `'constant'`, the weight of the right-hand value, in [0, 1] |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `list<float>`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#density-estimation-interpolation-and-the-ecdf)
 
 ### `stat_ecdf()` {#stat_ecdf}
 
-Empirical CDF of x at each q: the proportion of x at or below q, as R's ecdf(x)(q). Data arrays: null/NAN are missing, rejected by missing 'raise' (default) or removed by 'drop'; infinite values raise 1003.
+Empirical CDF of `x` at each `q`: the proportion of `x` at or below `q`, as R's `ecdf(x)(q)`.
+
+- A `null` or `NAN` in `q` returns `NAN`.
+- `null` and `NAN` are missing: `missing: 'raise'` rejects them, and `missing: 'drop'` removes them, pairwise for two arrays.
+- Infinite input, or arithmetic that overflows, throws.
 
 ```php
 Phit\stat_ecdf(
@@ -380,13 +436,13 @@ Phit\stat_ecdf(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Data; null and NAN are missing |
-| `$q` | `array` | required | Evaluation points; null or NAN gives NAN |
-| `$missing` | `string` | `'raise'` | 'raise' rejects null and NAN; 'drop' removes them, pairwise for aligned inputs |
+| `$x` | `array` | required | Data; `null` and `NAN` are missing |
+| `$q` | `array` | required | Evaluation points; `null` or `NAN` gives `NAN` |
+| `$missing` | `string` | `'raise'` | `'raise'` rejects `null` and `NAN`; `'drop'` removes them, pairwise for aligned inputs |
 
 **Returns** `list<float>`
 
-**Errors** Input error (codes 1001–1003).
+**Errors** `Exception`: code 1001, 1002, or 1003 for an input error.
 
 **See also** [Details](../descriptive.qmd#density-estimation-interpolation-and-the-ecdf)
 
@@ -394,7 +450,12 @@ Phit\stat_ecdf(
 
 ### `optimize()` {#optimize}
 
-Minimize f on [lower, upper] (or maximize, with maximum: true) as R's optimize(): Brent's golden-section and parabolic search. Returns 'minimum' or 'maximum', and the objective f(x). f receives one float and returns an int or float; an exception from f propagates. Nonfinite values during the search are replaced by +/-PHP_FLOAT_MAX, as R does, with one E_WARNING.
+Minimizes `f` on [`lower`, `upper`], or maximizes it with `maximum: true`, like R's `optimize()`.
+
+- Uses Brent's golden-section and parabolic search, step for step as R does.
+- Returns `minimum` (or `maximum`) and `objective`, the value of `f` there.
+- `f` takes one float and returns an int or float. An exception thrown by `f` propagates.
+- A nonfinite value during the search is replaced by the largest finite value, as in R, with one warning.
 
 ```php
 Phit\optimize(
@@ -411,18 +472,23 @@ Phit\optimize(
 | `$f` | `callable` | required | Objective: takes one float and returns an int or float |
 | `$lower` | `float` | required | Lower end of the search interval |
 | `$upper` | `float` | required | Upper end of the search interval |
-| `$tol` | `?float` | `NULL` | Default PHP_FLOAT_EPSILON ** 0.25, as R |
+| `$tol` | `?float` | `NULL` | Default `PHP_FLOAT_EPSILON` ** 0.25, as R |
 | `$maximum` | `bool` | `false` | Maximize instead of minimize |
 
 **Returns** `array{minimum: float, objective: float}\|array{maximum: float, objective: float}`
 
-**Errors** Input error (code 1001).
+**Errors** `Exception`: code 1001 for an input error.
 
 **See also** [Details](../reference-utilities.qmd#one-dimensional-optimization-and-root-finding)
 
 ### `uniroot()` {#uniroot}
 
-A root of f in [lower, upper] as R's uniroot(): Brent's method; f(lower) and f(upper) must not have the same sign. Returns the root, f(root), the iterations used and the estimated precision; E_WARNING and iter = maxiter when not converged. f receives one float and returns an int or float; an exception from f propagates. Nonfinite values during the search are replaced by +/-PHP_FLOAT_MAX, as R does, with one E_WARNING.
+Finds a root of `f` in [`lower`, `upper`], like R's `uniroot()`.
+
+- Uses Brent's method, step for step as R does. `f(lower)` and `f(upper)` must not have the same sign.
+- Returns `root`, `f_root`, `iter`, and `estim_prec`. When it runs out of iterations it warns, sets `iter` to `maxiter`, and returns its last estimate.
+- `f` takes one float and returns an int or float. An exception thrown by `f` propagates.
+- A nonfinite value during the search is replaced by the largest finite value, as in R, with one warning.
 
 ```php
 Phit\uniroot(
@@ -439,11 +505,11 @@ Phit\uniroot(
 | `$f` | `callable` | required | Function whose root is sought: takes one float and returns an int or float |
 | `$lower` | `float` | required | Lower end of the search interval |
 | `$upper` | `float` | required | Upper end of the search interval |
-| `$tol` | `?float` | `NULL` | Default PHP_FLOAT_EPSILON ** 0.25, as R |
+| `$tol` | `?float` | `NULL` | Default `PHP_FLOAT_EPSILON` ** 0.25, as R |
 | `$maxiter` | `int` | `1000` | Largest number of iterations |
 
 **Returns** `array{root: float, f_root: float, iter: int, estim_prec: float}`
 
-**Errors** Input error (code 1001).
+**Errors** `Exception`: code 1001 for an input error.
 
 **See also** [Details](../reference-utilities.qmd#one-dimensional-optimization-and-root-finding)

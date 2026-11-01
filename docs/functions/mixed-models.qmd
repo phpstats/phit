@@ -10,15 +10,21 @@ Gaussian and binomial mixed models. See [Mixed models](../mixed-models.qmd) for 
 
 ### `fit_mixed_gaussian()` {#fit_mixed_gaussian}
 
-Gaussian mixed model from an lme4-style formula, like lme4::lmer(): fixed terms as in fit_ols and random bars (x | g), (x || g), (1 | g1) + (1 | g2), (1 | g1:g2), (1 | g1/g2) mapped onto the fit_mixed_gaussian_matrix core. REML by default. Groups and effects follow first appearance after deletion, not lme4's sorted levels; terms keep formula order. Each random term's effects_cond_var holds one k x k conditional covariance per group, as ranef(condVar = TRUE). Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
+Fits a Gaussian mixed model from an lme4 formula, like `lme4::lmer()`.
+
+- Fixed terms are as in `fit_ols()`. Random terms can be `(x | g)`, `(x || g)`, `(1 | g1) + (1 | g2)`, `(1 | g1:g2)`, and `(1 | g1/g2)`.
+- Fits by REML unless `reml` is false.
+- Groups and effects follow first appearance after missing rows are dropped, not lme4's sorted levels; terms keep formula order.
+- Each random term's `effects_cond_var` holds one k × k conditional covariance per group, as `ranef(condVar = TRUE)`.
+- Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
 
 ```php
 Phit\fit_mixed_gaussian(
     string $formula,
-    mixed $data,
+    array|object $data,
     bool $reml = true,
     string $missing = 'drop',
-    mixed $weights = NULL,
+    array|string|null $weights = NULL,
     ?array $start = NULL,
     int $maxEvaluations = 20000,
     float $tolerance = 1.0E-7,
@@ -29,15 +35,15 @@ Phit\fit_mixed_gaussian(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$formula` | `string` | required | R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))' |
-| `$data` | `mixed` | required | Named columns or factor descriptors; objects use toModelData(), else toColumns() |
-| `$reml` | `bool` | `true` | true for REML, false for ML |
-| `$missing` | `string` | `'drop'` | 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them |
-| `$weights` | `mixed` | `NULL` | Positive prior weights aligned with the original rows, or a column name |
-| `$start` | `?array` | `NULL` | Starting relative covariance factors, in the units of the random columns; null starts diagonal factors at one and off-diagonals at zero |
+| `$formula` | `string` | required | R formula, such as `'y ~ log(x) + f * z + offset(log(t))'` |
+| `$data` | `array\|object` | required | Named columns or factor descriptors; objects use `toModelData()`, else `toColumns()` |
+| `$reml` | `bool` | `true` | `true` for REML, `false` for ML |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
+| `$weights` | `array\|string\|null` | `NULL` | Positive prior weights aligned with the original rows, or a column name |
+| `$start` | `?array` | `NULL` | Starting relative covariance factors, in the units of the random columns; `null` starts diagonal factors at one and off-diagonals at zero |
 | `$maxEvaluations` | `int` | `20000` | Largest number of optimizer evaluations |
 | `$tolerance` | `float` | `1.0E-7` | BOBYQA final trust-region radius, in (0, 0.1] |
-| `$optimizer` | `string` | `'bobyqa'` | 'bobyqa' or 'nelder_mead' |
+| `$optimizer` | `string` | `'bobyqa'` | `'bobyqa'` or `'nelder_mead'` |
 | `$objectiveTolerance` | `float` | `1.0E-12` | Nelder–Mead stopping tolerance: the standard deviation of the simplex objective values |
 
 **Returns**
@@ -86,20 +92,26 @@ array{
 }
 ```
 
-**Errors** Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
 
 **See also** [Details](../mixed-models.qmd) · [Example](../examples/mixed-model.qmd)
 
 ### `fit_mixed_logistic()` {#fit_mixed_logistic}
 
-Binomial logit random-intercept model from a formula, like lme4::glmer(family = binomial): exactly one (1 | g) term over the fit_mixed_logistic_matrix core (Laplace by default, adaptive quadrature with quadraturePoints > 1). It fits only the binomial family with the logit link, so it takes no family or link. Responses as in fit_generalized_linear. random_effects_cond_var holds each conditional mode's variance, as ranef(condVar = TRUE). Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.
+Fits a binomial logit model with one random intercept from a formula, like `lme4::glmer(family = binomial)`.
+
+- The formula has exactly one `(1 | g)` term. The model is binomial with the logit link only, so the function takes no family or link.
+- Uses the Laplace approximation by default, and adaptive quadrature when `quadraturePoints` is above 1.
+- Responses are as in `fit_generalized_linear()`.
+- `random_effects_cond_var` holds the variance of each conditional mode, as `ranef(condVar = TRUE)`.
+- Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
 
 ```php
 Phit\fit_mixed_logistic(
     string $formula,
-    mixed $data,
+    array|object $data,
     string $missing = 'drop',
-    mixed $weights = NULL,
+    array|string|null $weights = NULL,
     int $quadraturePoints = 1,
     int $maxEvaluations = 20000,
     float $tolerance = 1.0E-7,
@@ -108,10 +120,10 @@ Phit\fit_mixed_logistic(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$formula` | `string` | required | R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))' |
-| `$data` | `mixed` | required | Named columns or factor descriptors; objects use toModelData(), else toColumns() |
-| `$missing` | `string` | `'drop'` | 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them |
-| `$weights` | `mixed` | `NULL` | Positive prior weights aligned with the original rows, or a column name |
+| `$formula` | `string` | required | R formula, such as `'y ~ log(x) + f * z + offset(log(t))'` |
+| `$data` | `array\|object` | required | Named columns or factor descriptors; objects use `toModelData()`, else `toColumns()` |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
+| `$weights` | `array\|string\|null` | `NULL` | Positive prior weights aligned with the original rows, or a column name |
 | `$quadraturePoints` | `int` | `1` | 1 for the Laplace approximation, or 2 to 61 for adaptive Gauss–Hermite quadrature |
 | `$maxEvaluations` | `int` | `20000` | Largest number of optimizer evaluations |
 | `$tolerance` | `float` | `1.0E-7` | BOBYQA final trust-region radius, in (0, 0.1] |
@@ -172,7 +184,7 @@ array{
 }
 ```
 
-**Errors** Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
 
 **See also** [Details](../mixed-models.qmd#a-binomial-random-intercept-model)
 
@@ -180,7 +192,11 @@ array{
 
 ### `fit_mixed_gaussian_matrix()` {#fit_mixed_gaussian_matrix}
 
-Gaussian mixed model on a numeric design and explicit random terms, like lme4::lmer(). Predictor matrix: rows are observations. A fixed intercept is prepended by default. null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+Fits a Gaussian mixed model on a numeric design with explicit random terms, like `lme4::lmer()`.
+
+- Fits by ML unless `reml` is true.
+- An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+- Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
 
 ```php
 Phit\fit_mixed_gaussian_matrix(
@@ -202,17 +218,17 @@ Phit\fit_mixed_gaussian_matrix(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing |
-| `$y` | `array` | required | Numeric response, one value per row; null or NAN is missing |
-| `$random` | `array` | required | Random terms, each an array with 'z' (n × k design), 'groups' (one label per row), and optional 'correlated' (default true; false is (x \|\| g)) |
-| `$missing` | `string` | `'drop'` | 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them |
-| `$reml` | `bool` | `false` | true for REML, false for ML |
+| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; `null` or `NAN` is missing |
+| `$y` | `array` | required | Numeric response, one value per row; `null` or `NAN` is missing |
+| `$random` | `array` | required | Random terms, each an array with `'z'` (n × k design), `'groups'` (one label per row), and optional `'correlated'` (default `true`; `false` is (x \|\| g)) |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
+| `$reml` | `bool` | `false` | `true` for REML, `false` for ML |
 | `$weights` | `?array` | `NULL` | Positive prior weights aligned with the rows |
-| `$offset` | `?array` | `NULL` | Known part of the linear predictor, aligned with the rows; null is zero |
-| `$start` | `?array` | `NULL` | Starting relative covariance factors, in the units of the random columns; null starts diagonal factors at one and off-diagonals at zero |
+| `$offset` | `?array` | `NULL` | Known part of the linear predictor, aligned with the rows; `null` is zero |
+| `$start` | `?array` | `NULL` | Starting relative covariance factors, in the units of the random columns; `null` starts diagonal factors at one and off-diagonals at zero |
 | `$maxEvaluations` | `int` | `20000` | Largest number of optimizer evaluations |
 | `$tolerance` | `float` | `1.0E-7` | BOBYQA final trust-region radius, in (0, 0.1] |
-| `$optimizer` | `string` | `'bobyqa'` | 'bobyqa' or 'nelder_mead' |
+| `$optimizer` | `string` | `'bobyqa'` | `'bobyqa'` or `'nelder_mead'` |
 | `$objectiveTolerance` | `float` | `1.0E-12` | Nelder–Mead stopping tolerance: the standard deviation of the simplex objective values |
 | `$intercept` | `bool` | `true` | False uses x exactly (including any caller-supplied ones). |
 
@@ -254,13 +270,17 @@ array{
 }
 ```
 
-**Errors** Statistical or input error (codes 1001–1008).
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error.
 
 **See also** [Details](../reference-models.qmd#general-gaussian-mixed-model-call)
 
 ### `fit_mixed_gaussian_intercept_matrix()` {#fit_mixed_gaussian_intercept_matrix}
 
-Gaussian model with one random intercept, fitted by ML on a numeric design. Predictor matrix: rows are observations. A fixed intercept is prepended by default. null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+Fits a Gaussian model with one random intercept by ML on a numeric design.
+
+- Has no random slopes, additional grouping terms, offsets, weights, or REML; use `fit_mixed_gaussian_matrix()` for those.
+- An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+- Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
 
 ```php
 Phit\fit_mixed_gaussian_intercept_matrix(
@@ -274,10 +294,10 @@ Phit\fit_mixed_gaussian_intercept_matrix(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing |
-| `$y` | `array` | required | Numeric response, one value per row; null or NAN is missing |
+| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; `null` or `NAN` is missing |
+| `$y` | `array` | required | Numeric response, one value per row; `null` or `NAN` is missing |
 | `$groups` | `array` | required | Group label per row, an integer or a string; integer 1 and string "1" are different groups |
-| `$missing` | `string` | `'drop'` | 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
 | `$intercept` | `bool` | `true` | False uses x exactly (including any caller-supplied ones). |
 
 **Returns**
@@ -319,13 +339,17 @@ array{
 }
 ```
 
-**Errors** Statistical or input error (codes 1001–1008).
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error.
 
 **See also** [Details](../reference-models.qmd#gaussian-random-intercept-mixed-model)
 
 ### `fit_mixed_logistic_matrix()` {#fit_mixed_logistic_matrix}
 
-Binomial logit model with one random intercept on a numeric design, like lme4::glmer(family = binomial). Predictor matrix: rows are observations. A fixed intercept is prepended by default. null/NAN rows follow the missing policy; weights/offset are aligned with original rows.
+Fits a binomial logit model with one random intercept on a numeric design, like `lme4::glmer(family = binomial)`.
+
+- Uses the Laplace approximation by default, and adaptive quadrature when `quadraturePoints` is above 1.
+- An intercept column is prepended unless `intercept` is false, in which case `x` is used exactly.
+- Rows with `null` or `NAN` in `x`, `y`, or another aligned input are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
 
 ```php
 Phit\fit_mixed_logistic_matrix(
@@ -344,12 +368,12 @@ Phit\fit_mixed_logistic_matrix(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing |
-| `$y` | `array` | required | 0/1 outcomes, or proportions with integer trial weights; null or NAN is missing |
+| `$x` | `array` | required | Predictor matrix: one row per observation and one numeric column per predictor; `null` or `NAN` is missing |
+| `$y` | `array` | required | 0/1 outcomes, or proportions with integer trial weights; `null` or `NAN` is missing |
 | `$groups` | `array` | required | Group label per row, an integer or a string; integer 1 and string "1" are different groups |
-| `$missing` | `string` | `'drop'` | 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them |
-| `$weights` | `?array` | `NULL` | Positive integer trial counts, at most 1,000,000 per row; null is one trial per row |
-| `$offset` | `?array` | `NULL` | Known part of the linear predictor, aligned with the rows; null is zero |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
+| `$weights` | `?array` | `NULL` | Positive integer trial counts, at most 1,000,000 per row; `null` is one trial per row |
+| `$offset` | `?array` | `NULL` | Known part of the linear predictor, aligned with the rows; `null` is zero |
 | `$quadraturePoints` | `int` | `1` | 1 for the Laplace approximation, or 2 to 61 for adaptive Gauss–Hermite quadrature |
 | `$maxEvaluations` | `int` | `20000` | Largest number of optimizer evaluations |
 | `$tolerance` | `float` | `1.0E-7` | BOBYQA final trust-region radius, in (0, 0.1] |
@@ -402,6 +426,6 @@ array{
 }
 ```
 
-**Errors** Statistical or input error (codes 1001–1008).
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error.
 
 **See also** [Details](../reference-models.qmd#binomial-random-intercept-ml)

@@ -44,9 +44,9 @@ Phit\dist_normal_cdf_array(
 ): array
 ```
 
-**Errors** Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+**Errors** `Exception`: code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
 
-**Sampler errors** Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+**Sampler errors** `Exception`: code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
 
 ## Student's t {#t}
 
@@ -83,9 +83,9 @@ Phit\dist_t_cdf_array(
 ): array
 ```
 
-**Errors** Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+**Errors** `Exception`: code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
 
-**Sampler errors** Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+**Sampler errors** `Exception`: code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
 
 ## Chi-square {#chisquare}
 
@@ -122,9 +122,9 @@ Phit\dist_chisquare_cdf_array(
 ): array
 ```
 
-**Errors** Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+**Errors** `Exception`: code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
 
-**Sampler errors** Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+**Sampler errors** `Exception`: code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
 
 ## F {#f}
 
@@ -164,9 +164,9 @@ Phit\dist_f_cdf_array(
 ): array
 ```
 
-**Errors** Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+**Errors** `Exception`: code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
 
-**Sampler errors** Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+**Sampler errors** `Exception`: code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
 
 ## Beta {#beta}
 
@@ -206,9 +206,9 @@ Phit\dist_beta_cdf_array(
 ): array
 ```
 
-**Errors** Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+**Errors** `Exception`: code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
 
-**Sampler errors** Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+**Sampler errors** `Exception`: code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
 
 ## Gamma {#gamma}
 
@@ -248,9 +248,9 @@ Phit\dist_gamma_cdf_array(
 ): array
 ```
 
-**Errors** Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+**Errors** `Exception`: code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
 
-**Sampler errors** Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+**Sampler errors** `Exception`: code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
 
 ## Exponential {#exponential}
 
@@ -287,9 +287,9 @@ Phit\dist_exponential_cdf_array(
 ): array
 ```
 
-**Errors** Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+**Errors** `Exception`: code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
 
-**Sampler errors** Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+**Sampler errors** `Exception`: code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
 
 ## Log-normal {#lognormal}
 
@@ -329,9 +329,9 @@ Phit\dist_lognormal_cdf_array(
 ): array
 ```
 
-**Errors** Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+**Errors** `Exception`: code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
 
-**Sampler errors** Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+**Sampler errors** `Exception`: code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
 
 ## Logistic {#logistic}
 
@@ -371,9 +371,9 @@ Phit\dist_logistic_cdf_array(
 ): array
 ```
 
-**Errors** Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+**Errors** `Exception`: code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
 
-**Sampler errors** Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+**Sampler errors** `Exception`: code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
 
 ## Binomial {#binomial}
 
@@ -413,9 +413,9 @@ Phit\dist_binomial_cdf_array(
 ): array
 ```
 
-**Errors** Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+**Errors** `Exception`: code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
 
-**Sampler errors** Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+**Sampler errors** `Exception`: code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
 
 ## Poisson {#poisson}
 
@@ -452,9 +452,9 @@ Phit\dist_poisson_cdf_array(
 ): array
 ```
 
-**Errors** Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+**Errors** `Exception`: code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
 
-**Sampler errors** Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+**Sampler errors** `Exception`: code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
 
 ## Negative binomial (size, prob) {#nbinom}
 
@@ -494,9 +494,9 @@ Phit\dist_nbinom_cdf_array(
 ): array
 ```
 
-**Errors** Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+**Errors** `Exception`: code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
 
-**Sampler errors** Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+**Sampler errors** `Exception`: code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.
 
 ## Negative binomial (size, mu) {#nbinom_mu}
 
@@ -536,6 +536,6 @@ Phit\dist_nbinom_mu_cdf_array(
 ): array
 ```
 
-**Errors** Invalid parameter (1001), NAN input (1003) or numerical failure (1006).
+**Errors** `Exception`: code 1001 for an invalid parameter, 1003 for a `NAN` input, or 1006 for a numerical failure.
 
-**Sampler errors** Invalid input (1001), nonfinite parameter/sample (1003) or unsupported count/size (1007).
+**Sampler errors** `Exception`: code 1001 for invalid input, 1003 for a nonfinite parameter or sample, or 1007 for more than 1,000,000 draws or an unsupported size.

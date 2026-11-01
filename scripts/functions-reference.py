@@ -157,7 +157,7 @@ def parse_stubs():
             elif body.startswith('@return'):
                 returns = body[len('@return'):].strip()
             elif body.startswith('@throws'):
-                throws = ' '.join(body[len('@throws'):].replace('\\Exception', '').split())
+                throws = ' '.join(body[len('@throws'):].split())
             elif body.startswith('@deprecated'):
                 deprecated = ' '.join(body[len('@deprecated'):].split())
         for p in params:
@@ -186,32 +186,87 @@ def purpose(fn):
 
 
 def signature(fn):
-    if not fn['params']:
+    params = shown_params(fn)
+    if not params:
         return f"Phit\\{fn['name']}(): {fn['return_type']}"
-    lines = [f"    {p['type']} ${p['name']}" + (f" = {p['default']}" if p['default'] else '') + ',' for p in fn['params']]
+    lines = [f"    {p['type']} ${p['name']}" + (f" = {p['default']}" if p['default'] else '') + ',' for p in params]
     return f"Phit\\{fn['name']}(\n" + '\n'.join(lines) + f"\n): {fn['return_type']}"
+
+
+# Types a caller passes, where reflection shows the deprecated overload or a broad mixed.
+DOCUMENTED_TYPES = {'formula': 'string', 'data': 'array|object', 'newdata': 'array|object',
+                    'weights': 'array|string|null', 'bw': 'string|float'}
+# Parameters of the deprecated matrix form of fit_ols(), left out of its documented signature.
+HIDDEN = {'fit_ols': {'offset', 'intercept', 'x', 'y'}}
+
+
+def shown_params(fn):
+    out = []
+    for p in fn['params']:
+        if p['name'] in HIDDEN.get(fn['name'], ()):
+            continue
+        p = dict(p)
+        if p['type'] == 'mixed' and p['name'] in DOCUMENTED_TYPES:
+            p['type'] = DOCUMENTED_TYPES[p['name']]
+            if fn['name'] == 'fit_ols' and p['name'] in ('formula', 'data'):
+                p['default'] = None
+        out.append(p)
+    return out
+
+
+def code_words(text):
+    """Put quoted options, constants, and function names in code font, outside existing code spans."""
+    parts = re.split(r'(`[^`]*`)', text)
+    for i in range(0, len(parts), 2):
+        s = parts[i]
+        s = re.sub(r"('[^']*')", r'`\1`', s)
+        s = re.sub(r'(?<![`\w])(null|NAN|INF|true|false|PHP_FLOAT_EPSILON|\w+\(\))(?![`\w])', r'`\1`', s)
+        parts[i] = s.replace('e.g. ', 'for example, ')
+    return ''.join(parts)
+
+
+def description(lines):
+    """A purpose paragraph, then the behavior lines as a bullet list."""
+    purpose, bullets = [], []
+    for line in lines:
+        if line.startswith('- '):
+            bullets.append(line)
+        elif bullets:
+            bullets[-1] += ' ' + line
+        else:
+            purpose.append(line)
+    return [' '.join(purpose), ''] + (bullets + [''] if bullets else [])
 
 
 def cell(text):
     return text.replace('|', '\\|').replace('\n', ' ')
 
 
+def errors(throws):
+    """'\\Exception Code 1001 for ...' as '`Exception`: code 1001 for ...'."""
+    m = re.match(r'\\?(\w+) (.*)', throws, re.S)
+    if not m:
+        return throws
+    text = m[2]
+    return f"`{m[1]}`: {text[0].lower() + text[1:]}"
+
+
 def entry(fn, level='###'):
     out = [f"{level} `{fn['name']}()` {{#{fn['name']}}}", '']
-    out += [' '.join(fn['description']), '']
+    out += description(fn['description'])
     out += ['```php', signature(fn), '```', '']
-    if fn['params']:
+    if shown_params(fn):
         out += ['| Parameter | Type | Default | Description |', '| --- | --- | --- | --- |']
-        for p in fn['params']:
+        for p in shown_params(fn):
             default = f"`{cell(p['default'])}`" if p['default'] else 'required'
-            out.append(f"| `${p['name']}` | `{cell(p['type'])}` | {default} | {cell(p['doc'])} |")
+            out.append(f"| `${p['name']}` | `{cell(p['type'])}` | {default} | {cell(code_words(p['doc']))} |")
         out.append('')
     if fn['returns'] and '\n' in fn['returns']:
         out += ['**Returns**', '', '```php', fn['returns'], '```', '']
     else:
         out += [f"**Returns** `{cell(fn['returns'] or fn['return_type'])}`", '']
     if fn['throws']:
-        out += [f"**Errors** {fn['throws']}", '']
+        out += [f"**Errors** {errors(fn['throws'])}", '']
     guide, example = GUIDES.get(fn['name'], (None, None))
     links = [f'[Details]({guide})'] if guide else []
     if example:
@@ -264,7 +319,7 @@ def distributions_page(functions):
         out.append(f"| [`dist_{family}_rng()`]{{#dist_{family}_rng}} | Seeded samples | `int $n`, `int $seed`, "
                    f"parameters | `{rng['return_type']}` |")
         out += ['', '```php', signature(sample), signature(functions[f'dist_{family}_cdf_array']), '```', '']
-        out += [f'**Errors** {sample["throws"]}', '', f'**Sampler errors** {rng["throws"]}', '']
+        out += [f'**Errors** {errors(sample["throws"])}', '', f'**Sampler errors** {errors(rng["throws"])}', '']
     return 'distributions', '\n'.join(out).rstrip() + '\n'
 
 
@@ -299,7 +354,7 @@ def csv_page(functions, classes):
             if t.startswith('@return'):
                 out += [f"**Returns** `{cell(t[len('@return'):].strip())}`", '']
             elif t.startswith('@throws'):
-                out += [f"**Errors** {' '.join(t[len('@throws'):].replace(chr(92) + 'Exception', '').split())}", '']
+                out += [f"**Errors** {errors(' '.join(t[len('@throws'):].split()))}", '']
     return 'csv', '\n'.join(out).rstrip() + '\n'
 
 

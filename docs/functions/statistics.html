@@ -562,7 +562,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="summaries">Summaries</h2>
 <section id="stat_mean" class="level3">
 <h3 class="anchored" data-anchor-id="stat_mean"><code>stat_mean()</code></h3>
-<p>Arithmetic mean. null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<p>Arithmetic mean.</p>
+<ul>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_mean(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
@@ -587,23 +591,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$values</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>float</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
 </section>
 <section id="stat_median" class="level3">
 <h3 class="anchored" data-anchor-id="stat_median"><code>stat_median()</code></h3>
-<p>Median (type 7 quantile at 0.5). null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<p>Median: the type 7 quantile at 0.5.</p>
+<ul>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_median(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
@@ -628,23 +636,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$values</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>float</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
 </section>
 <section id="stat_var" class="level3">
 <h3 class="anchored" data-anchor-id="stat_var"><code>stat_var()</code></h3>
-<p>Variance; type ‘sample’ divides by n - 1, ‘population’ by n.&nbsp;null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<p>Variance: <code>type: 'sample'</code> divides by n − 1, and <code>'population'</code> by n.</p>
+<ul>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_var(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$type</span> <span class="op">=</span> <span class="st">'sample'</span><span class="ot">,</span></span>
@@ -670,29 +682,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$values</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$type</code></td>
 <td><code>string</code></td>
 <td><code>'sample'</code></td>
-<td>‘sample’ divides by n − 1, ‘population’ by n</td>
+<td><code>'sample'</code> divides by n − 1, <code>'population'</code> by n</td>
 </tr>
 <tr class="odd">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>float</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
 </section>
 <section id="stat_sd" class="level3">
 <h3 class="anchored" data-anchor-id="stat_sd"><code>stat_sd()</code></h3>
-<p>Standard deviation: square root of stat_var. null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<p>Standard deviation: the square root of <code>stat_var()</code>.</p>
+<ul>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_sd(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$type</span> <span class="op">=</span> <span class="st">'sample'</span><span class="ot">,</span></span>
@@ -718,29 +734,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$values</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$type</code></td>
 <td><code>string</code></td>
 <td><code>'sample'</code></td>
-<td>‘sample’ divides by n − 1, ‘population’ by n</td>
+<td><code>'sample'</code> divides by n − 1, <code>'population'</code> by n</td>
 </tr>
 <tr class="odd">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>float</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
 </section>
 <section id="stat_quantile" class="level3">
 <h3 class="anchored" data-anchor-id="stat_quantile"><code>stat_quantile()</code></h3>
-<p>Sample quantile, R’s default type 7 (linear interpolation). null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<p>Sample quantile by R’s default type 7, linear interpolation.</p>
+<ul>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_quantile(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$p</span><span class="ot">,</span></span>
@@ -766,7 +786,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$values</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$p</code></td>
@@ -778,17 +798,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>float</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
 </section>
 <section id="stat_quantile_array" class="level3">
 <h3 class="anchored" data-anchor-id="stat_quantile_array"><code>stat_quantile_array()</code></h3>
-<p>Several type 7 quantiles from one sort. null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<p>Several type 7 quantiles from one sort.</p>
+<ul>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_quantile_array(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$probabilities</span><span class="ot">,</span></span>
@@ -814,7 +838,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$values</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$probabilities</code></td>
@@ -826,17 +850,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>list&lt;float&gt;</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
 </section>
 <section id="stat_weighted_mean" class="level3">
 <h3 class="anchored" data-anchor-id="stat_weighted_mean"><code>stat_weighted_mean()</code></h3>
-<p>Weighted mean sum(w*x)/sum(w); weights must be nonnegative with a positive sum. Negative weights reject before missing deletion. null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<p>Weighted mean: sum(w·x) / sum(w).</p>
+<ul>
+<li>Weights must be nonnegative with a positive sum. A negative weight is rejected before missing values are removed.</li>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_weighted_mean(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$weights</span><span class="ot">,</span></span>
@@ -862,7 +891,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$values</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$weights</code></td>
@@ -874,17 +903,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>float</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
 </section>
 <section id="stat_weighted_var" class="level3">
 <h3 class="anchored" data-anchor-id="stat_weighted_var"><code>stat_weighted_var()</code></h3>
-<p>Weighted variance; type ‘frequency’ (W - 1), ‘reliability’ (W - sum(w^2)/W) or ‘population’ (W). Negative weights reject before missing deletion. null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<p>Weighted variance: <code>type: 'frequency'</code> divides by W − 1, <code>'reliability'</code> by W − sum(w²)/W, and <code>'population'</code> by W, with W = sum(w).</p>
+<ul>
+<li>A negative weight is rejected before missing values are removed.</li>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_weighted_var(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$values</span><span class="ot">,</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$weights</span><span class="ot">,</span></span>
@@ -911,7 +945,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$values</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$weights</code></td>
@@ -923,23 +957,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$type</code></td>
 <td><code>string</code></td>
 <td><code>'frequency'</code></td>
-<td>‘frequency’ divides by W − 1, ‘reliability’ by W − sum(w²)/W, ‘population’ by W, with W = sum(w)</td>
+<td><code>'frequency'</code> divides by W − 1, <code>'reliability'</code> by W − sum(w²)/W, <code>'population'</code> by W, with W = sum(w)</td>
 </tr>
 <tr class="even">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>float</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
 </section>
 <section id="stat_cov" class="level3">
 <h3 class="anchored" data-anchor-id="stat_cov"><code>stat_cov()</code></h3>
-<p>Covariance; type ‘sample’ (n - 1) or ‘population’ (n). null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<p>Covariance of two aligned arrays: <code>type: 'sample'</code> divides by n − 1, and <code>'population'</code> by n.</p>
+<ul>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_cov(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span></span>
@@ -966,35 +1004,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$x</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$y</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Second variable, aligned with the first; null and NAN are missing</td>
+<td>Second variable, aligned with the first; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="odd">
 <td><code>$type</code></td>
 <td><code>string</code></td>
 <td><code>'sample'</code></td>
-<td>‘sample’ divides by n − 1, ‘population’ by n</td>
+<td><code>'sample'</code> divides by n − 1, <code>'population'</code> by n</td>
 </tr>
 <tr class="even">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>float</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
 </section>
 <section id="stat_cor" class="level3">
 <h3 class="anchored" data-anchor-id="stat_cor"><code>stat_cor()</code></h3>
-<p>Pearson correlation; NAN when either input is constant. null/NAN are missing: missing ‘raise’ (default) rejects them, ‘drop’ removes them (pairwise for two arrays). Nonfinite arithmetic raises 1003; constant-input correlation remains NAN.</p>
+<p>Pearson correlation of two aligned arrays.</p>
+<ul>
+<li>Returns <code>NAN</code> when either input is constant.</li>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_cor(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span></span>
@@ -1020,24 +1063,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$x</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$y</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Second variable, aligned with the first; null and NAN are missing</td>
+<td>Second variable, aligned with the first; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="odd">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>float</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#summaries">Details</a></p>
 </section>
 </section>
@@ -1045,10 +1088,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="smoothing-and-interpolation">Smoothing and interpolation</h2>
 <section id="stat_density" class="level3">
 <h3 class="anchored" data-anchor-id="stat_density"><code>stat_density()</code></h3>
-<p>Kernel density estimate as R’s density(): linear binning, FFT convolution, then interpolation onto n points from <code>from</code> to <code>to</code>. bw: ‘nrd0’ (default), ‘nrd’ or a number, multiplied by adjust. Kernels: ‘gaussian’, ‘epanechnikov’, ‘rectangular’, ‘triangular’, ‘biweight’, ‘cosine’, ‘optcosine’. Weights are not normalized; as in R, weights summing to one are renormalized after missing values are dropped. Data arrays: null/NAN are missing, rejected by missing ‘raise’ (default) or removed by ‘drop’; infinite values raise 1003.</p>
+<p>Kernel density estimate, like R’s <code>density()</code>.</p>
+<ul>
+<li>Bins the data linearly, convolves with the kernel by FFT, and interpolates onto <code>n</code> points from <code>from</code> to <code>to</code>.</li>
+<li><code>bw</code> is <code>nrd0</code>, <code>nrd</code>, or a positive number, multiplied by <code>adjust</code>.</li>
+<li>Weights are used as given; as in R, weights that sum to one are renormalized after missing values are removed.</li>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_density(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mixed</span> <span class="va">$bw</span> <span class="op">=</span> <span class="st">'nrd0'</span><span class="ot">,</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span><span class="op">|</span><span class="dt">float</span> <span class="va">$bw</span> <span class="op">=</span> <span class="st">'nrd0'</span><span class="ot">,</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$adjust</span> <span class="op">=</span> <span class="fl">1.0</span><span class="ot">,</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$kernel</span> <span class="op">=</span> <span class="st">'gaussian'</span><span class="ot">,</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$n</span> <span class="op">=</span> <span class="dv">512</span><span class="ot">,</span></span>
@@ -1078,13 +1128,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$x</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$bw</code></td>
-<td><code>mixed</code></td>
+<td><code>string\|float</code></td>
 <td><code>'nrd0'</code></td>
-<td>‘nrd0’, ‘nrd’ or a positive bandwidth</td>
+<td><code>'nrd0'</code>, <code>'nrd'</code>, or a positive bandwidth</td>
 </tr>
 <tr class="odd">
 <td><code>$adjust</code></td>
@@ -1096,7 +1146,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$kernel</code></td>
 <td><code>string</code></td>
 <td><code>'gaussian'</code></td>
-<td>‘gaussian’, ‘epanechnikov’, ‘rectangular’, ‘triangular’, ‘biweight’, ‘cosine’, or ‘optcosine’</td>
+<td><code>'gaussian'</code>, <code>'epanechnikov'</code>, <code>'rectangular'</code>, <code>'triangular'</code>, <code>'biweight'</code>, <code>'cosine'</code>, or <code>'optcosine'</code></td>
 </tr>
 <tr class="odd">
 <td><code>$n</code></td>
@@ -1108,13 +1158,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$from</code></td>
 <td><code>?float</code></td>
 <td><code>NULL</code></td>
-<td>Left end of the output grid; null extends the data range by cut bandwidths</td>
+<td>Left end of the output grid; <code>null</code> extends the data range by cut bandwidths</td>
 </tr>
 <tr class="odd">
 <td><code>$to</code></td>
 <td><code>?float</code></td>
 <td><code>NULL</code></td>
-<td>Right end of the output grid; null extends the data range by cut bandwidths</td>
+<td>Right end of the output grid; <code>null</code> extends the data range by cut bandwidths</td>
 </tr>
 <tr class="even">
 <td><code>$cut</code></td>
@@ -1126,23 +1176,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$weights</code></td>
 <td><code>?array</code></td>
 <td><code>NULL</code></td>
-<td>Nonnegative weights aligned with x, used as given; null weights all points equally</td>
+<td>Nonnegative weights aligned with <code>x</code>, used as given; <code>null</code> weights all points equally</td>
 </tr>
 <tr class="even">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>array{x: list&lt;float&gt;, y: list&lt;float&gt;, bw: float, n: int}</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#density-estimation-interpolation-and-the-ecdf">Details</a></p>
 </section>
 <section id="stat_bw_nrd0" class="level3">
 <h3 class="anchored" data-anchor-id="stat_bw_nrd0"><code>stat_bw_nrd0()</code></h3>
-<p>R’s bw.nrd0: 0.9 * min(sd, IQR/1.34) * n^(-1/5), with R’s fallbacks when that is zero. Data arrays: null/NAN are missing, rejected by missing ‘raise’ (default) or removed by ‘drop’; infinite values raise 1003.</p>
+<p>Silverman’s rule-of-thumb bandwidth, like R’s <code>bw.nrd0()</code>: 0.9 · min(sd, IQR/1.34) · n^(−1/5), with R’s fallbacks when that is zero.</p>
+<ul>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_bw_nrd0(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
@@ -1167,23 +1221,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$x</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>float</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#density-estimation-interpolation-and-the-ecdf">Details</a></p>
 </section>
 <section id="stat_bw_nrd" class="level3">
 <h3 class="anchored" data-anchor-id="stat_bw_nrd"><code>stat_bw_nrd()</code></h3>
-<p>R’s bw.nrd: 1.06 * min(sd, IQR/1.34) * n^(-1/5). Data arrays: null/NAN are missing, rejected by missing ‘raise’ (default) or removed by ‘drop’; infinite values raise 1003.</p>
+<p>Scott’s variation of the rule-of-thumb bandwidth, like R’s <code>bw.nrd()</code>: 1.06 · min(sd, IQR/1.34) · n^(−1/5).</p>
+<ul>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_bw_nrd(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'raise'</span><span class="ot">,</span></span>
@@ -1208,23 +1266,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$x</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>float</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#density-estimation-interpolation-and-the-ecdf">Details</a></p>
 </section>
 <section id="stat_approx" class="level3">
 <h3 class="anchored" data-anchor-id="stat_approx"><code>stat_approx()</code></h3>
-<p>Interpolate (x, y) at xout as R’s approx(): method ‘linear’ or ‘constant’ (f weights the right-hand value), rule 1 gives NAN outside [min(x), max(x)], rule 2 the nearest end value; tied x collapse by ties ‘mean’, ‘min’ or ‘max’. Data arrays: null/NAN are missing, rejected by missing ‘raise’ (default) or removed by ‘drop’; infinite values raise 1003.</p>
+<p>Interpolates the points (x, y) at <code>xout</code>, like R’s <code>approx()</code>.</p>
+<ul>
+<li><code>method: 'linear'</code> interpolates linearly; <code>'constant'</code> uses a step function in which <code>f</code> weights the right-hand value.</li>
+<li>Outside [min(x), max(x)], <code>rule: 1</code> returns <code>NAN</code> and <code>rule: 2</code> the value at the nearer end.</li>
+<li>Tied x values collapse by <code>ties</code>: <code>'mean'</code>, <code>'min'</code>, or <code>'max'</code>.</li>
+<li>A <code>null</code> or <code>NAN</code> in <code>xout</code> returns <code>NAN</code>.</li>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_approx(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span></span>
@@ -1255,59 +1321,64 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$x</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Abscissae of the points; null and NAN are missing</td>
+<td>Abscissae of the points; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$y</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Ordinates, aligned with x; null and NAN are missing</td>
+<td>Ordinates, aligned with <code>x</code>; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="odd">
 <td><code>$xout</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Evaluation points; null or NAN gives NAN</td>
+<td>Evaluation points; <code>null</code> or <code>NAN</code> gives <code>NAN</code></td>
 </tr>
 <tr class="even">
 <td><code>$method</code></td>
 <td><code>string</code></td>
 <td><code>'linear'</code></td>
-<td>‘linear’ or ‘constant’</td>
+<td><code>'linear'</code> or <code>'constant'</code></td>
 </tr>
 <tr class="odd">
 <td><code>$rule</code></td>
 <td><code>int</code></td>
 <td><code>1</code></td>
-<td>1 returns NAN outside the data range; 2 returns the value at the nearer end</td>
+<td>1 returns <code>NAN</code> outside the data range; 2 returns the value at the nearer end</td>
 </tr>
 <tr class="even">
 <td><code>$ties</code></td>
 <td><code>string</code></td>
 <td><code>'mean'</code></td>
-<td>‘mean’, ‘min’, or ‘max’ for tied x values</td>
+<td><code>'mean'</code>, <code>'min'</code>, or <code>'max'</code> for tied x values</td>
 </tr>
 <tr class="odd">
 <td><code>$f</code></td>
 <td><code>float</code></td>
 <td><code>0.0</code></td>
-<td>For method ‘constant’, the weight of the right-hand value, in [0, 1]</td>
+<td>For method <code>'constant'</code>, the weight of the right-hand value, in [0, 1]</td>
 </tr>
 <tr class="even">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>list&lt;float&gt;</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#density-estimation-interpolation-and-the-ecdf">Details</a></p>
 </section>
 <section id="stat_ecdf" class="level3">
 <h3 class="anchored" data-anchor-id="stat_ecdf"><code>stat_ecdf()</code></h3>
-<p>Empirical CDF of x at each q: the proportion of x at or below q, as R’s ecdf(x)(q). Data arrays: null/NAN are missing, rejected by missing ‘raise’ (default) or removed by ‘drop’; infinite values raise 1003.</p>
+<p>Empirical CDF of <code>x</code> at each <code>q</code>: the proportion of <code>x</code> at or below <code>q</code>, as R’s <code>ecdf(x)(q)</code>.</p>
+<ul>
+<li>A <code>null</code> or <code>NAN</code> in <code>q</code> returns <code>NAN</code>.</li>
+<li><code>null</code> and <code>NAN</code> are missing: <code>missing: 'raise'</code> rejects them, and <code>missing: 'drop'</code> removes them, pairwise for two arrays.</li>
+<li>Infinite input, or arithmetic that overflows, throws.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Phit\stat_ecdf(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$q</span><span class="ot">,</span></span>
@@ -1333,24 +1404,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$x</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Data; null and NAN are missing</td>
+<td>Data; <code>null</code> and <code>NAN</code> are missing</td>
 </tr>
 <tr class="even">
 <td><code>$q</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Evaluation points; null or NAN gives NAN</td>
+<td>Evaluation points; <code>null</code> or <code>NAN</code> gives <code>NAN</code></td>
 </tr>
 <tr class="odd">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'raise'</code></td>
-<td>‘raise’ rejects null and NAN; ‘drop’ removes them, pairwise for aligned inputs</td>
+<td><code>'raise'</code> rejects <code>null</code> and <code>NAN</code>; <code>'drop'</code> removes them, pairwise for aligned inputs</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>list&lt;float&gt;</code></p>
-<p><strong>Errors</strong> Input error (codes 1001–1003).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001, 1002, or 1003 for an input error.</p>
 <p><strong>See also</strong> <a href="../descriptive.html#density-estimation-interpolation-and-the-ecdf">Details</a></p>
 </section>
 </section>
@@ -1358,7 +1429,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="optimization-and-root-finding">Optimization and root finding</h2>
 <section id="optimize" class="level3">
 <h3 class="anchored" data-anchor-id="optimize"><code>optimize()</code></h3>
-<p>Minimize f on [lower, upper] (or maximize, with maximum: true) as R’s optimize(): Brent’s golden-section and parabolic search. Returns ‘minimum’ or ‘maximum’, and the objective f(x). f receives one float and returns an int or float; an exception from f propagates. Nonfinite values during the search are replaced by +/-PHP_FLOAT_MAX, as R does, with one E_WARNING.</p>
+<p>Minimizes <code>f</code> on [<code>lower</code>, <code>upper</code>], or maximizes it with <code>maximum: true</code>, like R’s <code>optimize()</code>.</p>
+<ul>
+<li>Uses Brent’s golden-section and parabolic search, step for step as R does.</li>
+<li>Returns <code>minimum</code> (or <code>maximum</code>) and <code>objective</code>, the value of <code>f</code> there.</li>
+<li><code>f</code> takes one float and returns an int or float. An exception thrown by <code>f</code> propagates.</li>
+<li>A nonfinite value during the search is replaced by the largest finite value, as in R, with one warning.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>Phit\optimize(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">callable</span> <span class="va">$f</span><span class="ot">,</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$lower</span><span class="ot">,</span></span>
@@ -1404,7 +1481,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$tol</code></td>
 <td><code>?float</code></td>
 <td><code>NULL</code></td>
-<td>Default PHP_FLOAT_EPSILON ** 0.25, as R</td>
+<td>Default <code>PHP_FLOAT_EPSILON</code> ** 0.25, as R</td>
 </tr>
 <tr class="odd">
 <td><code>$maximum</code></td>
@@ -1415,12 +1492,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>array{minimum: float, objective: float}\|array{maximum: float, objective: float}</code></p>
-<p><strong>Errors</strong> Input error (code 1001).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001 for an input error.</p>
 <p><strong>See also</strong> <a href="../reference-utilities.html#one-dimensional-optimization-and-root-finding">Details</a></p>
 </section>
 <section id="uniroot" class="level3">
 <h3 class="anchored" data-anchor-id="uniroot"><code>uniroot()</code></h3>
-<p>A root of f in [lower, upper] as R’s uniroot(): Brent’s method; f(lower) and f(upper) must not have the same sign. Returns the root, f(root), the iterations used and the estimated precision; E_WARNING and iter = maxiter when not converged. f receives one float and returns an int or float; an exception from f propagates. Nonfinite values during the search are replaced by +/-PHP_FLOAT_MAX, as R does, with one E_WARNING.</p>
+<p>Finds a root of <code>f</code> in [<code>lower</code>, <code>upper</code>], like R’s <code>uniroot()</code>.</p>
+<ul>
+<li>Uses Brent’s method, step for step as R does. <code>f(lower)</code> and <code>f(upper)</code> must not have the same sign.</li>
+<li>Returns <code>root</code>, <code>f_root</code>, <code>iter</code>, and <code>estim_prec</code>. When it runs out of iterations it warns, sets <code>iter</code> to <code>maxiter</code>, and returns its last estimate.</li>
+<li><code>f</code> takes one float and returns an int or float. An exception thrown by <code>f</code> propagates.</li>
+<li>A nonfinite value during the search is replaced by the largest finite value, as in R, with one warning.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Phit\uniroot(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">callable</span> <span class="va">$f</span><span class="ot">,</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$lower</span><span class="ot">,</span></span>
@@ -1466,7 +1549,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$tol</code></td>
 <td><code>?float</code></td>
 <td><code>NULL</code></td>
-<td>Default PHP_FLOAT_EPSILON ** 0.25, as R</td>
+<td>Default <code>PHP_FLOAT_EPSILON</code> ** 0.25, as R</td>
 </tr>
 <tr class="odd">
 <td><code>$maxiter</code></td>
@@ -1477,7 +1560,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Returns</strong> <code>array{root: float, f_root: float, iter: int, estim_prec: float}</code></p>
-<p><strong>Errors</strong> Input error (code 1001).</p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001 for an input error.</p>
 <p><strong>See also</strong> <a href="../reference-utilities.html#one-dimensional-optimization-and-root-finding">Details</a></p>
 
 

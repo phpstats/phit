@@ -547,13 +547,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="formula-models">Formula models</h2>
 <section id="fit_mixed_gaussian" class="level3">
 <h3 class="anchored" data-anchor-id="fit_mixed_gaussian"><code>fit_mixed_gaussian()</code></h3>
-<p>Gaussian mixed model from an lme4-style formula, like lme4::lmer(): fixed terms as in fit_ols and random bars (x | g), (x || g), (1 | g1) + (1 | g2), (1 | g1:g2), (1 | g1/g2) mapped onto the fit_mixed_gaussian_matrix core. REML by default. Groups and effects follow first appearance after deletion, not lme4’s sorted levels; terms keep formula order. Each random term’s effects_cond_var holds one k x k conditional covariance per group, as ranef(condVar = TRUE). Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are dropped with one E_WARNING (missing ‘raise’ rejects them); retained_rows/dropped_rows are original positions.</p>
+<p>Fits a Gaussian mixed model from an lme4 formula, like <code>lme4::lmer()</code>.</p>
+<ul>
+<li>Fixed terms are as in <code>fit_ols()</code>. Random terms can be <code>(x | g)</code>, <code>(x || g)</code>, <code>(1 | g1) + (1 | g2)</code>, <code>(1 | g1:g2)</code>, and <code>(1 | g1/g2)</code>.</li>
+<li>Fits by REML unless <code>reml</code> is false.</li>
+<li>Groups and effects follow first appearance after missing rows are dropped, not lme4’s sorted levels; terms keep formula order.</li>
+<li>Each random term’s <code>effects_cond_var</code> holds one k × k conditional covariance per group, as <code>ranef(condVar = TRUE)</code>.</li>
+<li>Rows with <code>null</code> or <code>NAN</code> in a variable the formula uses are dropped with one warning; <code>missing: 'raise'</code> rejects them instead. <code>retained_rows</code> and <code>dropped_rows</code> give the original row positions.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_gaussian(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mixed</span> <span class="va">$data</span><span class="ot">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="va">$reml</span> <span class="op">=</span> <span class="kw">true</span><span class="ot">,</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mixed</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">NULL</span><span class="ot">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">NULL</span><span class="ot">,</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">?</span><span class="dt">array</span> <span class="va">$start</span> <span class="op">=</span> <span class="kw">NULL</span><span class="ot">,</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$maxEvaluations</span> <span class="op">=</span> <span class="dv">20000</span><span class="ot">,</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$tolerance</span> <span class="op">=</span> <span class="fl">1.0E-7</span><span class="ot">,</span></span>
@@ -580,29 +587,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$formula</code></td>
 <td><code>string</code></td>
 <td>required</td>
-<td>R formula, e.g.&nbsp;‘y ~ log(x) + f * z + offset(log(t))’</td>
+<td>R formula, such as <code>'y ~ log(x) + f * z + offset(log(t))'</code></td>
 </tr>
 <tr class="even">
 <td><code>$data</code></td>
-<td><code>mixed</code></td>
+<td><code>array\|object</code></td>
 <td>required</td>
-<td>Named columns or factor descriptors; objects use toModelData(), else toColumns()</td>
+<td>Named columns or factor descriptors; objects use <code>toModelData()</code>, else <code>toColumns()</code></td>
 </tr>
 <tr class="odd">
 <td><code>$reml</code></td>
 <td><code>bool</code></td>
 <td><code>true</code></td>
-<td>true for REML, false for ML</td>
+<td><code>true</code> for REML, <code>false</code> for ML</td>
 </tr>
 <tr class="even">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'drop'</code></td>
-<td>‘drop’ removes rows with null or NAN in any variable the model uses and warns once; ‘raise’ rejects them</td>
+<td><code>'drop'</code> removes rows with <code>null</code> or <code>NAN</code> in any variable the model uses and warns once; <code>'raise'</code> rejects them</td>
 </tr>
 <tr class="odd">
 <td><code>$weights</code></td>
-<td><code>mixed</code></td>
+<td><code>array\|string\|null</code></td>
 <td><code>NULL</code></td>
 <td>Positive prior weights aligned with the original rows, or a column name</td>
 </tr>
@@ -610,7 +617,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$start</code></td>
 <td><code>?array</code></td>
 <td><code>NULL</code></td>
-<td>Starting relative covariance factors, in the units of the random columns; null starts diagonal factors at one and off-diagonals at zero</td>
+<td>Starting relative covariance factors, in the units of the random columns; <code>null</code> starts diagonal factors at one and off-diagonals at zero</td>
 </tr>
 <tr class="odd">
 <td><code>$maxEvaluations</code></td>
@@ -628,7 +635,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$optimizer</code></td>
 <td><code>string</code></td>
 <td><code>'bobyqa'</code></td>
-<td>‘bobyqa’ or ‘nelder_mead’</td>
+<td><code>'bobyqa'</code> or <code>'nelder_mead'</code></td>
 </tr>
 <tr class="even">
 <td><code>$objectiveTolerance</code></td>
@@ -680,17 +687,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  named<span class="ot">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
 <span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  predvars<span class="ot">:</span> <span class="dt">array</span>{levels<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;&gt;</span><span class="ot">,</span>poly<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">array</span>{alpha<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span>norm2<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span>}<span class="op">&gt;</span>}<span class="ot">,</span></span>
 <span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Errors</strong> Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.</p>
+<p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.</p>
 <p><strong>See also</strong> <a href="../mixed-models.html">Details</a> · <a href="../examples/mixed-model.html">Example</a></p>
 </section>
 <section id="fit_mixed_logistic" class="level3">
 <h3 class="anchored" data-anchor-id="fit_mixed_logistic"><code>fit_mixed_logistic()</code></h3>
-<p>Binomial logit random-intercept model from a formula, like lme4::glmer(family = binomial): exactly one (1 | g) term over the fit_mixed_logistic_matrix core (Laplace by default, adaptive quadrature with quadraturePoints &gt; 1). It fits only the binomial family with the logit link, so it takes no family or link. Responses as in fit_generalized_linear. random_effects_cond_var holds each conditional mode’s variance, as ranef(condVar = TRUE). Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are dropped with one E_WARNING (missing ‘raise’ rejects them); retained_rows/dropped_rows are original positions.</p>
+<p>Fits a binomial logit model with one random intercept from a formula, like <code>lme4::glmer(family = binomial)</code>.</p>
+<ul>
+<li>The formula has exactly one <code>(1 | g)</code> term. The model is binomial with the logit link only, so the function takes no family or link.</li>
+<li>Uses the Laplace approximation by default, and adaptive quadrature when <code>quadraturePoints</code> is above 1.</li>
+<li>Responses are as in <code>fit_generalized_linear()</code>.</li>
+<li><code>random_effects_cond_var</code> holds the variance of each conditional mode, as <code>ranef(condVar = TRUE)</code>.</li>
+<li>Rows with <code>null</code> or <code>NAN</code> in a variable the formula uses are dropped with one warning; <code>missing: 'raise'</code> rejects them instead. <code>retained_rows</code> and <code>dropped_rows</code> give the original row positions.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_logistic(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mixed</span> <span class="va">$data</span><span class="ot">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mixed</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">NULL</span><span class="ot">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">NULL</span><span class="ot">,</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$quadraturePoints</span> <span class="op">=</span> <span class="dv">1</span><span class="ot">,</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="va">$maxEvaluations</span> <span class="op">=</span> <span class="dv">20000</span><span class="ot">,</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$tolerance</span> <span class="op">=</span> <span class="fl">1.0E-7</span><span class="ot">,</span></span>
@@ -715,23 +729,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$formula</code></td>
 <td><code>string</code></td>
 <td>required</td>
-<td>R formula, e.g.&nbsp;‘y ~ log(x) + f * z + offset(log(t))’</td>
+<td>R formula, such as <code>'y ~ log(x) + f * z + offset(log(t))'</code></td>
 </tr>
 <tr class="even">
 <td><code>$data</code></td>
-<td><code>mixed</code></td>
+<td><code>array\|object</code></td>
 <td>required</td>
-<td>Named columns or factor descriptors; objects use toModelData(), else toColumns()</td>
+<td>Named columns or factor descriptors; objects use <code>toModelData()</code>, else <code>toColumns()</code></td>
 </tr>
 <tr class="odd">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'drop'</code></td>
-<td>‘drop’ removes rows with null or NAN in any variable the model uses and warns once; ‘raise’ rejects them</td>
+<td><code>'drop'</code> removes rows with <code>null</code> or <code>NAN</code> in any variable the model uses and warns once; <code>'raise'</code> rejects them</td>
 </tr>
 <tr class="even">
 <td><code>$weights</code></td>
-<td><code>mixed</code></td>
+<td><code>array\|string\|null</code></td>
 <td><code>NULL</code></td>
 <td>Positive prior weights aligned with the original rows, or a column name</td>
 </tr>
@@ -807,7 +821,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>  named<span class="ot">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
 <span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>  predvars<span class="ot">:</span> <span class="dt">array</span>{levels<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;&gt;</span><span class="ot">,</span>poly<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">array</span>{alpha<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span>norm2<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span>}<span class="op">&gt;</span>}<span class="ot">,</span></span>
 <span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Errors</strong> Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.</p>
+<p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.</p>
 <p><strong>See also</strong> <a href="../mixed-models.html#a-binomial-random-intercept-model">Details</a></p>
 </section>
 </section>
@@ -815,7 +829,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="matrix-models">Matrix models</h2>
 <section id="fit_mixed_gaussian_matrix" class="level3">
 <h3 class="anchored" data-anchor-id="fit_mixed_gaussian_matrix"><code>fit_mixed_gaussian_matrix()</code></h3>
-<p>Gaussian mixed model on a numeric design and explicit random terms, like lme4::lmer(). Predictor matrix: rows are observations. A fixed intercept is prepended by default. null/NAN rows follow the missing policy; weights/offset are aligned with original rows.</p>
+<p>Fits a Gaussian mixed model on a numeric design with explicit random terms, like <code>lme4::lmer()</code>.</p>
+<ul>
+<li>Fits by ML unless <code>reml</code> is true.</li>
+<li>An intercept column is prepended unless <code>intercept</code> is false, in which case <code>x</code> is used exactly.</li>
+<li>Rows with <code>null</code> or <code>NAN</code> in <code>x</code>, <code>y</code>, or another aligned input are dropped with one warning; <code>missing: 'raise'</code> rejects them instead. <code>retained_rows</code> and <code>dropped_rows</code> give the original row positions.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_gaussian_matrix(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span></span>
@@ -851,31 +870,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$x</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing</td>
+<td>Predictor matrix: one row per observation and one numeric column per predictor; <code>null</code> or <code>NAN</code> is missing</td>
 </tr>
 <tr class="even">
 <td><code>$y</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Numeric response, one value per row; null or NAN is missing</td>
+<td>Numeric response, one value per row; <code>null</code> or <code>NAN</code> is missing</td>
 </tr>
 <tr class="odd">
 <td><code>$random</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Random terms, each an array with ‘z’ (n × k design), ‘groups’ (one label per row), and optional ‘correlated’ (default true; false is (x || g))</td>
+<td>Random terms, each an array with <code>'z'</code> (n × k design), <code>'groups'</code> (one label per row), and optional <code>'correlated'</code> (default <code>true</code>; <code>false</code> is (x || g))</td>
 </tr>
 <tr class="even">
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'drop'</code></td>
-<td>‘drop’ removes rows with null or NAN in any variable the model uses and warns once; ‘raise’ rejects them</td>
+<td><code>'drop'</code> removes rows with <code>null</code> or <code>NAN</code> in any variable the model uses and warns once; <code>'raise'</code> rejects them</td>
 </tr>
 <tr class="odd">
 <td><code>$reml</code></td>
 <td><code>bool</code></td>
 <td><code>false</code></td>
-<td>true for REML, false for ML</td>
+<td><code>true</code> for REML, <code>false</code> for ML</td>
 </tr>
 <tr class="even">
 <td><code>$weights</code></td>
@@ -887,13 +906,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$offset</code></td>
 <td><code>?array</code></td>
 <td><code>NULL</code></td>
-<td>Known part of the linear predictor, aligned with the rows; null is zero</td>
+<td>Known part of the linear predictor, aligned with the rows; <code>null</code> is zero</td>
 </tr>
 <tr class="even">
 <td><code>$start</code></td>
 <td><code>?array</code></td>
 <td><code>NULL</code></td>
-<td>Starting relative covariance factors, in the units of the random columns; null starts diagonal factors at one and off-diagonals at zero</td>
+<td>Starting relative covariance factors, in the units of the random columns; <code>null</code> starts diagonal factors at one and off-diagonals at zero</td>
 </tr>
 <tr class="odd">
 <td><code>$maxEvaluations</code></td>
@@ -911,7 +930,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$optimizer</code></td>
 <td><code>string</code></td>
 <td><code>'bobyqa'</code></td>
-<td>‘bobyqa’ or ‘nelder_mead’</td>
+<td><code>'bobyqa'</code> or <code>'nelder_mead'</code></td>
 </tr>
 <tr class="even">
 <td><code>$objectiveTolerance</code></td>
@@ -961,12 +980,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  evaluations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
 <span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  random<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">array</span>{covariance<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span>effects<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span>effects_cond_var<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;&gt;</span><span class="ot">,</span>group_labels<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">|</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span>group_sizes<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
 <span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Errors</strong> Statistical or input error (codes 1001–1008).</p>
+<p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1008 for an input or statistical error.</p>
 <p><strong>See also</strong> <a href="../reference-models.html#general-gaussian-mixed-model-call">Details</a></p>
 </section>
 <section id="fit_mixed_gaussian_intercept_matrix" class="level3">
 <h3 class="anchored" data-anchor-id="fit_mixed_gaussian_intercept_matrix"><code>fit_mixed_gaussian_intercept_matrix()</code></h3>
-<p>Gaussian model with one random intercept, fitted by ML on a numeric design. Predictor matrix: rows are observations. A fixed intercept is prepended by default. null/NAN rows follow the missing policy; weights/offset are aligned with original rows.</p>
+<p>Fits a Gaussian model with one random intercept by ML on a numeric design.</p>
+<ul>
+<li>Has no random slopes, additional grouping terms, offsets, weights, or REML; use <code>fit_mixed_gaussian_matrix()</code> for those.</li>
+<li>An intercept column is prepended unless <code>intercept</code> is false, in which case <code>x</code> is used exactly.</li>
+<li>Rows with <code>null</code> or <code>NAN</code> in <code>x</code>, <code>y</code>, or another aligned input are dropped with one warning; <code>missing: 'raise'</code> rejects them instead. <code>retained_rows</code> and <code>dropped_rows</code> give the original row positions.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_gaussian_intercept_matrix(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span></span>
@@ -994,13 +1018,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$x</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing</td>
+<td>Predictor matrix: one row per observation and one numeric column per predictor; <code>null</code> or <code>NAN</code> is missing</td>
 </tr>
 <tr class="even">
 <td><code>$y</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Numeric response, one value per row; null or NAN is missing</td>
+<td>Numeric response, one value per row; <code>null</code> or <code>NAN</code> is missing</td>
 </tr>
 <tr class="odd">
 <td><code>$groups</code></td>
@@ -1012,7 +1036,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'drop'</code></td>
-<td>‘drop’ removes rows with null or NAN in any variable the model uses and warns once; ‘raise’ rejects them</td>
+<td><code>'drop'</code> removes rows with <code>null</code> or <code>NAN</code> in any variable the model uses and warns once; <code>'raise'</code> rejects them</td>
 </tr>
 <tr class="odd">
 <td><code>$intercept</code></td>
@@ -1057,12 +1081,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>  icc<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
 <span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>  boundary<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
 <span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Errors</strong> Statistical or input error (codes 1001–1008).</p>
+<p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1008 for an input or statistical error.</p>
 <p><strong>See also</strong> <a href="../reference-models.html#gaussian-random-intercept-mixed-model">Details</a></p>
 </section>
 <section id="fit_mixed_logistic_matrix" class="level3">
 <h3 class="anchored" data-anchor-id="fit_mixed_logistic_matrix"><code>fit_mixed_logistic_matrix()</code></h3>
-<p>Binomial logit model with one random intercept on a numeric design, like lme4::glmer(family = binomial). Predictor matrix: rows are observations. A fixed intercept is prepended by default. null/NAN rows follow the missing policy; weights/offset are aligned with original rows.</p>
+<p>Fits a binomial logit model with one random intercept on a numeric design, like <code>lme4::glmer(family = binomial)</code>.</p>
+<ul>
+<li>Uses the Laplace approximation by default, and adaptive quadrature when <code>quadraturePoints</code> is above 1.</li>
+<li>An intercept column is prepended unless <code>intercept</code> is false, in which case <code>x</code> is used exactly.</li>
+<li>Rows with <code>null</code> or <code>NAN</code> in <code>x</code>, <code>y</code>, or another aligned input are dropped with one warning; <code>missing: 'raise'</code> rejects them instead. <code>retained_rows</code> and <code>dropped_rows</code> give the original row positions.</li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_mixed_logistic_matrix(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$x</span><span class="ot">,</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$y</span><span class="ot">,</span></span>
@@ -1095,13 +1124,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$x</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>Predictor matrix: one row per observation and one numeric column per predictor; null or NAN is missing</td>
+<td>Predictor matrix: one row per observation and one numeric column per predictor; <code>null</code> or <code>NAN</code> is missing</td>
 </tr>
 <tr class="even">
 <td><code>$y</code></td>
 <td><code>array</code></td>
 <td>required</td>
-<td>0/1 outcomes, or proportions with integer trial weights; null or NAN is missing</td>
+<td>0/1 outcomes, or proportions with integer trial weights; <code>null</code> or <code>NAN</code> is missing</td>
 </tr>
 <tr class="odd">
 <td><code>$groups</code></td>
@@ -1113,19 +1142,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$missing</code></td>
 <td><code>string</code></td>
 <td><code>'drop'</code></td>
-<td>‘drop’ removes rows with null or NAN in any variable the model uses and warns once; ‘raise’ rejects them</td>
+<td><code>'drop'</code> removes rows with <code>null</code> or <code>NAN</code> in any variable the model uses and warns once; <code>'raise'</code> rejects them</td>
 </tr>
 <tr class="odd">
 <td><code>$weights</code></td>
 <td><code>?array</code></td>
 <td><code>NULL</code></td>
-<td>Positive integer trial counts, at most 1,000,000 per row; null is one trial per row</td>
+<td>Positive integer trial counts, at most 1,000,000 per row; <code>null</code> is one trial per row</td>
 </tr>
 <tr class="even">
 <td><code>$offset</code></td>
 <td><code>?array</code></td>
 <td><code>NULL</code></td>
-<td>Known part of the linear predictor, aligned with the rows; null is zero</td>
+<td>Known part of the linear predictor, aligned with the rows; <code>null</code> is zero</td>
 </tr>
 <tr class="odd">
 <td><code>$quadraturePoints</code></td>
@@ -1196,7 +1225,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>  boundary<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
 <span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>  singular<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
 <span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Errors</strong> Statistical or input error (codes 1001–1008).</p>
+<p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1008 for an input or statistical error.</p>
 <p><strong>See also</strong> <a href="../reference-models.html#binomial-random-intercept-ml">Details</a></p>
 
 

@@ -55,7 +55,7 @@ $smoothing=[
   'return'=>'array{x: list<float>, y: list<float>, bw: float, n: int}'],
  'Phit\stat_bw_nrd0'=>['summary'=>"R's bw.nrd0: 0.9 * min(sd, IQR/1.34) * n^(-1/5), with R's fallbacks when that is zero.",'return'=>null],
  'Phit\stat_bw_nrd'=>['summary'=>"R's bw.nrd: 1.06 * min(sd, IQR/1.34) * n^(-1/5).",'return'=>null],
- 'Phit\stat_approx'=>['summary'=>"Interpolate (x, y) at xout as R's approx(): method 'linear' or 'constant' (f weights the right-hand value),\n * rule 1 gives NAN outside [min(x), max(x)], rule 2 the nearest end value; tied x collapse by ties 'mean', 'min' or 'max'.",
+ 'Phit\stat_approx'=>['summary'=>"Interpolate (x, y) at xout as R's approx(): method 'linear' or 'constant' (f weights the right-hand value),\n * rule 1 gives NAN outside [min(x), max(x)], rule 2 the nearest end value; tied x collapse by ties 'mean', 'min', or 'max'.",
   'return'=>'list<float>'],
  'Phit\stat_ecdf'=>['summary'=>"Empirical CDF of x at each q: the proportion of x at or below q, as R's ecdf(x)(q).",'return'=>'list<float>'],
 ];
@@ -135,21 +135,21 @@ foreach ($functions as $name) {
   $contract=$formulas[$name];
   $api[$alias]['result_keys']=array_map(fn($k)=>rtrim($k,'?'),array_keys($contract['result']));sort($api[$alias]['result_keys']);
   $text.="/**\n * {$contract['summary']}\n * Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are\n * dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.\n";
-  $matrix=$alias==='Phit\fit_ols'?' (deprecated until 0.5: a matrix x)':'';
-  $text.=" * @param string".($matrix?'|array<array<int|float|null>>':'')." \$formula R formula, e.g. 'y ~ log(x) + f * z + offset(log(t))'$matrix\n";
-  $text.=" * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object".($matrix?'|array<int|float|null>':'')." \$data Named columns or factor descriptors; objects use toModelData(), else toColumns()".($matrix?' (deprecated: y)':'')."\n";
-  if($name==='Phit\fit_generalized_linear'||$alias==='Phit\fit_glmer')$text.=" * @param string \$family 'gaussian', 'binomial' or 'poisson'\n * @param string \$link '' (canonical), 'identity', 'logit', 'probit' or 'log'\n";
+  $matrix=$alias==='Phit\fit_ols'?'; an array here is the deprecated matrix form':'';
+  $text.=" * @param string".($matrix?'|array<array<int|float|null>>':'')." \$formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'$matrix\n";
+  $text.=" * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object".($matrix?'|array<int|float|null>':'')." \$data Named columns or factor descriptors; objects use toModelData(), else toColumns()".($matrix?'':'')."\n";
+  if($name==='Phit\fit_generalized_linear'||$alias==='Phit\fit_glmer')$text.=" * @param string \$family 'gaussian', 'binomial', or 'poisson'\n * @param string \$link '' (canonical), 'identity', 'logit', 'probit', or 'log'\n";
   if($name!=='Phit\model_matrix')$text.=" * @param array<int|float|null>|string|null \$weights Positive prior weights aligned with the original rows, or a column name\n";
-  if($matrix)$text.=" * @param array<int|float|null>|null \$offset Deprecated matrix form only; in a formula write offset()\n * @param bool \$intercept Deprecated matrix form only; in a formula write - 1\n * @param array<array<int|float|null>>|null \$x Deprecated: use Phit\\fit_ols_matrix()\n * @param array<int|float|null>|null \$y Deprecated: use Phit\\fit_ols_matrix()\n";
+  if($matrix)$text.=" * @param array<int|float|null>|null \$offset Deprecated matrix form; in a formula, write offset()\n * @param bool \$intercept Deprecated matrix form; in a formula, write - 1\n * @param array<array<int|float|null>>|null \$x Deprecated: use Phit\\fit_ols_matrix()\n * @param array<int|float|null>|null \$y Deprecated: use Phit\\fit_ols_matrix()\n";
   $text.=" * @return array{\n";
   foreach($contract['result'] as $key=>$type)$text.=" *   $key: $type,\n";
   $text.=" * }\n * @throws \\Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.\n */\n";
  } elseif ($name==='Phit\predict') {
   $api[$alias]['result_keys']=array_map(fn($k)=>rtrim($k,'?'),array_keys($predict['result']));sort($api[$alias]['result_keys']);
   $text.="/**\n * {$predict['summary']}\n";
-  $text.=" * @param array<string,mixed> \$fit A formula fit result (needs formula, coefficients, covariance, columns and predvars)\n";
+  $text.=" * @param array<string,mixed> \$fit A formula fit result, with the keys `formula`, `coefficients`, `covariance`, `columns`, and `predvars`\n";
   $text.=" * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object \$newdata Named columns, as for the fit; the response may be absent\n";
-  $text.=" * @param string \$type 'link' (linear predictor) or 'response'\n * @param string \$interval 'none', 'confidence' or 'prediction'\n * @param bool \$random Mixed fits: include random effects (lme4 re.form = NULL) or not (re.form = NA)\n";
+  $text.=" * @param string \$type 'link' (linear predictor) or 'response'\n * @param string \$interval 'none', 'confidence', or 'prediction'\n * @param bool \$random Mixed fits: include the random effects of known groups, as lme4's `re.form = NULL`; false predicts at the population level, as `re.form = NA`\n";
   $text.=" * @return array{\n";
   foreach($predict['result'] as $key=>$type)$text.=" *   $key: $type,\n";
   $text.=" * }\n * @throws \\Exception Input error (1001), malformed fit, new levels, or unsupported options (1007).\n */\n";
@@ -166,7 +166,7 @@ foreach ($functions as $name) {
    $type=(string)$p->getType();
    if (in_array($p->getName(),['xout','q'],true)) $text.=' * @param array<int|float|null> $'.$p->getName()." Evaluation points; null or NAN gives NAN\n";
    elseif ($type==='array'||$type==='?array') $text.=' * @param array<int|float|null>'.($type==='?array'?'|null':'').' $'.$p->getName()."\n";
-   elseif ($p->getName()==='bw') $text.=" * @param string|float \$bw 'nrd0', 'nrd' or a positive bandwidth\n";
+   elseif ($p->getName()==='bw') $text.=" * @param string|float \$bw 'nrd0', 'nrd', or a positive bandwidth\n";
   }
   if ($smoothing[$name]['return']) $text.=" * @return {$smoothing[$name]['return']}\n";
   $text.=" * @throws \\Exception Input error (codes 1001–1003).\n */\n";
@@ -238,6 +238,30 @@ foreach(get_declared_classes() as $class){
  }
  $text=rtrim($text)."\n}\n\n";
 }
+// Replace each function's description and error line with the text in scripts/php-docs.php. A deprecated alias
+// takes its replacement's text.
+$docs=require __DIR__.'/php-docs.php';
+$text=preg_replace_callback('~/\*\*((?:(?!\*/).)*?)\*/\nfunction (\w+)\(~s',function(array $m)use($docs):string{
+ [$all,$body,$function]=$m;
+ $target=preg_match('~@deprecated .*?\\\\?Phit\\\\(\w+)\(\)~',$body,$d)?$d[1]:$function;
+ if(isset($docs['descriptions'][$target])){
+  $lines=$docs['descriptions'][$target];
+ }elseif(preg_match('~^dist_(nbinom_mu|[a-z]+?)_((?:log)?(?:pdf|pmf|cdf|sf)|quantile|rng)(_array)?$~',$target,$f)&&isset($docs['families'][$f[1]])){
+  $family=$docs['families'][$f[1]];
+  if($f[2]==='rng')$lines=['Seeded samples from '.$family.'.','- Returns a list of `n` floats; discrete counts are floats.',$docs['stream']];
+  else{[$sentence,$note]=$docs['operations'][$f[2]];$lines=array_values(array_filter([sprintf($sentence,$family),$note,$f[3]??''?$docs['batch']:null]));}
+ }else throw new RuntimeException("No description for $function");
+ $group=match(true){
+  str_starts_with($target,'dist_')&&in_array($target,['dist_uniform_rng','dist_categorical_rng','dist_categorical_rows_rng'],true),$target==='permutation_rng'=>'sampler',
+  str_ends_with($target,'_rng')=>'dist_rng',str_starts_with($target,'dist_')=>'dist',
+  in_array($target,['fit_ols','fit_generalized_linear','fit_mixed_gaussian','fit_mixed_logistic','model_matrix'],true)=>'formula',
+  str_starts_with($target,'fit_')=>'matrix',str_starts_with($target,'stat_')=>'stat',str_starts_with($target,'draws_')=>'draws',
+  in_array($target,['optimize','uniroot'],true)=>'optimize',default=>$target};
+ [$class,$error]=$docs['throws'][$group]??throw new RuntimeException("No error text for $function");
+ $tags=substr($body,strpos($body,"\n * @"));
+ $tags=preg_replace('~\n \* @throws [^\n]*~',"\n * @throws $class $error",$tags);
+ return "/**\n * ".implode("\n * ",$lines).$tags."*/\nfunction $function(";
+},$text);
 // Describe every parameter: a docblock line that ends at the parameter name gets the description from
 // scripts/php-param-docs.php, and a parameter without a line gets one, typed from the signature.
 $paramDocs=require __DIR__.'/php-param-docs.php';
