@@ -99,8 +99,13 @@ $tokens = ['a', 'b c', '1', '0', '-0', '+5', '007', '-07', '1,234', '1,,2', '1,'
     '#', '# note', "'", "'s'", ';', "\xEF\xBB\xBF", "\xC3\xA9", "\0", "\v", "\r"];
 $separators = [',', ',', ',', ';', "\t", ' '];
 $ends = ["\n", "\n", "\n", "\r\n", "\r", ''];
-mt_srand((int) (getenv('CSV_FUZZ_SEED') ?: 20261016));
-$cases = (int) (getenv('CSV_FUZZ_CASES') ?: 3000);
+/** An integer setting from the environment; 0 is a value, not unset. */
+function setting(string $name, int $default): int {
+    $value = getenv($name);
+    return $value === false || $value === '' ? $default : (int) $value;
+}
+mt_srand(setting('CSV_FUZZ_SEED', 20261016));
+$cases = setting('CSV_FUZZ_CASES', 3000);
 for ($case = 0; $case < $cases; $case++) {
     $delimiter = $separators[mt_rand(0, count($separators) - 1)];
     $rows = [];
@@ -214,7 +219,7 @@ function nativeChunks(string $path, int $size, array $options, int $blockSize, a
     return $events;
 }
 // DataFrame::csvChunks() arrived in phibble 9ac2b0d.
-$chunkCases = method_exists(DataFrame::class, 'csvChunks') ? (int) (getenv('CSV_CHUNK_CASES') ?: 2000) : 0;
+$chunkCases = method_exists(DataFrame::class, 'csvChunks') ? setting('CSV_CHUNK_CASES', 2000) : 0;
 for ($case = 0; $case < $chunkCases; $case++) {
     $delimiter = $separators[mt_rand(0, count($separators) - 1)];
     $end = $ends[mt_rand(0, count($ends) - 1)];
@@ -252,6 +257,13 @@ for ($case = 0; $case < $chunkCases; $case++) {
     // phibble rejects some options (a types string of the wrong length) before
     // reading; it never asks the native reader for those.
     if (($php[0] ?? null) === ['error']) continue;
+    // phit's reader has no time type: phibble guesses time columns again after reading natively
+    // (NativeCsv::finish()), which compareReaders() covers. Raw CsvReader chunks cannot match them.
+    $time = false;
+    foreach ($php as $event) {
+        if ($event[0] === 'chunk' && in_array('time', array_column($event[2], 0), true)) $time = true;
+    }
+    if ($time) continue;
     $rust = nativeChunks($path, $size, $options, $blockSize, $names);
     check($php === $rust, "chunks differ: chunk case $case ".json_encode(['text' => $text, 'options' => $options, 'size' => $size, 'block' => $blockSize], JSON_INVALID_UTF8_SUBSTITUTE)
         ."\nphp:    ".json_encode($php, JSON_INVALID_UTF8_SUBSTITUTE)."\nnative: ".json_encode($rust, JSON_INVALID_UTF8_SUBSTITUTE));
