@@ -279,7 +279,9 @@ def build():
         lambda c: f"n = {c['n']:,} draws, p = {c['p']}")
     benchmarks += ['site/benchmarks/distributions.json', 'site/benchmarks/draws.json']
     # Written by bench/run.py, not by this script.
-    benchmarks += ['site/benchmarks/ols-workload.json', 'site/benchmarks/mixed-workload.json']
+    benchmarks += [f'site/benchmarks/{w}-workload.json'
+                   for w in ['ols', 'mixed', 'logistic', 'probit', 'mixed-logistic', 'distributions']
+                   if (SITE / 'benchmarks' / f'{w}-workload.json').is_file()]
     for slug, title, peers in [('ols', 'OLS', 'statsmodels'), ('logistic', 'Logistic regression', 'statsmodels'),
                                ('probit', 'Probit regression', 'statsmodels'), ('poisson', 'Poisson regression', 'statsmodels'),
                                ('lmm', 'Gaussian random intercept', 'statsmodels'),
