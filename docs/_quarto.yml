@@ -26,7 +26,6 @@ project:
     - verifications/compare_ols.py
     - verifications/ols.R
     - verifications/ols.php
-    - benchmarks/figures/
     - data/schools.csv
     - data/lmm/*.csv
     - data/lmm/sources.json

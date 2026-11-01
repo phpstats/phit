@@ -2,17 +2,14 @@
 title: "Figure conventions and reproducibility"
 ---
 
-Documentation figures are drawn with **R and ggplot2**, from one shared theme in
+Walkthrough figures are drawn with **R and ggplot2**, from one shared theme in
 `figures/style.R` and the figure jobs in `figures/render.R`. The walkthroughs
-compute with Python and pass the points to R for drawing. The extension itself has
-no graphics or R dependency.
+compute with Python and pass the points to R for drawing. Benchmark and
+verification charts are drawn by phpstats.org from the evidence records. The
+extension itself has no graphics or R dependency.
 
 ## Visual conventions
 
-- Language comparisons keep **R, Python, PHP** in that order. Python is labeled
-  statsmodels or SciPy reference to identify the actual implementation.
-- R uses blue circles (#0072B2); Python uses orange triangles (#D55E00); PHP uses
-  green squares (#009E73). Color and shape reinforce the labels.
 - Conceptual figures use blue for the reference/population curve, green for the
   conditional/native curve, orange for an approximation or boundary, and gray for
   observations. Their legends describe the statistical quantity rather than imply
@@ -20,15 +17,8 @@ no graphics or R dependency.
 - Use a white background, common sans-serif type, restrained grids and explicit
   quantity/unit labels. Titles state what is shown; captions state the data or
   approximation, transformations and relevant limits.
-- Bar charts start at zero. Benchmark facets use their own labeled linear scales
-  and show median bars plus actual timing repetitions. Missing memory is labeled
-  unrecorded, not plotted as measured zero. A measured time of zero is marked 0*
-  because timer resolution can hide a short fit.
-- Log scales are explicit and reserved for quantities spanning orders of magnitude,
-  such as integration errors. The 1e-13 display floor in the quadrature-error plot
-  is disclosed; it never changes stored numerical measurements.
-- Error-versus-reference figures use a zero reference line and label any unit
-  multiplier. Agreement plots are not residual or model-adequacy diagnostics.
+- Bar charts start at zero. Log scales are explicit and reserved for quantities
+  spanning orders of magnitude.
 
 Each figure is saved as an **SVG** with selectable text and a **160-dpi PNG**,
 at fixed dimensions recorded in the [figure manifest](figures/manifest.json). The
@@ -50,19 +40,15 @@ From the repository root:
 
 ```sh
 Rscript docs/figures/render.R --all
-# Or render an individual family/figure:
-Rscript docs/figures/render.R ols
-Rscript docs/figures/render.R approximation
-Rscript docs/figures/render.R sleepstudy
+# Or one figure:
+Rscript docs/figures/render.R profile
+Rscript docs/figures/render.R posterior
 ./scripts/render-docs
 ```
 
-- The renderer reads saved benchmark and reference reports and the points in
-  `figures/data/`. It does not call estimators, regenerate fixtures, or run
-  timings. Refresh the plots when a numerical report changes; a style change
-  does not need new timings.
-- Profile and posterior plots use points exported by the executable walkthroughs.
-  Re-executing those pages updates their JSON point snapshots and figures.
+- The renderer reads the points in `figures/data/`, which the executable
+  walkthroughs export. It does not call estimators or regenerate fixtures.
+  Re-executing those pages updates the point snapshots and figures.
 - SVGs are embedded with namespaced clip IDs, so figures on one page do not
   interfere.
 - An ordinary site render reuses frozen outputs and saved images. Re-executing
@@ -72,17 +58,12 @@ The [manifest](figures/manifest.json) records each input's path and MD5, the ima
 hashes and dimensions, the renderer and theme hashes, the R version, the platform,
 and the direct package versions. [The R package record](figures/r-packages.json)
 adds the transitive dependency versions. Other versions may not reproduce the
-figures byte for byte. The data's provenance stays in the verification records.
+figures byte for byte.
 
 ## Existing figure coverage
 
 The renderer draws:
 
-- the five fixed-effect and Gaussian random-intercept benchmarks, and the
-  binomial mixed-model benchmark
-- Gaussian likelihood profiles, published-data agreement, and sleepstudy random
-  slopes
-- binomial mixed-model integration error, node sensitivity, and conditional
-  posterior shape
-
-SVG and PNG downloads are kept next to their input records.
+- `profile`: the Gaussian likelihood profile in the [random-intercept walkthrough](notebooks/lmm-math.qmd)
+- `posterior`: the conditional random-intercept distribution in the
+  [binomial walkthrough](notebooks/logistic-mixed-math.qmd)
