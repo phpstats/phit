@@ -27,7 +27,6 @@ project:
     - verifications/ols.R
     - verifications/ols.php
     - benchmarks/figures/
-    - benchmarks/plots.py
     - data/schools.csv
     - data/lmm/*.csv
     - data/lmm/sources.json
@@ -101,77 +100,28 @@ website:
       - section: "Compatibility and limitations"
         contents:
           - r-compatibility.qmd
-      - section: "Benchmarks and verification"
+      - section: "Mathematics"
         contents:
-          - verification.qmd
-          - href: verifications/distributions.qmd
-            text: "Distributions: verification"
-          - href: benchmarks/distributions.qmd
-            text: "Distributions: performance"
-          - href: benchmarks/rng.qmd
-            text: "Seeded sampling: performance"
-          - href: benchmarks/draws.qmd
-            text: "Posterior draws: performance"
-          - href: verifications/ols.qmd
-            text: "OLS: verification"
-          - href: notebooks/ols-verification.qmd
-            text: "OLS: R and statsmodels comparison"
-          - href: benchmarks/ols.qmd
-            text: "OLS: performance"
-          - href: verifications/logistic.qmd
-            text: "Logistic: verification"
-          - href: notebooks/logistic-verification.qmd
-            text: "Logistic: R and statsmodels comparison"
-          - href: benchmarks/logistic.qmd
-            text: "Logistic: performance"
-          - href: verifications/probit.qmd
-            text: "Probit: verification"
-          - href: notebooks/probit-verification.qmd
-            text: "Probit: R and statsmodels comparison"
-          - href: benchmarks/probit.qmd
-            text: "Probit: performance"
-          - href: verifications/poisson.qmd
-            text: "Poisson: verification"
-          - href: notebooks/poisson-verification.qmd
-            text: "Poisson: R and statsmodels comparison"
-          - href: benchmarks/poisson.qmd
-            text: "Poisson: performance"
-          - href: verifications/lmm.qmd
-            text: "Gaussian mixed: verification"
-          - href: notebooks/lmm-verification.qmd
-            text: "Gaussian mixed: synthetic comparison"
-          - href: notebooks/lmm-public-verification.qmd
-            text: "Gaussian mixed: published data"
-          - href: notebooks/r-compatibility.qmd
-            text: "Gaussian mixed: lme4 optimizer audit"
-          - href: benchmarks/lmm.qmd
-            text: "Gaussian mixed: performance"
-          - href: notebooks/logistic-mixed-verification.qmd
-            text: "Binomial mixed: verification"
-          - href: benchmarks/logistic-mixed.qmd
-            text: "Binomial mixed: performance"
+          - href: notebooks/index.qmd
+            text: "Walkthroughs"
+          - href: notebooks/ols-math.qmd
+            text: "OLS"
+          - href: ols-math.qmd
+            text: "OLS: Rust implementation"
+          - href: notebooks/logistic-math.qmd
+            text: "Logistic regression"
+          - href: notebooks/probit-math.qmd
+            text: "Probit regression"
+          - href: notebooks/poisson-math.qmd
+            text: "Poisson regression"
+          - href: notebooks/lmm-math.qmd
+            text: "Gaussian random intercept"
+          - href: notebooks/lmm-general-math.qmd
+            text: "Random slopes and REML"
+          - href: notebooks/logistic-mixed-math.qmd
+            text: "Binomial random intercept"
           - href: data/lmm/index.qmd
             text: "Published data sets"
-          - section: "Mathematics"
-            contents:
-              - href: notebooks/index.qmd
-                text: "Walkthroughs"
-              - href: notebooks/ols-math.qmd
-                text: "OLS"
-              - href: ols-math.qmd
-                text: "OLS: Rust implementation"
-              - href: notebooks/logistic-math.qmd
-                text: "Logistic regression"
-              - href: notebooks/probit-math.qmd
-                text: "Probit regression"
-              - href: notebooks/poisson-math.qmd
-                text: "Poisson regression"
-              - href: notebooks/lmm-math.qmd
-                text: "Gaussian random intercept"
-              - href: notebooks/lmm-general-math.qmd
-                text: "Random slopes and REML"
-              - href: notebooks/logistic-mixed-math.qmd
-                text: "Binomial random intercept"
       - section: "Contributing"
         contents:
           - development.qmd

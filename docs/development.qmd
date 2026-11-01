@@ -102,7 +102,7 @@ php -n -d "extension=$STATS_EXTENSION" examples/ols.php
 
 `./scripts/check` runs the offline checks: Rust tests and clippy, every PHP
 suite and example, the stub and signature checks, the reference manifest, and
-the site export. Run it before pushing. [Verification](verification.qmd) lists
+the site export. Run it before pushing. [Verification](https://phit.phpstats.org/verification) lists
 the further checks for each kind of change, and
 [R compatibility](r-compatibility.qmd) covers regenerating R references.
 

@@ -272,7 +272,7 @@ count while retaining the design: which coefficient should shift, and why?
 For both methods the retained design must have n > p and full numerical rank.
 Missing null/NAN rows are dropped with a warning unless missing: 'raise'. No partial
 unconverged result is returned. See the [contract](../contracts.qmd) and the
-[executed three-way comparison](poisson-verification.qmd).
+[executed three-way comparison](https://phit.phpstats.org/verification/poisson).
 
 ## Rust connections
 

@@ -267,7 +267,7 @@ what would happen to the latent coefficient as the probabilities approach the la
 For both methods the retained design must have n > p and full numerical rank.
 Missing null/NAN rows are dropped with a warning unless missing: 'raise'. No partial
 unconverged result is returned. See the [contract](../contracts.qmd) and the
-[executed three-way comparison](probit-verification.qmd).
+[executed three-way comparison](https://phit.phpstats.org/verification/probit).
 
 ## Rust connections
 

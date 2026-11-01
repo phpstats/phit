@@ -123,7 +123,7 @@ Each output takes a 64-bit word from ChaCha20. rand's `Open01<f64>` maps its upp
 
 - One uniform per sample, including point masses.
 - The open interval excludes infinite support endpoints. The smallest and largest representable tail probabilities are 2^-53 and 1 − 2^-53.
-- Inverse-CDF sampling keeps one numerical path for all 13 parameterizations, at some cost against family-specific samplers. The [sampling benchmarks](benchmarks/rng.qmd) measure normal, beta, and Poisson batches.
+- Inverse-CDF sampling keeps one numerical path for all 13 parameterizations, at some cost against family-specific samplers. The [sampling benchmarks](https://phit.phpstats.org/benchmarks/rng) measure normal, beta, and Poisson batches.
 - The pinned rand_core `seed_from_u64` expands the integer seed into the 256-bit ChaCha key with its documented PCG32 mapping.
 - Dependencies: `rand 0.9.5` and `rand_chacha 0.9.0`, pinned in the lock file. Their MIT license notices are under `third-party/`. A change to either, or to a quantile algorithm, is reviewed as a reproducibility change.
 

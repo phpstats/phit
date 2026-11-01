@@ -5,7 +5,7 @@ jupyter: python3
 
 The [random-intercept walkthrough](lmm-math.qmd) introduces clustering. Here we
 allow each subject both a different starting reaction time and a different
-response to days of sleep deprivation, using the published sleepstudy data. The [optimizer audit](r-compatibility.qmd) verifies
+response to days of sleep deprivation, using the published sleepstudy data. The [optimizer audit](https://phit.phpstats.org/verification/r-compatibility) verifies
 this model against R lme4 and statsmodels under ML and REML.
 
 ## Observations and matrices
@@ -277,7 +277,7 @@ assert np.isclose(V[0,4],variances[0])
 assert V[0,5]==0
 ```
 
-The [expanded audit](r-compatibility.qmd#more-than-two-grouping-levels) checks all
+The [expanded audit](https://phit.phpstats.org/verification/r-compatibility) checks all
 observations and effects in three- and four-grouping-level cases, under ML and
 REML, with both native optimizers and all four actual lme4 wrappers. There is no
 two-level restriction in the API; the current dense size limits still apply.

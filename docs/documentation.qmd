@@ -43,34 +43,23 @@ export QUARTO_PYTHON="$PWD/.context/notebooks-venv/bin/python"
 # macOS; on Linux use libphit.so and the matching PHP paths.
 export PHP=/opt/homebrew/bin/php
 export PHP_CONFIG=/opt/homebrew/bin/php-config
-cargo build -p phit --locked
-export STATS_EXTENSION="$PWD/target/debug/libphit.dylib"
+cargo build -p phit --release --locked
+export STATS_EXTENSION="$PWD/target/release/libphit.dylib"
 ```
 
-Then run each model's comparison script before rendering its notebooks:
+Then run every comparison and render the walkthroughs:
 
 ```sh
 PY=.context/notebooks-venv/bin/python
-$PY docs/verifications/compare_ols.py
-quarto render docs/notebooks/ols-math.qmd
-quarto render docs/notebooks/ols-verification.qmd
-$PY docs/verifications/compare_logistic.py
-quarto render docs/notebooks/logistic-math.qmd
-quarto render docs/notebooks/logistic-verification.qmd
-$PY docs/verifications/compare_probit.py
-$PY docs/verifications/compare_poisson.py
-quarto render docs/notebooks/probit-math.qmd
-quarto render docs/notebooks/probit-verification.qmd
-quarto render docs/notebooks/poisson-math.qmd
-quarto render docs/notebooks/poisson-verification.qmd
-$PY docs/verifications/compare_lmm.py
-quarto render docs/notebooks/lmm-math.qmd
-quarto render docs/notebooks/lmm-verification.qmd
-quarto render docs/notebooks/lmm-public-verification.qmd
-quarto render docs/data/lmm/index.qmd
-quarto render docs/benchmarks/lmm.qmd
+PHP=$(command -v php) $PY docs/verifications/run_all.py
+for f in docs/notebooks/*-math.qmd docs/data/lmm/index.qmd; do
+    quarto render "$f"
+done
+python3 scripts/site-export.py
 ./scripts/render-docs
 ```
+
+`run_all.py` writes every `docs/verifications/*-results.json`, the test-suite record, and the run's environment. `scripts/site-export.py` turns them, and the benchmark results, into the evidence records under `site/`.
 
 - Single-page renders execute every chunk in order and update `_freeze/`. The final step assembles the site.
 - `RSCRIPT` selects a non-default `Rscript`. `QUARTO_PYTHON` selects the virtual environment without putting machine-specific paths in the project configuration.
@@ -95,7 +84,7 @@ Each implemented estimator has a derivation walkthrough and an equivalent-model 
 - Keep local reference data and scripts next to the verification page.
 - Use a Quarto-aware editor. Generated `.ipynb` files are not maintained sources.
 
-For a prose-only page, render the site and check navigation and local links. For a computational change, rerun the affected pages and comparison scripts, inspect the output, and run the [Rust and PHP checks](verification.qmd).
+For a prose-only page, render the site and check navigation and local links. For a computational change, rerun the affected pages and comparison scripts, inspect the output, and run the [Rust and PHP checks](https://phit.phpstats.org/verification).
 
 ## Example pages with charts
 

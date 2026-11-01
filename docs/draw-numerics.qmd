@@ -115,4 +115,4 @@ php -n -d "extension=$STATS_EXTENSION" tests/draws.php
 PHP=/path/to/php PHP_CONFIG=/path/to/php-config ./scripts/check
 ```
 
-The [draw benchmarks](benchmarks/draws.qmd) compare full outputs with R before timing moments, maps, and affine transformations.
+The [draw benchmarks](https://phit.phpstats.org/benchmarks/draws) compare full outputs with R before timing moments, maps, and affine transformations.

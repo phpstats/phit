@@ -62,7 +62,7 @@ Phit\fit_ols(): dropped 2 of 6 observations with missing values (listwise deleti
 
 Dropping incomplete rows changes the sample the model describes. Estimates can be biased when missingness is related to the outcome or the predictors. Report how many rows were dropped and why values are missing. phit offers no imputation or missing-data model.
 
-R's explicit [`na.action = na.omit`](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html) and statsmodels' explicit [`missing='drop'`](https://www.statsmodels.org/stable/missing.html) fit the same complete-case sample. They do not all warn by default. The warning and the row accounting are phit's own contract. The [three-implementation verification](verifications/ols.qmd) checks that phit, R, and statsmodels retain the same rows and give the same results.
+R's explicit [`na.action = na.omit`](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/lm.html) and statsmodels' explicit [`missing='drop'`](https://www.statsmodels.org/stable/missing.html) fit the same complete-case sample. They do not all warn by default. The warning and the row accounting are phit's own contract. The [three-implementation verification](https://phit.phpstats.org/verification/ols) checks that phit, R, and statsmodels retain the same rows and give the same results.
 
 ## Validation
 

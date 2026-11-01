@@ -83,7 +83,7 @@ Area and rent are associated, as are area and bedroom count. Eight observations
 keep the matrices readable; they are a teaching sample, not enough to make reliable
 claims about a housing market. Correlation alone does not establish causation.
 The first model uses area only; bedrooms become a second predictor in the
-[verification notebook](ols-verification.qmd). Bedrooms have no additional direct
+[verification notebook](https://phit.phpstats.org/verification/ols). Bedrooms have no additional direct
 term in this simulated rent equation, despite their correlation with rent.
 
 ### Read the matrices
@@ -451,7 +451,7 @@ For the fixed 95% interval, Rust finds the critical value by bisection on
 $P(T>t)=0.025$. Large-sample checks found that statrs' inverse-beta quantile
 lost precision at high residual degrees of freedom. Solving on the survival
 function preserves agreement with R; this notebook independently uses SciPy's
-`t.ppf`. See the [large-data report](../benchmarks/ols.qmd) and the focused Rust
+`t.ppf`. See the [large-data report](https://phit.phpstats.org/benchmarks/ols) and the focused Rust
 critical-value test for the regression evidence.
 
 ```{python}
@@ -524,7 +524,7 @@ assert log_likelihood_at(beta, ml_variance) > log_likelihood_at(beta, 2 * ml_var
 
 ## 7. Verify what we calculated
 
-These checks compare the independently displayed steps to the committed R reference. The [three implementation notebook](ols-verification.qmd) executes R, statsmodels and the PHP extension on the same data and checks every returned statistical field. Cross-implementation agreement is evidence; it does not replace understanding the formulas.
+These checks compare the independently displayed steps to the committed R reference. The [three implementation notebook](https://phit.phpstats.org/verification/ols) executes R, statsmodels and the PHP extension on the same data and checks every returned statistical field. Cross-implementation agreement is evidence; it does not replace understanding the formulas.
 
 ```{python}
 calculated = dict(coefficients=beta, covariance=covariance, std_errors=se,

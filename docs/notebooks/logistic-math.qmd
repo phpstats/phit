@@ -346,7 +346,7 @@ print("Every displayed statistical result agrees with the committed R fixture.")
 
 R's `confint(glm_fit)` normally produces profile-likelihood intervals. Our
 comparison explicitly uses `confint.default()` for the Wald intervals implemented
-here. The [verification notebook](logistic-verification.qmd) fits these same data
+here. The [verification notebook](https://phit.phpstats.org/verification/logistic) fits these same data
 in R, statsmodels and PHP.
 
 ## 8. Separation, assumptions and things to try

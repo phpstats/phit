@@ -78,7 +78,7 @@ R-squared 0.997359, log-likelihood 2.516218
 - Zero RSS gives a positive infinite log-likelihood, since the Gaussian likelihood is unbounded as the variance approaches zero.
 - A mathematically perfect fit often keeps tiny residuals from the decomposition, and phit does not round them to zero. Its t statistics and likelihood can then differ greatly from R's while the coefficients agree to machine precision.
 
-`examples/ols.php` in the repository prints formatted inference, and the [comparison walkthrough](notebooks/ols-verification.qmd) shows result tables.
+`examples/ols.php` in the repository prints formatted inference, and the [comparison walkthrough](https://phit.phpstats.org/verification/ols) shows result tables.
 
 ## Binary logistic regression
 
@@ -125,7 +125,7 @@ $result = Phit\fit_logistic_matrix(
 - Convergence requires each scaled coefficient step to be at most 1e-8 × (1 + |next scaled coefficient|) and the likelihood change to be at most 1e-10 × (1 + |likelihood|). These settings are not configurable.
 - Overflowing inference raises an exception.
 
-See the [derivation](notebooks/logistic-math.qmd) and the [verification record](verifications/logistic.qmd).
+See the [derivation](notebooks/logistic-math.qmd) and the [verification record](https://phit.phpstats.org/verification/logistic).
 
 ## Probit regression
 
@@ -457,7 +457,7 @@ Phit\fit_mixed_logistic_matrix(
 - `neg2_log_likelihood` is not lme4's conditional deviance.
 - For grouped data with `nAGQ > 1`, lme4 reports a likelihood with a different additive constant. The verification adds the saturated binomial log-likelihood to lme4's value before comparing.
 
-See the [verification](notebooks/logistic-mixed-verification.qmd) and the [walkthrough](notebooks/logistic-mixed-math.qmd).
+See the [verification](https://phit.phpstats.org/verification/logistic-mixed) and the [walkthrough](notebooks/logistic-mixed-math.qmd).
 
 ## Implementation notes
 

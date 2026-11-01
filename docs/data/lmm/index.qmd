@@ -87,5 +87,5 @@ Rscript -e 'install.packages(c("lme4", "nlme", "mlmRev"), repos="https://cloud.r
 
 To regenerate expectations from the existing, checksum-verified snapshots, omit
 `--export`; only lme4 and nlme are needed in R. Review CSVs, sources.json,
-`tests/fixtures/lmm-public-r.json` and the [executed comparison](../../notebooks/lmm-public-verification.qmd)
+`tests/fixtures/lmm-public-r.json` and the [executed comparison](https://phit.phpstats.org/verification/lmm-public)
 together. A changed source snapshot must never be accepted solely by changing its hash.

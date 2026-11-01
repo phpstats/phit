@@ -46,7 +46,7 @@ Each model also has a matrix function, such as `fit_ols_matrix()`, for code that
 - Coefficient names, treatment contrasts, term order, deviance, and AIC follow R's `lm()` and `glm()`. Mixed models follow lme4.
 - Rows with missing values are dropped with a warning, and every result reports which rows it used.
 - Errors are PHP exceptions with stable numeric codes.
-- The [verification](verification.qmd) pages compare each model with R, lme4, and statsmodels and record the tolerances.
+- The [verification](https://phit.phpstats.org/verification) pages compare each model with R, lme4, and statsmodels and record the tolerances.
 
 ## Requirements
 

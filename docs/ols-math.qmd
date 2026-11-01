@@ -3,7 +3,7 @@ title: "OLS mathematics and Rust notes"
 ---
 
 Follow the [executed OLS walkthrough](notebooks/ols-math.qmd) for intermediate
-matrices and calculations, and the [three-way verification](verifications/ols.qmd)
+matrices and calculations, and the [three-way verification](https://phit.phpstats.org/verification/ols)
 for equivalent fits in R, statsmodels and PHP. Missing-data deletion happens in
 the binding before estimation; all formulas below use the retained sample.
 

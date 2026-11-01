@@ -2,59 +2,16 @@
 title: "Estimation walkthroughs"
 ---
 
-Each walkthrough derives one estimator step by step on a small data set: the
-objective, the matrices, the solution, the uncertainty and, where it applies,
-the likelihood. Each shows the intermediate quantities, and the comparison
-notebooks fit the same models in R, statsmodels and phit. The pages show saved
-outputs, so reading them needs no Python or R.
+Each walkthrough derives one estimator step by step on a small data set: the objective, the matrices, the solution, the uncertainty, and, where it applies, the likelihood. The pages show saved outputs, so reading them needs no Python or R. Agreement with R and the other references is reported on the [Verification](https://phit.phpstats.org/verification) pages, and speed on the [Benchmarks](https://phit.phpstats.org/benchmarks) pages.
 
-## OLS
+| Estimator | Walkthrough | Verification | Benchmark |
+| --- | --- | --- | --- |
+| OLS | [Mathematics](ols-math.qmd) · [Rust implementation](../ols-math.qmd) | [OLS](https://phit.phpstats.org/verification/ols) | [OLS](https://phit.phpstats.org/benchmarks/ols) |
+| Logistic regression | [Likelihood, IRLS, and Wald inference](logistic-math.qmd) | [Logistic](https://phit.phpstats.org/verification/logistic) | [Logistic](https://phit.phpstats.org/benchmarks/logistic) |
+| Probit regression | [Likelihood, scoring, and inference](probit-math.qmd) | [Probit](https://phit.phpstats.org/verification/probit) | [Probit](https://phit.phpstats.org/benchmarks/probit) |
+| Poisson regression | [Likelihood, scoring, and inference](poisson-math.qmd) | [Poisson](https://phit.phpstats.org/verification/poisson) | [Poisson](https://phit.phpstats.org/benchmarks/poisson) |
+| Gaussian random intercept | [Covariance, marginal likelihood, and shrinkage](lmm-math.qmd) | [Random intercept](https://phit.phpstats.org/verification/lmm) · [Published data](https://phit.phpstats.org/verification/lmm-public) | [Random intercept](https://phit.phpstats.org/benchmarks/lmm) |
+| Random slopes and REML | [Penalized least squares, QR elimination, and ML/REML terms](lmm-general-math.qmd) | [R compatibility](https://phit.phpstats.org/verification/r-compatibility) | |
+| Binomial random intercept | [Likelihood and integration](logistic-mixed-math.qmd) | [Binomial mixed](https://phit.phpstats.org/verification/logistic-mixed) | [Binomial mixed](https://phit.phpstats.org/benchmarks/logistic-mixed) |
 
-- [OLS mathematics](ols-math.qmd): derives the estimator and evaluates each
-  intermediate quantity on the PHP example data.
-- [OLS verification](ols-verification.qmd): estimates identical models in R,
-  Python statsmodels and the PHP extension, displays results and checks agreement.
-
-## Binary logistic regression
-
-- [Math walkthrough](logistic-math.qmd): likelihood, matrix calculations, Newton/IRLS and Wald inference.
-- [Executed comparison](logistic-verification.qmd): identical models in R, statsmodels and PHP.
-- [Verification record](../verifications/logistic.qmd): fixtures, edge cases and tolerances.
-- [Scale and performance](../benchmarks/logistic.qmd): standard release benchmarks.
-
-## Probit regression
-
-- [Math walkthrough](probit-math.qmd): likelihood, scoring, matrices and inference.
-- [Executed comparison](probit-verification.qmd): identical fits in R, statsmodels and PHP.
-- [Verification record](../verifications/probit.qmd): conventions and failure cases.
-- [Scale and performance](../benchmarks/probit.qmd): standard release benchmarks.
-
-## Poisson regression
-
-- [Math walkthrough](poisson-math.qmd): likelihood, scoring, matrices and inference.
-- [Executed comparison](poisson-verification.qmd): identical fits in R, statsmodels and PHP.
-- [Verification record](../verifications/poisson.qmd): conventions and failure cases.
-- [Scale and performance](../benchmarks/poisson.qmd): standard release benchmarks.
-
-## Gaussian random-intercept mixed model
-
-- [Math walkthrough](lmm-math.qmd): covariance, marginal likelihood and shrinkage.
-- [Synthetic reference comparison](lmm-verification.qmd): lme4 ML, statsmodels and PHP.
-- [Published dataset comparison](lmm-public-verification.qmd): four studies, lme4, nlme, statsmodels and PHP.
-- [Verification record](../verifications/lmm.qmd): conventions, boundary fits and limits.
-- [Scale and performance](../benchmarks/lmm.qmd): release API benchmarks and charts.
-
-## Expanded mixed designs and R compatibility
-
-- [Random slopes, penalized least squares and REML](lmm-general-math.qmd): observed
-  matrices, covariance dot products, QR elimination, ML/REML determinant terms and
-  plug-in fixed-effect covariance on published sleepstudy data.
-- [Expanded R and optimizer audit](r-compatibility.qmd): weighted/offset fits,
-  grouped binomial trials, both native optimizers and all four actual lme4 wrappers.
-
-## Binomial random-intercept likelihoods
-
-- [Likelihood and integration](logistic-mixed-math.qmd): observed cattle counts,
-  log-odds dot products, posterior modes, Laplace/AGQ and joint information.
-- [R and independent Python verification](logistic-mixed-verification.qmd):
-  normalized likelihoods, zero-variance reduction and measured approximation error.
+The published data sets used by the mixed-model pages, with their provenance and licenses, are described in [Published data sets](../data/lmm/index.qmd).

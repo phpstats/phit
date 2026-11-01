@@ -79,7 +79,7 @@ Each row is one parameterization. Parameters are listed in call order, with defa
 - The output is a packed list in input iteration order. Keys are not kept.
 - Empty input returns `[]`, but the parameters are still validated.
 - One invalid element rejects the whole call. No elements are dropped.
-- The distribution is constructed once per call. The [benchmarks](benchmarks/distributions.qmd) show when batching saves PHP call overhead.
+- The distribution is constructed once per call. The [benchmarks](https://phit.phpstats.org/benchmarks/distributions) show when batching saves PHP call overhead.
 
 ## Tails and likelihoods
 
@@ -127,8 +127,8 @@ Scalar argument types follow PHP's usual rules. There is no `missing` option. Th
 
 ## Evidence
 
-- [Distributions: verification](verifications/distributions.qmd) compares phit with R, SciPy, and 60-digit mpmath references, with tolerances for each quantity and the documented boundary differences.
-- [Distributions: performance](benchmarks/distributions.qmd) covers 1,000, 100,000, and one million values, including peak memory.
+- [Distributions: verification](https://phit.phpstats.org/verification/distributions) compares phit with R, SciPy, and 60-digit mpmath references, with tolerances for each quantity and the documented boundary differences.
+- [Distributions: performance](https://phit.phpstats.org/benchmarks/distributions) covers 1,000, 100,000, and one million values, including peak memory.
 
 ## Implementation notes
 

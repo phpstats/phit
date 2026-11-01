@@ -114,11 +114,11 @@ An item moves to Supported only with an input and output contract, a mathematica
 
 | Evidence | Cases | Tolerance |
 | --- | --- | --- |
-| [R compatibility notebook](notebooks/r-compatibility.qmd): fixed models | 12, with and without intercepts | `1e-7 + 1e-6 * abs(reference)` |
+| [R compatibility notebook](https://phit.phpstats.org/verification/r-compatibility): fixed models | 12, with and without intercepts | `1e-7 + 1e-6 * abs(reference)` |
 | Same notebook: Gaussian mixed models, both native optimizers against all four lme4 wrappers | 15, including sleepstudy under ML and REML, and three- and four-level nesting | Estimates against R BOBYQA: `1e-5 + 1e-5 * abs(reference)`. Across optimizers: `1e-3 + 3e-4 * abs(reference)`. Likelihood, AIC, and BIC: `5e-6 + 1e-9 * abs(reference)` |
-| [Binomial mixed-model verification](notebooks/logistic-mixed-verification.qmd) | 28 R comparisons, plus independent likelihood checks, QUADPACK error measurements, and a statsmodels GLM boundary case | Per quantity, in the notebook |
+| [Binomial mixed-model verification](https://phit.phpstats.org/verification/logistic-mixed) | 28 R comparisons, plus independent likelihood checks, QUADPACK error measurements, and a statsmodels GLM boundary case | Per quantity, in the notebook |
 | [Model formulas](formulas.qmd#verification) | 62 `model.matrix()`, `lm()`, and `glm()` references, 10 lme4 references, and 25 `predict()` references | Matrix-suite tolerances |
-| [Distribution verification](verifications/distributions.qmd) | R and 60-digit mpmath references | Per operation |
+| [Distribution verification](https://phit.phpstats.org/verification/distributions) | R and 60-digit mpmath references | Per operation |
 
 - The notebook compares coefficients, covariance, inference, every fitted value and residual, random effects and their covariances, scale, likelihood, and information criteria. It reports the actual errors.
 - Shapes, sample metadata, grouping order, parameter counts, and singular flags must match exactly.
