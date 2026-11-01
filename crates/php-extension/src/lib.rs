@@ -380,7 +380,7 @@ fn finish_result(
         ext_php_rs::error::php_error(
             &ext_php_rs::flags::ErrorType::Warning,
             &format!(
-                "{function} dropped {} of {} observations with missing values (listwise deletion)",
+                "dropped {} of {} observations with missing values (listwise deletion)",
                 dropped_rows.len(),
                 n
             ),

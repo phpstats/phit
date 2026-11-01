@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+The listwise-deletion warning names the function once. PHP already prefixes
+the message with the function, so it now reads `Phit\fit_ols(): dropped 1 of 10
+observations with missing values (listwise deletion)` instead of repeating the
+name.
+
 ## 0.4.3
 
 `fit_mixed_gaussian()` and `fit_mixed_gaussian_matrix()` scale linearly with the

@@ -776,7 +776,7 @@ pub fn model_matrix(formula: &str, data: &Zval, missing: &str) -> PhpResult<ZBox
         ext_php_rs::error::php_error(
             &ext_php_rs::flags::ErrorType::Warning,
             &format!(
-                "Phit\\model_matrix dropped {} of {} observations with missing values (listwise deletion)",
+                "dropped {} of {} observations with missing values (listwise deletion)",
                 dropped.len(),
                 design.n_input
             ),

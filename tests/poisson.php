@@ -47,7 +47,7 @@ $complete = Phit\fit_poisson_matrix($completeX,$completeY, intercept: false);
 lcompare($result['coefficients'],$complete['coefficients'],'complete-case coefficients');
 lcompare($result['fitted'],$complete['fitted'],'complete-case fitted');
 lcheck(count($warnings) === 1 && $warnings[0][0] === E_WARNING, 'one native missing-data warning');
-lcheck(str_contains($warnings[0][1],'Phit\fit_poisson_matrix dropped 2 of 120'), 'warning names function/counts');
+lcheck($warnings[0][1]==='Phit\fit_poisson_matrix(): dropped 2 of 120 observations with missing values (listwise deletion)', 'warning names function/counts');
 lcheck($result['dropped_rows'] === [1,4], 'original dropped row positions');
 lcheck($result['retained_rows'] === array_values(array_diff(range(0,119),[1,4])), 'retained row positions');
 lcheck($result['n_input'] === 120 && $result['n_observations'] === 118 && $result['df_residual'] === 115, 'retained sample accounting');

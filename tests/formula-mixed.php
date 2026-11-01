@@ -102,5 +102,5 @@ foreach ([
 $warnings = [];
 set_error_handler(function (int $severity, string $message) use (&$warnings): bool { $warnings[] = $message; return true; });
 try { $r = Phit\fit_mixed_gaussian('y ~ x + (1 | subject)', $panel); } finally { restore_error_handler(); }
-mcheck(count($warnings) === 1 && str_contains($warnings[0], 'Phit\fit_mixed_gaussian dropped 5 of 384') && $r['dropped_rows'] === [4, 39, 76, 210, 299], 'lmer deletion warning');
+mcheck(count($warnings) === 1 && str_starts_with($warnings[0], 'Phit\fit_mixed_gaussian(): dropped 5 of 384 ') && $r['dropped_rows'] === [4, 39, 76, 210, 299], 'lmer deletion warning');
 echo "PHP formula mixed-model tests passed ({$fits['lmer']} lmer and {$fits['glmer']} glmer lme4 fits; $comparisons comparisons)\n";

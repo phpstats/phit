@@ -129,7 +129,7 @@ fcompare(Phit\fit_ols('y ~ x', $withList)['coefficients'], Phit\fit_ols('y ~ x',
 $wdata = $base + ['w' => [1, 2, 1, 3, 1, 2]];
 fcompare(Phit\fit_ols('y ~ x', $wdata, weights: 'w')['coefficients'], Phit\fit_ols('y ~ x', $base, weights: [1, 2, 1, 3, 1, 2])['coefficients'], 'weights by name', 1e-14, 1e-14);
 [$wnull, $warn] = fwarnings(fn() => Phit\fit_ols('y ~ x', $base, weights: [1, 2, null, 3, 1, 2]));
-fcheck($wnull['dropped_rows'] === [2] && count($warn) === 1 && str_contains($warn[0][1], 'Phit\fit_ols dropped 1 of 6'), 'null weight deletion');
+fcheck($wnull['dropped_rows'] === [2] && count($warn) === 1 && $warn[0][1] === 'Phit\fit_ols(): dropped 1 of 6 observations with missing values (listwise deletion)', 'null weight deletion');
 fcheck(Phit\fit_ols_matrix(array_map(fn($v) => [$v], $base['x']), $base['y'])['coefficients'] === Phit\fit_ols('y ~ x', $base)['coefficients'], 'Phit\fit_ols equals Phit\fit_ols_matrix');
 
 // Deletion uses only the variables the formula needs.
@@ -138,7 +138,7 @@ $sparse = $base + ['z' => [null, null, null, null, null, null]];
 fcheck($lm['n_dropped'] === 0 && $warn === [], 'unused missing column is ignored');
 [$mm, $warn] = fwarnings(fn() => Phit\model_matrix('y ~ x1 + f', $syn));
 fcheck($mm['n_input'] === 90 && $mm['n_observations'] === count($mm['x']) && $mm['n_observations'] + $mm['n_dropped'] === 90, 'model matrix accounting');
-fcheck(count($warn) === 1 && $warn[0][0] === E_WARNING && str_contains($warn[0][1], 'Phit\model_matrix dropped'), 'model matrix warning');
+fcheck(count($warn) === 1 && $warn[0][0] === E_WARNING && str_starts_with($warn[0][1], 'Phit\model_matrix(): dropped '), 'model matrix warning');
 set_error_handler(function (int $severity, string $message): never { throw new ErrorException($message, 0, $severity); });
 $promoted = false;
 try { Phit\fit_ols('y ~ x1', $syn); } catch (ErrorException $e) { $promoted = true; } finally { restore_error_handler(); }

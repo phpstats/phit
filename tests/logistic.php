@@ -47,7 +47,7 @@ $complete = Phit\fit_logistic_matrix($completeX,$completeY, intercept: false);
 lcompare($result['coefficients'],$complete['coefficients'],'complete-case coefficients');
 lcompare($result['fitted'],$complete['fitted'],'complete-case fitted');
 lcheck(count($warnings) === 1 && $warnings[0][0] === E_WARNING, 'one native missing-data warning');
-lcheck(str_contains($warnings[0][1],'Phit\fit_logistic_matrix dropped 2 of 80'), 'warning names function/counts');
+lcheck($warnings[0][1]==='Phit\fit_logistic_matrix(): dropped 2 of 80 observations with missing values (listwise deletion)', 'warning names function/counts');
 lcheck($result['dropped_rows'] === [1,4], 'original dropped row positions');
 lcheck($result['retained_rows'] === array_values(array_diff(range(0,79),[1,4])), 'retained row positions');
 lcheck($result['n_input'] === 80 && $result['n_observations'] === 78 && $result['df_residual'] === 75, 'retained sample accounting');
