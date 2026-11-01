@@ -6,16 +6,16 @@
  "statistic": "median",
  "workload": "Logistic regression, 1,000,000 rows, 10 predictors, 0/1 response",
  "environment": {
-  "cpu": "Apple M5 Ultra",
-  "cores": 30,
-  "memory_gb": 96,
-  "os": "macOS 27.0.1 (arm64)",
-  "php": "8.5.10",
+  "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
+  "cores": 2,
+  "memory_gb": 8,
+  "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "php": "8.5.12",
   "versions": {
-   "phit": "0.4.2",
-   "phit-polyfill": "0.4.0",
-   "R": "4.6.1",
-   "Python": "3.14.7",
+   "phit": "0.4.3",
+   "phit-polyfill": "0.4.1",
+   "R": "4.6.2",
+   "Python": "3.14.10",
    "numpy": "2.5.4",
    "statsmodels": "0.15.0",
    "pandas": "3.1.0"
@@ -23,13 +23,13 @@
   "threads": "One thread everywhere: OPENBLAS_NUM_THREADS, OMP_NUM_THREADS, MKL_NUM_THREADS, VECLIB_MAXIMUM_THREADS and BLIS_NUM_THREADS set to 1 for R (OpenBLAS), numpy and GPBoost (OpenMP). phit and phit-polyfill are single-threaded.",
   "repeats": 7,
   "date": "2026-11-01",
-  "commit": "80e09ff",
-  "code_commit": "beb77ed"
+  "commit": "cfd4ef6",
+  "code_commit": "cfd4ef6"
  },
- "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under /usr/bin/time -l. Memory is the process's peak memory footprint as macOS reports it, data included: its own allocations, without the clean file pages it maps. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak footprint with its libraries loaded and no data. phit and phit-polyfill: Newton/IRLS solved by column-scaled weighted SVD, starting at zero, until each scaled coefficient step is at most 1e-8 x (1 + |coefficient|) and the log-likelihood change at most 1e-10 x (1 + |log-likelihood|). R glm(): IRLS until the relative deviance change is below epsilon 1e-8, at most 25 iterations. statsmodels Logit.fit(method=\"newton\"): Newton-Raphson until the parameter change is below tol 1e-8, at most 35 iterations.",
- "memory_measure": "peak memory footprint",
+ "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every millisecond. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak anonymous memory with its libraries loaded and no data. phit and phit-polyfill: Newton/IRLS solved by column-scaled weighted SVD, starting at zero, until each scaled coefficient step is at most 1e-8 x (1 + |coefficient|) and the log-likelihood change at most 1e-10 x (1 + |log-likelihood|). R glm(): IRLS until the relative deviance change is below epsilon 1e-8, at most 25 iterations. statsmodels Logit.fit(method=\"newton\"): Newton-Raphson until the parameter change is below tol 1e-8, at most 35 iterations.",
+ "memory_measure": "peak anonymous memory",
  "check": {
-  "max_abs_coefficient_difference": 7.115863454032478e-12
+  "max_abs_coefficient_difference": 7.131073509469843e-12
  },
  "code": {
   "phit": "$fit = fit_generalized_linear(\n    'y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10',\n    $data,\n    family: 'binomial',\n);",
@@ -44,146 +44,146 @@
   "statsmodels": "python"
  },
  "baseline_memory_mib": {
-  "phit": 11.1,
-  "phit-polyfill": 11.6,
-  "R": 55.9,
-  "statsmodels": 118.6
+  "phit": 3.6,
+  "phit-polyfill": 4.1,
+  "R": 45.9,
+  "statsmodels": 100.3
  },
  "rows": [
   {
    "case": "1,000,000 rows, 10 predictors",
    "implementation": "phit",
-   "value": 881.124,
+   "value": 1667.53,
    "reps": [
-    864.799,
-    881.124,
-    870.393,
-    904.636,
-    868.413,
-    888.593,
-    898.001
+    1667.53,
+    1672.501,
+    1662.247,
+    1654.587,
+    1670.666,
+    1662.779,
+    1669.456
    ],
-   "peak_memory_mib": 948.6,
+   "peak_memory_mib": 800.5,
    "reps_peak_memory_mib": [
-    948.6,
-    948.8,
-    948.4,
-    950.6,
-    950.6,
-    948.5,
-    948.6
+    800.5,
+    800.5,
+    798.1,
+    800.5,
+    800.4,
+    798.8,
+    800.5
    ],
-   "peak_rss_mib": 966.0,
+   "peak_rss_mib": 816.9,
    "reps_peak_rss_mib": [
-    966.0,
-    966.2,
-    965.8,
-    967.9,
-    968.0,
-    965.8,
-    965.9
+    817.0,
+    817.0,
+    816.9,
+    817.0,
+    816.9,
+    816.9,
+    816.9
    ]
   },
   {
    "case": "1,000,000 rows, 10 predictors",
    "implementation": "phit-polyfill",
-   "value": 14355.278,
+   "value": 20844.87,
    "reps": [
-    14355.278,
-    14270.197,
-    14386.322,
-    14431.285,
-    14422.632,
-    14326.898,
-    14247.671
+    20816.816,
+    20902.439,
+    21450.372,
+    20724.861,
+    20855.206,
+    20803.012,
+    20844.87
    ],
-   "peak_memory_mib": 1462.7,
+   "peak_memory_mib": 1452.1,
    "reps_peak_memory_mib": [
-    1462.8,
-    1462.7,
-    1462.5,
-    1462.7,
-    1462.6,
-    1462.8,
-    1462.6
+    1452.1,
+    1452.1,
+    1452.1,
+    1452.1,
+    1452.1,
+    1452.1,
+    1452.1
    ],
-   "peak_rss_mib": 1479.2,
+   "peak_rss_mib": 1467.7,
    "reps_peak_rss_mib": [
-    1479.3,
-    1479.2,
-    1479.0,
-    1479.2,
-    1479.1,
-    1479.2,
-    1479.1
+    1467.6,
+    1467.6,
+    1467.7,
+    1467.7,
+    1467.7,
+    1467.7,
+    1467.7
    ]
   },
   {
    "case": "1,000,000 rows, 10 predictors",
    "implementation": "R",
-   "value": 2743.805,
+   "value": 2506.291,
    "reps": [
-    2743.805,
-    2783.157,
-    2740.037,
-    2730.003,
-    2759.906,
-    2735.977,
-    2771.443
+    2501.696,
+    2513.71,
+    2506.291,
+    2501.362,
+    2515.836,
+    2490.009,
+    2508.658
    ],
-   "peak_memory_mib": 1453.0,
+   "peak_memory_mib": 1217.2,
    "reps_peak_memory_mib": [
-    1453.0,
-    1457.0,
-    1457.0,
-    1452.9,
-    1455.3,
-    1453.0,
-    1452.8
+    1217.2,
+    1217.2,
+    1217.3,
+    1217.2,
+    1217.2,
+    1217.2,
+    1217.2
    ],
-   "peak_rss_mib": 1878.2,
+   "peak_rss_mib": 1232.4,
    "reps_peak_rss_mib": [
-    1881.2,
-    1878.8,
-    1878.7,
-    1878.2,
-    1877.0,
-    1874.6,
-    1874.5
+    1232.4,
+    1232.2,
+    1232.4,
+    1232.4,
+    1232.2,
+    1232.1,
+    1232.4
    ]
   },
   {
    "case": "1,000,000 rows, 10 predictors",
    "implementation": "statsmodels",
-   "value": 283.956,
+   "value": 494.885,
    "reps": [
-    279.684,
-    283.956,
-    278.639,
-    285.177,
-    291.203,
-    281.452,
-    324.979
+    494.254,
+    498.482,
+    500.83,
+    494.659,
+    497.946,
+    494.146,
+    494.885
    ],
-   "peak_memory_mib": 692.3,
+   "peak_memory_mib": 485.4,
    "reps_peak_memory_mib": [
-    693.0,
-    692.5,
-    691.3,
-    690.0,
-    692.3,
-    690.9,
-    706.6
+    485.4,
+    485.4,
+    485.4,
+    485.4,
+    485.4,
+    485.5,
+    485.4
    ],
-   "peak_rss_mib": 723.2,
+   "peak_rss_mib": 534.4,
    "reps_peak_rss_mib": [
-    724.0,
-    723.4,
-    722.3,
-    721.0,
-    723.2,
-    721.9,
-    737.6
+    534.6,
+    534.4,
+    534.3,
+    534.6,
+    534.2,
+    534.5,
+    534.4
    ]
   }
  ]

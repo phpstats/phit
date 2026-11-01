@@ -26,6 +26,19 @@ THREADS = {name: '1' for name in ('OPENBLAS_NUM_THREADS', 'OMP_NUM_THREADS', 'MK
 LANGUAGES = {'phit': 'php', 'phit-polyfill': 'php', 'R': 'r', 'statsmodels': 'python', 'GPBoost': 'python',
              'SciPy': 'python'}
 SCRIPTS = {'php': 'fit.php', 'r': 'fit.R', 'python': 'fit.py'}
+# How memory is measured: /usr/bin/time -l on macOS, and bench/peakmem.c, which reports the same two lines, on Linux.
+MEMORY_METHOD = {
+    True: 'Every process runs under /usr/bin/time -l. '
+          "Memory is the process's peak memory footprint as macOS reports it, data included: its own "
+          'allocations, without the clean file pages it maps. peak_rss_mib gives the peak resident set '
+          "size, which counts those pages. baseline_memory_mib is each runtime's peak footprint with its "
+          'libraries loaded and no data. ',
+    False: 'Every process runs under bench/peakmem.c. '
+           "Memory is the process's peak anonymous memory, data included: its own allocations, without the file "
+           'pages it maps, from RssAnon in /proc, sampled every millisecond. peak_rss_mib gives the peak resident '
+           "set size, which counts those pages. baseline_memory_mib is each runtime's peak anonymous memory with "
+           'its libraries loaded and no data. ',
+}
 
 WORKLOADS = {
     'ols': {
@@ -123,13 +136,23 @@ WORKLOADS = {
 }
 
 
+def mbstring(php):
+    """The -d option that loads mbstring, when PHP without php.ini lacks it."""
+    built_in = subprocess.run([php, '-n', '-r', 'echo extension_loaded("mbstring") ? 1 : 0;'], capture_output=True,
+                              text=True).stdout.strip() == '1'
+    return [] if built_in else ['-d', 'extension=mbstring']
+
+
 def command(implementation, workload, path, args):
     script = str(HERE / SCRIPTS[LANGUAGES[implementation]])
     time = [args.time, '-l']
+    # -n leaves out php.ini. Where mbstring is a shared extension, as on Ubuntu, the polyfill needs it loaded
+    # explicitly; both PHP implementations get it, so they run with the same extensions.
+    php = [args.php, '-n', '-d', 'memory_limit=-1', *mbstring(args.php)]
     if implementation == 'phit':
-        return time + [args.php, '-n', '-d', 'memory_limit=-1', '-d', f'extension={args.extension}', script, workload, path]
+        return time + php + ['-d', f'extension={args.extension}', script, workload, path]
     if implementation == 'phit-polyfill':
-        return time + [args.php, '-n', '-d', 'memory_limit=-1', script, workload, path]
+        return time + php + [script, workload, path]
     if implementation == 'R':
         return time + ['Rscript', script, workload, path]
     return time + [args.python, script, workload, path]
@@ -153,7 +176,8 @@ def run(implementation, workload, path, args):
     lines = [line for line in out.stdout.splitlines() if line.startswith('{')]
     result = json.loads(lines[-1]) if lines else {}
     # macOS /usr/bin/time -l reports, in bytes, the peak memory footprint (the process's own memory, without clean
-    # file pages it maps) and the maximum resident set size (which counts them).
+    # file pages it maps) and the maximum resident set size (which counts them). On Linux, bench/peakmem.c reports
+    # the same two lines, with the peak of the process's anonymous resident memory as its footprint.
     footprint = re.search(r'(\d+)\s+peak memory footprint', out.stderr)
     rss = re.search(r'(\d+)\s+maximum resident set size', out.stderr)
     result['peak_memory_mib'] = int(footprint.group(1)) / 1048576
@@ -190,7 +214,10 @@ def machine():
     if sys.platform == 'darwin':
         os_name = f"macOS {platform.mac_ver()[0]} ({platform.machine()})"
         return sysctl('machdep.cpu.brand_string'), int(sysctl('hw.ncpu')), round(int(sysctl('hw.memsize')) / 2**30), os_name
-    return platform.processor(), os.cpu_count(), 0, platform.platform()
+    cpu = re.search(r'^model name\s*:\s*(.+)$', Path('/proc/cpuinfo').read_text(), re.M).group(1).strip()
+    kib = int(re.search(r'^MemTotal:\s*(\d+)', Path('/proc/meminfo').read_text(), re.M).group(1))
+    release = re.search(r'^PRETTY_NAME="(.+)"', Path('/etc/os-release').read_text(), re.M).group(1)
+    return cpu, os.cpu_count(), round(kib / 2**20), f'Linux, {release} ({platform.machine()})'
 
 
 def benchmark(workload, args):
@@ -253,12 +280,8 @@ def benchmark(workload, args):
                       "The time runs from the data already in memory in the runtime's usual structure (PHP arrays "
                       'of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the '
                       'coefficients and standard errors, and includes building the model matrix from the formula. '
-                      'Reading the CSV file is outside the timing. ') + 'Every process runs under /usr/bin/time -l. '
-                  "Memory is the process's peak memory footprint as macOS reports it, data included: its own "
-                  'allocations, without the clean file pages it maps. peak_rss_mib gives the peak resident set '
-                  "size, which counts those pages. baseline_memory_mib is each runtime's peak footprint with its "
-                  'libraries loaded and no data. ' + spec['convergence'],
-        'memory_measure': 'peak memory footprint',
+                      'Reading the CSV file is outside the timing. ') + MEMORY_METHOD[sys.platform == 'darwin'] + spec['convergence'],
+        'memory_measure': 'peak memory footprint' if sys.platform == 'darwin' else 'peak anonymous memory',
         'check': check,
         'code': code,
         'languages': {i: LANGUAGES[i] for i in implementations},
@@ -275,9 +298,11 @@ def main():
     parser.add_argument('--repeats', type=int, default=7)
     parser.add_argument('--php', default=subprocess.run(['php-config', '--php-binary'], capture_output=True,
                                                         text=True).stdout.strip())
-    parser.add_argument('--extension', default=str(ROOT / 'target' / 'release' / 'libphit.dylib'))
+    parser.add_argument('--extension', default=str(ROOT / 'target' / 'release' / (
+        'libphit.dylib' if sys.platform == 'darwin' else 'libphit.so')))
     parser.add_argument('--python', default=str(ROOT / '.context' / 'bench-venv' / 'bin' / 'python'))
-    parser.add_argument('--time', default='/usr/bin/time')
+    # On Linux, build bench/peakmem.c and put it on the PATH: cc -O2 -o peakmem bench/peakmem.c
+    parser.add_argument('--time', default='/usr/bin/time' if sys.platform == 'darwin' else 'peakmem')
     parser.add_argument('--code-only', action='store_true',
                         help="rewrite only each existing record's code from the scripts, with code_commit set to HEAD")
     args = parser.parse_args()

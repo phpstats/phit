@@ -6,31 +6,31 @@
  "statistic": "median",
  "workload": "Gaussian random intercept by REML, 20,000 rows in 200 groups, 3 predictors",
  "environment": {
-  "cpu": "Apple M5 Ultra",
-  "cores": 30,
-  "memory_gb": 96,
-  "os": "macOS 27.0.1 (arm64)",
-  "php": "8.5.10",
+  "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
+  "cores": 2,
+  "memory_gb": 8,
+  "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "php": "8.5.12",
   "versions": {
    "phit": "0.4.3",
-   "phit-polyfill": "0.4.0",
-   "R": "4.6.1",
-   "Python": "3.14.7",
+   "phit-polyfill": "0.4.1",
+   "R": "4.6.2",
+   "Python": "3.14.10",
    "numpy": "2.5.4",
-   "lme4": "2.0.6",
+   "lme4": "2.1.0",
    "statsmodels": "0.15.0",
    "pandas": "3.1.0"
   },
   "threads": "One thread everywhere: OPENBLAS_NUM_THREADS, OMP_NUM_THREADS, MKL_NUM_THREADS, VECLIB_MAXIMUM_THREADS and BLIS_NUM_THREADS set to 1 for R (OpenBLAS), numpy and GPBoost (OpenMP). phit and phit-polyfill are single-threaded.",
   "repeats": 7,
   "date": "2026-11-01",
-  "commit": "a504722",
-  "code_commit": "beb77ed"
+  "commit": "cfd4ef6",
+  "code_commit": "cfd4ef6"
  },
- "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under /usr/bin/time -l. Memory is the process's peak memory footprint as macOS reports it, data included: its own allocations, without the clean file pages it maps. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak footprint with its libraries loaded and no data. phit and phit-polyfill: BOBYQA over the relative covariance factor, final trust-region radius 1e-7 (tolerance), at most 20,000 evaluations, the documented defaults. lme4 lmer(): its default nloptwrap, NLopt BOBYQA with xtol_abs 1e-8, ftol_abs 1e-8 and maxeval 1e5, on the same profiled REML criterion. statsmodels MixedLM.fit(reml=True): its default method list starting with BFGS (gtol 1e-5 on the gradient norm), which optimizes the REML likelihood over a different parameterization. The criteria differ, so iteration counts are not comparable, and the fixed effects agree to the precision recorded in check.",
- "memory_measure": "peak memory footprint",
+ "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every millisecond. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak anonymous memory with its libraries loaded and no data. phit and phit-polyfill: BOBYQA over the relative covariance factor, final trust-region radius 1e-7 (tolerance), at most 20,000 evaluations, the documented defaults. lme4 lmer(): its default nloptwrap, NLopt BOBYQA with xtol_abs 1e-8, ftol_abs 1e-8 and maxeval 1e5, on the same profiled REML criterion. statsmodels MixedLM.fit(reml=True): its default method list starting with BFGS (gtol 1e-5 on the gradient norm), which optimizes the REML likelihood over a different parameterization. The criteria differ, so iteration counts are not comparable, and the fixed effects agree to the precision recorded in check.",
+ "memory_measure": "peak anonymous memory",
  "check": {
-  "max_abs_coefficient_difference": 2.152646727537899e-09
+  "max_abs_coefficient_difference": 2.152646949582504e-09
  },
  "code": {
   "phit": "$fit = fit_mixed_gaussian(\n    'y ~ x1 + x2 + x3 + (1 | g)',\n    $data,\n);",
@@ -45,146 +45,146 @@
   "statsmodels": "python"
  },
  "baseline_memory_mib": {
-  "phit": 10.9,
-  "phit-polyfill": 11.6,
-  "R": 231.6,
-  "statsmodels": 117.9
+  "phit": 3.5,
+  "phit-polyfill": 4.9,
+  "R": 208.7,
+  "statsmodels": 100.3
  },
  "rows": [
   {
    "case": "20,000 rows, 200 groups, 3 predictors",
    "implementation": "phit",
-   "value": 9.784,
+   "value": 15.035,
    "reps": [
-    10.061,
-    9.784,
-    9.75,
-    9.662,
-    9.541,
-    10.514,
-    10.091
+    15.294,
+    14.908,
+    15.016,
+    15.035,
+    14.844,
+    15.109,
+    15.102
    ],
-   "peak_memory_mib": 25.8,
+   "peak_memory_mib": 16.0,
    "reps_peak_memory_mib": [
-    25.7,
-    25.8,
-    25.6,
-    25.7,
-    25.8,
-    25.9,
-    26.3
+    16.1,
+    16.1,
+    16.0,
+    16.6,
+    16.0,
+    15.9,
+    16.0
    ],
-   "peak_rss_mib": 44.3,
+   "peak_rss_mib": 33.5,
    "reps_peak_rss_mib": [
-    44.2,
-    44.3,
-    44.2,
-    44.3,
-    44.3,
-    44.4,
-    44.8
+    33.5,
+    33.4,
+    33.5,
+    33.4,
+    33.5,
+    33.5,
+    33.6
    ]
   },
   {
    "case": "20,000 rows, 200 groups, 3 predictors",
    "implementation": "phit-polyfill",
-   "value": 9031.126,
+   "value": 103.779,
    "reps": [
-    8833.225,
-    9141.0,
-    9109.787,
-    8900.715,
-    8937.608,
-    9031.126,
-    9042.532
+    103.196,
+    104.439,
+    104.84,
+    105.332,
+    103.779,
+    103.332,
+    102.886
    ],
-   "peak_memory_mib": 160.5,
+   "peak_memory_mib": 24.8,
    "reps_peak_memory_mib": [
-    160.6,
-    160.7,
-    160.5,
-    160.5,
-    160.4,
-    160.3,
-    160.6
+    24.7,
+    24.8,
+    24.8,
+    24.7,
+    24.8,
+    24.8,
+    24.7
    ],
-   "peak_rss_mib": 177.7,
+   "peak_rss_mib": 39.6,
    "reps_peak_rss_mib": [
-    177.8,
-    177.9,
-    177.7,
-    177.7,
-    177.5,
-    177.5,
-    177.8
+    39.6,
+    39.9,
+    39.6,
+    39.6,
+    39.5,
+    39.6,
+    39.9
    ]
   },
   {
    "case": "20,000 rows, 200 groups, 3 predictors",
    "implementation": "R",
-   "value": 54.989,
+   "value": 81.903,
    "reps": [
-    54.554,
-    67.533,
-    55.05,
-    54.989,
-    54.811,
-    54.226,
-    59.771
+    82.219,
+    80.224,
+    82.124,
+    81.903,
+    81.546,
+    83.186,
+    80.68
    ],
-   "peak_memory_mib": 265.1,
+   "peak_memory_mib": 243.6,
    "reps_peak_memory_mib": [
-    264.9,
-    265.1,
-    265.1,
-    264.9,
-    265.1,
-    264.8,
-    265.2
+    243.6,
+    243.7,
+    243.6,
+    243.6,
+    243.6,
+    243.6,
+    243.6
    ],
-   "peak_rss_mib": 278.8,
+   "peak_rss_mib": 262.1,
    "reps_peak_rss_mib": [
-    278.7,
-    278.9,
-    278.8,
-    278.7,
-    278.8,
-    278.6,
-    279.0
+    262.2,
+    262.3,
+    262.1,
+    262.2,
+    261.9,
+    262.0,
+    262.1
    ]
   },
   {
    "case": "20,000 rows, 200 groups, 3 predictors",
    "implementation": "statsmodels",
-   "value": 98.71,
+   "value": 143.019,
    "reps": [
-    103.867,
-    100.658,
-    97.648,
-    94.383,
-    98.71,
-    100.574,
-    95.26
+    142.222,
+    143.779,
+    142.886,
+    143.787,
+    143.019,
+    144.003,
+    142.916
    ],
-   "peak_memory_mib": 123.0,
+   "peak_memory_mib": 105.7,
    "reps_peak_memory_mib": [
-    124.2,
-    123.0,
-    122.9,
-    122.9,
-    123.0,
-    123.5,
-    123.0
+    105.7,
+    105.7,
+    105.7,
+    105.7,
+    105.7,
+    105.7,
+    105.7
    ],
-   "peak_rss_mib": 154.4,
+   "peak_rss_mib": 154.8,
    "reps_peak_rss_mib": [
-    155.6,
-    154.3,
-    154.3,
-    154.2,
-    154.4,
+    155.8,
+    155.5,
+    156.0,
+    154.6,
     154.8,
-    154.4
+    154.8,
+    154.7
    ]
   }
  ]

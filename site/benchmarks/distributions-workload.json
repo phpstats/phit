@@ -6,27 +6,27 @@
  "statistic": "median",
  "workload": "Normal CDF and quantile, gamma (shape 2.5, scale 1.5) CDF and quantile, 1,000,000 inputs each",
  "environment": {
-  "cpu": "Apple M5 Ultra",
-  "cores": 30,
-  "memory_gb": 96,
-  "os": "macOS 27.0.1 (arm64)",
-  "php": "8.5.10",
+  "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
+  "cores": 2,
+  "memory_gb": 8,
+  "os": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "php": "8.5.12",
   "versions": {
-   "phit": "0.4.2",
-   "phit-polyfill": "0.4.0",
-   "R": "4.6.1",
-   "Python": "3.14.7",
+   "phit": "0.4.3",
+   "phit-polyfill": "0.4.1",
+   "R": "4.6.2",
+   "Python": "3.14.10",
    "numpy": "2.5.4",
    "scipy": "1.18.1"
   },
   "threads": "One thread everywhere: OPENBLAS_NUM_THREADS, OMP_NUM_THREADS, MKL_NUM_THREADS, VECLIB_MAXIMUM_THREADS and BLIS_NUM_THREADS set to 1 for R (OpenBLAS), numpy and GPBoost (OpenMP). phit and phit-polyfill are single-threaded.",
   "repeats": 7,
   "date": "2026-11-01",
-  "commit": "6166405",
-  "code_commit": "beb77ed"
+  "commit": "cfd4ef6",
+  "code_commit": "cfd4ef6"
  },
- "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the inputs already in memory (a PHP array, an R vector, a numpy array) to holding all four results. Building the inputs is outside the timing. Every process runs under /usr/bin/time -l. Memory is the process's peak memory footprint as macOS reports it, data included: its own allocations, without the clean file pages it maps. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak footprint with its libraries loaded and no data. No iterations to compare. phit and phit-polyfill use the _array batch functions (cdflib normal and incomplete-gamma backends). R uses its vectorized pnorm, qnorm, pgamma and qgamma. SciPy uses stats.norm and stats.gamma cdf and ppf on numpy arrays.",
- "memory_measure": "peak memory footprint",
+ "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the inputs already in memory (a PHP array, an R vector, a numpy array) to holding all four results. Building the inputs is outside the timing. Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every millisecond. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak anonymous memory with its libraries loaded and no data. No iterations to compare. phit and phit-polyfill use the _array batch functions (cdflib normal and incomplete-gamma backends). R uses its vectorized pnorm, qnorm, pgamma and qgamma. SciPy uses stats.norm and stats.gamma cdf and ppf on numpy arrays.",
+ "memory_measure": "peak anonymous memory",
  "check": {
   "max_relative_difference_from_scipy": 2.8778385154256668e-11,
   "compared_values": 4000
@@ -44,146 +44,146 @@
   "SciPy": "python"
  },
  "baseline_memory_mib": {
-  "phit": 11.4,
-  "phit-polyfill": 11.7,
-  "R": 56.3,
-  "SciPy": 101.1
+  "phit": 3.9,
+  "phit-polyfill": 4.9,
+  "R": 45.9,
+  "SciPy": 83.9
  },
  "rows": [
   {
    "case": "4 functions x 1,000,000 inputs",
    "implementation": "phit",
-   "value": 646.941,
+   "value": 850.111,
    "reps": [
-    615.831,
-    635.94,
-    651.306,
-    646.941,
-    668.304,
-    713.811,
-    640.366
+    855.041,
+    852.682,
+    849.615,
+    850.5,
+    849.367,
+    848.331,
+    850.111
    ],
-   "peak_memory_mib": 120.3,
+   "peak_memory_mib": 113.3,
    "reps_peak_memory_mib": [
-    120.2,
-    120.3,
-    120.3,
-    120.4,
-    120.4,
-    120.3,
-    120.3
+    113.3,
+    113.3,
+    113.3,
+    113.3,
+    113.3,
+    113.3,
+    113.3
    ],
-   "peak_rss_mib": 138.2,
+   "peak_rss_mib": 129.9,
    "reps_peak_rss_mib": [
-    138.1,
-    138.2,
-    138.2,
-    138.3,
-    138.3,
-    138.2,
-    138.2
+    129.9,
+    129.9,
+    129.9,
+    129.9,
+    129.8,
+    129.8,
+    129.9
    ]
   },
   {
    "case": "4 functions x 1,000,000 inputs",
    "implementation": "phit-polyfill",
-   "value": 14009.199,
+   "value": 19413.799,
    "reps": [
-    13247.097,
-    13238.951,
-    14199.679,
-    14023.293,
-    15081.27,
-    14009.199,
-    13196.469
+    19535.359,
+    19461.59,
+    19420.096,
+    19413.799,
+    19332.433,
+    19303.766,
+    19355.133
    ],
-   "peak_memory_mib": 120.8,
+   "peak_memory_mib": 113.7,
    "reps_peak_memory_mib": [
-    120.8,
-    120.7,
-    120.7,
-    120.8,
-    120.8,
-    120.8,
-    120.8
+    113.7,
+    113.7,
+    113.7,
+    113.7,
+    114.2,
+    113.7,
+    114.1
    ],
-   "peak_rss_mib": 137.7,
+   "peak_rss_mib": 129.0,
    "reps_peak_rss_mib": [
-    137.7,
-    137.7,
-    137.7,
-    137.7,
-    137.8,
-    137.8,
-    137.7
+    129.0,
+    129.0,
+    129.1,
+    129.0,
+    129.0,
+    129.1,
+    129.1
    ]
   },
   {
    "case": "4 functions x 1,000,000 inputs",
    "implementation": "R",
-   "value": 436.404,
+   "value": 859.871,
    "reps": [
-    424.963,
-    436.404,
-    431.633,
-    441.242,
-    498.665,
-    456.196,
-    434.716
+    861.383,
+    862.987,
+    859.871,
+    859.856,
+    855.579,
+    859.127,
+    860.999
    ],
-   "peak_memory_mib": 123.8,
+   "peak_memory_mib": 101.8,
    "reps_peak_memory_mib": [
-    123.8,
-    126.0,
-    123.8,
-    123.9,
-    123.7,
-    123.7,
-    124.1
+    101.8,
+    101.8,
+    101.8,
+    101.8,
+    101.8,
+    101.9,
+    101.9
    ],
-   "peak_rss_mib": 135.6,
+   "peak_rss_mib": 116.2,
    "reps_peak_rss_mib": [
-    135.5,
-    137.7,
-    135.6,
-    135.6,
-    135.4,
-    135.4,
-    135.9
+    116.2,
+    115.9,
+    116.2,
+    116.3,
+    116.0,
+    116.3,
+    116.4
    ]
   },
   {
    "case": "4 functions x 1,000,000 inputs",
    "implementation": "SciPy",
-   "value": 295.037,
+   "value": 403.343,
    "reps": [
-    289.817,
-    306.765,
-    294.305,
-    304.536,
-    338.906,
-    294.17,
-    295.037
+    404.351,
+    403.801,
+    403.343,
+    403.332,
+    401.881,
+    402.143,
+    403.674
    ],
-   "peak_memory_mib": 194.6,
+   "peak_memory_mib": 190.6,
    "reps_peak_memory_mib": [
-    194.6,
-    193.5,
-    192.9,
-    194.4,
-    195.2,
-    196.3,
-    195.3
+    190.6,
+    190.6,
+    190.6,
+    190.6,
+    190.6,
+    190.6,
+    190.7
    ],
-   "peak_rss_mib": 224.9,
+   "peak_rss_mib": 237.0,
    "reps_peak_rss_mib": [
-    224.9,
-    223.8,
-    223.2,
-    224.7,
-    225.5,
-    226.3,
-    225.6
+    237.0,
+    237.1,
+    236.9,
+    237.0,
+    237.1,
+    237.0,
+    237.0
    ]
   }
  ]

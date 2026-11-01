@@ -24,11 +24,14 @@ The per-model benchmarks in `tests/benchmarks` are separate.
   arrays of columns, an R `data.frame`, or a pandas `DataFrame`. The time
   includes building the model matrix from the formula. Reading the CSV file is
   outside the timing.
-- Every process runs under `/usr/bin/time -l`. Memory is the process's peak
-  memory footprint as macOS reports it, data included: its own allocations,
-  without the clean file pages it maps. The record also gives the peak resident
-  set size (`peak_rss_mib`), which counts those pages. The baseline is each
-  runtime's peak footprint with its libraries loaded and no data.
+- On macOS every process runs under `/usr/bin/time -l`, and memory is the
+  process's peak memory footprint, data included: its own allocations,
+  without the clean file pages it maps. On Linux every process runs under
+  `peakmem.c`, and memory is the process's peak anonymous memory (`RssAnon`
+  in `/proc`, sampled every millisecond), which leaves out the same file
+  pages. The record also gives the peak resident set size (`peak_rss_mib`),
+  which counts those pages. The baseline is each runtime's peak memory with
+  its libraries loaded and no data.
 - Every runtime uses one thread. The runner sets `OPENBLAS_NUM_THREADS`,
   `OMP_NUM_THREADS`, `MKL_NUM_THREADS`, `VECLIB_MAXIMUM_THREADS` and
   `BLIS_NUM_THREADS` to 1. phit and phit-polyfill are single-threaded.
@@ -48,8 +51,9 @@ Each size is set so the polyfill finishes in under a minute per run. Each record
 
 The runner needs the release build of the extension, a phit-polyfill checkout
 with `composer install` run, R with lme4, and a Python environment with
-statsmodels, pandas, SciPy, and GPBoost. It runs on macOS, where `/usr/bin/time -l` reports the
-peak memory footprint.
+statsmodels, pandas, SciPy, and GPBoost. On macOS it uses `/usr/bin/time -l`. On Linux it uses
+`peakmem`, built from `bench/peakmem.c` and put on the `PATH`:
+`cc -O2 -o ~/.local/bin/peakmem bench/peakmem.c`.
 
 ```sh
 python3 -m venv .context/bench-venv
