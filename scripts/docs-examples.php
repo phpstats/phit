@@ -5,7 +5,8 @@ declare(strict_types=1);
 /*
  * Runs the complete example scripts in docs/examples/scripts and writes what their pages include:
  *
- * - docs/examples/_generated/{name}.md: the script, its output, and its chart (the spec it actually produced)
+ * - docs/examples/_generated/{name}.md: the script without its bootstrap, its output, and its chart (the spec it
+ *   actually produced)
  * - docs/examples/_phiz-scripts.html: the pinned vega, vega-lite, vega-embed and phiz loader script tags
  *
  * Each script runs in an empty directory beside a link to this checkout's vendor directory, with the data files it
@@ -53,7 +54,9 @@ foreach (glob("{$docs}/scripts/*.php") as $file) {
     }
     preg_match('/^title: "(.+)"$/m', (string) @file_get_contents("{$docs}/{$name}.qmd"), $title);
     $figure = Html::container($chart, ['actions' => false], ['aria-label' => $title[1] ?? $name]);
-    file_put_contents("{$docs}/_generated/{$name}.md", "## Code\n\n```php\n{$code}\n```\n\n## Output\n\n```\n{$output}\n```\n\n"
+    // The page shows the script without the opening tag and the Composer bootstrap, which the downloadable script keeps.
+    $shown = preg_replace("/\\A<\\?php\\s+require 'vendor\\/autoload\\.php';\\s+/", '', $code);
+    file_put_contents("{$docs}/_generated/{$name}.md", "## Code\n\n```php\n{$shown}\n```\n\n## Output\n\n```\n{$output}\n```\n\n"
         ."```{=html}\n<div class=\"phiz-figure\">{$figure}</div>\n```\n");
     exec('rm -rf '.escapeshellarg($dir));
     echo "{$name}\n";

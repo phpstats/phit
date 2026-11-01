@@ -645,10 +645,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data">Data</a></li>
-  <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a></li>
+  <li><a href="#code" id="toc-code" class="nav-link active" data-scroll-target="#code">Code</a></li>
   <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output">Output</a></li>
-  <li><a href="#explanation" id="toc-explanation" class="nav-link" data-scroll-target="#explanation">Explanation</a></li>
+  <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation">Interpretation</a></li>
   </ul>
 </nav>
     </div>
@@ -674,56 +673,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This example fits monthly rent on floor area and district with <code>fit_ols()</code>, then predicts the rent of two new flats with 95% prediction intervals.</p>
-<p>Requires the phit extension (<a href="../installation.html">Installation</a>) and a Composer project, for <code>vendor/autoload.php</code>.</p>
-<section id="data" class="level2">
-<h2 class="anchored" data-anchor-id="data">Data</h2>
-<p>The data are ten simulated flats. <code>rent</code> is the monthly rent in an unnamed currency, <code>area</code> is the floor area in square meters, and <code>district</code> is one of three districts. The first eight rows are the teaching sample in <a href="https://github.com/phpstats/phit/blob/main/docs/data/housing.csv"><code>docs/data/housing.csv</code></a>. The script defines them inline.</p>
-</section>
+<p>Fit monthly rent from floor area and district, then predict the rent of two new flats with 95% prediction intervals.</p>
+<p>The example runs with the phit extension or the plain-PHP polyfill (<a href="../extension-or-polyfill.html">Extension or polyfill</a>). The data are ten simulated flats: <code>rent</code> is the monthly rent in an unnamed currency, <code>area</code> is the floor area in square meters, and <code>district</code> is one of three districts.</p>
 <section id="code" class="level2">
 <h2 class="anchored" data-anchor-id="code">Code</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;?php</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">require</span> <span class="st">'vendor/autoload.php'</span><span class="ot">;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_ols<span class="ot">,</span> predict}<span class="ot">;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="va">$flats</span> <span class="op">=</span> [</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rent'</span> =&gt; [<span class="fl">1879.25</span><span class="ot">,</span> <span class="fl">1805.03</span><span class="ot">,</span> <span class="fl">2022.29</span><span class="ot">,</span> <span class="fl">1267.85</span><span class="ot">,</span> <span class="fl">1509.24</span><span class="ot">,</span> <span class="fl">2240.10</span><span class="ot">,</span> <span class="fl">959.51</span><span class="ot">,</span> <span class="fl">2386.54</span><span class="ot">,</span> <span class="fl">1655.80</span><span class="ot">,</span> <span class="fl">1420.00</span>]<span class="ot">,</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'area'</span> =&gt; [<span class="fl">74.4</span><span class="ot">,</span> <span class="fl">57.4</span><span class="ot">,</span> <span class="fl">66.4</span><span class="ot">,</span> <span class="fl">49.1</span><span class="ot">,</span> <span class="fl">45.7</span><span class="ot">,</span> <span class="fl">92.4</span><span class="ot">,</span> <span class="fl">37.0</span><span class="ot">,</span> <span class="fl">93.9</span><span class="ot">,</span> <span class="fl">61.2</span><span class="ot">,</span> <span class="fl">52.3</span>]<span class="ot">,</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'district'</span> =&gt; [<span class="st">'north'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span>]<span class="ot">,</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_ols(<span class="st">'rent ~ area + district'</span><span class="ot">,</span> <span class="va">$flats</span>)<span class="ot">;</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$fit</span>[<span class="st">'columns'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$name</span>) {</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%-14s %8.2f (se %6.2f)  95%% CI [%8.2f, %8.2f]</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$name</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'coefficients'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">$fit</span>[<span class="st">'std_errors'</span>][<span class="va">$i</span>]<span class="ot">,</span> ...<span class="va">$fit</span>[<span class="st">'conf_int'</span>][<span class="va">$i</span>])<span class="ot">;</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"R-squared %.3f, residual SD %.2f, %d flats</span><span class="sc">\n\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'r_squared'</span>]<span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'sigma'</span>]<span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'n_observations'</span>])<span class="ot">;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_ols<span class="ot">,</span> predict}<span class="ot">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$flats</span> <span class="op">=</span> [</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rent'</span> =&gt; [<span class="fl">1879.25</span><span class="ot">,</span> <span class="fl">1805.03</span><span class="ot">,</span> <span class="fl">2022.29</span><span class="ot">,</span> <span class="fl">1267.85</span><span class="ot">,</span> <span class="fl">1509.24</span><span class="ot">,</span> <span class="fl">2240.10</span><span class="ot">,</span> <span class="fl">959.51</span><span class="ot">,</span> <span class="fl">2386.54</span><span class="ot">,</span> <span class="fl">1655.80</span><span class="ot">,</span> <span class="fl">1420.00</span>]<span class="ot">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'area'</span> =&gt; [<span class="fl">74.4</span><span class="ot">,</span> <span class="fl">57.4</span><span class="ot">,</span> <span class="fl">66.4</span><span class="ot">,</span> <span class="fl">49.1</span><span class="ot">,</span> <span class="fl">45.7</span><span class="ot">,</span> <span class="fl">92.4</span><span class="ot">,</span> <span class="fl">37.0</span><span class="ot">,</span> <span class="fl">93.9</span><span class="ot">,</span> <span class="fl">61.2</span><span class="ot">,</span> <span class="fl">52.3</span>]<span class="ot">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'district'</span> =&gt; [<span class="st">'north'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span>]<span class="ot">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_ols(<span class="st">'rent ~ area + district'</span><span class="ot">,</span> <span class="va">$flats</span>)<span class="ot">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$fit</span>[<span class="st">'columns'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$name</span>) {</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    [<span class="va">$low</span><span class="ot">,</span> <span class="va">$high</span>] <span class="op">=</span> <span class="va">$fit</span>[<span class="st">'conf_int'</span>][<span class="va">$i</span>]<span class="ot">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%-14s %8.2f  95%% CI [%8.2f, %8.2f]</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$name</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'coefficients'</span>][<span class="va">$i</span>]<span class="ot">,</span> <span class="va">$low</span><span class="ot">,</span> <span class="va">$high</span>)<span class="ot">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"R-squared %.3f, residual SD %.2f</span><span class="sc">\n\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'r_squared'</span>]<span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'sigma'</span>])<span class="ot">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="va">$new</span> <span class="op">=</span> [<span class="st">'area'</span> =&gt; [<span class="fl">50.0</span><span class="ot">,</span> <span class="fl">80.0</span>]<span class="ot">,</span> <span class="st">'district'</span> =&gt; [<span class="st">'east'</span><span class="ot">,</span> <span class="st">'north'</span>]]<span class="ot">;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> predict(<span class="va">$fit</span><span class="ot">,</span> <span class="va">$new</span><span class="ot">,</span> interval<span class="ot">:</span> <span class="st">'prediction'</span>)<span class="ot">;</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="va">$new</span> <span class="op">=</span> [<span class="st">'area'</span> =&gt; [<span class="fl">50.0</span><span class="ot">,</span> <span class="fl">80.0</span>]<span class="ot">,</span> <span class="st">'district'</span> =&gt; [<span class="st">'east'</span><span class="ot">,</span> <span class="st">'north'</span>]]<span class="ot">;</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> predict(<span class="va">$fit</span><span class="ot">,</span> <span class="va">$new</span><span class="ot">,</span> interval<span class="ot">:</span> <span class="st">'prediction'</span>)<span class="ot">;</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$p</span>[<span class="st">'fit'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$rent</span>) {</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%.0f m2 in %-5s %8.2f  95%% PI [%7.2f, %7.2f]</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$new</span>[<span class="st">'area'</span>][<span class="va">$i</span>]<span class="ot">,</span> <span class="va">$new</span>[<span class="st">'district'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="va">$rent</span><span class="ot">,</span> <span class="va">$p</span>[<span class="st">'lower'</span>][<span class="va">$i</span>]<span class="ot">,</span> <span class="va">$p</span>[<span class="st">'upper'</span>][<span class="va">$i</span>])<span class="ot">;</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$p</span>[<span class="st">'fit'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$rent</span>) {</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%.0f m2, %-5s %8.2f  95%% PI [%7.2f, %7.2f]</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        <span class="va">$new</span>[<span class="st">'area'</span>][<span class="va">$i</span>]<span class="ot">,</span> <span class="va">$new</span>[<span class="st">'district'</span>][<span class="va">$i</span>]<span class="ot">,</span> <span class="va">$rent</span><span class="ot">,</span> <span class="va">$p</span>[<span class="st">'lower'</span>][<span class="va">$i</span>]<span class="ot">,</span> <span class="va">$p</span>[<span class="st">'upper'</span>][<span class="va">$i</span>])<span class="ot">;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="output" class="level2">
 <h2 class="anchored" data-anchor-id="output">Output</h2>
-<pre><code>(Intercept)      352.64 (se 179.87)  95% CI [  -87.49,   792.77]
-area              19.18 (se   3.23)  95% CI [   11.27,    27.09]
-districtnorth    203.64 (se 151.14)  95% CI [ -166.19,   573.47]
-districtsouth    232.16 (se 119.64)  95% CI [  -60.58,   524.90]
-R-squared 0.927, residual SD 146.29, 10 flats
+<pre><code>(Intercept)      352.64  95% CI [  -87.49,   792.77]
+area              19.18  95% CI [   11.27,    27.09]
+districtnorth    203.64  95% CI [ -166.19,   573.47]
+districtsouth    232.16  95% CI [  -60.58,   524.90]
+R-squared 0.927, residual SD 146.29
 
-50 m2 in east   1311.65  95% PI [ 898.26, 1725.04]
-80 m2 in north  2090.69  95% PI [1676.97, 2504.41]</code></pre>
+50 m2, east   1311.65  95% PI [ 898.26, 1725.04]
+80 m2, north  2090.69  95% PI [1676.97, 2504.41]</code></pre>
 </section>
-<section id="explanation" class="level2">
-<h2 class="anchored" data-anchor-id="explanation">Explanation</h2>
-<p><code>fit_ols()</code> takes an R formula and named columns. <code>district</code> is a string column, so it becomes a factor with <code>east</code> as the reference level. Among flats in the same district, each additional square meter is associated with a monthly rent about 19.18 units higher (95% CI 11.27 to 27.09). The district coefficients are differences from <code>east</code> for flats of the same area, and with ten flats their intervals include zero.</p>
-<p><code>predict()</code> evaluates the fit on new rows. <code>interval: 'prediction'</code> gives an interval for the rent of a single new flat, which is wider than the interval for the mean (<code>interval: 'confidence'</code>).</p>
-<p>See <a href="../getting-started.html">A first model</a> for the full result array, <a href="../models.html">Linear and generalized linear models</a>, and <a href="../formulas.html">Model formulas</a>.</p>
+<section id="interpretation" class="level2">
+<h2 class="anchored" data-anchor-id="interpretation">Interpretation</h2>
+<ul>
+<li><code>district</code> is a string column, so it becomes a factor. Its levels sort alphabetically, and the first, <code>east</code>, is the reference. <code>districtnorth</code> and <code>districtsouth</code> are differences from <code>east</code> for flats of the same area.</li>
+<li>The <code>area</code> coefficient is the difference in rent associated with one more square meter among flats in the same district. It describes an association in these data, not the effect of enlarging a flat.</li>
+<li>With ten flats the intervals are wide, and both district intervals include zero.</li>
+<li><code>interval: 'prediction'</code> covers the rent of one new flat. <code>interval: 'confidence'</code> covers the mean rent of flats like it and is narrower.</li>
+</ul>
+<p><strong>See also:</strong> <a href="../getting-started.html">A first model</a> · <a href="../models.html">Linear and generalized linear models</a> · <a href="../formulas.html">Model formulas</a></p>
 
 
 </section>

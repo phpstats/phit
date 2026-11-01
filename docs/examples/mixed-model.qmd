@@ -2,23 +2,17 @@
 title: "Fit a mixed model"
 ---
 
-This example fits test scores on study hours with a random intercept for each school, using `fit_mixed_gaussian()`, and reads the fixed effects, the variance components, and each school's estimated effect.
+Fit test scores on study hours with a random intercept for each school, then read the fixed effects, the variance components, and each school's estimated effect.
 
-Requires the phit extension ([Installation](../installation.qmd)) and a Composer project, for `vendor/autoload.php`.
-
-## Data
-
-The data are 30 simulated students, five from each of six schools. They are the first five students of each of the first six schools in [`docs/data/schools.csv`](https://github.com/phpstats/phit/blob/main/docs/data/schools.csv), with scores rounded to one decimal. `score` is a test score in points, and `study_hours` is time spent studying, in hours.
+The example runs with the phit extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)). The data are 30 simulated students, five from each of six schools, taken from [`docs/data/schools.csv`](https://github.com/phpstats/phit/blob/main/docs/data/schools.csv). `score` is a test score in points, and `study_hours` is time spent studying, in hours.
 
 ## Code
 
 ```php
-<?php
-require 'vendor/autoload.php';
-
 use function Phit\fit_mixed_gaussian;
 
 $students = [
+    // Five students from each of school-01 to school-06.
     'school' => array_merge(...array_map(fn ($s) => array_fill(0, 5, "school-0$s"), range(1, 6))),
     'study_hours' => [11.58, 2.7, 10.02, 3.71, 4.38, 4.3, 2.8, 11.5, 1.15, 3.9, 7.27, 1.24, 6.08, 1.37, 11.43,
         8.82, 11.44, 5.52, 2.04, 4.93, 3.52, 3.39, 1.15, 8.2, 9.63, 6.3, 9.93, 2.54, 2.08, 5.78],
@@ -33,13 +27,10 @@ foreach ($fit['columns'] as $i => $name) {
 }
 
 $school = $fit['random'][0];
-printf("\nschool SD %.2f, residual SD %.2f, %d students in %d schools\n\n",
-    sqrt($school['covariance'][0][0]), $fit['sigma'], $fit['n_observations'], count($school['group_labels']));
+printf("\nschool SD %.2f, residual SD %.2f\n\n", sqrt($school['covariance'][0][0]), $fit['sigma']);
 
 foreach ($school['group_labels'] as $g => $label) {
-    $effect = $school['effects'][$g][0];
-    $se = sqrt($school['effects_cond_var'][$g][0][0]);
-    printf("%s %+6.2f (se %.2f)\n", $label, $effect, $se);
+    printf("%s %+6.2f (se %.2f)\n", $label, $school['effects'][$g][0], sqrt($school['effects_cond_var'][$g][0][0]));
 }
 ```
 
@@ -49,7 +40,7 @@ foreach ($school['group_labels'] as $g => $label) {
 (Intercept)    53.29 (se 2.70)
 study_hours     2.77 (se 0.27)
 
-school SD 4.93, residual SD 5.10, 30 students in 6 schools
+school SD 4.93, residual SD 5.10
 
 school-01  +0.99 (se 2.07)
 school-02  +3.27 (se 2.07)
@@ -59,14 +50,12 @@ school-05  +2.47 (se 2.07)
 school-06  +3.69 (se 2.07)
 ```
 
-## Explanation
+## Interpretation
 
-`(1 | school)` gives each school its own intercept, drawn from a normal distribution with a standard deviation that the model estimates. The fit uses REML, as `lme4::lmer()` does by default.
+`(1 | school)` gives each school its own intercept, drawn from a normal distribution whose standard deviation the model estimates. The fit uses REML, as `lme4::lmer()` does by default.
 
-- **Fixed effects.** Within a school, each additional study hour is associated with a score about 2.77 points higher.
-- **Variance components.** School intercepts vary with a standard deviation of about 4.9 points. Students within a school vary around their school's line with a residual standard deviation of about 5.1 points.
-- **Group-level estimates.** `effects` holds each school's predicted random intercept, the conditional mode that R reports as `ranef()`. `school-04` is about 7.9 points below the average school at the same study hours. These estimates are shrunk toward zero, more so for smaller schools. Here every school has five students, so their conditional standard errors are equal.
+- **Fixed effects** describe the average school. The `study_hours` coefficient is the difference in score associated with one more study hour within a school. The model gives every school the same slope.
+- **Variance components.** The school SD measures how much school intercepts vary. The residual SD measures how much students vary around their own school's line. With six schools, the school SD is estimated imprecisely.
+- **School effects.** `effects` holds each school's predicted random intercept, the conditional mode that R's `ranef()` reports. It is the school's distance from the average intercept at the same study hours. The estimates are shrunk toward zero, more so for schools with fewer students. Every school here has five students, so their conditional standard errors are equal.
 
-See [Mixed models](../mixed-models.qmd) for the supported structures, the full result, singular fits, and `fit_mixed_logistic()`.
-
-[Interactive version](https://phit.phpstats.org/vignettes/school-shrinkage)
+**See also:** [Mixed models](../mixed-models.qmd) for the supported structures, the full result, singular fits, and `fit_mixed_logistic()` · [Interactive shrinkage vignette](https://phit.phpstats.org/vignettes/school-shrinkage)

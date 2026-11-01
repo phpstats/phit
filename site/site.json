@@ -171,22 +171,22 @@
   {
    "path": "examples/linear-model",
    "title": "Fit a linear model and predict",
-   "description": "Fits monthly rent on floor area and district, then predicts new flats with 95% prediction intervals."
+   "description": "Fits monthly rent on floor area and district with fit_ols, then predicts new flats with 95% prediction intervals."
   },
   {
    "path": "examples/glm",
    "title": "Fit logistic and Poisson models",
-   "description": "Fits lease renewals by logistic regression and support tickets by Poisson regression with an exposure offset."
+   "description": "Models lease renewals with odds ratios and support tickets as monthly rate ratios with an exposure offset, using fit_generalized_linear."
   },
   {
    "path": "examples/mixed-model",
    "title": "Fit a mixed model",
-   "description": "Fits test scores with a random intercept per school and reads the fixed effects, variance components, and school effects."
+   "description": "Fits test scores with a random intercept per school using fit_mixed_gaussian, then reads the fixed effects, variance components, and shrunken school effects."
   },
   {
    "path": "examples/distributions",
    "title": "Densities, quantiles, and random draws",
-   "description": "Evaluates normal densities and quantiles, compares Student's t with the normal, and draws seeded samples."
+   "description": "Evaluates the normal distribution, compares Student's t critical values with the normal's, and draws reproducible samples from a seed."
   },
   {
    "path": "examples/polars-mixed-model",

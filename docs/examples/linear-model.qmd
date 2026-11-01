@@ -2,20 +2,13 @@
 title: "Fit a linear model and predict"
 ---
 
-This example fits monthly rent on floor area and district with `fit_ols()`, then predicts the rent of two new flats with 95% prediction intervals.
+Fit monthly rent from floor area and district, then predict the rent of two new flats with 95% prediction intervals.
 
-Requires the phit extension ([Installation](../installation.qmd)) and a Composer project, for `vendor/autoload.php`.
-
-## Data
-
-The data are ten simulated flats. `rent` is the monthly rent in an unnamed currency, `area` is the floor area in square meters, and `district` is one of three districts. The first eight rows are the teaching sample in [`docs/data/housing.csv`](https://github.com/phpstats/phit/blob/main/docs/data/housing.csv). The script defines them inline.
+The example runs with the phit extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)). The data are ten simulated flats: `rent` is the monthly rent in an unnamed currency, `area` is the floor area in square meters, and `district` is one of three districts.
 
 ## Code
 
 ```php
-<?php
-require 'vendor/autoload.php';
-
 use function Phit\{fit_ols, predict};
 
 $flats = [
@@ -27,36 +20,38 @@ $flats = [
 $fit = fit_ols('rent ~ area + district', $flats);
 
 foreach ($fit['columns'] as $i => $name) {
-    printf("%-14s %8.2f (se %6.2f)  95%% CI [%8.2f, %8.2f]\n", $name, $fit['coefficients'][$i],
-        $fit['std_errors'][$i], ...$fit['conf_int'][$i]);
+    [$low, $high] = $fit['conf_int'][$i];
+    printf("%-14s %8.2f  95%% CI [%8.2f, %8.2f]\n", $name, $fit['coefficients'][$i], $low, $high);
 }
-printf("R-squared %.3f, residual SD %.2f, %d flats\n\n", $fit['r_squared'], $fit['sigma'], $fit['n_observations']);
+printf("R-squared %.3f, residual SD %.2f\n\n", $fit['r_squared'], $fit['sigma']);
 
 $new = ['area' => [50.0, 80.0], 'district' => ['east', 'north']];
 $p = predict($fit, $new, interval: 'prediction');
+
 foreach ($p['fit'] as $i => $rent) {
-    printf("%.0f m2 in %-5s %8.2f  95%% PI [%7.2f, %7.2f]\n", $new['area'][$i], $new['district'][$i],
-        $rent, $p['lower'][$i], $p['upper'][$i]);
+    printf("%.0f m2, %-5s %8.2f  95%% PI [%7.2f, %7.2f]\n",
+        $new['area'][$i], $new['district'][$i], $rent, $p['lower'][$i], $p['upper'][$i]);
 }
 ```
 
 ## Output
 
 ```
-(Intercept)      352.64 (se 179.87)  95% CI [  -87.49,   792.77]
-area              19.18 (se   3.23)  95% CI [   11.27,    27.09]
-districtnorth    203.64 (se 151.14)  95% CI [ -166.19,   573.47]
-districtsouth    232.16 (se 119.64)  95% CI [  -60.58,   524.90]
-R-squared 0.927, residual SD 146.29, 10 flats
+(Intercept)      352.64  95% CI [  -87.49,   792.77]
+area              19.18  95% CI [   11.27,    27.09]
+districtnorth    203.64  95% CI [ -166.19,   573.47]
+districtsouth    232.16  95% CI [  -60.58,   524.90]
+R-squared 0.927, residual SD 146.29
 
-50 m2 in east   1311.65  95% PI [ 898.26, 1725.04]
-80 m2 in north  2090.69  95% PI [1676.97, 2504.41]
+50 m2, east   1311.65  95% PI [ 898.26, 1725.04]
+80 m2, north  2090.69  95% PI [1676.97, 2504.41]
 ```
 
-## Explanation
+## Interpretation
 
-`fit_ols()` takes an R formula and named columns. `district` is a string column, so it becomes a factor with `east` as the reference level. Among flats in the same district, each additional square meter is associated with a monthly rent about 19.18 units higher (95% CI 11.27 to 27.09). The district coefficients are differences from `east` for flats of the same area, and with ten flats their intervals include zero.
+- `district` is a string column, so it becomes a factor. Its levels sort alphabetically, and the first, `east`, is the reference. `districtnorth` and `districtsouth` are differences from `east` for flats of the same area.
+- The `area` coefficient is the difference in rent associated with one more square meter among flats in the same district. It describes an association in these data, not the effect of enlarging a flat.
+- With ten flats the intervals are wide, and both district intervals include zero.
+- `interval: 'prediction'` covers the rent of one new flat. `interval: 'confidence'` covers the mean rent of flats like it and is narrower.
 
-`predict()` evaluates the fit on new rows. `interval: 'prediction'` gives an interval for the rent of a single new flat, which is wider than the interval for the mean (`interval: 'confidence'`).
-
-See [A first model](../getting-started.qmd) for the full result array, [Linear and generalized linear models](../models.qmd), and [Model formulas](../formulas.qmd).
+**See also:** [A first model](../getting-started.qmd) · [Linear and generalized linear models](../models.qmd) · [Model formulas](../formulas.qmd)

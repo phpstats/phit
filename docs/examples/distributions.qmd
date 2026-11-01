@@ -2,34 +2,26 @@
 title: "Densities, quantiles, and random draws"
 ---
 
-This example evaluates a density, a cumulative probability, and quantiles, compares Student's t with the normal distribution, and draws seeded random numbers.
+Evaluate a normal distribution with mean 100 and standard deviation 15, compare Student's t critical values with the normal's, and draw seeded random numbers.
 
-Requires the phit extension ([Installation](../installation.qmd)) and a Composer project, for `vendor/autoload.php`.
-
-## Data
-
-The example needs no data. The normal distribution has mean 100 and standard deviation 15, as on a test scale.
+The example runs with the phit extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)).
 
 ## Code
 
 ```php
-<?php
-require 'vendor/autoload.php';
+use function Phit\{dist_normal_cdf, dist_normal_pdf, dist_normal_quantile, dist_normal_rng, dist_normal_sf};
+use function Phit\{dist_t_quantile, dist_t_sf};
 
-use function Phit\{dist_normal_cdf, dist_normal_pdf, dist_normal_quantile, dist_normal_rng, dist_normal_sf, dist_t_quantile, dist_t_sf};
-
-// Normal distribution with mean 100 and standard deviation 15.
 printf("density at 115      %.5f\n", dist_normal_pdf(115, 100, 15));
 printf("P(X <= 130)         %.5f\n", dist_normal_cdf(130, 100, 15));
 printf("95th percentile     %.3f\n\n", dist_normal_quantile(0.95, 100, 15));
 
-// Student's t: two-sided 95% critical values and the tail beyond 1.96.
+// Two-sided 95% critical values and the probability beyond ±1.96.
 foreach ([3, 10, 30] as $df) {
     printf("t, df %2d: critical value %.3f, P(|T| > 1.96) %.4f\n", $df, dist_t_quantile(0.975, $df), 2 * dist_t_sf(1.96, $df));
 }
 printf("normal:   critical value %.3f, P(|Z| > 1.96) %.4f\n\n", dist_normal_quantile(0.975), 2 * dist_normal_sf(1.96));
 
-// Seeded draws: the same seed and parameters give the same draws.
 $draws = dist_normal_rng(5, 42, 100, 15);
 echo implode(', ', array_map(fn ($x) => sprintf('%.2f', $x), $draws)), "\n";
 $many = dist_normal_rng(100000, 7, 100, 15);
@@ -52,12 +44,10 @@ normal:   critical value 1.960, P(|Z| > 1.96) 0.0500
 mean of 100000 draws 100.00
 ```
 
-## Explanation
+## Notes
 
-The `dist_*` functions follow R's naming: `_pdf` is R's `dnorm()`, `_cdf` is `pnorm()`, `_quantile` is `qnorm()`, and `_sf` is the upper tail, `pnorm(lower.tail = FALSE)`. The survival function keeps precision far into the tail, where `1 - cdf` loses it.
+- The `dist_*` functions follow R: `_pdf` is `dnorm()`, `_cdf` is `pnorm()`, `_quantile` is `qnorm()`, and `_sf` is the upper tail, `pnorm(lower.tail = FALSE)`. The survival function keeps precision far into the tail, where `1 - cdf` loses it.
+- Student's t has heavier tails than the normal. Its critical values and tail probabilities approach the normal's as the degrees of freedom grow.
+- `dist_normal_rng($n, $seed, $mean, $sd)` returns `$n` draws. Every call starts its own stream from the seed, so the same seed and parameters give the same draws.
 
-Student's t has heavier tails than the normal. With 3 degrees of freedom, the two-sided 95% critical value is 3.182 and 14% of the distribution lies beyond ±1.96. As the degrees of freedom grow, both approach the normal values.
-
-`dist_normal_rng($n, $seed, $mean, $sd)` returns `$n` draws. Every call starts its own stream from the seed, so the same seed and parameters give the same draws.
-
-See [Probability distributions](../distributions.qmd) for every family and its parameters, and [Seeded sampling](../rng.qmd) for the generator.
+**See also:** [Probability distributions](../distributions.qmd) for every family and its parameters · [Seeded sampling](../rng.qmd) for the generator

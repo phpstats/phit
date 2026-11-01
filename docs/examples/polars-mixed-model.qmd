@@ -3,9 +3,9 @@ title: "Fit a mixed model to a Polars table and chart it"
 include-in-header: _phiz-scripts.html
 ---
 
-This example reads a CSV file with Polars, fits test scores with a random intercept for each school using `fit_mixed_gaussian()`, and charts each school's fitted line with phiz.
+Read a CSV file with Polars, fit test scores with a random intercept for each school, and chart each school's fitted line with phiz.
 
-Requires the phit extension ([Installation](../installation.qmd)), the phpolars extension ([phpolars installation](https://phpolars.phpstats.org/docs/deployment)), and phiz from Composer (`composer require phpstats/phiz`).
+The example needs the phpolars extension ([phpolars installation](https://phpolars.phpstats.org/docs/deployment)) and phiz (`composer require phpstats/phiz`). phit can be the extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)). The [complete script](https://github.com/phpstats/phit/blob/main/docs/examples/scripts/polars-mixed-model.php) includes the Composer bootstrap.
 
 ## Data
 
@@ -18,12 +18,12 @@ curl -O \
 
 {{< include _generated/polars-mixed-model.md >}}
 
-## Explanation
+## Interpretation
 
-The script has three steps.
+- `scan_csv()` starts a lazy query, `select()` keeps three of the file's four columns, and `collect()` runs it. `toColumns()` copies the result into PHP arrays, one per column. `fit_mixed_gaussian()` and `Plot::of()` both accept an object with `toColumns()` and would each call it themselves, so the script converts once and passes the arrays to both.
+- `fit_mixed_gaussian()` fits by REML, as `lme4::lmer()` does by default. The `study_hours` coefficient is the difference in score associated with one more study hour within a school. The school SD measures how much school intercepts vary around the average intercept.
+- `fitted` holds the conditional fitted values, which include each school's predicted random intercept. Fixed-effects-only predictions are in `fixed_fitted`.
+- The model gives every school the same slope, so the twelve fitted lines are parallel and differ only in their intercepts.
+- The script saves the chart as a standalone page, `schools.html`.
 
-1. `scan_csv()` starts a lazy query, `select()` keeps three of the file's four columns, and `collect()` runs it. `toColumns()` copies the result into PHP arrays, one per column. `fit_mixed_gaussian()` and `Plot::of()` both accept an object with `toColumns()` and would each call it themselves, so the script calls it once and passes the arrays to both.
-2. `fit_mixed_gaussian()` fits `score ~ study_hours + (1 | school)` by REML, as `lme4::lmer()` does by default. Within a school, each additional study hour is associated with a score about 2.3 points higher. School intercepts vary with a standard deviation of about 4.6 points around the average of 56.5 at zero hours. `fitted` holds the conditional fitted values, which include each school's random intercept.
-3. phiz draws every student as a point and joins each school's fitted values into a line. The model gives every school the same slope, so the twelve lines are parallel and differ only by their intercepts. The script saves the chart as a standalone page, `schools.html`.
-
-See [Fit a mixed model](mixed-model.qmd) for reading the variance components and school effects, [Mixed models](../mixed-models.qmd) for the supported structures, phpolars' [Getting started](https://phpolars.phpstats.org/docs/getting-started) for lazy queries, and phiz's [Get started](https://phiz.phpstats.org/docs/get-started) for layers and aesthetics.
+**See also:** [Fit a mixed model](mixed-model.qmd) for reading the variance components and school effects · [Mixed models](../mixed-models.qmd) for the supported structures · phpolars' [Getting started](https://phpolars.phpstats.org/docs/getting-started) · phiz's [Get started](https://phiz.phpstats.org/docs/get-started)

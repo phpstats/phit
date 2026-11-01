@@ -6,27 +6,22 @@ use Phiz\Plot;
 use function Phit\fit_mixed_gaussian;
 use function Phpolars\scan_csv;
 
-// 1. Read three columns with Polars and copy them into PHP arrays once.
-$schools = scan_csv('schools.csv')
+// Read three columns with Polars, then copy them into PHP arrays once.
+$data = scan_csv('schools.csv')
     ->select(['school', 'study_hours', 'score'])
-    ->collect();
-$data = $schools->toColumns();
+    ->collect()
+    ->toColumns();
 
-// 2. Fit a random intercept per school by REML. Keep the fitted values.
+// A random intercept per school, fitted by REML. Keep the conditional fitted values for the chart.
 $fit = fit_mixed_gaussian('score ~ study_hours + (1 | school)', $data);
 $data['fitted'] = $fit['fitted'];
 
 foreach ($fit['columns'] as $i => $name) {
-    printf("%-12s %7.3f (se %.3f)\n", $name,
-        $fit['coefficients'][$i], $fit['std_errors'][$i]);
+    printf("%-12s %7.3f (se %.3f)\n", $name, $fit['coefficients'][$i], $fit['std_errors'][$i]);
 }
-$school = $fit['random'][0];
-printf("%s: school SD %.3f, residual SD %.3f\n", $fit['method'],
-    sqrt($school['covariance'][0][0]), $fit['sigma']);
-printf("%d students in %d schools\n",
-    $fit['n_observations'], count($school['group_labels']));
+printf("school SD %.3f, residual SD %.3f\n", sqrt($fit['random'][0]['covariance'][0][0]), $fit['sigma']);
 
-// 3. Chart the students as points and each school's fitted line.
+// Students as points, and each school's fitted values joined into a line.
 $chart = Plot::of($data)
     ->aes(x: 'study_hours', y: 'score')
     ->point(alpha: 0.3)
