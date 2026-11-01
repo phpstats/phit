@@ -1,7 +1,7 @@
 {
- "title": "CSV reading: phit and phibble",
+ "title": "CSV reading",
  "label": "CSV reading",
- "description": "Read one CSV file into PHP values with guessed types: Phit\\read_csv(), phibble's DataFrame::fromCsv() using phit, and phibble with its own PHP reader.",
+ "description": "One CSV file read into PHP values with guessed types: Phit\\read_csv(), phibble's DataFrame::fromCsv() using phit, and phibble with its own PHP reader.",
  "workload": "1,000,000 rows, 46 MB: id int, key int, g string, x float with ~2% NA, t datetime",
  "dataset": {
   "rows": 1000000,

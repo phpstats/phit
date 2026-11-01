@@ -1,10 +1,9 @@
 {
- "title": "Gaussian mixed-model workload: phit, phit-polyfill, lme4 and statsmodels",
- "description": "Elapsed time and peak memory to fit a Gaussian random-intercept model by REML from a formula, with fixed-effect coefficients and standard errors, in the phit extension, phit-polyfill, lme4 lmer() and statsmodels MixedLM.",
+ "title": "Linear mixed model, 20k rows",
+ "label": "Linear mixed model, 20k rows",
  "measure": "Elapsed time",
  "unit": "ms",
  "statistic": "median",
- "workload": "Gaussian random intercept by REML, 20,000 rows in 200 groups, 3 predictors",
  "environment": {
   "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
   "cores": 2,
@@ -27,8 +26,6 @@
   "commit": "cfd4ef6",
   "code_commit": "cfd4ef6"
  },
- "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every millisecond. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak anonymous memory with its libraries loaded and no data. phit and phit-polyfill: BOBYQA over the relative covariance factor, final trust-region radius 1e-7 (tolerance), at most 20,000 evaluations, the documented defaults. lme4 lmer(): its default nloptwrap, NLopt BOBYQA with xtol_abs 1e-8, ftol_abs 1e-8 and maxeval 1e5, on the same profiled REML criterion. statsmodels MixedLM.fit(reml=True): its default method list starting with BFGS (gtol 1e-5 on the gradient norm), which optimizes the REML likelihood over a different parameterization. The criteria differ, so iteration counts are not comparable, and the fixed effects agree to the precision recorded in check.",
- "memory_measure": "peak anonymous memory",
  "check": {
   "max_abs_coefficient_difference": 2.152646949582504e-09
  },
@@ -187,5 +184,9 @@
     154.7
    ]
   }
- ]
+ ],
+ "description": "REML fit of a Gaussian random-intercept model from a formula, returning fixed-effect coefficients and standard errors. Implementations: the phit extension, phit-polyfill, lme4 lmer(), and statsmodels MixedLM.",
+ "workload": "Gaussian random intercept by REML, 20,000 rows in 200 groups, 3 predictors",
+ "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every millisecond. The peak resident set size, which counts those pages, and each runtime's baseline memory with its libraries loaded and no data are recorded beside it. phit and phit-polyfill: BOBYQA over the relative covariance factor, final trust-region radius 1e-7 (tolerance), at most 20,000 evaluations, the documented defaults. lme4 lmer(): its default nloptwrap, NLopt BOBYQA with xtol_abs 1e-8, ftol_abs 1e-8 and maxeval 1e5, on the same profiled REML criterion. statsmodels MixedLM.fit(reml=True): its default method list starting with BFGS (gtol 1e-5 on the gradient norm), which optimizes the REML likelihood over a different parameterization. The criteria differ, so iteration counts are not comparable, and the fixed effects agree to the precision recorded in check.",
+ "memory_measure": "peak anonymous memory"
 }

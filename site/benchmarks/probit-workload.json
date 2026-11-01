@@ -1,10 +1,9 @@
 {
- "title": "Probit regression workload: phit, phit-polyfill, R and statsmodels",
- "description": "Elapsed time and peak memory to fit a binomial probit model from a formula, with coefficients and standard errors, in the phit extension, phit-polyfill, R glm() and statsmodels Probit, on the logistic workload's data.",
+ "title": "Probit regression, 1M rows",
+ "label": "Probit regression, 1M rows",
  "measure": "Elapsed time",
  "unit": "ms",
  "statistic": "median",
- "workload": "Probit regression, 1,000,000 rows, 10 predictors, 0/1 response",
  "environment": {
   "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
   "cores": 2,
@@ -26,8 +25,6 @@
   "commit": "cfd4ef6",
   "code_commit": "cfd4ef6"
  },
- "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every millisecond. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak anonymous memory with its libraries loaded and no data. phit and phit-polyfill: Fisher scoring solved by column-scaled weighted SVD, until each scaled coefficient step is at most 1e-11 x (1 + |coefficient|) and the log-likelihood change at most 1e-13 x (1 + |log-likelihood|), at most 100 updates. R glm(binomial(\"probit\")): IRLS until the relative deviance change is below epsilon 1e-8, at most 25 iterations. statsmodels Probit.fit(method=\"newton\"): Newton-Raphson until the parameter change is below tol 1e-8, at most 35 iterations.",
- "memory_measure": "peak anonymous memory",
  "check": {
   "max_abs_coefficient_difference": 2.3336593213407753e-09
  },
@@ -186,5 +183,9 @@
     534.5
    ]
   }
- ]
+ ],
+ "description": "Maximum-likelihood fit of a binomial probit model from a formula on the logistic workload's data, returning coefficients and standard errors. Implementations: the phit extension, phit-polyfill, R glm(), and statsmodels Probit.",
+ "workload": "Probit regression, 1,000,000 rows, 10 predictors, 0/1 response",
+ "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every millisecond. The peak resident set size, which counts those pages, and each runtime's baseline memory with its libraries loaded and no data are recorded beside it. phit and phit-polyfill: Fisher scoring solved by column-scaled weighted SVD, until each scaled coefficient step is at most 1e-11 x (1 + |coefficient|) and the log-likelihood change at most 1e-13 x (1 + |log-likelihood|), at most 100 updates. R glm(binomial(\"probit\")): IRLS until the relative deviance change is below epsilon 1e-8, at most 25 iterations. statsmodels Probit.fit(method=\"newton\"): Newton-Raphson until the parameter change is below tol 1e-8, at most 35 iterations.",
+ "memory_measure": "peak anonymous memory"
 }

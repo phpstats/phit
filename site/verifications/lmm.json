@@ -1,8 +1,9 @@
 {
- "title": "Gaussian random intercept: agreement with lme4",
- "label": "Random intercept",
+ "title": "Linear mixed model",
+ "label": "Linear mixed model",
  "kind": "reference",
- "checked": "ML fits of one Gaussian random intercept: coefficients, inference, fitted values, residuals, group effects, variance components, and likelihood, with missing rows dropped the same way.",
+ "checked": "Coefficients, covariance matrices, standard errors, z statistics, p-values, confidence intervals, conditional and marginal fitted values and residuals, random effects, variance components, log likelihood, and AIC of one Gaussian random intercept fitted by ML. Identical design matrices, groups, and missing-data exclusions across implementations.",
+ "description": "docs/verifications/compare_lmm.py fits each case with lme4, statsmodels and fit_mixed_gaussian_intercept_matrix(), and compares every quantity with lme4 under the case's stored tolerance. Case status is recomputed from the saved values.",
  "reference": "R lme4 lmer(REML = FALSE, bobyqa rhoend = 1e-10)",
  "versions": {
   "R": "4.6.1",
@@ -15,7 +16,7 @@
  "comparison": [
   {
    "id": "atol 1e-07, rtol 1e-06",
-   "applies_to": "quantities this tolerance names in the cases",
+   "applies_to": "Coefficients, covariance, std errors, z statistics, p values, conf int, fixed fitted, fitted, residuals, marginal residuals, random effects, residual variance, random intercept variance, sigma, icc, log likelihood, aic, df residual",
    "kind": "tolerance",
    "atol": 1e-07,
    "rtol": 1e-06

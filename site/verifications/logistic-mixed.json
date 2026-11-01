@@ -1,8 +1,9 @@
 {
- "title": "Binomial random intercept: agreement with lme4",
- "label": "Binomial mixed",
+ "title": "Binomial mixed model",
+ "label": "Binomial mixed model",
  "kind": "reference",
- "checked": "fit_mixed_logistic_matrix() against lme4 glmer() at the Laplace approximation and 9, 25, and 61 adaptive quadrature points, with an independent SciPy evaluation of the same likelihood.",
+ "checked": "Coefficients, inference, fitted values, random effects, variance components, and likelihoods of a binomial logit model with one random intercept, at the Laplace approximation and 9, 25, and 61 adaptive quadrature points. Log likelihood also against an independent SciPy evaluation of the same approximation.",
+ "description": "docs/verifications/compare_logistic_mixed.py fits each case with lme4 glmer() and fit_mixed_logistic_matrix(), compares every quantity with lme4, and evaluates the same approximation independently with SciPy root finding and Gauss\u2013Hermite quadrature. Case status is recomputed from the saved values.",
  "reference": "R lme4 glmer(family = binomial), bobyqa, tolPwrss 1e-12",
  "versions": {
   "R": "4.6.1",
@@ -17,21 +18,21 @@
  "comparison": [
   {
    "id": "estimates",
-   "applies_to": "coefficients, random effects, variance components, fitted values",
+   "applies_to": "Estimates; coefficients, random effects, variance components, fitted values",
    "kind": "tolerance",
    "atol": 2e-05,
    "rtol": 0.0002
   },
   {
    "id": "inference",
-   "applies_to": "covariance, standard errors, z, p, intervals",
+   "applies_to": "Inference; covariance, standard errors, z, p, intervals",
    "kind": "tolerance",
    "atol": 2e-05,
    "rtol": 0.002
   },
   {
    "id": "likelihood",
-   "applies_to": "log likelihood, deviance, AIC, BIC",
+   "applies_to": "Likelihood; log likelihood, deviance, AIC, BIC",
    "kind": "tolerance",
    "atol": 1e-06,
    "rtol": 1e-08
@@ -40,7 +41,7 @@
    "id": "independent",
    "kind": "tolerance",
    "atol": 2e-08,
-   "applies_to": "phit's log likelihood against SciPy's evaluation of the same approximation"
+   "applies_to": "Independent likelihood; SciPy evaluation of the same approximation"
   }
  ],
  "cases": [

@@ -1,8 +1,9 @@
 {
- "title": "OLS: agreement with R",
+ "title": "OLS",
  "label": "OLS",
  "kind": "reference",
- "checked": "The matrix fit's coefficients, covariance, standard errors, test statistics, p-values, intervals, fitted values, residuals, and fit statistics on the same explicit design as R and statsmodels, with missing rows dropped the same way.",
+ "checked": "Coefficients, covariance matrices, standard errors, test statistics, p-values, confidence intervals, fitted values, residuals, and fit statistics. Identical design matrices and missing-data exclusions across implementations.",
+ "description": "docs/verifications/compare_ols.py fits each design with R, statsmodels, and fit_ols_matrix(intercept: false), and compares every quantity with R. Case status is recomputed from the saved values.",
  "reference": "R lm(), summary(), confint(), logLik()",
  "versions": {
   "R": "4.6.1",
@@ -15,14 +16,14 @@
  "comparison": [
   {
    "id": "model",
-   "applies_to": "every compared value",
+   "applies_to": "Numerical results",
    "kind": "tolerance",
    "atol": 1e-09,
    "rtol": 1e-07
   },
   {
    "id": "rows",
-   "applies_to": "retained and dropped row positions, counts, and warnings",
+   "applies_to": "Row indices, counts, and warnings",
    "kind": "exact"
   }
  ],

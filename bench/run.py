@@ -28,26 +28,24 @@ LANGUAGES = {'phit': 'php', 'phit-polyfill': 'php', 'R': 'r', 'statsmodels': 'py
 SCRIPTS = {'php': 'fit.php', 'r': 'fit.R', 'python': 'fit.py'}
 # How memory is measured: /usr/bin/time -l on macOS, and bench/peakmem.c, which reports the same two lines, on Linux.
 MEMORY_METHOD = {
-    True: 'Every process runs under /usr/bin/time -l. '
-          "Memory is the process's peak memory footprint as macOS reports it, data included: its own "
-          'allocations, without the clean file pages it maps. peak_rss_mib gives the peak resident set '
-          "size, which counts those pages. baseline_memory_mib is each runtime's peak footprint with its "
-          'libraries loaded and no data. ',
-    False: 'Every process runs under bench/peakmem.c. '
-           "Memory is the process's peak anonymous memory, data included: its own allocations, without the file "
-           'pages it maps, from RssAnon in /proc, sampled every millisecond. peak_rss_mib gives the peak resident '
-           "set size, which counts those pages. baseline_memory_mib is each runtime's peak anonymous memory with "
-           'its libraries loaded and no data. ',
+    True: "Every process runs under /usr/bin/time -l. Memory is the process's peak memory footprint as macOS "
+          "reports it, data included: its own allocations, without the clean file pages it maps. The peak resident "
+          "set size, which counts those pages, and each runtime's baseline memory with its libraries loaded and no "
+          "data are recorded beside it. ",
+    False: "Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data "
+           "included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every "
+           "millisecond. The peak resident set size, which counts those pages, and each runtime's baseline memory "
+           "with its libraries loaded and no data are recorded beside it. ",
 }
 
 WORKLOADS = {
     'ols': {
         'implementations': ['phit', 'phit-polyfill', 'R', 'statsmodels'],
         'data': 'ols.csv',
-        'title': 'OLS workload: phit, phit-polyfill, R and statsmodels',
-        'description': 'Elapsed time and peak memory to fit a linear model by least squares from a formula, '
-                       'with coefficients and standard errors, in the phit extension, phit-polyfill, R lm() and '
-                       'statsmodels OLS.',
+        'title': 'OLS, 1M rows',
+        'label': 'OLS, 1M rows',
+        'description': 'Least-squares fit of a linear model from a formula, returning coefficients and standard '
+                       'errors. Implementations: the phit extension, phit-polyfill, R lm(), and statsmodels OLS.',
         'case': '1,000,000 rows, 10 predictors',
         'workload': 'OLS, 1,000,000 rows, 10 predictors',
         'convergence': 'OLS has no iterations. phit and phit-polyfill solve by column-scaled SVD. R lm() uses a '
@@ -57,10 +55,11 @@ WORKLOADS = {
     'mixed': {
         'implementations': ['phit', 'phit-polyfill', 'R', 'statsmodels'],
         'data': 'mixed.csv',
-        'title': 'Gaussian mixed-model workload: phit, phit-polyfill, lme4 and statsmodels',
-        'description': 'Elapsed time and peak memory to fit a Gaussian random-intercept model by REML from a '
-                       'formula, with fixed-effect coefficients and standard errors, in the phit extension, '
-                       'phit-polyfill, lme4 lmer() and statsmodels MixedLM.',
+        'title': 'Linear mixed model, 20k rows',
+        'label': 'Linear mixed model, 20k rows',
+        'description': 'REML fit of a Gaussian random-intercept model from a formula, returning fixed-effect '
+                       'coefficients and standard errors. Implementations: the phit extension, phit-polyfill, lme4 '
+                       'lmer(), and statsmodels MixedLM.',
         'case': '20,000 rows, 200 groups, 3 predictors',
         'workload': 'Gaussian random intercept by REML, 20,000 rows in 200 groups, 3 predictors',
         'convergence': 'phit and phit-polyfill: BOBYQA over the relative covariance factor, final trust-region '
@@ -74,9 +73,10 @@ WORKLOADS = {
     'logistic': {
         'implementations': ['phit', 'phit-polyfill', 'R', 'statsmodels'],
         'data': 'binary.csv',
-        'title': 'Logistic regression workload: phit, phit-polyfill, R and statsmodels',
-        'description': 'Elapsed time and peak memory to fit a binomial logit model from a formula, with '
-                       'coefficients and standard errors, in the phit extension, phit-polyfill, R glm() and '
+        'title': 'Logistic regression, 1M rows',
+        'label': 'Logistic regression, 1M rows',
+        'description': 'Maximum-likelihood fit of a binomial logit model from a formula, returning coefficients and '
+                       'standard errors. Implementations: the phit extension, phit-polyfill, R glm(), and '
                        'statsmodels Logit.',
         'case': '1,000,000 rows, 10 predictors',
         'workload': 'Logistic regression, 1,000,000 rows, 10 predictors, 0/1 response',
@@ -90,10 +90,11 @@ WORKLOADS = {
     'probit': {
         'implementations': ['phit', 'phit-polyfill', 'R', 'statsmodels'],
         'data': 'binary.csv',
-        'title': 'Probit regression workload: phit, phit-polyfill, R and statsmodels',
-        'description': 'Elapsed time and peak memory to fit a binomial probit model from a formula, with '
-                       'coefficients and standard errors, in the phit extension, phit-polyfill, R glm() and '
-                       'statsmodels Probit, on the logistic workload\'s data.',
+        'title': 'Probit regression, 1M rows',
+        'label': 'Probit regression, 1M rows',
+        'description': "Maximum-likelihood fit of a binomial probit model from a formula on the logistic workload's "
+                       'data, returning coefficients and standard errors. Implementations: the phit extension, '
+                       'phit-polyfill, R glm(), and statsmodels Probit.',
         'case': '1,000,000 rows, 10 predictors',
         'workload': 'Probit regression, 1,000,000 rows, 10 predictors, 0/1 response',
         'convergence': 'phit and phit-polyfill: Fisher scoring solved by column-scaled weighted SVD, until each '
@@ -106,10 +107,11 @@ WORKLOADS = {
     'mixed-logistic': {
         'implementations': ['phit', 'phit-polyfill', 'R', 'GPBoost'],
         'data': 'mixed-binary.csv',
-        'title': 'Binomial mixed-model workload: phit, phit-polyfill, lme4 and GPBoost',
-        'description': 'Elapsed time and peak memory to fit a binomial logit model with one random intercept by '
-                       'the Laplace approximation, with fixed-effect coefficients and standard errors, in the phit '
-                       'extension, phit-polyfill, lme4 glmer() and GPBoost.',
+        'title': 'Binomial mixed model, 20k rows',
+        'label': 'Binomial mixed model, 20k rows',
+        'description': 'Laplace fit of a binomial logit model with one random intercept, returning fixed-effect '
+                       'coefficients and standard errors. Implementations: the phit extension, phit-polyfill, lme4 '
+                       'glmer(), and GPBoost.',
         'case': '20,000 rows, 200 groups, 3 predictors',
         'workload': 'Binomial logit random intercept by Laplace, 20,000 rows in 200 groups, 3 predictors, 0/1 '
                     'response',
@@ -124,9 +126,10 @@ WORKLOADS = {
     'distributions': {
         'implementations': ['phit', 'phit-polyfill', 'R', 'SciPy'],
         'data': None,
-        'title': 'Distributions workload: phit, phit-polyfill, R and SciPy',
-        'description': 'Elapsed time and peak memory to evaluate the normal and gamma CDF and quantile functions over '
-                       '1,000,000 inputs each, with batch calls, in the phit extension, phit-polyfill, R and SciPy.',
+        'title': 'Distributions, 1M inputs',
+        'label': 'Distributions, 1M inputs',
+        'description': 'Normal and gamma CDF and quantile functions over 1,000,000 inputs each, by batch calls. '
+                       'Implementations: the phit extension, phit-polyfill, R, and SciPy.',
         'case': '4 functions x 1,000,000 inputs',
         'workload': 'Normal CDF and quantile, gamma (shape 2.5, scale 1.5) CDF and quantile, 1,000,000 inputs each',
         'convergence': 'No iterations to compare. phit and phit-polyfill use the _array batch functions (cdflib '
@@ -220,6 +223,26 @@ def machine():
     return cpu, os.cpu_count(), round(kib / 2**20), f'Linux, {release} ({platform.machine()})'
 
 
+def record_text(workload, implementations, repeats, darwin):
+    """A record's reader-facing text: title, label, Scope, workload, method, and memory measure."""
+    spec = WORKLOADS[workload]
+    inputs = ('The time runs from the inputs already in memory (a PHP array, an R vector, a numpy array) to '
+              'holding all four results. Building the inputs is outside the timing. '
+              if workload == 'distributions' else
+              "The time runs from the data already in memory in the runtime's usual structure (PHP arrays of "
+              'columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the '
+              'coefficients and standard errors, and includes building the model matrix from the formula. '
+              'Reading the CSV file is outside the timing. ')
+    return {
+        'title': spec['title'], 'label': spec['label'], 'description': spec['description'],
+        'workload': spec['workload'],
+        'method': f'Each run is a fresh process. Each implementation runs once as a warm-up, then the '
+                  f'{implementations} alternate for {repeats} rounds in a rotated order. ' + inputs
+                  + MEMORY_METHOD[darwin] + spec['convergence'],
+        'memory_measure': 'peak memory footprint' if darwin else 'peak anonymous memory',
+    }
+
+
 def benchmark(workload, args):
     spec = WORKLOADS[workload]
     implementations = spec['implementations']
@@ -261,8 +284,7 @@ def benchmark(workload, args):
         'reps_peak_rss_mib': [round(r['peak_rss_mib'], 1) for r in reps[i]],
     } for i in implementations]
     return {
-        'title': spec['title'], 'description': spec['description'],
-        'measure': 'Elapsed time', 'unit': 'ms', 'statistic': 'median', 'workload': spec['workload'],
+        'measure': 'Elapsed time', 'unit': 'ms', 'statistic': 'median',
         'environment': {
             'cpu': cpu, 'cores': cores, 'memory_gb': memory, 'os': os_name, 'php': php, 'versions': versions,
             'threads': 'One thread everywhere: OPENBLAS_NUM_THREADS, OMP_NUM_THREADS, MKL_NUM_THREADS, '
@@ -272,16 +294,7 @@ def benchmark(workload, args):
             'repeats': args.repeats, 'date': datetime.now(timezone.utc).date().isoformat(), 'commit': commit,
             'code_commit': commit,
         },
-        'method': 'Each run is a fresh process. Each implementation runs once as a warm-up, then the '
-                  f'{len(implementations)} alternate for {args.repeats} rounds in a rotated order. ' + (
-                      'The time runs from the inputs already in memory (a PHP array, an R vector, a numpy array) to '
-                      'holding all four results. Building the inputs is outside the timing. '
-                      if workload == 'distributions' else
-                      "The time runs from the data already in memory in the runtime's usual structure (PHP arrays "
-                      'of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the '
-                      'coefficients and standard errors, and includes building the model matrix from the formula. '
-                      'Reading the CSV file is outside the timing. ') + MEMORY_METHOD[sys.platform == 'darwin'] + spec['convergence'],
-        'memory_measure': 'peak memory footprint' if sys.platform == 'darwin' else 'peak anonymous memory',
+        **record_text(workload, len(implementations), args.repeats, sys.platform == 'darwin'),
         'check': check,
         'code': code,
         'languages': {i: LANGUAGES[i] for i in implementations},
@@ -303,9 +316,22 @@ def main():
     parser.add_argument('--python', default=str(ROOT / '.context' / 'bench-venv' / 'bin' / 'python'))
     # On Linux, build bench/peakmem.c and put it on the PATH: cc -O2 -o peakmem bench/peakmem.c
     parser.add_argument('--time', default='/usr/bin/time' if sys.platform == 'darwin' else 'peakmem')
+    parser.add_argument('--text-only', action='store_true',
+                        help="rewrite only each existing record's title, label, Scope, workload, and method")
     parser.add_argument('--code-only', action='store_true',
                         help="rewrite only each existing record's code from the scripts, with code_commit set to HEAD")
     args = parser.parse_args()
+    if args.text_only:
+        for workload in list(WORKLOADS) if args.workload == 'all' else [args.workload]:
+            out = ROOT / 'site' / 'benchmarks' / f'{workload}-workload.json'
+            record = json.loads(out.read_text())
+            text = record_text(workload, len(record['code']), record['environment']['repeats'],
+                               record['memory_measure'] == 'peak memory footprint')
+            record = {**{k: text[k] for k in ('title', 'label')}, **{k: v for k, v in record.items() if k not in text},
+                      **{k: text[k] for k in text if k not in ('title', 'label')}}
+            out.write_text(json.dumps(record, indent=1) + '\n')
+            print(f'rewrote the text of {out.relative_to(ROOT)}', file=sys.stderr)
+        return
     if args.code_only:
         commit = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True, text=True,
                                 cwd=ROOT).stdout.strip()

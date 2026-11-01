@@ -1,10 +1,9 @@
 {
- "title": "OLS workload: phit, phit-polyfill, R and statsmodels",
- "description": "Elapsed time and peak memory to fit a linear model by least squares from a formula, with coefficients and standard errors, in the phit extension, phit-polyfill, R lm() and statsmodels OLS.",
+ "title": "OLS, 1M rows",
+ "label": "OLS, 1M rows",
  "measure": "Elapsed time",
  "unit": "ms",
  "statistic": "median",
- "workload": "OLS, 1,000,000 rows, 10 predictors",
  "environment": {
   "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
   "cores": 2,
@@ -26,8 +25,6 @@
   "commit": "cfd4ef6",
   "code_commit": "cfd4ef6"
  },
- "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every millisecond. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak anonymous memory with its libraries loaded and no data. OLS has no iterations. phit and phit-polyfill solve by column-scaled SVD. R lm() uses a Householder QR (LINPACK dqrls). statsmodels OLS.fit() uses its default method, \"pinv\": the Moore-Penrose pseudoinverse by SVD.",
- "memory_measure": "peak anonymous memory",
  "check": {
   "max_abs_coefficient_difference": 3.0171420917213254e-12
  },
@@ -186,5 +183,9 @@
     617.8
    ]
   }
- ]
+ ],
+ "description": "Least-squares fit of a linear model from a formula, returning coefficients and standard errors. Implementations: the phit extension, phit-polyfill, R lm(), and statsmodels OLS.",
+ "workload": "OLS, 1,000,000 rows, 10 predictors",
+ "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every millisecond. The peak resident set size, which counts those pages, and each runtime's baseline memory with its libraries loaded and no data are recorded beside it. OLS has no iterations. phit and phit-polyfill solve by column-scaled SVD. R lm() uses a Householder QR (LINPACK dqrls). statsmodels OLS.fit() uses its default method, \"pinv\": the Moore-Penrose pseudoinverse by SVD.",
+ "memory_measure": "peak anonymous memory"
 }

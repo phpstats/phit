@@ -1,10 +1,9 @@
 {
- "title": "Binomial mixed-model workload: phit, phit-polyfill, lme4 and GPBoost",
- "description": "Elapsed time and peak memory to fit a binomial logit model with one random intercept by the Laplace approximation, with fixed-effect coefficients and standard errors, in the phit extension, phit-polyfill, lme4 glmer() and GPBoost.",
+ "title": "Binomial mixed model, 20k rows",
+ "label": "Binomial mixed model, 20k rows",
  "measure": "Elapsed time",
  "unit": "ms",
  "statistic": "median",
- "workload": "Binomial logit random intercept by Laplace, 20,000 rows in 200 groups, 3 predictors, 0/1 response",
  "environment": {
   "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
   "cores": 2,
@@ -27,8 +26,6 @@
   "commit": "cfd4ef6",
   "code_commit": "cfd4ef6"
  },
- "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every millisecond. peak_rss_mib gives the peak resident set size, which counts those pages. baseline_memory_mib is each runtime's peak anonymous memory with its libraries loaded and no data. phit and phit-polyfill: BOBYQA over the fixed effects and the group SD, starting from the binomial GLM, final trust-region radius 1e-7, at most 20,000 evaluations, with each group's conditional mode solved by bracketed Newton steps. lme4 glmer(): nAGQ = 1 with its default two stages (bobyqa, then Nelder_Mead) and glmerControl(tolPwrss = 1e-10), tighter than the default 1e-7, which stops the conditional-mode iterations early enough to move the estimates (docs/r-compatibility.qmd). GPBoost 1.8.0: GPModel(likelihood=\"bernoulli_logit\") with optimizer_cov \"lbfgs\" and delta_rel_conv 1e-12, single-threaded through OMP_NUM_THREADS.",
- "memory_measure": "peak anonymous memory",
  "check": {
   "max_abs_coefficient_difference": 1.7012116907411112e-06
  },
@@ -187,5 +184,9 @@
     168.9
    ]
   }
- ]
+ ],
+ "description": "Laplace fit of a binomial logit model with one random intercept, returning fixed-effect coefficients and standard errors. Implementations: the phit extension, phit-polyfill, lme4 glmer(), and GPBoost.",
+ "workload": "Binomial logit random intercept by Laplace, 20,000 rows in 200 groups, 3 predictors, 0/1 response",
+ "method": "Each run is a fresh process. Each implementation runs once as a warm-up, then the 4 alternate for 7 rounds in a rotated order. The time runs from the data already in memory in the runtime's usual structure (PHP arrays of columns, an R data.frame, a pandas DataFrame, or numpy arrays for GPBoost) to holding the coefficients and standard errors, and includes building the model matrix from the formula. Reading the CSV file is outside the timing. Every process runs under bench/peakmem.c. Memory is the process's peak anonymous memory, data included: its own allocations, without the file pages it maps, from RssAnon in /proc, sampled every millisecond. The peak resident set size, which counts those pages, and each runtime's baseline memory with its libraries loaded and no data are recorded beside it. phit and phit-polyfill: BOBYQA over the fixed effects and the group SD, starting from the binomial GLM, final trust-region radius 1e-7, at most 20,000 evaluations, with each group's conditional mode solved by bracketed Newton steps. lme4 glmer(): nAGQ = 1 with its default two stages (bobyqa, then Nelder_Mead) and glmerControl(tolPwrss = 1e-10), tighter than the default 1e-7, which stops the conditional-mode iterations early enough to move the estimates (docs/r-compatibility.qmd). GPBoost 1.8.0: GPModel(likelihood=\"bernoulli_logit\") with optimizer_cov \"lbfgs\" and delta_rel_conv 1e-12, single-threaded through OMP_NUM_THREADS.",
+ "memory_measure": "peak anonymous memory"
 }

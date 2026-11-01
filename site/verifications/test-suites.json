@@ -1,8 +1,9 @@
 {
- "title": "Test suites: saved references and contracts",
+ "title": "Test suites",
  "label": "Test suites",
  "kind": "reference",
- "checked": "Every PHP test suite that scripts/check runs, against saved references from R, lme4, mpmath, Python, and phibble, and against phit's own contracts. Each row is one suite and its own summary.",
+ "checked": "Every PHP test suite run by scripts/check: saved references from R, lme4, mpmath, Python, and phibble, and phit's own contracts.",
+ "description": "docs/verifications/run_test_suites.py runs each suite against the release extension and records its exit status and its own summary line. Each row is one suite.",
  "reference": "Saved fixtures under tests/fixtures; each lists its generator and versions",
  "inputs": [
   {
@@ -15,80 +16,80 @@
   {
    "id": "exact",
    "kind": "exact",
-   "applies_to": "results, row accounting, parsed values, types, and errors that must be identical"
+   "applies_to": "Exact results; results, row accounting, parsed values, types, errors"
   },
   {
    "id": "model",
    "kind": "tolerance",
-   "applies_to": "saved R fixtures for OLS and GLMs",
+   "applies_to": "Model fixtures; OLS and GLMs",
    "atol": 1e-09,
    "rtol": 1e-07
   },
   {
    "id": "formula",
    "kind": "tolerance",
-   "applies_to": "model.matrix values (columns, terms, and rows exact); lm/glm fits use atol 1e-9, rtol 1e-7",
+   "applies_to": "Model matrices; columns, terms, and rows exact; lm and glm fits 1e-9 + 1e-7\u00b7|r|",
    "atol": 1e-12,
    "rtol": 1e-12
   },
   {
    "id": "mixed",
    "kind": "tolerance",
-   "applies_to": "lme4 estimates with bobyqa; likelihood 5e-6 + 1e-9\u00b7|r|, glmer as in the binomial record",
+   "applies_to": "Mixed-model estimates; likelihood 5e-6 + 1e-9\u00b7|r|; glmer as in the binomial mixed model",
    "atol": 1e-05,
    "rtol": 1e-05
   },
   {
    "id": "predict",
    "kind": "tolerance",
-   "applies_to": "fits, intervals, and standard errors; mixed models as their fits",
+   "applies_to": "Predictions; fits, intervals, standard errors",
    "atol": 1e-07,
    "rtol": 1e-06
   },
   {
    "id": "r-compat",
    "kind": "tolerance",
-   "applies_to": "weighted and offset GLMs",
+   "applies_to": "Weighted and offset GLMs",
    "atol": 1e-07,
    "rtol": 1e-06
   },
   {
    "id": "intercept",
    "kind": "tolerance",
-   "applies_to": "the exposure intercept and its SE (likelihood and counts at 1e-9); identical results with and without automatic intercepts",
+   "applies_to": "Exposure intercept and standard error; likelihood and counts 1e-9",
    "atol": 1e-10
   },
   {
    "id": "distributions",
    "kind": "tolerance",
-   "applies_to": "densities, CDFs, and survival functions (logs relative to max(1, |r|), quantiles 1e-15 + 1e-12\u00b7|r|)",
+   "applies_to": "Distribution functions; logarithms relative to max(1, |r|), quantiles 1e-15 + 1e-12\u00b7|r|",
    "atol": 1e-300,
    "rtol": 1e-12
   },
   {
    "id": "relative",
    "kind": "tolerance",
-   "applies_to": "descriptive statistics and smoothing; exact zeros, ECDF counts, and type-7 identities exact",
+   "applies_to": "Descriptive statistics and smoothing; zeros, ECDF counts, and type-7 identities exact",
    "rtol": 1e-12
   },
   {
    "id": "rng",
    "kind": "tolerance",
-   "applies_to": "R inverse-CDF values; ChaCha uniforms and discrete samples exact",
+   "applies_to": "Sampling; ChaCha uniforms and discrete samples exact",
    "atol": 1e-15,
    "rtol": 1e-12
   },
   {
    "id": "draws",
    "kind": "tolerance",
-   "applies_to": "moments, covariance maps, affine draws, and log determinants",
+   "applies_to": "Posterior-draw kernels; moments, covariance maps, affine draws, log determinants",
    "atol": 1e-11,
    "rtol": 1e-11
   },
   {
    "id": "stress",
    "kind": "tolerance",
-   "applies_to": "per-case tolerances stored in tests/fixtures/stress-r.json, scaled with the response"
+   "applies_to": "Extreme inputs; per-case tolerances in tests/fixtures/stress-r.json"
   }
  ],
  "cases": [

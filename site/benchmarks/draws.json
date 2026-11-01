@@ -1,7 +1,7 @@
 {
- "title": "Posterior draws: moments and transforms",
+ "title": "Posterior draws",
  "label": "Posterior draws",
- "description": "Weighted draw moments (population and unbiased), covariance maps, and affine transforms in phit and R, after every output value is compared.",
+ "description": "Weighted draw moments (population and unbiased), covariance maps, and affine transforms in phit and R.",
  "workload": "1,000 \u00d7 4, 4,000 \u00d7 16, 10,000 \u00d7 32, and 100,000 \u00d7 8 draws \u00d7 parameters",
  "implementations": {
   "phit": "phit draws_* functions, PHP 8.5.12",

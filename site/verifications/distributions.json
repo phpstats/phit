@@ -1,8 +1,9 @@
 {
- "title": "Distributions: accuracy against 60-digit references",
+ "title": "Distributions",
  "label": "Distributions",
  "kind": "reference",
- "checked": "Densities, masses, CDFs, survival functions, their logs, and quantiles of every family at saved points, against mpmath at 60 digits, with R and SciPy as peers.",
+ "checked": "Densities, masses, CDFs, survival functions, their logarithms, and quantiles of every family at saved points.",
+ "description": "docs/verifications/compare_distributions.py evaluates every case with phit, R, and SciPy and compares each with mpmath references at 60 digits, rounded once to double. Case status is the largest relative error against the case's rule.",
  "reference": "mpmath 1.4.1 at 60 digits, each value rounded once",
  "versions": {
   "mpmath": "1.4.1",
@@ -18,14 +19,14 @@
    "kind": "tolerance",
    "rtol": 1e-12,
    "rel_floor": 1e-300,
-   "applies_to": "densities, masses, CDFs, and survival functions"
+   "applies_to": "Probabilities; densities, masses, CDFs, survival functions"
   },
   {
    "id": "log-and-quantile",
    "kind": "tolerance",
    "rtol": 1e-12,
    "rel_floor": 1,
-   "applies_to": "log values and quantiles"
+   "applies_to": "Logarithms and quantiles"
   }
  ],
  "cases": [

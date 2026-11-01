@@ -1,7 +1,7 @@
 {
- "title": "Probit regression: fit time",
- "label": "Probit regression",
- "description": "Fit the same simulated data and return every result: phit fit_probit_matrix(), R glm(family = binomial(link = \"probit\")), and statsmodels GLM Binomial probit. All three read the same CSV and agree within the tolerance before timings are kept.",
+ "title": "Probit regression, by size",
+ "label": "Probit regression, by size",
+ "description": "Matrix fit of the same simulated data at four sizes, returning every result: phit fit_probit_matrix(), R glm(family = binomial(link = \"probit\")), and statsmodels GLM Binomial probit.",
  "workload": "1,000, 100,000, and 1,000,000 rows with 3 coefficients; 100,000 rows with 11 (counts include the intercept)",
  "dataset": {
   "seed": 20261011,

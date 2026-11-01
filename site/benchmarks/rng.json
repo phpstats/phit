@@ -1,7 +1,7 @@
 {
- "title": "Seeded sampling: draw time",
+ "title": "Seeded sampling",
  "label": "Seeded sampling",
- "description": "One seeded call that returns n normal, beta, or Poisson draws. Sample points are checked against independent ChaCha streams and R quantiles before timing.",
+ "description": "One seeded call returning n normal, beta, or Poisson draws.",
  "workload": "normal, beta, and Poisson at 1,000, 100,000, and 1,000,000 draws, seed 42",
  "implementations": {
   "phit": "phit dist_*_rng(), PHP 8.5.12"

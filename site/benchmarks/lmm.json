@@ -1,7 +1,7 @@
 {
- "title": "Gaussian random intercept: fit time",
- "label": "Gaussian random intercept",
- "description": "Fit the same simulated data and return every result: phit fit_mixed_gaussian_intercept_matrix(), R lme4 lmer(REML = FALSE, bobyqa), and statsmodels MixedLM (ML). All three read the same CSV and agree within the tolerance before timings are kept.",
+ "title": "Linear mixed model, by size",
+ "label": "Linear mixed model, by size",
+ "description": "Matrix fit of the same simulated data at four sizes, returning every result: phit fit_mixed_gaussian_intercept_matrix(), R lme4 lmer(REML = FALSE, bobyqa), and statsmodels MixedLM (ML).",
  "workload": "1,000, 100,000, and 1,000,000 rows with 3 coefficients; 100,000 rows with 11 (counts include the intercept); min(100, n/20) groups",
  "dataset": {
   "seed": 20261011,

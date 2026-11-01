@@ -1,7 +1,7 @@
 {
- "title": "Poisson regression: fit time",
- "label": "Poisson regression",
- "description": "Fit the same simulated data and return every result: phit fit_poisson_matrix(), R glm(family = poisson), and statsmodels GLM Poisson. All three read the same CSV and agree within the tolerance before timings are kept.",
+ "title": "Poisson regression, by size",
+ "label": "Poisson regression, by size",
+ "description": "Matrix fit of the same simulated data at four sizes, returning every result: phit fit_poisson_matrix(), R glm(family = poisson), and statsmodels GLM Poisson.",
  "workload": "1,000, 100,000, and 1,000,000 rows with 3 coefficients; 100,000 rows with 11 (counts include the intercept)",
  "dataset": {
   "seed": 20261011,

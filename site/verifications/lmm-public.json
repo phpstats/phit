@@ -1,8 +1,9 @@
 {
- "title": "Mixed models on published data: agreement with lme4",
- "label": "Published data",
+ "title": "Linear mixed model, published data",
+ "label": "Linear mixed model, published data",
  "kind": "reference",
- "checked": "ML fits of sleepstudy, Orthodont, Machines, and Hsb82 against lme4 and nlme, with statsmodels.",
+ "checked": "The quantities of the linear mixed model record on sleepstudy, Orthodont, Machines, and Hsb82, fitted by ML, with nlme as a second reference.",
+ "description": "docs/verifications/compare_lmm.py --public fits each case with lme4, statsmodels, nlme, and fit_mixed_gaussian_intercept_matrix(), and compares every quantity with lme4 under the case's stored tolerance. Case status is recomputed from the saved values.",
  "reference": "R lme4 lmer(REML = FALSE, bobyqa rhoend = 1e-10) and nlme lme()",
  "versions": {
   "R": "4.6.1",
@@ -16,21 +17,21 @@
  "comparison": [
   {
    "id": "atol 1e-07, rtol 1e-06",
-   "applies_to": "quantities this tolerance names in the cases",
+   "applies_to": "Coefficients, covariance, std errors, z statistics, p values, conf int, random effects, residual variance, random intercept variance, sigma, icc, df residual",
    "kind": "tolerance",
    "atol": 1e-07,
    "rtol": 1e-06
   },
   {
    "id": "atol 1e-06, rtol 1e-06",
-   "applies_to": "quantities this tolerance names in the cases",
+   "applies_to": "Fixed fitted, fitted, residuals, marginal residuals",
    "kind": "tolerance",
    "atol": 1e-06,
    "rtol": 1e-06
   },
   {
    "id": "atol 1e-07, rtol 1e-10",
-   "applies_to": "quantities this tolerance names in the cases",
+   "applies_to": "Log likelihood, aic",
    "kind": "tolerance",
    "atol": 1e-07,
    "rtol": 1e-10

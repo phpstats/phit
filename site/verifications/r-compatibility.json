@@ -1,8 +1,9 @@
 {
- "title": "Weights, offsets, and mixed models: agreement with R and lme4",
+ "title": "R compatibility",
  "label": "R compatibility",
  "kind": "reference",
- "checked": "Weighted and offset GLMs against base R, and Gaussian mixed models (REML and ML, random slopes, several terms, nesting) against all four lme4 optimizers with both phit optimizers.",
+ "checked": "Every reported quantity of weighted and offset GLMs, and of Gaussian mixed models fitted by REML and ML with random slopes, several terms, and nesting, for each pair of phit and lme4 optimizers.",
+ "description": "docs/verifications/compare_r_compatibility.py fits the saved fixtures with fit_*_matrix() and fit_mixed_gaussian_matrix() under bobyqa and Nelder\u2013Mead, and compares them with the saved R and lme4 results for bobyqa, Nelder_Mead, nlminbwrap, and nloptwrap. Case status is recomputed from the saved values.",
  "reference": "R glm(), lm(); lme4 lmer() with bobyqa, Nelder_Mead, nlminbwrap, and nloptwrap",
  "versions": {
   "R": "4.6.1",
@@ -20,28 +21,28 @@
    "kind": "tolerance",
    "atol": 1e-07,
    "rtol": 1e-06,
-   "applies_to": "weighted and offset GLMs against base R"
+   "applies_to": "Fixed models; weighted and offset GLMs"
   },
   {
    "id": "mixed_bobyqa",
    "kind": "tolerance",
    "atol": 1e-05,
    "rtol": 1e-05,
-   "applies_to": "mixed-model estimates, phit bobyqa against lme4 bobyqa"
+   "applies_to": "Mixed-model estimates; phit and lme4 both bobyqa"
   },
   {
    "id": "mixed_other_optimizers",
    "kind": "tolerance",
    "atol": 0.001,
    "rtol": 0.0003,
-   "applies_to": "mixed-model estimates for other optimizer pairs"
+   "applies_to": "Mixed-model estimates; other optimizer pairs"
   },
   {
    "id": "mixed_likelihood",
    "kind": "tolerance",
    "atol": 5e-06,
    "rtol": 1e-09,
-   "applies_to": "mixed-model log likelihood, AIC, and BIC"
+   "applies_to": "Mixed-model log likelihood, AIC, and BIC"
   }
  ],
  "cases": [
