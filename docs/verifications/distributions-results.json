@@ -38511,5 +38511,5 @@
    }
   }
  ],
- "release_gate_policy": "Original operation-specific PHP tolerances retained; independent mpmath adjudicates saved R disagreements. Documented boundary conventions have separate assertions."
+ "tolerance_policy": "Original operation-specific PHP tolerances retained; independent mpmath adjudicates saved R disagreements. Documented boundary conventions have separate assertions."
 }

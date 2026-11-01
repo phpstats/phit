@@ -10397,14 +10397,14 @@
       "path": "tests/fixtures/distributions-scipy.json",
       "sha256": "be3d74ca0adead259585d4519a0f5ec4b3281972015e9894d5488eaf984f1722",
       "generator": "docs/verifications/compare_distributions.py",
-      "generator_sha256": "74a8fd7b12221a23f12137f5d69a915601849a0074f15f512f1b543f4def174c",
+      "generator_sha256": "e428325979c22fd16586837ae07c7ac583582c4cffce1907fbe29f3882d1469c",
       "software_recorded_in_fixture": {
         "reference": "SciPy 1.18.1, NumPy 2.5.4",
         "recorded_at": "2026-11-01T19:23:00.594834+00:00",
         "generator": "docs/verifications/compare_distributions.py",
         "conventions": "scipy.stats frozen distributions; quantile is ppf; nonfinite numbers are strings"
       },
-      "tolerance_policy": "Independent peer values and error report; not an authoritative release-gate replacement for R/mpmath.",
+      "tolerance_policy": "Independent peer values and an error report; R and mpmath remain the references.",
       "model_specification": "Explicit distribution parameterization/evaluation points or numeric descriptive slices; no model fit or data filtering in reference generation.",
       "cases": [
         {
@@ -15949,7 +15949,7 @@
       "path": "tests/fixtures/distributions-mpmath.json",
       "sha256": "85dd7b67cbe51ab6d5af9e5a08301f03c3c8ff3c61bf922e4c929deded137075",
       "generator": "docs/verifications/compare_distributions.py",
-      "generator_sha256": "74a8fd7b12221a23f12137f5d69a915601849a0074f15f512f1b543f4def174c",
+      "generator_sha256": "e428325979c22fd16586837ae07c7ac583582c4cffce1907fbe29f3882d1469c",
       "software_recorded_in_fixture": {
         "reference": "mpmath 1.4.1 at 60 digits",
         "recorded_at": "2026-11-01T19:23:00.594834+00:00",

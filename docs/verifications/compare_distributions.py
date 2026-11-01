@@ -514,7 +514,7 @@ def main():
             native_refresh_method='Re-evaluated every native scalar/batch against immutable saved R/SciPy/60-digit mpmath references. No reference values were recomputed.',
             reference_metadata={name:{k:v for k,v in data.items() if k!='cases'} for name,data in stored.items()},
             reference_sha256={name:hashlib.sha256((ROOT/f'tests/fixtures/distributions-{name}.json').read_bytes()).hexdigest() for name in ('r','scipy','mpmath')})
-    report['release_gate_policy']='Original operation-specific PHP tolerances retained; independent mpmath adjudicates saved R disagreements. Documented boundary conventions have separate assertions.'
+    report['tolerance_policy']='Original operation-specific PHP tolerances retained; independent mpmath adjudicates saved R disagreements. Documented boundary conventions have separate assertions.'
     (ROOT / 'docs/verifications/distributions-results.json').write_text(
         json.dumps(report, indent=1, default=encode) + '\n')
     print('Saved native comparison report' if args.stored_references else 'Saved fixtures and native comparison report')

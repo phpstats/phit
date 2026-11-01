@@ -121,10 +121,10 @@ def fixed_verification(slug, title, peers):
     versions = load(f'docs/verifications/{slug}-results.json')[0]['versions']
     return {
         'title': f'{title}: agreement with R',
-        'description': f'Largest absolute difference from R for every reported quantity, alongside {peers}. '
-                       'Every case also passes the release gate (scripts/check).',
+        'description': f'The same inputs fitted by phit, R, and {peers}: the largest absolute difference from R for '
+                       'every reported quantity. Each case must agree with R within the tolerance.',
         'reference': versions_text(versions),
-        'tolerance': 'release gate: 1e-9 + 1e-7*|reference| (fixed models), 1e-7 + 1e-6*|reference| (mixed models)',
+        'tolerance': '1e-9 + 1e-7*|reference| (fixed models), 1e-7 + 1e-6*|reference| (mixed models)',
         'source': f'docs/verifications/{slug}-results.json',
         'cases': cases,
     }
@@ -203,13 +203,30 @@ def manifest(benchmarks, verifications):
         'quickstart': 'getting-started',
         'repository': 'https://github.com/phpstats/phit',
         'example': {
+            # The output is what this code prints with $housing read from docs/data/housing.csv.
             'chain': "use function Phit\\{fit_ols, predict};\n\n"
+                     "// $housing: docs/data/housing.csv as named columns\n"
                      "$fit = fit_ols('monthly_rent ~ area_m2 + bedrooms', $housing);\n"
-                     "$fit['named'];  // ['(Intercept)' => ..., 'area_m2' => ..., 'bedrooms' => ...]\n\n"
-                     "$p = predict($fit, ['area_m2' => [60, 90], 'bedrooms' => [1, 3]], interval: 'prediction');\n"
-                     "$p['fit'];      // point predictions; $p['lower'], $p['upper'] give 95% intervals",
+                     "foreach ($fit['named'] as $name => $b) {\n"
+                     "    printf(\"%-12s %8.2f\\n\", $name, $b);\n"
+                     "}\n\n"
+                     "$p = predict(\n"
+                     "    $fit,\n"
+                     "    ['area_m2' => [60, 90], 'bedrooms' => [1, 3]],\n"
+                     "    interval: 'prediction',\n"
+                     ");\n"
+                     "foreach ($p['fit'] as $i => $rent) {\n"
+                     "    printf(\n"
+                     "        \"%.2f [%.2f, %.2f]\\n\",\n"
+                     "        $rent, $p['lower'][$i], $p['upper'][$i],\n"
+                     "    );\n"
+                     "}",
             'pipe': None,
-            'output': None,
+            'output': "(Intercept)    516.18\n"
+                      "area_m2         11.93\n"
+                      "bedrooms       251.96\n"
+                      "1484.12 [712.10, 2256.13]\n"
+                      "2346.02 [1766.45, 2925.60]",
         },
         'docs': {
             'root': 'docs',

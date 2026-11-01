@@ -28,7 +28,7 @@ POLICY={'ols-r':'1e-9 + 1e-7*abs(reference); zero/perfect fit conventions tested
  'stress-r':'per-case absolute+relative; absolute scales with response_scale for estimates and its square for covariance; dimensionless quantities unscaled',
  'draws-python':'1e-11 + 1e-11*abs(reference); extreme scale nonzero outputs/identities also relative 1e-12; inverse round trips 1e-11 + 1e-11*abs(reference)',
  'distributions-r':'Densities/CDF/SF: 1e-300 + 1e-12*abs(reference); logs: 1e-12*max(1,abs(reference)); quantiles: 1e-15 + 1e-12*abs(reference). Immutable mpmath references adjudicate R disagreements; documented boundary differences tested separately.',
- 'distributions-scipy':'Independent peer values and error report; not an authoritative release-gate replacement for R/mpmath.',
+ 'distributions-scipy':'Independent peer values and an error report; R and mpmath remain the references.',
  'distributions-mpmath':'Same operation-specific policy as R; 60-digit references rounded once, null denotes unavailable. Reference choice uses only saved R/mpmath values, never the native result.',
  'descriptive-r':'Relative 1e-12, exact zero; scalar/batch type-7 quantiles must agree exactly. Missing/error conventions tested separately.',
  'formula-r':'model.matrix columns/terms/rows exact; values 1e-12 + 1e-12*abs(reference); lm/glm fits 1e-9 + 1e-7*abs(reference) (orthogonal poly() designs use the fit tolerance). GLM references are polished by restarting glm() from its own solution.',
