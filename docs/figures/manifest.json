@@ -7,11 +7,11 @@
       "inputs": [
         {
           "path": "benchmarks/ols-results.json",
-          "md5": "95885b050fbda3fc5fb620f0d55523ef"
+          "md5": "ad341e246bf330c503346752f283316a"
         }
       ],
-      "svg_md5": "604fc04c9e3ec7999f91ec0e60173db7",
-      "png_md5": "51b47f42c3475c16b2a878ef65ba1320"
+      "svg_md5": "52f615129ebed17a6eb04f298570753a",
+      "png_md5": "4133aa66070cc82ad23614086995d20d"
     },
     "benchmarks/figures/ols-memory.svg": {
       "width_inches": 10,
@@ -20,11 +20,11 @@
       "inputs": [
         {
           "path": "benchmarks/ols-results.json",
-          "md5": "95885b050fbda3fc5fb620f0d55523ef"
+          "md5": "ad341e246bf330c503346752f283316a"
         }
       ],
-      "svg_md5": "3b7c9618fdfefc9fe834f778dca99824",
-      "png_md5": "b068dcb99c358444392f33031d63caaa"
+      "svg_md5": "8dd4d30c827afe0895f6a22251495d66",
+      "png_md5": "460bd7b3b640e27a34250e7d6955f45e"
     },
     "figures/logistic-mixed-integration-error.svg": {
       "width_inches": 10,
@@ -119,11 +119,11 @@
       "inputs": [
         {
           "path": "benchmarks/logistic-results.json",
-          "md5": "e3971b2e569c48839ef09d9180e5b4a5"
+          "md5": "6b7ffc1a74664032adf725fadc7c4182"
         }
       ],
-      "svg_md5": "902666738af7277ead47e7214224fdc6",
-      "png_md5": "326c024c8ba5903ab8247525fbd70914"
+      "svg_md5": "a5b3990cd9c9051b2a50187642c8a84d",
+      "png_md5": "f7aead74787a848cf20da6755d24bf87"
     },
     "benchmarks/figures/logistic-memory.svg": {
       "width_inches": 10,
@@ -132,11 +132,11 @@
       "inputs": [
         {
           "path": "benchmarks/logistic-results.json",
-          "md5": "e3971b2e569c48839ef09d9180e5b4a5"
+          "md5": "6b7ffc1a74664032adf725fadc7c4182"
         }
       ],
-      "svg_md5": "a90b54a1fe68666b724fcc31b843389d",
-      "png_md5": "92d99eab0baf46cde1b84bccb560fec9"
+      "svg_md5": "f5042090163605ff0034b59b4eeab27b",
+      "png_md5": "c61153bac0853b376759133b0b9b53f9"
     },
     "benchmarks/figures/probit-fit-time.svg": {
       "width_inches": 10,
@@ -145,11 +145,11 @@
       "inputs": [
         {
           "path": "benchmarks/probit-results.json",
-          "md5": "27112d6a5b023b9ac5168460a56232d4"
+          "md5": "b8147085a65d5eb438e65a11679456d0"
         }
       ],
-      "svg_md5": "fe1f699da0b22c09c60d1cd1d08c337a",
-      "png_md5": "96930b4b1220cbbbeb758122e96e70b6"
+      "svg_md5": "95f923ca1591de7bd4362cb35efb9e56",
+      "png_md5": "22815d8a0906a6b4d9b336829e9c9d76"
     },
     "benchmarks/figures/probit-memory.svg": {
       "width_inches": 10,
@@ -158,11 +158,11 @@
       "inputs": [
         {
           "path": "benchmarks/probit-results.json",
-          "md5": "27112d6a5b023b9ac5168460a56232d4"
+          "md5": "b8147085a65d5eb438e65a11679456d0"
         }
       ],
-      "svg_md5": "a142c9dfe4d7e8d1a59174474ec893f0",
-      "png_md5": "8a5438ebe7fa48d4fc3d4d296115ad02"
+      "svg_md5": "9a0ac06e2c36815078743c6a9e029e41",
+      "png_md5": "19f8b5c005738a5c1bbc7f47f1cb3079"
     },
     "benchmarks/figures/poisson-fit-time.svg": {
       "width_inches": 10,
@@ -171,11 +171,11 @@
       "inputs": [
         {
           "path": "benchmarks/poisson-results.json",
-          "md5": "e37a6af7522fbda5b78791d018fccae8"
+          "md5": "85d01aa79089d2e6578294423f5e8a1e"
         }
       ],
-      "svg_md5": "76a571dfac63c465a9e7a0e4146d9aad",
-      "png_md5": "708f37b0c03c3200864e97515d5c8fc2"
+      "svg_md5": "35295308cc4542206286f2572fa200ca",
+      "png_md5": "0c560df5a199d4c12f8ad7af1f0b2505"
     },
     "benchmarks/figures/poisson-memory.svg": {
       "width_inches": 10,
@@ -184,11 +184,11 @@
       "inputs": [
         {
           "path": "benchmarks/poisson-results.json",
-          "md5": "e37a6af7522fbda5b78791d018fccae8"
+          "md5": "85d01aa79089d2e6578294423f5e8a1e"
         }
       ],
-      "svg_md5": "bd0bcd006daf13a6fa406265724a9284",
-      "png_md5": "187de659e5d6cb99762270c3aaabc805"
+      "svg_md5": "9dd56f42481b5451ee3679b13f49e6d0",
+      "png_md5": "2f7579f4baa67d65e0594dc2c87cc54d"
     },
     "benchmarks/figures/lmm-fit-time.svg": {
       "width_inches": 10,
@@ -197,11 +197,11 @@
       "inputs": [
         {
           "path": "benchmarks/lmm-results.json",
-          "md5": "1fc023ef4d29afd354c00b61e9c83b62"
+          "md5": "bd00e454f4504006678e505f4eb2d780"
         }
       ],
-      "svg_md5": "3f95a3301c205444f1f21808ae30a2f3",
-      "png_md5": "3320a50bc99ca52f5cd86b0ee26b2da2"
+      "svg_md5": "4930c77d08afba446e33f408a7298e8d",
+      "png_md5": "b4bc8ca1723257fac7789644def9ae55"
     },
     "benchmarks/figures/lmm-memory.svg": {
       "width_inches": 10,
@@ -210,11 +210,11 @@
       "inputs": [
         {
           "path": "benchmarks/lmm-results.json",
-          "md5": "1fc023ef4d29afd354c00b61e9c83b62"
+          "md5": "bd00e454f4504006678e505f4eb2d780"
         }
       ],
-      "svg_md5": "9e34e0bf011cad5f35cea4b94645d338",
-      "png_md5": "66b72a57f85f2f028465cd4d41f140a3"
+      "svg_md5": "ebe24688296480b5347279fbd0a5feb5",
+      "png_md5": "54dd7b72f7466d2e0691dd8b018fd8c4"
     },
     "benchmarks/figures/logistic-mixed-fit-time.svg": {
       "width_inches": 10,
@@ -223,11 +223,11 @@
       "inputs": [
         {
           "path": "benchmarks/logistic-mixed-results.json",
-          "md5": "2483bab410d87dee27590ec7a3bf4fff"
+          "md5": "d02b467d53db19dcde810ba6672d3bf3"
         }
       ],
-      "svg_md5": "cbc1662638947aa899584d99f3029c36",
-      "png_md5": "a195d6d2ffb0aa349ad3b8ffd6c6e2cf"
+      "svg_md5": "5b156950faea0ef56dbb27123adeacae",
+      "png_md5": "29064a4eca482d824167359d02af7b53"
     },
     "benchmarks/figures/logistic-mixed-memory.svg": {
       "width_inches": 10,
@@ -236,11 +236,11 @@
       "inputs": [
         {
           "path": "benchmarks/logistic-mixed-results.json",
-          "md5": "2483bab410d87dee27590ec7a3bf4fff"
+          "md5": "d02b467d53db19dcde810ba6672d3bf3"
         }
       ],
-      "svg_md5": "208c431c3d4429d5074cedf7765355f5",
-      "png_md5": "561bcd1690fa611fa9f2e6ce51310d89"
+      "svg_md5": "f632d0ba94edb69ee2cd9f3e9369580e",
+      "png_md5": "78cdfa206be1e7561eeecf359aa78cfc"
     }
   },
   "renderer_md5": "550aaf1c3d740232c9a5c632fb675965",

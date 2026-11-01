@@ -149,6 +149,7 @@
   "site/benchmarks/logistic-mixed.json",
   "site/benchmarks/distributions.json",
   "site/benchmarks/draws.json",
+  "site/benchmarks/rng.json",
   "site/benchmarks/ols-workload.json",
   "site/benchmarks/mixed-workload.json",
   "site/benchmarks/logistic-workload.json",

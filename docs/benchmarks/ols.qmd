@@ -11,14 +11,14 @@ phit's `fit_ols_matrix()`, R `lm()`, and Python statsmodels `OLS` fit identical 
 | --- | --- |
 | Workloads | 1,000, 100,000, and 1,000,000 rows with 3 coefficients; 100,000 rows with 11 coefficients (coefficient counts include the intercept) |
 | Data | Simulated rents, generated with NumPy seed `20261011`; all runtimes read the same 17-significant-digit CSV |
-| Machine | Apple M5 Ultra, macOS 27, recorded 2026-10-16 |
+| Machine | AMD Ryzen 9 9955HX virtual machine, 2 cores, 7.8 GiB, Ubuntu 24.04.5 LTS (x86_64) |
 | Builds | phit release build; versions of R, statsmodels, NumPy, PHP, and Rust are printed below |
 | Threads | Common BLAS and OpenMP thread variables set to 1. phit has no BLAS backend |
 | Repetitions | One untimed warm-up, then five timed fits per worker; workers run separately and alternate order between cases |
 | Statistic | Median and minimum in-process wall-clock time |
 | Timed | One complete fit with all outputs materialized (see [Timing boundaries](#timing-boundaries)) |
 | Excluded | Data generation, CSV parsing, process startup, and JSON serialization |
-| Memory | Peak RSS of the whole worker process, from `/usr/bin/time` |
+| Memory | Peak RSS of the whole worker process, from `peakmem` ([bench/peakmem.c](https://github.com/phpstats/phit/blob/main/bench/peakmem.c)) |
 
 ## Recorded results
 

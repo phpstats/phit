@@ -656,10 +656,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="methods" class="level2">
 <h2 class="anchored" data-anchor-id="methods">Methods</h2>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>Item</th>
@@ -673,27 +669,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>Machine</td>
-<td>macOS 27.0.1 arm64, PHP 8.5.10, recorded 2026-10-12</td>
+<td>AMD Ryzen 9 9955HX virtual machine, 2 cores, 7.8 GiB, Ubuntu 24.04.5 LTS (x86_64)</td>
 </tr>
 <tr class="odd">
+<td>Software</td>
+<td>PHP 8.5.12, phit 0.4.3 release build</td>
+</tr>
+<tr class="even">
 <td>Repetitions</td>
 <td>One untimed warm-up, then five measurements</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Statistic</td>
 <td>Median milliseconds per full call</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Timed</td>
 <td>ChaCha setup from the seed, quantile evaluation, PHP result allocation, and reclamation of earlier results</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Excluded</td>
 <td>JSON input and output, and numerical summaries</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Memory</td>
-<td>Peak RSS of the whole worker process</td>
+<td>Peak RSS of the whole worker process, from <code>peakmem</code> (<a href="https://github.com/phpstats/phit/blob/main/bench/peakmem.c">bench/peakmem.c</a>)</td>
 </tr>
 </tbody>
 </table>
@@ -703,7 +703,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Before any timing phase, Python independently computes the ChaCha blocks at 17 evenly spaced indices, with the pinned PCG seed expansion/Open01 mapping. Base-R quantiles transform those exact probabilities. PHP’s sampled points must match at <code>1e-15 + 1e-12*abs(reference)</code>; discrete values match the integer quantiles. The full output is consumed by mean/variance calculations and checked against theoretical moments within eight standard errors (using the distribution’s fourth central moment for variance). Fixed seeds make these checks deterministic.</p>
 <p>This complements the ordinary 25-case independent stream/quantile fixture suite. It does not compare every element to R and does not claim that R’s own RNG shares the ChaCha sequence. Each timed result undergoes the same numerical checks again.</p>
 <!-- BEGIN RNG EVIDENCE -->
-<p>Recorded: <strong>2026-10-12T15:50:48.801124+00:00</strong>; macOS-27.0.1-arm64-arm-64bit-Mach-O; PHP 8.5.10. All 9 sample-point/moment comparisons passed before timings. Seed 42, 5 repetitions.</p>
+<p>Recorded: <strong>2026-11-01T19:50:24.399727+00:00</strong>; Linux, Ubuntu 24.04.5 LTS (x86_64); PHP 8.5.12. All 9 sample-point/moment comparisons passed before timings. Seed 42, 5 repetitions.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -723,56 +723,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>normal</td>
 <td>1,000</td>
-<td>0.09167</td>
-<td>27.5</td>
+<td>0.1264</td>
+<td>20.0</td>
 </tr>
 <tr class="even">
 <td>normal</td>
 <td>100,000</td>
-<td>9.321</td>
-<td>31.1</td>
+<td>13.04</td>
+<td>23.5</td>
 </tr>
 <tr class="odd">
 <td>normal</td>
 <td>1,000,000</td>
-<td>92.52</td>
-<td>65.4</td>
+<td>132.5</td>
+<td>57.7</td>
 </tr>
 <tr class="even">
 <td>beta</td>
 <td>1,000</td>
-<td>0.9933</td>
-<td>27.6</td>
+<td>1.603</td>
+<td>20.2</td>
 </tr>
 <tr class="odd">
 <td>beta</td>
 <td>100,000</td>
-<td>98.44</td>
-<td>31.2</td>
+<td>157.6</td>
+<td>23.5</td>
 </tr>
 <tr class="even">
 <td>beta</td>
 <td>1,000,000</td>
-<td>963</td>
-<td>65.5</td>
+<td>1567</td>
+<td>57.9</td>
 </tr>
 <tr class="odd">
 <td>poisson</td>
 <td>1,000</td>
-<td>0.1685</td>
-<td>27.6</td>
+<td>0.2361</td>
+<td>20.2</td>
 </tr>
 <tr class="even">
 <td>poisson</td>
 <td>100,000</td>
-<td>19.07</td>
-<td>32.7</td>
+<td>24.11</td>
+<td>23.5</td>
 </tr>
 <tr class="odd">
 <td>poisson</td>
 <td>1,000,000</td>
-<td>174.2</td>
-<td>65.7</td>
+<td>240.4</td>
+<td>58.0</td>
 </tr>
 </tbody>
 </table>

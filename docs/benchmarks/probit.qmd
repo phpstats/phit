@@ -11,14 +11,14 @@ phit's `fit_probit_matrix()`, R `glm(binomial(link = "probit"))`, and statsmodel
 | --- | --- |
 | Workloads | 1,000, 100,000, and 1,000,000 rows with 3 coefficients; 100,000 rows with 11 coefficients (counts include the intercept) |
 | Data | Simulated with NumPy seed `20261011` (see [Simulation and agreement](#simulation-and-agreement)); all runtimes read the same 17-significant-digit CSV |
-| Machine | Apple M5 Ultra, macOS 27, recorded 2026-10-16 |
+| Machine | AMD Ryzen 9 9955HX virtual machine, 2 cores, 7.8 GiB, Ubuntu 24.04.5 LTS (x86_64) |
 | Builds | phit release build; runtime versions are printed below |
 | Threads | Common BLAS and OpenMP thread variables set to 1 |
 | Repetitions | One untimed warm-up, then five timed fits per worker; workers run separately and alternate order between cases |
 | Statistic | Median and minimum in-process wall-clock time |
 | Timed | One complete fit with every output materialized, including PHP input and output conversion |
 | Excluded | Startup, CSV loading, data generation, and JSON serialization |
-| Memory | Peak RSS of the whole worker process |
+| Memory | Peak RSS of the whole worker process, from `peakmem` ([bench/peakmem.c](https://github.com/phpstats/phit/blob/main/bench/peakmem.c)) |
 
 The harness is shared with the [OLS benchmark](ols.qmd#timing-boundaries), which describes the boundaries in more detail.
 

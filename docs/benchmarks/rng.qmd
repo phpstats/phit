@@ -9,12 +9,13 @@ This benchmark times [seeded sampling](../rng.qmd) for the normal, beta, and Poi
 | Item | Setting |
 | --- | --- |
 | Workloads | `dist_normal_rng`, `dist_beta_rng`, and `dist_poisson_rng` at 1,000, 100,000, and 1,000,000 draws, seed 42 |
-| Machine | macOS 27.0.1 arm64, PHP 8.5.10, recorded 2026-10-12 |
+| Machine | AMD Ryzen 9 9955HX virtual machine, 2 cores, 7.8 GiB, Ubuntu 24.04.5 LTS (x86_64) |
+| Software | PHP 8.5.12, phit 0.4.3 release build |
 | Repetitions | One untimed warm-up, then five measurements |
 | Statistic | Median milliseconds per full call |
 | Timed | ChaCha setup from the seed, quantile evaluation, PHP result allocation, and reclamation of earlier results |
 | Excluded | JSON input and output, and numerical summaries |
-| Memory | Peak RSS of the whole worker process |
+| Memory | Peak RSS of the whole worker process, from `peakmem` ([bench/peakmem.c](https://github.com/phpstats/phit/blob/main/bench/peakmem.c)) |
 
 ## Independent verification first
 
@@ -32,19 +33,19 @@ the ChaCha sequence. Each timed result undergoes the same numerical checks again
 
 <!-- BEGIN RNG EVIDENCE -->
 
-Recorded: **2026-10-12T15:50:48.801124+00:00**; macOS-27.0.1-arm64-arm-64bit-Mach-O; PHP 8.5.10. All 9 sample-point/moment comparisons passed before timings. Seed 42, 5 repetitions.
+Recorded: **2026-11-01T19:50:24.399727+00:00**; Linux, Ubuntu 24.04.5 LTS (x86_64); PHP 8.5.12. All 9 sample-point/moment comparisons passed before timings. Seed 42, 5 repetitions.
 
 | Family | Draws | Median full call (ms) | Peak whole-process RSS (MiB) |
 | --- | --- | --- | --- |
-| normal | 1,000 | 0.09167 | 27.5 |
-| normal | 100,000 | 9.321 | 31.1 |
-| normal | 1,000,000 | 92.52 | 65.4 |
-| beta | 1,000 | 0.9933 | 27.6 |
-| beta | 100,000 | 98.44 | 31.2 |
-| beta | 1,000,000 | 963 | 65.5 |
-| poisson | 1,000 | 0.1685 | 27.6 |
-| poisson | 100,000 | 19.07 | 32.7 |
-| poisson | 1,000,000 | 174.2 | 65.7 |
+| normal | 1,000 | 0.1264 | 20.0 |
+| normal | 100,000 | 13.04 | 23.5 |
+| normal | 1,000,000 | 132.5 | 57.7 |
+| beta | 1,000 | 1.603 | 20.2 |
+| beta | 100,000 | 157.6 | 23.5 |
+| beta | 1,000,000 | 1567 | 57.9 |
+| poisson | 1,000 | 0.2361 | 20.2 |
+| poisson | 100,000 | 24.11 | 23.5 |
+| poisson | 1,000,000 | 240.4 | 58.0 |
 
 <!-- END RNG EVIDENCE -->
 

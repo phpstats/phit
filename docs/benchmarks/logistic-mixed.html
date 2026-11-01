@@ -659,10 +659,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="methods" class="level2">
 <h2 class="anchored" data-anchor-id="methods">Methods</h2>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>Item</th>
@@ -680,7 +676,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td>Machine</td>
-<td>Apple M5 Ultra, macOS 27, recorded 2026-10-11</td>
+<td>AMD Ryzen 9 9955HX virtual machine, 2 cores, 7.8 GiB, Ubuntu 24.04.5 LTS (x86_64)</td>
 </tr>
 <tr class="even">
 <td>Threads</td>
@@ -700,7 +696,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>Memory</td>
-<td>Peak RSS of the whole worker process</td>
+<td>Peak RSS of the whole worker process, from <code>peakmem</code> (<a href="https://github.com/phpstats/phit/blob/main/bench/peakmem.c">bench/peakmem.c</a>)</td>
 </tr>
 </tbody>
 </table>
@@ -708,12 +704,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="timing-boundaries-and-correctness" class="level2">
 <h2 class="anchored" data-anchor-id="timing-boundaries-and-correctness">Timing boundaries and correctness</h2>
 <p>PHP times the complete native call, including conversion and all returned inference/observation arrays. R/Python materialize covariance, standard errors, conditional modes and full fixed/conditional fitted values and residuals. Process time includes startup, CSV load, warm-up and all timed fits.</p>
-<p>A report is written only after coefficients, covariance/standard errors, group SD/modes, normalized likelihood and common observation samples agree. Likelihood tolerance is absolute 1e-6 plus relative 1e-8; inference uses absolute 2e-5 plus relative 2e-3; estimates use absolute 2e-5 plus relative 2e-4. Group modes use absolute 5e-5 because large-sample flat-profile optimization produced shifts around 2e-5 in modes near zero; relative error there is not informative.</p>
+<p>A report is written only after coefficients, covariance/standard errors, group SD/modes, normalized likelihood and common observation samples agree. Likelihood tolerance is absolute 1e-6 plus relative 1e-8; inference uses absolute 2e-5 plus relative 2e-3; estimates use absolute 2e-5 plus relative 2e-4. Group modes use absolute 5e-5 because large-sample flat-profile optimization produced shifts around 2e-5 in modes near zero; relative error there is not informative. These tolerances apply to phit against R. The SciPy reference is checked against R as a peer, with group modes at absolute 2e-4, because its independent optimizer stops at a slightly different point on the same flat profile.</p>
 <p>The installed lme4 version disables derivative checks automatically at large n. The benchmark explicitly enables the final joint Hessian. Its initial BOBYQA run also stopped short on the 10,000-row case; an R-only restart from that fit, with rhobeg=0.001 and nAGQ0initStep=FALSE, resolved it. <strong>Both R stages are included in its fit time.</strong> The report records these controls, versions and data/binary hashes. Native estimates never seed the R worker.</p>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
-<div id="ab75c9c2" class="cell" data-execution_count="1">
+<div id="a6801384" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -761,10 +757,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>1000</td>
 <td>50</td>
 <td>R</td>
-<td>0.088000</td>
-<td>0.000000</td>
-<td>0.925934</td>
-<td>262.281250</td>
+<td>0.185000</td>
+<td>0.001000</td>
+<td>1.829317</td>
+<td>233.367188</td>
 <td>True</td>
 </tr>
 <tr class="even">
@@ -772,10 +768,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>1000</td>
 <td>50</td>
 <td>SciPy reference</td>
-<td>0.409742</td>
-<td>0.000413</td>
-<td>2.618622</td>
-<td>174.656250</td>
+<td>0.752195</td>
+<td>0.000553</td>
+<td>3.771152</td>
+<td>174.757812</td>
 <td>True</td>
 </tr>
 <tr class="odd">
@@ -783,10 +779,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>1000</td>
 <td>50</td>
 <td>PHP</td>
-<td>0.006289</td>
-<td>0.000952</td>
-<td>0.217226</td>
-<td>28.578125</td>
+<td>0.011277</td>
+<td>0.002048</td>
+<td>0.055897</td>
+<td>21.250000</td>
 <td>True</td>
 </tr>
 <tr class="even">
@@ -794,10 +790,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>10000</td>
 <td>50</td>
 <td>R</td>
-<td>0.554000</td>
-<td>0.007000</td>
-<td>2.805439</td>
-<td>325.312500</td>
+<td>1.811000</td>
+<td>0.008000</td>
+<td>8.362722</td>
+<td>269.238281</td>
 <td>True</td>
 </tr>
 <tr class="odd">
@@ -805,10 +801,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>10000</td>
 <td>50</td>
 <td>SciPy reference</td>
-<td>0.664116</td>
-<td>0.002729</td>
-<td>3.385617</td>
-<td>180.671875</td>
+<td>1.169149</td>
+<td>0.003695</td>
+<td>5.446865</td>
+<td>183.015625</td>
 <td>True</td>
 </tr>
 <tr class="even">
@@ -816,10 +812,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>10000</td>
 <td>50</td>
 <td>PHP</td>
-<td>0.068200</td>
-<td>0.008335</td>
-<td>0.324485</td>
-<td>36.046875</td>
+<td>0.117468</td>
+<td>0.019976</td>
+<td>0.500836</td>
+<td>27.972656</td>
 <td>True</td>
 </tr>
 <tr class="odd">
@@ -827,10 +823,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>100000</td>
 <td>50</td>
 <td>R</td>
-<td>7.698000</td>
-<td>0.068000</td>
-<td>31.648079</td>
-<td>524.109375</td>
+<td>17.122000</td>
+<td>0.088000</td>
+<td>70.167242</td>
+<td>371.773438</td>
 <td>True</td>
 </tr>
 <tr class="even">
@@ -838,10 +834,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>100000</td>
 <td>50</td>
 <td>SciPy reference</td>
-<td>2.764936</td>
-<td>0.026616</td>
-<td>11.911836</td>
-<td>308.078125</td>
+<td>4.740906</td>
+<td>0.035875</td>
+<td>19.878758</td>
+<td>267.617188</td>
 <td>True</td>
 </tr>
 <tr class="odd">
@@ -849,10 +845,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>100000</td>
 <td>50</td>
 <td>PHP</td>
-<td>0.785687</td>
-<td>0.082690</td>
-<td>3.290282</td>
-<td>115.859375</td>
+<td>1.202226</td>
+<td>0.200736</td>
+<td>5.024194</td>
+<td>84.667969</td>
 <td>True</td>
 </tr>
 </tbody>
@@ -861,9 +857,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Machine: Apple M5 Ultra macOS-27.0.1-arm64-arm-64bit-Mach-O
+<pre><code>Machine: AMD Ryzen 9 9955HX 16-Core Processor Linux, Ubuntu 24.04.5 LTS (x86_64)
 Threads: {'OPENBLAS_NUM_THREADS': '1', 'OMP_NUM_THREADS': '1', 'MKL_NUM_THREADS': '1', 'VECLIB_MAXIMUM_THREADS': '1', 'BLIS_NUM_THREADS': '1'}
-Versions: {'R': 'R version 4.6.1 (2026-06-24) lme4 2.0.6', 'SciPy reference': 'SciPy 1.18.1', 'PHP': '8.5.10'}
+Versions: {'R': 'R version 4.6.2 (2026-10-29) lme4 2.1.0', 'SciPy reference': 'SciPy 1.18.1', 'PHP': '8.5.12'}
 benchmarks/figures/logistic-mixed-fit-time.svg 
 benchmarks/figures/logistic-mixed-memory.svg </code></pre>
 </div>

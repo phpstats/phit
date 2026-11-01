@@ -677,11 +677,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>Machine</td>
-<td>Apple M5 Ultra, macOS 27, recorded 2026-10-12</td>
+<td>AMD Ryzen 9 9955HX virtual machine, 2 cores, 7.8 GiB, Ubuntu 24.04.5 LTS (x86_64)</td>
 </tr>
 <tr class="odd">
 <td>Threads</td>
-<td>OpenBLAS, OpenMP, MKL, Accelerate, and BLIS thread variables set to 1</td>
+<td>OpenBLAS, OpenMP, MKL, and BLIS thread variables set to 1</td>
 </tr>
 <tr class="even">
 <td>Repetitions</td>
@@ -701,7 +701,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>Memory</td>
-<td>Peak RSS of the whole worker process</td>
+<td>Peak RSS of the whole worker process, from <code>peakmem</code> (<a href="https://github.com/phpstats/phit/blob/main/bench/peakmem.c">bench/peakmem.c</a>)</td>
 </tr>
 </tbody>
 </table>
@@ -711,7 +711,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>All input cases are verified across implementations before any timing phase begins. Seventeen evenly spaced output values plus min/max use the distribution fixture tolerance: <code>1e-300 + 1e-12*abs(reference)</code>, or <code>1e-15 + 1e-12*abs(reference)</code> for quantiles. Sum and sum-of-squares consume <strong>all</strong> outputs, with tolerance <code>1e-9 + 1e-10*abs(reference)</code> to allow different accumulation orders. Mean/variance outputs are checked directly. R is the benchmark reference; the separate <a href="../verifications/distributions.html">R/SciPy/mpmath record</a> adjudicates reference differences and tests extreme/boundary values more broadly.</p>
 <p>phit’s comparisons must pass. SciPy discrepancies are recorded and labeled without relaxing phit’s tolerance. Every timed output summary is checked again. Individual elements of the large vectors are not all compared; the aggregates and sampled values complement the small reference suite.</p>
 <!-- BEGIN BENCHMARK EVIDENCE -->
-<p>Recorded: <strong>2026-10-12T15:18:59.861643+00:00</strong>; Apple M5 Ultra, macOS-27.0.1-arm64-arm-64bit-Mach-O. 27 input cases; all native/R comparisons passed. SciPy exceeded the same tolerance for: chisquare_cdf (1,000), chisquare_cdf (100,000), chisquare_cdf (1,000,000).</p>
+<p>Recorded: <strong>2026-11-01T19:46:57.108634+00:00</strong>; AMD Ryzen 9 9955HX 16-Core Processor, Linux, Ubuntu 24.04.5 LTS (x86_64). 27 input cases; all native/R comparisons passed. SciPy exceeded the same tolerance for: chisquare_cdf (1,000), chisquare_cdf (100,000), chisquare_cdf (1,000,000).</p>
 <p>Median milliseconds per full call, 5 measurements after one warm-up:</p>
 <table class="caption-top table">
 <colgroup>
@@ -738,249 +738,249 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>normal_cdf</td>
 <td>1,000</td>
-<td>0.04073</td>
-<td>0.02235</td>
-<td>0.01054</td>
-<td>0.02</td>
-<td>0.01851</td>
+<td>0.07486</td>
+<td>0.037</td>
+<td>0.01816</td>
+<td>0.03</td>
+<td>0.0294</td>
 </tr>
 <tr class="even">
 <td>normal_cdf</td>
 <td>100,000</td>
-<td>4.093</td>
-<td>2.23</td>
-<td>1.374</td>
-<td>2</td>
-<td>1.227</td>
+<td>7.639</td>
+<td>3.927</td>
+<td>2.31</td>
+<td>3</td>
+<td>1.712</td>
 </tr>
 <tr class="odd">
 <td>normal_cdf</td>
 <td>1,000,000</td>
-<td>41.28</td>
-<td>23.62</td>
-<td>14.29</td>
-<td>17</td>
-<td>12.1</td>
-</tr>
-<tr class="even">
-<td>normal_sf</td>
-<td>1,000</td>
-<td>0.04412</td>
-<td>0.02112</td>
-<td>0.01159</td>
-<td>0.02</td>
-<td>0.0193</td>
-</tr>
-<tr class="odd">
-<td>normal_sf</td>
-<td>100,000</td>
-<td>4.406</td>
-<td>2.153</td>
-<td>1.238</td>
-<td>2</td>
-<td>0.9886</td>
-</tr>
-<tr class="even">
-<td>normal_sf</td>
-<td>1,000,000</td>
-<td>44.06</td>
-<td>21.05</td>
-<td>14.5</td>
-<td>16</td>
-<td>9.896</td>
-</tr>
-<tr class="odd">
-<td>t_quantile</td>
-<td>1,000</td>
-<td>0.5982</td>
-<td>0.5775</td>
-<td>0.5745</td>
-<td>0.23</td>
-<td>0.1402</td>
-</tr>
-<tr class="even">
-<td>t_quantile</td>
-<td>100,000</td>
-<td>59.79</td>
-<td>57.86</td>
-<td>56.78</td>
-<td>23</td>
-<td>12.53</td>
-</tr>
-<tr class="odd">
-<td>t_quantile</td>
-<td>1,000,000</td>
-<td>601.9</td>
-<td>580</td>
-<td>569.8</td>
-<td>222</td>
-<td>122.2</td>
-</tr>
-<tr class="even">
-<td>binomial_logpmf</td>
-<td>1,000</td>
-<td>0.07055</td>
-<td>0.03282</td>
-<td>0.02151</td>
-<td>0.03</td>
-<td>0.03847</td>
-</tr>
-<tr class="odd">
-<td>binomial_logpmf</td>
-<td>100,000</td>
-<td>6.817</td>
-<td>3.474</td>
-<td>2.65</td>
-<td>3</td>
-<td>2.488</td>
-</tr>
-<tr class="even">
-<td>binomial_logpmf</td>
-<td>1,000,000</td>
-<td>66.09</td>
-<td>35.04</td>
-<td>26.67</td>
-<td>31</td>
-<td>24.8</td>
-</tr>
-<tr class="odd">
-<td>poisson_logpmf</td>
-<td>1,000</td>
-<td>0.04139</td>
-<td>0.02145</td>
-<td>0.009005</td>
-<td>0.03</td>
-<td>0.0196</td>
-</tr>
-<tr class="even">
-<td>poisson_logpmf</td>
-<td>100,000</td>
-<td>4.105</td>
-<td>2.305</td>
-<td>1.26</td>
-<td>3</td>
-<td>1.357</td>
-</tr>
-<tr class="odd">
-<td>poisson_logpmf</td>
-<td>1,000,000</td>
-<td>40.75</td>
-<td>21.96</td>
-<td>12.93</td>
-<td>30</td>
-<td>14.08</td>
-</tr>
-<tr class="even">
-<td>mean</td>
-<td>1,000</td>
-<td>—</td>
-<td>0.008543</td>
-<td>0.001493</td>
-<td>0.002</td>
-<td>0.001174</td>
-</tr>
-<tr class="odd">
-<td>mean</td>
-<td>100,000</td>
-<td>—</td>
-<td>0.8752</td>
-<td>0.1473</td>
-<td>0.11</td>
-<td>0.01065</td>
-</tr>
-<tr class="even">
-<td>mean</td>
-<td>1,000,000</td>
-<td>—</td>
-<td>8.281</td>
-<td>1.502</td>
-<td>1.1</td>
-<td>0.09985</td>
-</tr>
-<tr class="odd">
-<td>variance</td>
-<td>1,000</td>
-<td>—</td>
-<td>0.009907</td>
-<td>0.002825</td>
-<td>0.0038</td>
-<td>0.003253</td>
-</tr>
-<tr class="even">
-<td>variance</td>
-<td>100,000</td>
-<td>—</td>
-<td>1.009</td>
-<td>0.2738</td>
-<td>0.21</td>
-<td>0.04644</td>
-</tr>
-<tr class="odd">
-<td>variance</td>
-<td>1,000,000</td>
-<td>—</td>
-<td>10.22</td>
-<td>2.741</td>
-<td>2.1</td>
-<td>0.4446</td>
-</tr>
-<tr class="even">
-<td>beta_quantile</td>
-<td>1,000</td>
-<td>0.9424</td>
-<td>0.9199</td>
-<td>0.9109</td>
-<td>0.39</td>
-<td>0.3732</td>
-</tr>
-<tr class="odd">
-<td>beta_quantile</td>
-<td>100,000</td>
-<td>91.36</td>
-<td>89.12</td>
-<td>87.85</td>
-<td>39</td>
-<td>35.37</td>
-</tr>
-<tr class="even">
-<td>beta_quantile</td>
-<td>1,000,000</td>
-<td>916.3</td>
-<td>891.7</td>
-<td>880.7</td>
-<td>396</td>
-<td>353.3</td>
-</tr>
-<tr class="odd">
-<td>chisquare_cdf</td>
-<td>1,000</td>
-<td>0.06663</td>
-<td>0.03809</td>
-<td>0.03149</td>
-<td>0.03</td>
-<td>0.1274</td>
-</tr>
-<tr class="even">
-<td>chisquare_cdf</td>
-<td>100,000</td>
-<td>7.326</td>
-<td>4.146</td>
-<td>3.302</td>
-<td>3</td>
-<td>13.69</td>
-</tr>
-<tr class="odd">
-<td>chisquare_cdf</td>
-<td>1,000,000</td>
-<td>72.36</td>
-<td>38.72</td>
-<td>31.75</td>
+<td>79.41</td>
+<td>40</td>
+<td>23.16</td>
 <td>33</td>
-<td>118</td>
+<td>18.23</td>
+</tr>
+<tr class="even">
+<td>normal_sf</td>
+<td>1,000</td>
+<td>0.0728</td>
+<td>0.03463</td>
+<td>0.01971</td>
+<td>0.03</td>
+<td>0.03028</td>
+</tr>
+<tr class="odd">
+<td>normal_sf</td>
+<td>100,000</td>
+<td>7.591</td>
+<td>3.716</td>
+<td>2.069</td>
+<td>3</td>
+<td>1.396</td>
+</tr>
+<tr class="even">
+<td>normal_sf</td>
+<td>1,000,000</td>
+<td>78.71</td>
+<td>37.98</td>
+<td>20.6</td>
+<td>32</td>
+<td>15.47</td>
+</tr>
+<tr class="odd">
+<td>t_quantile</td>
+<td>1,000</td>
+<td>1.191</td>
+<td>1.145</td>
+<td>1.123</td>
+<td>0.37</td>
+<td>0.2537</td>
+</tr>
+<tr class="even">
+<td>t_quantile</td>
+<td>100,000</td>
+<td>120.3</td>
+<td>116.6</td>
+<td>112.4</td>
+<td>37</td>
+<td>21.28</td>
+</tr>
+<tr class="odd">
+<td>t_quantile</td>
+<td>1,000,000</td>
+<td>1201</td>
+<td>1158</td>
+<td>1124</td>
+<td>371</td>
+<td>208.1</td>
+</tr>
+<tr class="even">
+<td>binomial_logpmf</td>
+<td>1,000</td>
+<td>0.1061</td>
+<td>0.05352</td>
+<td>0.03254</td>
+<td>0.05</td>
+<td>0.05873</td>
+</tr>
+<tr class="odd">
+<td>binomial_logpmf</td>
+<td>100,000</td>
+<td>10.86</td>
+<td>5.355</td>
+<td>3.629</td>
+<td>5</td>
+<td>4.069</td>
+</tr>
+<tr class="even">
+<td>binomial_logpmf</td>
+<td>1,000,000</td>
+<td>112.6</td>
+<td>54.29</td>
+<td>35.92</td>
+<td>52</td>
+<td>42.32</td>
+</tr>
+<tr class="odd">
+<td>poisson_logpmf</td>
+<td>1,000</td>
+<td>0.07221</td>
+<td>0.03792</td>
+<td>0.01793</td>
+<td>0.07</td>
+<td>0.03121</td>
+</tr>
+<tr class="even">
+<td>poisson_logpmf</td>
+<td>100,000</td>
+<td>7.419</td>
+<td>4.008</td>
+<td>2.111</td>
+<td>7</td>
+<td>2.193</td>
+</tr>
+<tr class="odd">
+<td>poisson_logpmf</td>
+<td>1,000,000</td>
+<td>77.31</td>
+<td>40.66</td>
+<td>21.04</td>
+<td>67</td>
+<td>22.9</td>
+</tr>
+<tr class="even">
+<td>mean</td>
+<td>1,000</td>
+<td>—</td>
+<td>0.01447</td>
+<td>0.002254</td>
+<td>0.0043</td>
+<td>0.001821</td>
+</tr>
+<tr class="odd">
+<td>mean</td>
+<td>100,000</td>
+<td>—</td>
+<td>1.431</td>
+<td>0.2221</td>
+<td>0.27</td>
+<td>0.01475</td>
+</tr>
+<tr class="even">
+<td>mean</td>
+<td>1,000,000</td>
+<td>—</td>
+<td>14.49</td>
+<td>2.226</td>
+<td>2.6</td>
+<td>0.1299</td>
+</tr>
+<tr class="odd">
+<td>variance</td>
+<td>1,000</td>
+<td>—</td>
+<td>0.01647</td>
+<td>0.004253</td>
+<td>0.0072</td>
+<td>0.005535</td>
+</tr>
+<tr class="even">
+<td>variance</td>
+<td>100,000</td>
+<td>—</td>
+<td>1.656</td>
+<td>0.4214</td>
+<td>0.42</td>
+<td>0.05704</td>
+</tr>
+<tr class="odd">
+<td>variance</td>
+<td>1,000,000</td>
+<td>—</td>
+<td>16.32</td>
+<td>4.225</td>
+<td>4.1</td>
+<td>0.4684</td>
+</tr>
+<tr class="even">
+<td>beta_quantile</td>
+<td>1,000</td>
+<td>1.697</td>
+<td>1.642</td>
+<td>1.629</td>
+<td>0.68</td>
+<td>0.5664</td>
+</tr>
+<tr class="odd">
+<td>beta_quantile</td>
+<td>100,000</td>
+<td>164.2</td>
+<td>159.1</td>
+<td>158.1</td>
+<td>68</td>
+<td>50.84</td>
+</tr>
+<tr class="even">
+<td>beta_quantile</td>
+<td>1,000,000</td>
+<td>1649</td>
+<td>1591</td>
+<td>1575</td>
+<td>678</td>
+<td>506.3</td>
+</tr>
+<tr class="odd">
+<td>chisquare_cdf</td>
+<td>1,000</td>
+<td>0.1107</td>
+<td>0.06781</td>
+<td>0.05431</td>
+<td>0.09</td>
+<td>0.2001</td>
+</tr>
+<tr class="even">
+<td>chisquare_cdf</td>
+<td>100,000</td>
+<td>11.29</td>
+<td>7.077</td>
+<td>5.421</td>
+<td>9</td>
+<td>17.58</td>
+</tr>
+<tr class="odd">
+<td>chisquare_cdf</td>
+<td>1,000,000</td>
+<td>116</td>
+<td>71.42</td>
+<td>54.17</td>
+<td>86</td>
+<td>175.1</td>
 </tr>
 </tbody>
 </table>
-<p>Whole-process peak RSS across these workers reached 268.1 MiB; per-worker memory, load/startup times and every timing sample are retained in the raw report.</p>
+<p>Whole-process peak RSS across these workers reached 235.8 MiB; per-worker memory, load/startup times and every timing sample are retained in the raw report.</p>
 <!-- END BENCHMARK EVIDENCE -->
 </section>
 <section id="timing-boundaries-and-interpretation" class="level2">

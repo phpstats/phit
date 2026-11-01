@@ -87,6 +87,9 @@ def model_benchmark(slug, title):
 
 def timed_benchmark(slug, title, description, case_label):
     data = load(f'docs/benchmarks/{slug}-results.json')
+    if slug == 'rng':
+        # The sampling benchmark times phit alone and keeps each case's timing under 'timing'.
+        data = {**data, 'cases': [{**c, 'implementations': {'PHP': c['timing']}} for c in data['cases']]}
     rows = []
     for case in data['cases']:
         for name, result in case['implementations'].items():
@@ -293,7 +296,11 @@ def build():
         'draws', 'Posterior draws: moments and transforms',
         'Median wall time for weighted draw moments (population and unbiased), covariance maps and affine transforms in phit and R.',
         lambda c: f"n = {c['n']:,} draws, p = {c['p']}")
-    benchmarks += ['site/benchmarks/distributions.json', 'site/benchmarks/draws.json']
+    files['benchmarks/rng.json'] = timed_benchmark(
+        'rng', 'Seeded sampling: draw time',
+        'Median wall time for one seeded call that returns n normal, beta, or Poisson draws in phit.',
+        lambda c: f"{c['family']}, n = {c['n']:,}")
+    benchmarks += ['site/benchmarks/distributions.json', 'site/benchmarks/draws.json', 'site/benchmarks/rng.json']
     # Written by bench/run.py, not by this script.
     benchmarks += [f'site/benchmarks/{w}-workload.json'
                    for w in ['ols', 'mixed', 'logistic', 'probit', 'mixed-logistic', 'distributions']

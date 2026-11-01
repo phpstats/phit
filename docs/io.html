@@ -993,7 +993,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="timing" class="level3">
 <h3 class="anchored" data-anchor-id="timing">Timing</h3>
-<!-- csv timing: Linux record pending -->
+<p>phibble’s 1,000,000-row benchmark file (46 MB: an int ID, an int key, a string label, a float with about 2% <code>NA</code>, and a datetime) was read with guessed types, each reader in its own process. The machine was a 2-core AMD Ryzen 9 9955HX virtual machine with Ubuntu 24.04 and PHP 8.5.12. Times are the median of five reads after one warm-up, and memory is the peak RSS of the whole process. The <a href="benchmarks/csv-results.json">raw record</a> keeps every timing.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Reader</th>
+<th style="text-align: right;">Median read (s)</th>
+<th style="text-align: right;">Peak RSS (MiB)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Phit\read_csv()</code></td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">133</td>
+</tr>
+<tr class="even">
+<td>phibble <code>DataFrame::fromCsv()</code> with the extension</td>
+<td style="text-align: right;">0.32</td>
+<td style="text-align: right;">138</td>
+</tr>
+<tr class="odd">
+<td>phibble <code>DataFrame::fromCsv()</code> with its PHP reader</td>
+<td style="text-align: right;">1.61</td>
+<td style="text-align: right;">152</td>
+</tr>
+</tbody>
+</table>
+<p>Reproduce with <code>python3 tests/benchmarks/run-csv.py --phibble /path/to/phibble</code>.</p>
 </section>
 </section>
 <section id="verification" class="level2">

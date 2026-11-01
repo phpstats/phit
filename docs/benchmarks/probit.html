@@ -707,7 +707,7 @@ window.Quarto = {
 </tr>
 <tr class="odd">
 <td>Machine</td>
-<td>Apple M5 Ultra, macOS 27, recorded 2026-10-16</td>
+<td>AMD Ryzen 9 9955HX virtual machine, 2 cores, 7.8 GiB, Ubuntu 24.04.5 LTS (x86_64)</td>
 </tr>
 <tr class="even">
 <td>Builds</td>
@@ -735,7 +735,7 @@ window.Quarto = {
 </tr>
 <tr class="even">
 <td>Memory</td>
-<td>Peak RSS of the whole worker process</td>
+<td>Peak RSS of the whole worker process, from <code>peakmem</code> (<a href="https://github.com/phpstats/phit/blob/main/bench/peakmem.c">bench/peakmem.c</a>)</td>
 </tr>
 </tbody>
 </table>
@@ -743,7 +743,7 @@ window.Quarto = {
 </section>
 <section id="recorded-results" class="level2">
 <h2 class="anchored" data-anchor-id="recorded-results">Recorded results</h2>
-<div id="bb033c4e" class="cell" data-execution_count="1">
+<div id="1cdeb281" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -776,9 +776,9 @@ window.Quarto = {
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"peak process RSS (MiB)"</span>: fit[<span class="st">"peak_rss_bytes"</span>]<span class="op">/</span><span class="dv">2</span><span class="op">**</span><span class="dv">20</span> <span class="cf">if</span> fit[<span class="st">"peak_rss_bytes"</span>] <span class="cf">else</span> <span class="va">None</span>})</span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>display(ordered_table(rows))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Recorded: 2026-10-16T07:50:38.410477+00:00
-Machine: Apple M5 Ultra macOS-27.0.1-arm64-arm-64bit-Mach-O
-Rust: rustc 1.99.0 (b940084d7 2026-09-28) (Homebrew)
+<pre><code>Recorded: 2026-11-01T19:42:44.874283+00:00
+Machine: AMD Ryzen 9 9955HX 16-Core Processor Linux, Ubuntu 24.04.5 LTS (x86_64)
+Rust: rustc 1.99.1 (58cf8f9c3 2026-10-13)
 Repeats: 5 Warm-ups: 1</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -803,7 +803,7 @@ Repeats: 5 Warm-ups: 1</code></pre>
 <td>1000</td>
 <td>3</td>
 <td>R</td>
-<td>R version 4.6.1 (2026-06-24)</td>
+<td>R version 4.6.2 (2026-10-29)</td>
 <td>2.000000</td>
 <td>2.000000</td>
 </tr>
@@ -813,26 +813,26 @@ Repeats: 5 Warm-ups: 1</code></pre>
 <td>3</td>
 <td>statsmodels</td>
 <td>0.15.0</td>
-<td>1.879208</td>
-<td>1.822209</td>
+<td>3.276691</td>
+<td>3.236496</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
 <td>1000</td>
 <td>3</td>
 <td>PHP</td>
-<td>8.5.10</td>
-<td>1.432833</td>
-<td>1.421792</td>
+<td>8.5.12</td>
+<td>1.663774</td>
+<td>1.650358</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
 <td>100000</td>
 <td>3</td>
 <td>R</td>
-<td>R version 4.6.1 (2026-06-24)</td>
-<td>156.000000</td>
-<td>136.000000</td>
+<td>R version 4.6.2 (2026-10-29)</td>
+<td>109.000000</td>
+<td>107.000000</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
@@ -840,26 +840,26 @@ Repeats: 5 Warm-ups: 1</code></pre>
 <td>3</td>
 <td>statsmodels</td>
 <td>0.15.0</td>
-<td>59.247375</td>
-<td>58.537042</td>
+<td>73.952837</td>
+<td>73.420047</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">5</th>
 <td>100000</td>
 <td>3</td>
 <td>PHP</td>
-<td>8.5.10</td>
-<td>137.871416</td>
-<td>137.446791</td>
+<td>8.5.12</td>
+<td>159.517084</td>
+<td>159.122603</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">6</th>
 <td>100000</td>
 <td>11</td>
 <td>R</td>
-<td>R version 4.6.1 (2026-06-24)</td>
-<td>210.000000</td>
-<td>207.000000</td>
+<td>R version 4.6.2 (2026-10-29)</td>
+<td>167.000000</td>
+<td>164.000000</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">7</th>
@@ -867,26 +867,26 @@ Repeats: 5 Warm-ups: 1</code></pre>
 <td>11</td>
 <td>statsmodels</td>
 <td>0.15.0</td>
-<td>89.800209</td>
-<td>89.226542</td>
+<td>137.736823</td>
+<td>136.747906</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">8</th>
 <td>100000</td>
 <td>11</td>
 <td>PHP</td>
-<td>8.5.10</td>
-<td>196.224917</td>
-<td>193.636250</td>
+<td>8.5.12</td>
+<td>241.080440</td>
+<td>237.286760</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">9</th>
 <td>1000000</td>
 <td>3</td>
 <td>R</td>
-<td>R version 4.6.1 (2026-06-24)</td>
-<td>1192.000000</td>
-<td>1145.000000</td>
+<td>R version 4.6.2 (2026-10-29)</td>
+<td>1422.000000</td>
+<td>1400.000000</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">10</th>
@@ -894,17 +894,17 @@ Repeats: 5 Warm-ups: 1</code></pre>
 <td>3</td>
 <td>statsmodels</td>
 <td>0.15.0</td>
-<td>591.340292</td>
-<td>588.195125</td>
+<td>829.189422</td>
+<td>819.584166</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">11</th>
 <td>1000000</td>
 <td>3</td>
 <td>PHP</td>
-<td>8.5.10</td>
-<td>1231.733541</td>
-<td>1231.109209</td>
+<td>8.5.12</td>
+<td>1512.888378</td>
+<td>1506.273371</td>
 </tr>
 </tbody>
 </table>
@@ -916,7 +916,7 @@ Repeats: 5 Warm-ups: 1</code></pre>
 </section>
 <section id="visual-comparison" class="level2">
 <h2 class="anchored" data-anchor-id="visual-comparison">Visual comparison</h2>
-<div id="c9fefaba" class="cell" data-execution_count="2">
+<div id="b2fcf04f" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>benchmarks/figures/probit-fit-time.svg 
 benchmarks/figures/probit-memory.svg </code></pre>
@@ -966,7 +966,7 @@ benchmarks/figures/probit-memory.svg </code></pre>
 </tbody>
 </table>
 <p>Starting values, linear solves, and stopping criteria differ, so iteration counts differ too. This compares complete public API calls, not decomposition speed.</p>
-<div id="baca81c6" class="cell" data-execution_count="3">
+<div id="ee04b5a1" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>display(ordered_table(memory))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -991,107 +991,107 @@ benchmarks/figures/probit-memory.svg </code></pre>
 <td>3</td>
 <td>R</td>
 <td>0.001000</td>
-<td>0.189865</td>
-<td>89.046875</td>
+<td>0.249667</td>
+<td>77.062500</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
 <td>1000</td>
 <td>3</td>
 <td>statsmodels</td>
-<td>0.000406</td>
-<td>0.698723</td>
-<td>175.406250</td>
+<td>0.000537</td>
+<td>0.782797</td>
+<td>175.460938</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
 <td>1000</td>
 <td>3</td>
 <td>PHP</td>
-<td>0.000934</td>
-<td>0.055349</td>
-<td>28.625000</td>
+<td>0.001977</td>
+<td>0.020120</td>
+<td>20.750000</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
 <td>100000</td>
 <td>3</td>
 <td>R</td>
-<td>0.068000</td>
-<td>1.181489</td>
-<td>235.921875</td>
+<td>0.083000</td>
+<td>1.133339</td>
+<td>138.734375</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
 <td>100000</td>
 <td>3</td>
 <td>statsmodels</td>
-<td>0.025129</td>
-<td>1.080360</td>
-<td>463.093750</td>
+<td>0.033867</td>
+<td>1.278407</td>
+<td>415.253906</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">5</th>
 <td>100000</td>
 <td>3</td>
 <td>PHP</td>
-<td>0.083124</td>
-<td>0.961933</td>
-<td>94.453125</td>
+<td>0.189390</td>
+<td>1.163626</td>
+<td>75.312500</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">6</th>
 <td>100000</td>
 <td>11</td>
 <td>R</td>
-<td>0.697000</td>
-<td>2.315585</td>
-<td>339.234375</td>
+<td>1.017000</td>
+<td>2.606722</td>
+<td>227.312500</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">7</th>
 <td>100000</td>
 <td>11</td>
 <td>statsmodels</td>
-<td>0.110455</td>
-<td>1.306533</td>
-<td>746.062500</td>
+<td>0.154258</td>
+<td>1.783892</td>
+<td>671.500000</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">8</th>
 <td>100000</td>
 <td>11</td>
 <td>PHP</td>
-<td>0.310802</td>
-<td>1.543994</td>
-<td>178.828125</td>
+<td>0.740744</td>
+<td>2.206047</td>
+<td>111.636719</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">9</th>
 <td>1000000</td>
 <td>3</td>
 <td>R</td>
-<td>1.571000</td>
-<td>9.112119</td>
-<td>822.046875</td>
+<td>2.669000</td>
+<td>12.108771</td>
+<td>608.324219</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">10</th>
 <td>1000000</td>
 <td>3</td>
 <td>statsmodels</td>
-<td>0.236973</td>
-<td>4.523255</td>
-<td>2727.531250</td>
+<td>0.327313</td>
+<td>6.156356</td>
+<td>2595.281250</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">11</th>
 <td>1000000</td>
 <td>3</td>
 <td>PHP</td>
-<td>0.819627</td>
-<td>8.333026</td>
-<td>964.171875</td>
+<td>1.920491</td>
+<td>11.094553</td>
+<td>559.468750</td>
 </tr>
 </tbody>
 </table>
@@ -1108,7 +1108,7 @@ benchmarks/figures/probit-memory.svg </code></pre>
 +0.08\sum_j\mathrm{extra}_{ij}),\qquad y_i\sim\operatorname{Bernoulli}(\pi_i).\]</span></p>
 <p>This simulation is separate from the small teaching sample. Data hashes, generating coefficients, and sample correlations are recorded.</p>
 <p>Coefficient-level quantities and scalar statistics are compared with R at <code>1e-9 + 1e-7 * abs(reference)</code>. Fitted values and residuals are computed in full and compared at ten evenly spaced rows; the small fixtures compare full vectors. phit must report convergence within 1 to 100 updates. Wald intervals follow R <code>confint.default()</code>, and the null baseline follows the documented intercept convention. Probit covariance uses expected Fisher information in all three runtimes.</p>
-<div id="f6e12d28" class="cell" data-execution_count="4">
+<div id="20142638" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>display(ordered_table([{ <span class="st">"observations"</span>: case[<span class="st">"n"</span>], <span class="st">"coefficients"</span>: case[<span class="st">"p"</span>],</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"implementation"</span>: name, <span class="st">"largest absolute difference vs R"</span>: <span class="bu">max</span>(errors.values())}</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                       <span class="cf">for</span> case <span class="kw">in</span> report[<span class="st">"cases"</span>]</span>
@@ -1133,56 +1133,56 @@ benchmarks/figures/probit-memory.svg </code></pre>
 <td>1000</td>
 <td>3</td>
 <td>statsmodels</td>
-<td>4.547474e-13</td>
+<td>4.075787e-09</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
 <td>1000</td>
 <td>3</td>
 <td>PHP</td>
-<td>1.598437e-10</td>
+<td>4.192014e-09</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
 <td>100000</td>
 <td>3</td>
 <td>statsmodels</td>
-<td>2.805609e-08</td>
+<td>6.926939e-10</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
 <td>100000</td>
 <td>3</td>
 <td>PHP</td>
-<td>2.805609e-08</td>
+<td>9.138603e-09</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
 <td>100000</td>
 <td>11</td>
 <td>statsmodels</td>
-<td>1.261360e-07</td>
+<td>4.165045e-09</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">5</th>
 <td>100000</td>
 <td>11</td>
 <td>PHP</td>
-<td>1.261360e-07</td>
+<td>9.313226e-09</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">6</th>
 <td>1000000</td>
 <td>3</td>
 <td>statsmodels</td>
-<td>3.107358e-06</td>
+<td>1.024455e-08</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">7</th>
 <td>1000000</td>
 <td>3</td>
 <td>PHP</td>
-<td>3.107125e-06</td>
+<td>1.001172e-08</td>
 </tr>
 </tbody>
 </table>

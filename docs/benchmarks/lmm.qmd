@@ -11,14 +11,14 @@ phit's `fit_mixed_gaussian_intercept_matrix()`, R lme4 `lmer()`, and Python stat
 | --- | --- |
 | Workloads | 1,000, 100,000, and 1,000,000 rows with 3 fixed coefficients; 100,000 rows with 11 (counts include the intercept); min(100, n/20) groups |
 | Data | Simulated with NumPy seed `20261011` (see [Simulation and numerical checks](#simulation-and-numerical-checks)) |
-| Machine | Apple M5 Ultra, macOS 27, recorded 2026-10-11 |
+| Machine | AMD Ryzen 9 9955HX virtual machine, 2 cores, 7.8 GiB, Ubuntu 24.04.5 LTS (x86_64) |
 | Builds | phit release build; runtime versions are printed below |
 | Threads | Common BLAS and OpenMP thread variables set to 1 |
 | Repetitions | One untimed warm-up, then five timed fits per worker; workers run separately and alternate order |
 | Statistic | Median and minimum in-process wall-clock time |
 | Timed | One complete fit with every output materialized (see [Timing boundaries and methods](#timing-boundaries-and-methods)) |
 | Excluded | Startup, CSV parsing, data generation, and JSON serialization |
-| Memory | Peak RSS of the whole worker process |
+| Memory | Peak RSS of the whole worker process, from `peakmem` ([bench/peakmem.c](https://github.com/phpstats/phit/blob/main/bench/peakmem.c)) |
 
 ## Recorded results
 

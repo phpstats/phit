@@ -10,6 +10,7 @@ project:
     - benchmarks/draws-results.json
     - benchmarks/distributions-results.json
     - benchmarks/rng-results.json
+    - benchmarks/csv-results.json
     - verifications/distributions-results.json
     - verifications/distributions-audit.json
     - verifications/distributions-reuse.json

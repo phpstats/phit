@@ -1,0 +1,124 @@
+{
+ "title": "Seeded sampling: draw time",
+ "description": "Median wall time for one seeded call that returns n normal, beta, or Poisson draws in phit.",
+ "measure": "median wall time",
+ "unit": "ms",
+ "environment": {
+  "cpu": "AMD Ryzen 9 9955HX 16-Core Processor",
+  "platform": "Linux, Ubuntu 24.04.5 LTS (x86_64)",
+  "php": "8.5.12",
+  "date": "2026-11-01T19:50:24.399727+00:00",
+  "repeats": 5
+ },
+ "source": "docs/benchmarks/rng-results.json",
+ "rows": [
+  {
+   "case": "normal, n = 1,000",
+   "implementation": "phit",
+   "value": 0.1264,
+   "reps": [
+    0.1519,
+    0.1286,
+    0.1264,
+    0.1261,
+    0.1257
+   ]
+  },
+  {
+   "case": "normal, n = 100,000",
+   "implementation": "phit",
+   "value": 13.0404,
+   "reps": [
+    13.2736,
+    13.0499,
+    13.038,
+    13.0404,
+    13.0347
+   ]
+  },
+  {
+   "case": "normal, n = 1,000,000",
+   "implementation": "phit",
+   "value": 132.4503,
+   "reps": [
+    135.0527,
+    132.4503,
+    132.5515,
+    132.4024,
+    132.3789
+   ]
+  },
+  {
+   "case": "beta, n = 1,000",
+   "implementation": "phit",
+   "value": 1.6031,
+   "reps": [
+    1.6023,
+    1.6031,
+    1.615,
+    1.5913,
+    1.6156
+   ]
+  },
+  {
+   "case": "beta, n = 100,000",
+   "implementation": "phit",
+   "value": 157.5756,
+   "reps": [
+    158.242,
+    157.5756,
+    158.4866,
+    157.2142,
+    157.3053
+   ]
+  },
+  {
+   "case": "beta, n = 1,000,000",
+   "implementation": "phit",
+   "value": 1567.2773,
+   "reps": [
+    1573.1557,
+    1567.0596,
+    1566.7105,
+    1567.2773,
+    1567.6351
+   ]
+  },
+  {
+   "case": "poisson, n = 1,000",
+   "implementation": "phit",
+   "value": 0.2361,
+   "reps": [
+    0.2361,
+    0.2399,
+    0.2303,
+    0.2582,
+    0.2299
+   ]
+  },
+  {
+   "case": "poisson, n = 100,000",
+   "implementation": "phit",
+   "value": 24.1089,
+   "reps": [
+    24.3909,
+    24.0892,
+    24.1089,
+    24.1277,
+    24.0154
+   ]
+  },
+  {
+   "case": "poisson, n = 1,000,000",
+   "implementation": "phit",
+   "value": 240.4155,
+   "reps": [
+    242.7962,
+    240.7398,
+    240.4155,
+    240.1879,
+    240.0589
+   ]
+  }
+ ]
+}

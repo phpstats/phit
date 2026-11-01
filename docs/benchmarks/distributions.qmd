@@ -11,13 +11,13 @@ This benchmark times distribution and descriptive functions in five ways on iden
 | Workloads | Normal CDF and SF, Student-t quantile, binomial and Poisson log-PMF, mean, variance, beta quantile, and chi-square CDF with df one million |
 | Sizes | 1,000, 100,000, and 1,000,000 values |
 | Data | Generated with seed 20261012 and saved as JSON; SHA-256 hashes are recorded |
-| Machine | Apple M5 Ultra, macOS 27, recorded 2026-10-12 |
-| Threads | OpenBLAS, OpenMP, MKL, Accelerate, and BLIS thread variables set to 1 |
+| Machine | AMD Ryzen 9 9955HX virtual machine, 2 cores, 7.8 GiB, Ubuntu 24.04.5 LTS (x86_64) |
+| Threads | OpenBLAS, OpenMP, MKL, and BLIS thread variables set to 1 |
 | Repetitions | One untimed warm-up, then five measurements; small cases batch calls (see [Timing boundaries](#timing-boundaries-and-interpretation)) |
 | Statistic | Median milliseconds per call |
 | Timed | The call, including PHP input and output conversion and validation |
 | Excluded | Startup, JSON input and output, and output summaries |
-| Memory | Peak RSS of the whole worker process |
+| Memory | Peak RSS of the whole worker process, from `peakmem` ([bench/peakmem.c](https://github.com/phpstats/phit/blob/main/bench/peakmem.c)) |
 
 ## Numerical comparisons before timings
 
@@ -34,41 +34,41 @@ phit's comparisons must pass. SciPy discrepancies are recorded and labeled witho
 
 <!-- BEGIN BENCHMARK EVIDENCE -->
 
-Recorded: **2026-10-12T15:18:59.861643+00:00**; Apple M5 Ultra, macOS-27.0.1-arm64-arm-64bit-Mach-O. 27 input cases; all native/R comparisons passed. SciPy exceeded the same tolerance for: chisquare_cdf (1,000), chisquare_cdf (100,000), chisquare_cdf (1,000,000).
+Recorded: **2026-11-01T19:46:57.108634+00:00**; AMD Ryzen 9 9955HX 16-Core Processor, Linux, Ubuntu 24.04.5 LTS (x86_64). 27 input cases; all native/R comparisons passed. SciPy exceeded the same tolerance for: chisquare_cdf (1,000), chisquare_cdf (100,000), chisquare_cdf (1,000,000).
 
 Median milliseconds per full call, 5 measurements after one warm-up:
 
 | Operation | Values | PHP scalar loop | PHP batch/native | Rust loop | R | SciPy |
 | --- | --- | --- | --- | --- | --- | --- |
-| normal_cdf | 1,000 | 0.04073 | 0.02235 | 0.01054 | 0.02 | 0.01851 |
-| normal_cdf | 100,000 | 4.093 | 2.23 | 1.374 | 2 | 1.227 |
-| normal_cdf | 1,000,000 | 41.28 | 23.62 | 14.29 | 17 | 12.1 |
-| normal_sf | 1,000 | 0.04412 | 0.02112 | 0.01159 | 0.02 | 0.0193 |
-| normal_sf | 100,000 | 4.406 | 2.153 | 1.238 | 2 | 0.9886 |
-| normal_sf | 1,000,000 | 44.06 | 21.05 | 14.5 | 16 | 9.896 |
-| t_quantile | 1,000 | 0.5982 | 0.5775 | 0.5745 | 0.23 | 0.1402 |
-| t_quantile | 100,000 | 59.79 | 57.86 | 56.78 | 23 | 12.53 |
-| t_quantile | 1,000,000 | 601.9 | 580 | 569.8 | 222 | 122.2 |
-| binomial_logpmf | 1,000 | 0.07055 | 0.03282 | 0.02151 | 0.03 | 0.03847 |
-| binomial_logpmf | 100,000 | 6.817 | 3.474 | 2.65 | 3 | 2.488 |
-| binomial_logpmf | 1,000,000 | 66.09 | 35.04 | 26.67 | 31 | 24.8 |
-| poisson_logpmf | 1,000 | 0.04139 | 0.02145 | 0.009005 | 0.03 | 0.0196 |
-| poisson_logpmf | 100,000 | 4.105 | 2.305 | 1.26 | 3 | 1.357 |
-| poisson_logpmf | 1,000,000 | 40.75 | 21.96 | 12.93 | 30 | 14.08 |
-| mean | 1,000 | — | 0.008543 | 0.001493 | 0.002 | 0.001174 |
-| mean | 100,000 | — | 0.8752 | 0.1473 | 0.11 | 0.01065 |
-| mean | 1,000,000 | — | 8.281 | 1.502 | 1.1 | 0.09985 |
-| variance | 1,000 | — | 0.009907 | 0.002825 | 0.0038 | 0.003253 |
-| variance | 100,000 | — | 1.009 | 0.2738 | 0.21 | 0.04644 |
-| variance | 1,000,000 | — | 10.22 | 2.741 | 2.1 | 0.4446 |
-| beta_quantile | 1,000 | 0.9424 | 0.9199 | 0.9109 | 0.39 | 0.3732 |
-| beta_quantile | 100,000 | 91.36 | 89.12 | 87.85 | 39 | 35.37 |
-| beta_quantile | 1,000,000 | 916.3 | 891.7 | 880.7 | 396 | 353.3 |
-| chisquare_cdf | 1,000 | 0.06663 | 0.03809 | 0.03149 | 0.03 | 0.1274 |
-| chisquare_cdf | 100,000 | 7.326 | 4.146 | 3.302 | 3 | 13.69 |
-| chisquare_cdf | 1,000,000 | 72.36 | 38.72 | 31.75 | 33 | 118 |
+| normal_cdf | 1,000 | 0.07486 | 0.037 | 0.01816 | 0.03 | 0.0294 |
+| normal_cdf | 100,000 | 7.639 | 3.927 | 2.31 | 3 | 1.712 |
+| normal_cdf | 1,000,000 | 79.41 | 40 | 23.16 | 33 | 18.23 |
+| normal_sf | 1,000 | 0.0728 | 0.03463 | 0.01971 | 0.03 | 0.03028 |
+| normal_sf | 100,000 | 7.591 | 3.716 | 2.069 | 3 | 1.396 |
+| normal_sf | 1,000,000 | 78.71 | 37.98 | 20.6 | 32 | 15.47 |
+| t_quantile | 1,000 | 1.191 | 1.145 | 1.123 | 0.37 | 0.2537 |
+| t_quantile | 100,000 | 120.3 | 116.6 | 112.4 | 37 | 21.28 |
+| t_quantile | 1,000,000 | 1201 | 1158 | 1124 | 371 | 208.1 |
+| binomial_logpmf | 1,000 | 0.1061 | 0.05352 | 0.03254 | 0.05 | 0.05873 |
+| binomial_logpmf | 100,000 | 10.86 | 5.355 | 3.629 | 5 | 4.069 |
+| binomial_logpmf | 1,000,000 | 112.6 | 54.29 | 35.92 | 52 | 42.32 |
+| poisson_logpmf | 1,000 | 0.07221 | 0.03792 | 0.01793 | 0.07 | 0.03121 |
+| poisson_logpmf | 100,000 | 7.419 | 4.008 | 2.111 | 7 | 2.193 |
+| poisson_logpmf | 1,000,000 | 77.31 | 40.66 | 21.04 | 67 | 22.9 |
+| mean | 1,000 | — | 0.01447 | 0.002254 | 0.0043 | 0.001821 |
+| mean | 100,000 | — | 1.431 | 0.2221 | 0.27 | 0.01475 |
+| mean | 1,000,000 | — | 14.49 | 2.226 | 2.6 | 0.1299 |
+| variance | 1,000 | — | 0.01647 | 0.004253 | 0.0072 | 0.005535 |
+| variance | 100,000 | — | 1.656 | 0.4214 | 0.42 | 0.05704 |
+| variance | 1,000,000 | — | 16.32 | 4.225 | 4.1 | 0.4684 |
+| beta_quantile | 1,000 | 1.697 | 1.642 | 1.629 | 0.68 | 0.5664 |
+| beta_quantile | 100,000 | 164.2 | 159.1 | 158.1 | 68 | 50.84 |
+| beta_quantile | 1,000,000 | 1649 | 1591 | 1575 | 678 | 506.3 |
+| chisquare_cdf | 1,000 | 0.1107 | 0.06781 | 0.05431 | 0.09 | 0.2001 |
+| chisquare_cdf | 100,000 | 11.29 | 7.077 | 5.421 | 9 | 17.58 |
+| chisquare_cdf | 1,000,000 | 116 | 71.42 | 54.17 | 86 | 175.1 |
 
-Whole-process peak RSS across these workers reached 268.1 MiB; per-worker memory, load/startup times and every timing sample are retained in the raw report.
+Whole-process peak RSS across these workers reached 235.8 MiB; per-worker memory, load/startup times and every timing sample are retained in the raw report.
 
 <!-- END BENCHMARK EVIDENCE -->
 
