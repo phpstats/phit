@@ -311,8 +311,9 @@ Every error is an `\Exception` with code 1001.
   - `r_rows`, R's printed coefficient rows.
 
 `tests/summary.php` checks the summary text byte for byte. It checks the tidy
-terms exactly and the tidy numbers to a relative difference of 1e-8, because
-the iterative fits can differ in the last bits between platforms. It also checks that each number in each coefficient row matches
+terms exactly and the tidy numbers to a relative difference of 1e-5, because
+the iterative fits differ between platforms: by about 1e-14 for GLMs and by up
+to 7e-7 for the mixed logistic fits on Linux. It also checks that each number in each coefficient row matches
 R's row, allowing one unit in the last printed place. Random-effect variances
 are not compared with R, because lme4's optimizer stops at a slightly
 different point.

@@ -27,8 +27,9 @@ function sameToken(string $a, string $b): bool
     return strlen($ma[1]) === strlen($mb[1]) && abs((float) $a - (float) $b) <= 1.000001 * 10 ** -strlen($ma[1]);
 }
 
-// The same tidy columns: terms exactly, numbers to 1e-8 relative. The fixtures come from one platform, and the
-// iterative fits can differ in the last bits elsewhere (the printed summary must still match byte for byte).
+// The same tidy columns: terms exactly, numbers to 1e-5 relative. The fixtures come from one platform, and the
+// iterative fits differ elsewhere: about 1e-14 for GLMs and up to 7e-7 for glmer fits, whose optimizer takes another
+// path on Linux. The printed summary must still match byte for byte.
 function sameTidy(array $ours, array $expected): bool
 {
     if (array_keys($ours) !== array_keys($expected) || $ours['term'] !== $expected['term']) {
@@ -40,7 +41,7 @@ function sameTidy(array $ours, array $expected): bool
         }
         foreach ($values as $i => $v) {
             $a = $ours[$column][$i];
-            if (! (is_nan($v) ? is_nan($a) : abs($a - $v) <= 1e-8 * max(abs($v), 1e-300))) {
+            if (! (is_nan($v) ? is_nan($a) : abs($a - $v) <= 1e-5 * max(abs($v), 1e-300))) {
                 return false;
             }
         }
