@@ -2,7 +2,7 @@
  "package": "phit",
  "title": "phit",
  "tagline": "Regression, mixed models, and probability distributions for PHP.",
- "summary": "Fit statistical models, compute probability distributions, and summarize data in PHP. Model functions accept formulas or explicit designs and return PHP arrays.",
+ "summary": "Fit statistical models, compute probability distributions, and summarize data in PHP. Model functions accept formulas or explicit designs and return fit objects that print like R's and read like arrays.",
  "install": [
   "pie install phpstats/phit"
  ],
@@ -29,14 +29,14 @@
  ],
  "verify": {
   "command": "php -r 'echo phpversion(\"phit\"), PHP_EOL;'",
-  "output": "0.5.1",
+  "output": "0.6.0",
   "note": "PHP-FPM reads its own php.ini, so enable the extension there and restart FPM."
  },
  "installation": "installation",
  "quickstart": "getting-started",
  "repository": "https://github.com/phpstats/phit",
  "example": {
-  "chain": "use Phibble\\DataFrame;\n\nuse function Phit\\{fit_ols, summary};\n\n$cars = DataFrame::fromCsv(\n    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv',\n);\n\n$fit = fit_ols('mpg ~ wt + factor(cyl)', $cars);\necho summary($fit);",
+  "chain": "use Phibble\\DataFrame;\n\nuse function Phit\\fit_ols;\n\n$cars = DataFrame::fromCsv(\n    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv',\n);\n\n$fit = fit_ols('mpg ~ wt + factor(cyl)', $cars);\necho $fit;",
   "pipe": null,
   "output": "Linear model fit by least squares\nFormula: mpg ~ wt + factor(cyl)\n\nCoefficients:\n             Estimate Std. Error t value Pr(>|t|)\n(Intercept)   33.9908     1.8878  18.006  < 2e-16\nwt            -3.2056     0.7539  -4.252 0.000213\nfactor(cyl)6  -4.2556     1.3861  -3.070 0.004718\nfactor(cyl)8  -6.0709     1.6523  -3.674 0.000999\n\nResidual standard error: 2.557 on 28 degrees of freedom\nMultiple R-squared: 0.8374, Adjusted R-squared: 0.82\nF-statistic: 48.08 on 3 and 28 DF, p-value: 3.594e-11"
  },

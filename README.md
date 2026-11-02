@@ -2,7 +2,8 @@
 
 phit is a PHP extension, written in Rust, for regression and mixed models,
 probability distributions, and descriptive statistics. Models are written as R
-formulas over named columns, and results are plain PHP arrays.
+formulas over named columns. A fit prints its summary in R's layout and reads like
+a PHP array.
 
 **[Documentation](https://phit.phpstats.org/docs)** ·
 [Installation](https://phit.phpstats.org/docs/installation) ·
@@ -13,14 +14,14 @@ formulas over named columns, and results are plain PHP arrays.
 ```php
 use Phibble\DataFrame;
 
-use function Phit\{fit_ols, predict, summary};
+use function Phit\{fit_ols, predict};
 
 $cars = DataFrame::fromCsv(
     'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv',
 );
 
 $fit = fit_ols('mpg ~ wt + factor(cyl)', $cars);
-echo summary($fit);
+echo $fit;
 
 $p = predict(
     $fit,

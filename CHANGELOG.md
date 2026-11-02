@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.6.0
+
+Every model function returns a fit object instead of an array. `echo $fit`
+prints the fit in R's `print(summary(fit))` layout.
+
+- The classes are `Phit\LinearFit`, `Phit\GeneralizedLinearFit`,
+  `Phit\MixedGaussianFit`, and `Phit\MixedLogisticFit`. All implement
+  `Phit\Fit`, and the fit's `model` key selects the class.
+- A fit reads like the result array. `$fit['coefficients']`, `isset()`,
+  `count()`, `foreach`, and `json_encode()` work as before, and nested values
+  are plain arrays. Writing or unsetting a key throws `LogicException`.
+  `toArray()` returns the array.
+- Fits have `summary()`, `tidy()`, and `predict()` methods. They also have
+  `toMimeBundle()`, so Jupyter kernels such as juphyter show the summary.
+- `tidy()` returns a `Phit\Table`, which prints in the layout of R's
+  `print.data.frame()` and reads by column. phibble 0.8's
+  `DataFrame::fromColumns()` accepts it through `toColumns()`.
+- `summary()`, `tidy()`, and `predict()` accept a fit or an array in the same
+  shape.
+
+### Changed
+
+- Model functions return fit objects, so `is_array($fit)` is false. Code that
+  types a fit as `array`, passes it to `array_*` functions, or writes to it
+  should call `toArray()`.
+- `optimizer_implementation` reads `bobyqa 0.3.2 (Rust implementation of PRIMA
+  BOBYQA)`.
+
 ## 0.5.1
 
 `tidy($fit, effects: 'ran_vals')` returns a mixed fit's random effects as

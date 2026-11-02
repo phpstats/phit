@@ -352,10 +352,49 @@ fn mixed_logistic(fit: &ZendHashTable) -> PhpResult<Box<dyn Printer>> {
     }))
 }
 
+/// The text of `Phit\\summary()` for a fit's result array.
+pub fn summary_text(fit: &ZendHashTable) -> PhpResult<String> {
+    Ok(summary::render(printer(fit)?.as_ref()))
+}
+
+/// The result array behind a `Fit|array` argument.
+fn fit_argument(fit: &Zval) -> PhpResult<&ZendHashTable> {
+    crate::fit::fit_data(fit).ok_or_else(|| not_a_fit("not a fit object or array"))
+}
+
 #[php_function]
 #[php(name = "Phit\\summary")]
-pub fn summary(fit: &ZendHashTable) -> PhpResult<String> {
-    Ok(summary::render(printer(fit)?.as_ref()))
+pub fn summary(fit: &Zval) -> PhpResult<String> {
+    summary_text(fit_argument(fit)?)
+}
+
+/// A `Phit\\Table`'s text: its columns in the layout of R's print.data.frame().
+pub fn table_text(columns: &ZendHashTable) -> PhpResult<String> {
+    let mut names = vec![];
+    let mut cells = vec![];
+    for (key, column) in columns.iter() {
+        names.push(key.to_string());
+        let values = column
+            .array()
+            .ok_or_else(|| invalid("table columns must be arrays"))?;
+        let text = values.values().all(|v| v.is_null() || v.is_string());
+        cells.push(if text {
+            summary::Cells::Text(
+                values
+                    .values()
+                    .map(|v| v.str().map(str::to_owned))
+                    .collect(),
+            )
+        } else {
+            summary::Cells::Numbers(
+                values
+                    .values()
+                    .map(|v| v.double().or_else(|| v.long().map(|l| l as f64)))
+                    .collect(),
+            )
+        });
+    }
+    Ok(summary::data_frame(&names, &cells))
 }
 
 fn column<T: ext_php_rs::convert::IntoZval + Clone>(
@@ -431,13 +470,9 @@ fn tidy_random(printer: &dyn Printer, confInt: bool, level: f64) -> PhpResult<ZB
     Ok(out)
 }
 
-#[php_function]
-#[php(
-    name = "Phit\\tidy",
-    defaults(confInt = false, level = 0.95, effects = "\"fixed\"")
-)]
+/// `tidy()`'s columns for a fit's result array.
 #[allow(non_snake_case)] // PHP parameter names are camelCase.
-pub fn tidy(
+pub fn tidy_columns(
     fit: &ZendHashTable,
     confInt: bool,
     level: f64,
@@ -455,6 +490,22 @@ pub fn tidy(
     } else {
         tidy_random(printer.as_ref(), confInt, level)
     }
+}
+
+#[php_function]
+#[php(
+    name = "Phit\\tidy",
+    defaults(confInt = false, level = 0.95, effects = "\"fixed\"")
+)]
+#[allow(non_snake_case)] // PHP parameter names are camelCase.
+pub fn tidy(fit: &Zval, confInt: bool, level: f64, effects: &str) -> PhpResult<Zval> {
+    if !(level > 0.0 && level < 1.0) {
+        return Err(invalid("level must be in (0, 1)"));
+    }
+    if !matches!(effects, "fixed" | "ran_vals") {
+        return Err(invalid("effects must be 'fixed' or 'ran_vals'"));
+    }
+    crate::fit::into_table(tidy_columns(fit_argument(fit)?, confInt, level, effects)?)
 }
 
 pub fn register(module: ModuleBuilder) -> ModuleBuilder {

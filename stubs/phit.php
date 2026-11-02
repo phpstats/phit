@@ -2150,7 +2150,8 @@ function draws_moments(array $draws, ?array $weights = NULL, string $normalizati
  * @param string $link '' (canonical), 'identity', 'logit', 'probit', or 'log'
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
- * @return array{
+ * @return GeneralizedLinearFit A fit object, read like this array:
+ * array{
  *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
@@ -2192,7 +2193,7 @@ function draws_moments(array $draws, ?array $weights = NULL, string $normalizati
  * }
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  */
-function fit_generalized_linear(string $formula, mixed $data, string $family = 'gaussian', string $link = '', string $missing = 'drop', mixed $weights = NULL): array {}
+function fit_generalized_linear(string $formula, mixed $data, string $family = 'gaussian', string $link = '', string $missing = 'drop', mixed $weights = NULL): GeneralizedLinearFit {}
 
 /**
  * Fits a binomial logit model on a numeric design by Newton steps, like R's `glm(family = binomial)`.
@@ -2204,7 +2205,8 @@ function fit_generalized_linear(string $formula, mixed $data, string $family = '
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @param ?array $weights Positive integer trial counts aligned with the rows; null is one trial per row
  * @param ?array $offset Known part of the linear predictor, aligned with the rows; null is zero
- * @return array{
+ * @return GeneralizedLinearFit A fit object, read like this array:
+ * array{
  *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
@@ -2230,7 +2232,7 @@ function fit_generalized_linear(string $formula, mixed $data, string $family = '
  * }
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
-function fit_logistic_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): array {}
+function fit_logistic_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): GeneralizedLinearFit {}
 
 /**
  * Fits a Gaussian mixed model from an lme4 formula, like `lme4::lmer()`.
@@ -2249,7 +2251,8 @@ function fit_logistic_matrix(array $x, array $y, string $missing = 'drop', ?arra
  * @param float $tolerance BOBYQA final trust-region radius, in (0, 0.1]
  * @param string $optimizer 'bobyqa' or 'nelder_mead'
  * @param float $objectiveTolerance Nelder–Mead stopping tolerance: the standard deviation of the simplex objective values
- * @return array{
+ * @return MixedGaussianFit A fit object, read like this array:
+ * array{
  *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
@@ -2293,7 +2296,7 @@ function fit_logistic_matrix(array $x, array $y, string $missing = 'drop', ?arra
  * }
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  */
-function fit_mixed_gaussian(string $formula, mixed $data, bool $reml = true, string $missing = 'drop', mixed $weights = NULL, ?array $start = NULL, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, string $optimizer = 'bobyqa', float $objectiveTolerance = 1.0E-12): array {}
+function fit_mixed_gaussian(string $formula, mixed $data, bool $reml = true, string $missing = 'drop', mixed $weights = NULL, ?array $start = NULL, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, string $optimizer = 'bobyqa', float $objectiveTolerance = 1.0E-12): MixedGaussianFit {}
 
 /**
  * Fits a Gaussian model with one random intercept by ML on a numeric design.
@@ -2305,7 +2308,8 @@ function fit_mixed_gaussian(string $formula, mixed $data, bool $reml = true, str
  * @param bool $intercept False uses x exactly (including any caller-supplied ones).
  * @param array<int|string|null> $groups Group label per row, an integer or a string; integer 1 and string "1" are different groups
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
- * @return array{
+ * @return MixedGaussianFit A fit object, read like this array:
+ * array{
  *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
@@ -2342,7 +2346,7 @@ function fit_mixed_gaussian(string $formula, mixed $data, bool $reml = true, str
  * }
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
-function fit_mixed_gaussian_intercept_matrix(array $x, array $y, array $groups, string $missing = 'drop', bool $intercept = true): array {}
+function fit_mixed_gaussian_intercept_matrix(array $x, array $y, array $groups, string $missing = 'drop', bool $intercept = true): MixedGaussianFit {}
 
 /**
  * Fits a Gaussian mixed model on a numeric design with explicit random terms, like `lme4::lmer()`.
@@ -2362,7 +2366,8 @@ function fit_mixed_gaussian_intercept_matrix(array $x, array $y, array $groups, 
  * @param float $tolerance BOBYQA final trust-region radius, in (0, 0.1]
  * @param string $optimizer 'bobyqa' or 'nelder_mead'
  * @param float $objectiveTolerance Nelder–Mead stopping tolerance: the standard deviation of the simplex objective values
- * @return array{
+ * @return MixedGaussianFit A fit object, read like this array:
+ * array{
  *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
@@ -2398,7 +2403,7 @@ function fit_mixed_gaussian_intercept_matrix(array $x, array $y, array $groups, 
  * }
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
-function fit_mixed_gaussian_matrix(array $x, array $y, array $random, string $missing = 'drop', bool $reml = false, ?array $weights = NULL, ?array $offset = NULL, ?array $start = NULL, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, string $optimizer = 'bobyqa', float $objectiveTolerance = 1.0E-12, bool $intercept = true): array {}
+function fit_mixed_gaussian_matrix(array $x, array $y, array $random, string $missing = 'drop', bool $reml = false, ?array $weights = NULL, ?array $offset = NULL, ?array $start = NULL, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, string $optimizer = 'bobyqa', float $objectiveTolerance = 1.0E-12, bool $intercept = true): MixedGaussianFit {}
 
 /**
  * Fits a binomial logit model with one random intercept from a formula, like `lme4::glmer(family = binomial)`.
@@ -2414,7 +2419,8 @@ function fit_mixed_gaussian_matrix(array $x, array $y, array $random, string $mi
  * @param int $quadraturePoints 1 for the Laplace approximation, or 2 to 61 for adaptive Gauss–Hermite quadrature
  * @param int $maxEvaluations Largest number of optimizer evaluations
  * @param float $tolerance BOBYQA final trust-region radius, in (0, 0.1]
- * @return array{
+ * @return MixedLogisticFit A fit object, read like this array:
+ * array{
  *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
@@ -2468,7 +2474,7 @@ function fit_mixed_gaussian_matrix(array $x, array $y, array $random, string $mi
  * }
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  */
-function fit_mixed_logistic(string $formula, mixed $data, string $missing = 'drop', mixed $weights = NULL, int $quadraturePoints = 1, int $maxEvaluations = 20000, float $tolerance = 1.0E-7): array {}
+function fit_mixed_logistic(string $formula, mixed $data, string $missing = 'drop', mixed $weights = NULL, int $quadraturePoints = 1, int $maxEvaluations = 20000, float $tolerance = 1.0E-7): MixedLogisticFit {}
 
 /**
  * Fits a binomial logit model with one random intercept on a numeric design, like `lme4::glmer(family = binomial)`.
@@ -2485,7 +2491,8 @@ function fit_mixed_logistic(string $formula, mixed $data, string $missing = 'dro
  * @param int $quadraturePoints 1 for the Laplace approximation, or 2 to 61 for adaptive Gauss–Hermite quadrature
  * @param int $maxEvaluations Largest number of optimizer evaluations
  * @param float $tolerance BOBYQA final trust-region radius, in (0, 0.1]
- * @return array{
+ * @return MixedLogisticFit A fit object, read like this array:
+ * array{
  *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
@@ -2530,7 +2537,7 @@ function fit_mixed_logistic(string $formula, mixed $data, string $missing = 'dro
  * }
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
-function fit_mixed_logistic_matrix(array $x, array $y, array $groups, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, int $quadraturePoints = 1, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, bool $intercept = true): array {}
+function fit_mixed_logistic_matrix(array $x, array $y, array $groups, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, int $quadraturePoints = 1, int $maxEvaluations = 20000, float $tolerance = 1.0E-7, bool $intercept = true): MixedLogisticFit {}
 
 /**
  * Fits a linear model from a formula, like R's `lm()`.
@@ -2543,7 +2550,8 @@ function fit_mixed_logistic_matrix(array $x, array $y, array $groups, string $mi
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
- * @return array{
+ * @return LinearFit A fit object, read like this array:
+ * array{
  *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
@@ -2577,7 +2585,7 @@ function fit_mixed_logistic_matrix(array $x, array $y, array $groups, string $mi
  * }
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  */
-function fit_ols(string $formula, mixed $data, string $missing = 'drop', mixed $weights = NULL): array {}
+function fit_ols(string $formula, mixed $data, string $missing = 'drop', mixed $weights = NULL): LinearFit {}
 
 /**
  * Fits a linear model by least squares on a numeric design, like R's `lm.fit()` with the full summary.
@@ -2590,7 +2598,8 @@ function fit_ols(string $formula, mixed $data, string $missing = 'drop', mixed $
  * @param array<int|float|null>|null $weights Positive weights: weighted least squares, as lm(weights = )
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @param ?array $offset Known part of the linear predictor, aligned with the rows; null is zero
- * @return array{
+ * @return LinearFit A fit object, read like this array:
+ * array{
  *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
@@ -2616,7 +2625,7 @@ function fit_ols(string $formula, mixed $data, string $missing = 'drop', mixed $
  * }
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
-function fit_ols_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): array {}
+function fit_ols_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): LinearFit {}
 
 /**
  * Fits a Poisson log-link model on a numeric design by Newton steps, like R's `glm(family = poisson)`.
@@ -2628,7 +2637,8 @@ function fit_ols_matrix(array $x, array $y, string $missing = 'drop', ?array $we
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @param ?array $weights Positive prior weights aligned with the rows
  * @param ?array $offset Known part of the linear predictor, aligned with the rows; null is zero
- * @return array{
+ * @return GeneralizedLinearFit A fit object, read like this array:
+ * array{
  *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
@@ -2654,7 +2664,7 @@ function fit_ols_matrix(array $x, array $y, string $missing = 'drop', ?array $we
  * }
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
-function fit_poisson_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): array {}
+function fit_poisson_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): GeneralizedLinearFit {}
 
 /**
  * Fits a binomial probit model on a numeric design by Fisher scoring, like R's `glm(family = binomial(link = "probit"))`.
@@ -2666,7 +2676,8 @@ function fit_poisson_matrix(array $x, array $y, string $missing = 'drop', ?array
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @param ?array $weights Positive integer trial counts aligned with the rows; null is one trial per row
  * @param ?array $offset Known part of the linear predictor, aligned with the rows; null is zero
- * @return array{
+ * @return GeneralizedLinearFit A fit object, read like this array:
+ * array{
  *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
@@ -2692,7 +2703,7 @@ function fit_poisson_matrix(array $x, array $y, string $missing = 'drop', ?array
  * }
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
-function fit_probit_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): array {}
+function fit_probit_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): GeneralizedLinearFit {}
 
 /**
  * Builds the numeric design of a formula over named columns, like R's `model.matrix()`.
@@ -2762,7 +2773,7 @@ function permutation_rng(int $n, int $seed, ?int $size = NULL): array {}
  * - `interval: 'confidence'` or `'prediction'` adds `lower` and `upper` for `fit_ols()` fits, using t with `df_residual`.
  * - Mixed fits add the random effects of known groups. `random: false` gives population predictions, and `allowNewLevels` predicts unseen groups at the population level.
  * - GLM standard errors use the covariance at the final coefficients, which differs slightly from R's `predict.glm()`.
- * @param array<string,mixed> $fit A formula fit result, with the keys `formula`, `coefficients`, `covariance`, `columns`, and `predvars`
+ * @param Fit|array<string,mixed> $fit A formula fit, or its toArray() array, with the keys `formula`, `coefficients`, `covariance`, `columns`, and `predvars`
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $newdata Named columns, as for the fit; the response may be absent
  * @param string $type 'link' (linear predictor) or 'response'
  * @param string $interval 'none', 'confidence', or 'prediction'
@@ -2784,7 +2795,7 @@ function permutation_rng(int $n, int $seed, ?int $size = NULL): array {}
  * }
  * @throws \Exception Code 1001 for invalid input, a malformed fit, or a new factor level, or 1007 for an unsupported option.
  */
-function predict(array $fit, mixed $newdata, string $type = 'link', bool $seFit = false, string $interval = 'none', float $level = 0.95, bool $random = true, bool $allowNewLevels = false): array {}
+function predict(Fit|array $fit, mixed $newdata, string $type = 'link', bool $seFit = false, string $interval = 'none', float $level = 0.95, bool $random = true, bool $allowNewLevels = false): array {}
 
 /**
  * Reads a delimited text file into typed columns, with the records, names, guessed types, values, and problem messages of phibble's PHP reader and `readr::read_delim()`.
@@ -2994,11 +3005,11 @@ function stat_weighted_var(array $values, array $weights, string $type = 'freque
  * - Takes the result of any model function: OLS and GLM fits, formula or matrix, and Gaussian and logistic mixed fits.
  * - The coefficient table follows R's `printCoefmat(digits = 4)` without significance stars. A linear model adds the residual standard error, R-squared, and the F statistic; a GLM adds the dispersion, deviances, and AIC; a mixed model adds its fit criteria and the random-effect variances, as lme4 prints them.
  * - Matrix fits name their coefficients x1, x2, and so on, and leave out the lines that need a formula.
- * @param array<string,mixed> $fit Result of a model function, such as fit_ols() or fit_mixed_gaussian()
+ * @param Fit|array<string,mixed> $fit Result of a model function, such as fit_ols() or fit_mixed_gaussian()
  * @return string
  * @throws \Exception Code 1001 when `fit` is not the result of a model function.
  */
-function summary(array $fit): string {}
+function summary(Fit|array $fit): string {}
 
 /**
  * Returns a fit's coefficient table as columns, like broom's `tidy()`.
@@ -3006,14 +3017,14 @@ function summary(array $fit): string {}
  * - Intervals are Wald intervals: t with `df_residual` degrees of freedom when the fit reports t statistics, and the normal distribution otherwise.
  * - For mixed fits, the default `effects: 'fixed'` gives the fixed effects, and `summary()` prints the variance components.
  * - `effects: 'ran_vals'` gives a mixed fit's random effects, as broom.mixed does: `group`, `level`, `term`, `estimate`, and `std_error`, one row per term, column, and group. The estimates are the conditional modes and the standard errors their conditional standard deviations, as `lme4::ranef(condVar = TRUE)` reports them. Intervals use the normal distribution.
- * @param array<string,mixed> $fit Result of a model function, such as fit_ols() or fit_mixed_gaussian()
+ * @param Fit|array<string,mixed> $fit Result of a model function, such as fit_ols() or fit_mixed_gaussian()
  * @param bool $confInt Add conf_low and conf_high columns
  * @param float $level Confidence level of the intervals, in (0, 1)
  * @param string $effects 'fixed' for the coefficient table, or 'ran_vals' for a mixed fit's random effects
- * @return array{term: list<string>, estimate: list<float>, std_error: list<float>, statistic: list<float>, p_value: list<float>, conf_low?: list<float>, conf_high?: list<float>}|array{group: list<string>, level: list<string>, term: list<string>, estimate: list<float>, std_error: list<float>, conf_low?: list<float>, conf_high?: list<float>}
+ * @return Table Columns term, estimate, std_error, statistic, and p_value, or with effects 'ran_vals' group, level, term, estimate, and std_error; confInt adds conf_low and conf_high
  * @throws \Exception Code 1001 when `fit` is not the result of a model function, `level` is outside (0, 1), or `effects` is not `'fixed'` or `'ran_vals'` (`'ran_vals'` needs a mixed fit).
  */
-function tidy(array $fit, bool $confInt = false, float $level = 0.95, string $effects = 'fixed'): array {}
+function tidy(Fit|array $fit, bool $confInt = false, float $level = 0.95, string $effects = 'fixed'): Table {}
 
 /**
  * Finds a root of `f` in [`lower`, `upper`], like R's `uniroot()`.
@@ -3030,6 +3041,602 @@ function tidy(array $fit, bool $confInt = false, float $level = 0.95, string $ef
  * @throws \Exception Code 1001 for an input error.
  */
 function uniroot(callable $f, float $lower, float $upper, ?float $tol = NULL, int $maxiter = 1000): array {}
+
+/**
+ * A model fit: the result of every model function. echo prints its summary, and reading a key works as on the result
+ * array. The four classes implementing it are LinearFit, GeneralizedLinearFit, MixedGaussianFit, and MixedLogisticFit.
+ */
+interface Fit extends \ArrayAccess, \Iterator, \Countable, \JsonSerializable, \Stringable
+{
+  public function summary(): string;
+  public function tidy(bool $confInt = false, float $level = 0.95, string $effects = 'fixed'): Table;
+  public function predict(mixed $newdata, string $type = 'link', bool $seFit = false, string $interval = 'none', float $level = 0.95, bool $random = true, bool $allowNewLevels = false): array;
+  public function toArray(): array;
+  public function toMimeBundle(): array;
+}
+
+/**
+ * The fit of a linear model (fit_ols(), fit_ols_matrix()). echo prints its summary; reading a key works as on the result array;
+ * the fit is read-only, and toArray() returns the array.
+ */
+final class LinearFit implements Fit
+{
+  /**
+   * Not available: fits come from the model functions.
+   */
+  private function __construct() {}
+
+  /**
+   * The array, for var_dump() and print_r().
+   * @return array<string,mixed>
+   */
+  public function __debugInfo(): array {}
+
+  /**
+   * The fit printed in the layout of R's print(summary(fit)), as summary() returns it.
+   */
+  public function __toString(): string {}
+
+  /**
+   * The number of keys.
+   */
+  public function count(): int {}
+
+  /**
+   * The value at the iterator's position.
+   */
+  public function current(): mixed {}
+
+  /**
+   * The same JSON as the array.
+   * @return array<string,mixed>
+   */
+  public function jsonSerialize(): array {}
+
+  /**
+   * The key at the iterator's position.
+   */
+  public function key(): ?string {}
+
+  /**
+   * Moves the iterator to the next key.
+   */
+  public function next(): void {}
+
+  /**
+   * Whether the key is present and not null, as isset() on the array.
+   */
+  public function offsetExists(mixed $offset): bool {}
+
+  /**
+   * The key's value, as on the array; a missing key warns and gives null.
+   */
+  public function offsetGet(mixed $offset): mixed {}
+
+  /**
+   * Not available: fits are read-only.
+   * @throws \LogicException Always.
+   */
+  public function offsetSet(mixed $_offset, mixed $_value): void {}
+
+  /**
+   * Not available: fits are read-only.
+   * @throws \LogicException Always.
+   */
+  public function offsetUnset(mixed $_offset): void {}
+
+  /**
+   * Predictions for new data, as predict() returns them for this fit.
+   * @param array<string,list<int|float|bool|string|null>>|object $newdata Named columns; the response may be absent
+   * @param string $type 'link' or 'response'
+   * @param bool $seFit Add standard errors
+   * @param string $interval 'none', 'confidence', or 'prediction'
+   * @param float $level Interval level
+   * @param bool $random Mixed fits: include the random effects of known groups
+   * @param bool $allowNewLevels Mixed fits: predict unseen groups at the population level
+   * @return array<string,mixed>
+   * @throws \Exception As predict().
+   */
+  public function predict(mixed $newdata, string $type = 'link', bool $seFit = false, string $interval = 'none', float $level = 0.95, bool $random = true, bool $allowNewLevels = false): array {}
+
+  /**
+   * Moves the iterator to the first key.
+   */
+  public function rewind(): void {}
+
+  /**
+   * The fit printed in the layout of R's print(summary(fit)).
+   */
+  public function summary(): string {}
+
+  /**
+   * The coefficient table as columns, as tidy() returns it.
+   * @param bool $confInt Add conf_low and conf_high columns
+   * @param float $level Confidence level of the intervals, in (0, 1)
+   * @param string $effects 'fixed' for the coefficient table, or 'ran_vals' for a mixed fit's random effects
+   * @throws \Exception Code 1001 for an invalid level or effects.
+   */
+  public function tidy(bool $confInt = false, float $level = 0.95, string $effects = 'fixed'): Table {}
+
+  /**
+   * The fit as the array the model function computed.
+   * @return array<string,mixed>
+   */
+  public function toArray(): array {}
+
+  /**
+   * A Jupyter display bundle: the printed fit as text/plain and the array as application/json.
+   * @return array{'text/plain': string, 'application/json': array<string,mixed>}
+   */
+  public function toMimeBundle(): array {}
+
+  /**
+   * Whether the iterator's position holds a key.
+   */
+  public function valid(): bool {}
+}
+
+/**
+ * The fit of a generalized linear model (fit_generalized_linear() and the logistic, probit, and Poisson matrix functions). echo prints its summary; reading a key works as on the result array;
+ * the fit is read-only, and toArray() returns the array.
+ */
+final class GeneralizedLinearFit implements Fit
+{
+  /**
+   * Not available: fits come from the model functions.
+   */
+  private function __construct() {}
+
+  /**
+   * The array, for var_dump() and print_r().
+   * @return array<string,mixed>
+   */
+  public function __debugInfo(): array {}
+
+  /**
+   * The fit printed in the layout of R's print(summary(fit)), as summary() returns it.
+   */
+  public function __toString(): string {}
+
+  /**
+   * The number of keys.
+   */
+  public function count(): int {}
+
+  /**
+   * The value at the iterator's position.
+   */
+  public function current(): mixed {}
+
+  /**
+   * The same JSON as the array.
+   * @return array<string,mixed>
+   */
+  public function jsonSerialize(): array {}
+
+  /**
+   * The key at the iterator's position.
+   */
+  public function key(): ?string {}
+
+  /**
+   * Moves the iterator to the next key.
+   */
+  public function next(): void {}
+
+  /**
+   * Whether the key is present and not null, as isset() on the array.
+   */
+  public function offsetExists(mixed $offset): bool {}
+
+  /**
+   * The key's value, as on the array; a missing key warns and gives null.
+   */
+  public function offsetGet(mixed $offset): mixed {}
+
+  /**
+   * Not available: fits are read-only.
+   * @throws \LogicException Always.
+   */
+  public function offsetSet(mixed $_offset, mixed $_value): void {}
+
+  /**
+   * Not available: fits are read-only.
+   * @throws \LogicException Always.
+   */
+  public function offsetUnset(mixed $_offset): void {}
+
+  /**
+   * Predictions for new data, as predict() returns them for this fit.
+   * @param array<string,list<int|float|bool|string|null>>|object $newdata Named columns; the response may be absent
+   * @param string $type 'link' or 'response'
+   * @param bool $seFit Add standard errors
+   * @param string $interval 'none', 'confidence', or 'prediction'
+   * @param float $level Interval level
+   * @param bool $random Mixed fits: include the random effects of known groups
+   * @param bool $allowNewLevels Mixed fits: predict unseen groups at the population level
+   * @return array<string,mixed>
+   * @throws \Exception As predict().
+   */
+  public function predict(mixed $newdata, string $type = 'link', bool $seFit = false, string $interval = 'none', float $level = 0.95, bool $random = true, bool $allowNewLevels = false): array {}
+
+  /**
+   * Moves the iterator to the first key.
+   */
+  public function rewind(): void {}
+
+  /**
+   * The fit printed in the layout of R's print(summary(fit)).
+   */
+  public function summary(): string {}
+
+  /**
+   * The coefficient table as columns, as tidy() returns it.
+   * @param bool $confInt Add conf_low and conf_high columns
+   * @param float $level Confidence level of the intervals, in (0, 1)
+   * @param string $effects 'fixed' for the coefficient table, or 'ran_vals' for a mixed fit's random effects
+   * @throws \Exception Code 1001 for an invalid level or effects.
+   */
+  public function tidy(bool $confInt = false, float $level = 0.95, string $effects = 'fixed'): Table {}
+
+  /**
+   * The fit as the array the model function computed.
+   * @return array<string,mixed>
+   */
+  public function toArray(): array {}
+
+  /**
+   * A Jupyter display bundle: the printed fit as text/plain and the array as application/json.
+   * @return array{'text/plain': string, 'application/json': array<string,mixed>}
+   */
+  public function toMimeBundle(): array {}
+
+  /**
+   * Whether the iterator's position holds a key.
+   */
+  public function valid(): bool {}
+}
+
+/**
+ * The fit of a Gaussian mixed model (fit_mixed_gaussian() and its matrix functions). echo prints its summary; reading a key works as on the result array;
+ * the fit is read-only, and toArray() returns the array.
+ */
+final class MixedGaussianFit implements Fit
+{
+  /**
+   * Not available: fits come from the model functions.
+   */
+  private function __construct() {}
+
+  /**
+   * The array, for var_dump() and print_r().
+   * @return array<string,mixed>
+   */
+  public function __debugInfo(): array {}
+
+  /**
+   * The fit printed in the layout of R's print(summary(fit)), as summary() returns it.
+   */
+  public function __toString(): string {}
+
+  /**
+   * The number of keys.
+   */
+  public function count(): int {}
+
+  /**
+   * The value at the iterator's position.
+   */
+  public function current(): mixed {}
+
+  /**
+   * The same JSON as the array.
+   * @return array<string,mixed>
+   */
+  public function jsonSerialize(): array {}
+
+  /**
+   * The key at the iterator's position.
+   */
+  public function key(): ?string {}
+
+  /**
+   * Moves the iterator to the next key.
+   */
+  public function next(): void {}
+
+  /**
+   * Whether the key is present and not null, as isset() on the array.
+   */
+  public function offsetExists(mixed $offset): bool {}
+
+  /**
+   * The key's value, as on the array; a missing key warns and gives null.
+   */
+  public function offsetGet(mixed $offset): mixed {}
+
+  /**
+   * Not available: fits are read-only.
+   * @throws \LogicException Always.
+   */
+  public function offsetSet(mixed $_offset, mixed $_value): void {}
+
+  /**
+   * Not available: fits are read-only.
+   * @throws \LogicException Always.
+   */
+  public function offsetUnset(mixed $_offset): void {}
+
+  /**
+   * Predictions for new data, as predict() returns them for this fit.
+   * @param array<string,list<int|float|bool|string|null>>|object $newdata Named columns; the response may be absent
+   * @param string $type 'link' or 'response'
+   * @param bool $seFit Add standard errors
+   * @param string $interval 'none', 'confidence', or 'prediction'
+   * @param float $level Interval level
+   * @param bool $random Mixed fits: include the random effects of known groups
+   * @param bool $allowNewLevels Mixed fits: predict unseen groups at the population level
+   * @return array<string,mixed>
+   * @throws \Exception As predict().
+   */
+  public function predict(mixed $newdata, string $type = 'link', bool $seFit = false, string $interval = 'none', float $level = 0.95, bool $random = true, bool $allowNewLevels = false): array {}
+
+  /**
+   * Moves the iterator to the first key.
+   */
+  public function rewind(): void {}
+
+  /**
+   * The fit printed in the layout of R's print(summary(fit)).
+   */
+  public function summary(): string {}
+
+  /**
+   * The coefficient table as columns, as tidy() returns it.
+   * @param bool $confInt Add conf_low and conf_high columns
+   * @param float $level Confidence level of the intervals, in (0, 1)
+   * @param string $effects 'fixed' for the coefficient table, or 'ran_vals' for a mixed fit's random effects
+   * @throws \Exception Code 1001 for an invalid level or effects.
+   */
+  public function tidy(bool $confInt = false, float $level = 0.95, string $effects = 'fixed'): Table {}
+
+  /**
+   * The fit as the array the model function computed.
+   * @return array<string,mixed>
+   */
+  public function toArray(): array {}
+
+  /**
+   * A Jupyter display bundle: the printed fit as text/plain and the array as application/json.
+   * @return array{'text/plain': string, 'application/json': array<string,mixed>}
+   */
+  public function toMimeBundle(): array {}
+
+  /**
+   * Whether the iterator's position holds a key.
+   */
+  public function valid(): bool {}
+}
+
+/**
+ * The fit of a binomial logit mixed model (fit_mixed_logistic(), fit_mixed_logistic_matrix()). echo prints its summary; reading a key works as on the result array;
+ * the fit is read-only, and toArray() returns the array.
+ */
+final class MixedLogisticFit implements Fit
+{
+  /**
+   * Not available: fits come from the model functions.
+   */
+  private function __construct() {}
+
+  /**
+   * The array, for var_dump() and print_r().
+   * @return array<string,mixed>
+   */
+  public function __debugInfo(): array {}
+
+  /**
+   * The fit printed in the layout of R's print(summary(fit)), as summary() returns it.
+   */
+  public function __toString(): string {}
+
+  /**
+   * The number of keys.
+   */
+  public function count(): int {}
+
+  /**
+   * The value at the iterator's position.
+   */
+  public function current(): mixed {}
+
+  /**
+   * The same JSON as the array.
+   * @return array<string,mixed>
+   */
+  public function jsonSerialize(): array {}
+
+  /**
+   * The key at the iterator's position.
+   */
+  public function key(): ?string {}
+
+  /**
+   * Moves the iterator to the next key.
+   */
+  public function next(): void {}
+
+  /**
+   * Whether the key is present and not null, as isset() on the array.
+   */
+  public function offsetExists(mixed $offset): bool {}
+
+  /**
+   * The key's value, as on the array; a missing key warns and gives null.
+   */
+  public function offsetGet(mixed $offset): mixed {}
+
+  /**
+   * Not available: fits are read-only.
+   * @throws \LogicException Always.
+   */
+  public function offsetSet(mixed $_offset, mixed $_value): void {}
+
+  /**
+   * Not available: fits are read-only.
+   * @throws \LogicException Always.
+   */
+  public function offsetUnset(mixed $_offset): void {}
+
+  /**
+   * Predictions for new data, as predict() returns them for this fit.
+   * @param array<string,list<int|float|bool|string|null>>|object $newdata Named columns; the response may be absent
+   * @param string $type 'link' or 'response'
+   * @param bool $seFit Add standard errors
+   * @param string $interval 'none', 'confidence', or 'prediction'
+   * @param float $level Interval level
+   * @param bool $random Mixed fits: include the random effects of known groups
+   * @param bool $allowNewLevels Mixed fits: predict unseen groups at the population level
+   * @return array<string,mixed>
+   * @throws \Exception As predict().
+   */
+  public function predict(mixed $newdata, string $type = 'link', bool $seFit = false, string $interval = 'none', float $level = 0.95, bool $random = true, bool $allowNewLevels = false): array {}
+
+  /**
+   * Moves the iterator to the first key.
+   */
+  public function rewind(): void {}
+
+  /**
+   * The fit printed in the layout of R's print(summary(fit)).
+   */
+  public function summary(): string {}
+
+  /**
+   * The coefficient table as columns, as tidy() returns it.
+   * @param bool $confInt Add conf_low and conf_high columns
+   * @param float $level Confidence level of the intervals, in (0, 1)
+   * @param string $effects 'fixed' for the coefficient table, or 'ran_vals' for a mixed fit's random effects
+   * @throws \Exception Code 1001 for an invalid level or effects.
+   */
+  public function tidy(bool $confInt = false, float $level = 0.95, string $effects = 'fixed'): Table {}
+
+  /**
+   * The fit as the array the model function computed.
+   * @return array<string,mixed>
+   */
+  public function toArray(): array {}
+
+  /**
+   * A Jupyter display bundle: the printed fit as text/plain and the array as application/json.
+   * @return array{'text/plain': string, 'application/json': array<string,mixed>}
+   */
+  public function toMimeBundle(): array {}
+
+  /**
+   * Whether the iterator's position holds a key.
+   */
+  public function valid(): bool {}
+}
+
+/**
+ * Named columns, as tidy() returns them. echo prints them in the layout of R's print.data.frame(); reading a
+ * column works as on the array; the table is read-only, and toColumns() or toArray() returns the columns.
+ */
+final class Table implements \Stringable, \ArrayAccess, \Iterator, \Countable, \JsonSerializable
+{
+  /**
+   * Not available: tables come from tidy().
+   */
+  private function __construct() {}
+
+  /**
+   * The array, for var_dump() and print_r().
+   * @return array<string,mixed>
+   */
+  public function __debugInfo(): array {}
+
+  /**
+   * The columns in the layout of R's print.data.frame().
+   */
+  public function __toString(): string {}
+
+  /**
+   * The number of rows.
+   */
+  public function count(): int {}
+
+  /**
+   * The value at the iterator's position.
+   */
+  public function current(): mixed {}
+
+  /**
+   * The same JSON as the array.
+   * @return array<string,mixed>
+   */
+  public function jsonSerialize(): array {}
+
+  /**
+   * The key at the iterator's position.
+   */
+  public function key(): ?string {}
+
+  /**
+   * Moves the iterator to the next key.
+   */
+  public function next(): void {}
+
+  /**
+   * Whether the key is present and not null, as isset() on the array.
+   */
+  public function offsetExists(mixed $offset): bool {}
+
+  /**
+   * The column's values; a missing column warns and gives null.
+   */
+  public function offsetGet(mixed $offset): mixed {}
+
+  /**
+   * Not available: fits are read-only.
+   * @throws \LogicException Always.
+   */
+  public function offsetSet(mixed $_offset, mixed $_value): void {}
+
+  /**
+   * Not available: fits are read-only.
+   * @throws \LogicException Always.
+   */
+  public function offsetUnset(mixed $_offset): void {}
+
+  /**
+   * Moves the iterator to the first key.
+   */
+  public function rewind(): void {}
+
+  /**
+   * The columns, name => list.
+   * @return array<string,list<string|float>>
+   */
+  public function toArray(): array {}
+
+  /**
+   * The columns, name => list, for phibble's DataFrame::fromColumns() and phit's data arguments.
+   * @return array<string,list<string|float>>
+   */
+  public function toColumns(): array {}
+
+  /**
+   * A Jupyter display bundle: the printed fit as text/plain and the array as application/json.
+   * @return array{'text/plain': string, 'application/json': array<string,mixed>}
+   */
+  public function toMimeBundle(): array {}
+
+  /**
+   * Whether the iterator's position holds a key.
+   */
+  public function valid(): bool {}
+}
 
 /**
  * Reads a CSV file a chunk of rows at a time, as phibble's DataFrame::csvChunks() (after readr::read_delim_chunked()):

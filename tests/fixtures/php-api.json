@@ -3952,7 +3952,7 @@
                 "default": null
             }
         ],
-        "return_type": "array",
+        "return_type": "mixed",
         "result_keys": [
             "adj_r_squared",
             "aic",
@@ -4031,7 +4031,7 @@
                 "default": true
             }
         ],
-        "return_type": "array",
+        "return_type": "mixed",
         "result_keys": [
             "aic",
             "coefficients",
@@ -4118,7 +4118,7 @@
                 "default": 1.0e-12
             }
         ],
-        "return_type": "array",
+        "return_type": "mixed",
         "result_keys": [
             "aic",
             "assign",
@@ -4192,7 +4192,7 @@
                 "default": true
             }
         ],
-        "return_type": "array",
+        "return_type": "mixed",
         "result_keys": [
             "aic",
             "boundary",
@@ -4307,7 +4307,7 @@
                 "default": true
             }
         ],
-        "return_type": "array",
+        "return_type": "mixed",
         "result_keys": [
             "aic",
             "bic",
@@ -4386,7 +4386,7 @@
                 "default": 1.0e-7
             }
         ],
-        "return_type": "array",
+        "return_type": "mixed",
         "result_keys": [
             "aic",
             "assign",
@@ -4500,7 +4500,7 @@
                 "default": true
             }
         ],
-        "return_type": "array",
+        "return_type": "mixed",
         "result_keys": [
             "aic",
             "bic",
@@ -4570,7 +4570,7 @@
                 "default": null
             }
         ],
-        "return_type": "array",
+        "return_type": "mixed",
         "result_keys": [
             "adj_r_squared",
             "assign",
@@ -4641,7 +4641,7 @@
                 "default": true
             }
         ],
-        "return_type": "array",
+        "return_type": "mixed",
         "result_keys": [
             "adj_r_squared",
             "coefficients",
@@ -4704,7 +4704,7 @@
                 "default": true
             }
         ],
-        "return_type": "array",
+        "return_type": "mixed",
         "result_keys": [
             "aic",
             "coefficients",
@@ -4767,7 +4767,7 @@
                 "default": true
             }
         ],
-        "return_type": "array",
+        "return_type": "mixed",
         "result_keys": [
             "aic",
             "coefficients",
@@ -4889,7 +4889,7 @@
         "parameters": [
             {
                 "name": "fit",
-                "type": "array",
+                "type": "mixed",
                 "optional": false
             },
             {
@@ -5354,7 +5354,7 @@
         "parameters": [
             {
                 "name": "fit",
-                "type": "array",
+                "type": "mixed",
                 "optional": false
             }
         ],
@@ -5364,7 +5364,7 @@
         "parameters": [
             {
                 "name": "fit",
-                "type": "array",
+                "type": "mixed",
                 "optional": false
             },
             {
@@ -5386,7 +5386,7 @@
                 "default": "fixed"
             }
         ],
-        "return_type": "array"
+        "return_type": "mixed"
     },
     "Phit\\uniroot": {
         "parameters": [
@@ -5419,6 +5419,798 @@
             }
         ],
         "return_type": "array"
+    },
+    "Phit\\Fit": {
+        "interface": true,
+        "extends": [
+            "ArrayAccess",
+            "Iterator",
+            "Traversable",
+            "Countable",
+            "JsonSerializable",
+            "Stringable"
+        ]
+    },
+    "Phit\\LinearFit": {
+        "methods": {
+            "__construct": {
+                "parameters": [],
+                "return_type": ""
+            },
+            "__debugInfo": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "__toString": {
+                "parameters": [],
+                "return_type": "string"
+            },
+            "count": {
+                "parameters": [],
+                "return_type": "int"
+            },
+            "current": {
+                "parameters": [],
+                "return_type": "mixed"
+            },
+            "jsonSerialize": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "key": {
+                "parameters": [],
+                "return_type": "?string"
+            },
+            "next": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "offsetExists": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "bool"
+            },
+            "offsetGet": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "mixed"
+            },
+            "offsetSet": {
+                "parameters": [
+                    {
+                        "name": "_offset",
+                        "type": "mixed",
+                        "optional": false
+                    },
+                    {
+                        "name": "_value",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "offsetUnset": {
+                "parameters": [
+                    {
+                        "name": "_offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "predict": {
+                "parameters": [
+                    {
+                        "name": "newdata",
+                        "type": "mixed",
+                        "optional": false
+                    },
+                    {
+                        "name": "type",
+                        "type": "string",
+                        "optional": true,
+                        "default": "link"
+                    },
+                    {
+                        "name": "seFit",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    },
+                    {
+                        "name": "interval",
+                        "type": "string",
+                        "optional": true,
+                        "default": "none"
+                    },
+                    {
+                        "name": "level",
+                        "type": "float",
+                        "optional": true,
+                        "default": 0.95
+                    },
+                    {
+                        "name": "random",
+                        "type": "bool",
+                        "optional": true,
+                        "default": true
+                    },
+                    {
+                        "name": "allowNewLevels",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    }
+                ],
+                "return_type": "array"
+            },
+            "rewind": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "summary": {
+                "parameters": [],
+                "return_type": "string"
+            },
+            "tidy": {
+                "parameters": [
+                    {
+                        "name": "confInt",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    },
+                    {
+                        "name": "level",
+                        "type": "float",
+                        "optional": true,
+                        "default": 0.95
+                    },
+                    {
+                        "name": "effects",
+                        "type": "string",
+                        "optional": true,
+                        "default": "fixed"
+                    }
+                ],
+                "return_type": "mixed"
+            },
+            "toArray": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "toMimeBundle": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "valid": {
+                "parameters": [],
+                "return_type": "bool"
+            }
+        }
+    },
+    "Phit\\GeneralizedLinearFit": {
+        "methods": {
+            "__construct": {
+                "parameters": [],
+                "return_type": ""
+            },
+            "__debugInfo": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "__toString": {
+                "parameters": [],
+                "return_type": "string"
+            },
+            "count": {
+                "parameters": [],
+                "return_type": "int"
+            },
+            "current": {
+                "parameters": [],
+                "return_type": "mixed"
+            },
+            "jsonSerialize": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "key": {
+                "parameters": [],
+                "return_type": "?string"
+            },
+            "next": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "offsetExists": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "bool"
+            },
+            "offsetGet": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "mixed"
+            },
+            "offsetSet": {
+                "parameters": [
+                    {
+                        "name": "_offset",
+                        "type": "mixed",
+                        "optional": false
+                    },
+                    {
+                        "name": "_value",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "offsetUnset": {
+                "parameters": [
+                    {
+                        "name": "_offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "predict": {
+                "parameters": [
+                    {
+                        "name": "newdata",
+                        "type": "mixed",
+                        "optional": false
+                    },
+                    {
+                        "name": "type",
+                        "type": "string",
+                        "optional": true,
+                        "default": "link"
+                    },
+                    {
+                        "name": "seFit",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    },
+                    {
+                        "name": "interval",
+                        "type": "string",
+                        "optional": true,
+                        "default": "none"
+                    },
+                    {
+                        "name": "level",
+                        "type": "float",
+                        "optional": true,
+                        "default": 0.95
+                    },
+                    {
+                        "name": "random",
+                        "type": "bool",
+                        "optional": true,
+                        "default": true
+                    },
+                    {
+                        "name": "allowNewLevels",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    }
+                ],
+                "return_type": "array"
+            },
+            "rewind": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "summary": {
+                "parameters": [],
+                "return_type": "string"
+            },
+            "tidy": {
+                "parameters": [
+                    {
+                        "name": "confInt",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    },
+                    {
+                        "name": "level",
+                        "type": "float",
+                        "optional": true,
+                        "default": 0.95
+                    },
+                    {
+                        "name": "effects",
+                        "type": "string",
+                        "optional": true,
+                        "default": "fixed"
+                    }
+                ],
+                "return_type": "mixed"
+            },
+            "toArray": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "toMimeBundle": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "valid": {
+                "parameters": [],
+                "return_type": "bool"
+            }
+        }
+    },
+    "Phit\\MixedGaussianFit": {
+        "methods": {
+            "__construct": {
+                "parameters": [],
+                "return_type": ""
+            },
+            "__debugInfo": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "__toString": {
+                "parameters": [],
+                "return_type": "string"
+            },
+            "count": {
+                "parameters": [],
+                "return_type": "int"
+            },
+            "current": {
+                "parameters": [],
+                "return_type": "mixed"
+            },
+            "jsonSerialize": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "key": {
+                "parameters": [],
+                "return_type": "?string"
+            },
+            "next": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "offsetExists": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "bool"
+            },
+            "offsetGet": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "mixed"
+            },
+            "offsetSet": {
+                "parameters": [
+                    {
+                        "name": "_offset",
+                        "type": "mixed",
+                        "optional": false
+                    },
+                    {
+                        "name": "_value",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "offsetUnset": {
+                "parameters": [
+                    {
+                        "name": "_offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "predict": {
+                "parameters": [
+                    {
+                        "name": "newdata",
+                        "type": "mixed",
+                        "optional": false
+                    },
+                    {
+                        "name": "type",
+                        "type": "string",
+                        "optional": true,
+                        "default": "link"
+                    },
+                    {
+                        "name": "seFit",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    },
+                    {
+                        "name": "interval",
+                        "type": "string",
+                        "optional": true,
+                        "default": "none"
+                    },
+                    {
+                        "name": "level",
+                        "type": "float",
+                        "optional": true,
+                        "default": 0.95
+                    },
+                    {
+                        "name": "random",
+                        "type": "bool",
+                        "optional": true,
+                        "default": true
+                    },
+                    {
+                        "name": "allowNewLevels",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    }
+                ],
+                "return_type": "array"
+            },
+            "rewind": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "summary": {
+                "parameters": [],
+                "return_type": "string"
+            },
+            "tidy": {
+                "parameters": [
+                    {
+                        "name": "confInt",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    },
+                    {
+                        "name": "level",
+                        "type": "float",
+                        "optional": true,
+                        "default": 0.95
+                    },
+                    {
+                        "name": "effects",
+                        "type": "string",
+                        "optional": true,
+                        "default": "fixed"
+                    }
+                ],
+                "return_type": "mixed"
+            },
+            "toArray": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "toMimeBundle": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "valid": {
+                "parameters": [],
+                "return_type": "bool"
+            }
+        }
+    },
+    "Phit\\MixedLogisticFit": {
+        "methods": {
+            "__construct": {
+                "parameters": [],
+                "return_type": ""
+            },
+            "__debugInfo": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "__toString": {
+                "parameters": [],
+                "return_type": "string"
+            },
+            "count": {
+                "parameters": [],
+                "return_type": "int"
+            },
+            "current": {
+                "parameters": [],
+                "return_type": "mixed"
+            },
+            "jsonSerialize": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "key": {
+                "parameters": [],
+                "return_type": "?string"
+            },
+            "next": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "offsetExists": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "bool"
+            },
+            "offsetGet": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "mixed"
+            },
+            "offsetSet": {
+                "parameters": [
+                    {
+                        "name": "_offset",
+                        "type": "mixed",
+                        "optional": false
+                    },
+                    {
+                        "name": "_value",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "offsetUnset": {
+                "parameters": [
+                    {
+                        "name": "_offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "predict": {
+                "parameters": [
+                    {
+                        "name": "newdata",
+                        "type": "mixed",
+                        "optional": false
+                    },
+                    {
+                        "name": "type",
+                        "type": "string",
+                        "optional": true,
+                        "default": "link"
+                    },
+                    {
+                        "name": "seFit",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    },
+                    {
+                        "name": "interval",
+                        "type": "string",
+                        "optional": true,
+                        "default": "none"
+                    },
+                    {
+                        "name": "level",
+                        "type": "float",
+                        "optional": true,
+                        "default": 0.95
+                    },
+                    {
+                        "name": "random",
+                        "type": "bool",
+                        "optional": true,
+                        "default": true
+                    },
+                    {
+                        "name": "allowNewLevels",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    }
+                ],
+                "return_type": "array"
+            },
+            "rewind": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "summary": {
+                "parameters": [],
+                "return_type": "string"
+            },
+            "tidy": {
+                "parameters": [
+                    {
+                        "name": "confInt",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    },
+                    {
+                        "name": "level",
+                        "type": "float",
+                        "optional": true,
+                        "default": 0.95
+                    },
+                    {
+                        "name": "effects",
+                        "type": "string",
+                        "optional": true,
+                        "default": "fixed"
+                    }
+                ],
+                "return_type": "mixed"
+            },
+            "toArray": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "toMimeBundle": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "valid": {
+                "parameters": [],
+                "return_type": "bool"
+            }
+        }
+    },
+    "Phit\\Table": {
+        "methods": {
+            "__construct": {
+                "parameters": [],
+                "return_type": ""
+            },
+            "__debugInfo": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "__toString": {
+                "parameters": [],
+                "return_type": "string"
+            },
+            "count": {
+                "parameters": [],
+                "return_type": "int"
+            },
+            "current": {
+                "parameters": [],
+                "return_type": "mixed"
+            },
+            "jsonSerialize": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "key": {
+                "parameters": [],
+                "return_type": "?string"
+            },
+            "next": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "offsetExists": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "bool"
+            },
+            "offsetGet": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "mixed"
+            },
+            "offsetSet": {
+                "parameters": [
+                    {
+                        "name": "_offset",
+                        "type": "mixed",
+                        "optional": false
+                    },
+                    {
+                        "name": "_value",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "offsetUnset": {
+                "parameters": [
+                    {
+                        "name": "_offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "rewind": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "toArray": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "toColumns": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "toMimeBundle": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "valid": {
+                "parameters": [],
+                "return_type": "bool"
+            }
+        }
     },
     "Phit\\CsvReader": {
         "methods": {

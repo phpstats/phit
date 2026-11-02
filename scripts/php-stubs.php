@@ -18,6 +18,11 @@ $matrixPurpose=['Phit\fit_ols_matrix'=>'Least-squares fit of a numeric design, l
  'Phit\fit_mixed_gaussian_intercept_matrix'=>'Gaussian model with one random intercept, fitted by ML on a numeric design.',
  'Phit\fit_mixed_gaussian_matrix'=>'Gaussian mixed model on a numeric design and explicit random terms, like lme4::lmer().',
  'Phit\fit_mixed_logistic_matrix'=>'Binomial logit model with one random intercept on a numeric design, like lme4::glmer(family = binomial).'];
+// The object each model function returns, by its kind of model.
+$fitClass=['Phit\fit_ols'=>'LinearFit','Phit\fit_ols_matrix'=>'LinearFit','Phit\fit_generalized_linear'=>'GeneralizedLinearFit',
+ 'Phit\fit_logistic_matrix'=>'GeneralizedLinearFit','Phit\fit_probit_matrix'=>'GeneralizedLinearFit','Phit\fit_poisson_matrix'=>'GeneralizedLinearFit',
+ 'Phit\fit_mixed_gaussian'=>'MixedGaussianFit','Phit\fit_mixed_gaussian_matrix'=>'MixedGaussianFit','Phit\fit_mixed_gaussian_intercept_matrix'=>'MixedGaussianFit',
+ 'Phit\fit_mixed_logistic'=>'MixedLogisticFit','Phit\fit_mixed_logistic_matrix'=>'MixedLogisticFit'];
 $models=['Phit\fit_ols_matrix','Phit\fit_logistic_matrix','Phit\fit_probit_matrix','Phit\fit_poisson_matrix','Phit\fit_mixed_gaussian_intercept_matrix','Phit\fit_mixed_gaussian_matrix','Phit\fit_mixed_logistic_matrix'];
 // Deprecated aliases, each documented as its replacement plus @deprecated. The 0.3 names were removed in 0.5.0.
 $aliases=[];
@@ -137,22 +142,22 @@ foreach ($functions as $name) {
   $text.=" * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object \$data Named columns or factor descriptors; objects use toModelData(), else toColumns()\n";
   if($name==='Phit\fit_generalized_linear'||$alias==='Phit\fit_glmer')$text.=" * @param string \$family 'gaussian', 'binomial', or 'poisson'\n * @param string \$link '' (canonical), 'identity', 'logit', 'probit', or 'log'\n";
   if($name!=='Phit\model_matrix')$text.=" * @param array<int|float|null>|string|null \$weights Positive prior weights aligned with the original rows, or a column name\n";
-  $text.=" * @return array{\n";
+  $text.=isset($fitClass[$name])?" * @return {$fitClass[$name]} A fit object, read like this array:\n * array{\n":" * @return array{\n";
   foreach($contract['result'] as $key=>$type)$text.=" *   $key: $type,\n";
   $text.=" * }\n * @throws \\Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.\n */\n";
  } elseif ($name==='Phit\predict') {
   $api[$alias]['result_keys']=array_map(fn($k)=>rtrim($k,'?'),array_keys($predict['result']));sort($api[$alias]['result_keys']);
   $text.="/**\n * {$predict['summary']}\n";
-  $text.=" * @param array<string,mixed> \$fit A formula fit result, with the keys `formula`, `coefficients`, `covariance`, `columns`, and `predvars`\n";
+  $text.=" * @param Fit|array<string,mixed> \$fit A formula fit, or its toArray() array, with the keys `formula`, `coefficients`, `covariance`, `columns`, and `predvars`\n";
   $text.=" * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object \$newdata Named columns, as for the fit; the response may be absent\n";
   $text.=" * @param string \$type 'link' (linear predictor) or 'response'\n * @param string \$interval 'none', 'confidence', or 'prediction'\n * @param bool \$random Mixed fits: include the random effects of known groups, as lme4's `re.form = NULL`; false predicts at the population level, as `re.form = NA`\n";
   $text.=" * @return array{\n";
   foreach($predict['result'] as $key=>$type)$text.=" *   $key: $type,\n";
   $text.=" * }\n * @throws \\Exception Input error (1001), malformed fit, new levels, or unsupported options (1007).\n */\n";
  } elseif ($name==='Phit\summary') {
-  $text.="/**\n * Summary.\n * @param array<string,mixed> \$fit\n * @return string\n * @throws \\Exception\n */\n";
+  $text.="/**\n * Summary.\n * @param Fit|array<string,mixed> \$fit\n * @return string\n * @throws \\Exception\n */\n";
  } elseif ($name==='Phit\tidy') {
-  $text.="/**\n * Tidy.\n * @param array<string,mixed> \$fit\n * @return array{term: list<string>, estimate: list<float>, std_error: list<float>, statistic: list<float>, p_value: list<float>, conf_low?: list<float>, conf_high?: list<float>}|array{group: list<string>, level: list<string>, term: list<string>, estimate: list<float>, std_error: list<float>, conf_low?: list<float>, conf_high?: list<float>}\n * @throws \\Exception\n */\n";
+  $text.="/**\n * Tidy.\n * @param Fit|array<string,mixed> \$fit\n * @return Table Columns term, estimate, std_error, statistic, and p_value, or with effects 'ran_vals' group, level, term, estimate, and std_error; confInt adds conf_low and conf_high\n * @throws \\Exception\n */\n";
  } elseif (isset($optimizers[$name])) {
   $text.="/**\n * {$optimizers[$name]}\n * f receives one float and returns an int or float; an exception from f propagates. Nonfinite values during the search\n * are replaced by +/-PHP_FLOAT_MAX, as R does, with one E_WARNING.\n";
   $text.=" * @param callable(float): (int|float) \$f\n * @param float|null \$tol Default PHP_FLOAT_EPSILON ** 0.25, as R\n";
@@ -203,25 +208,62 @@ foreach ($functions as $name) {
   if(in_array($name,['Phit\fit_mixed_gaussian_intercept_matrix','Phit\fit_mixed_logistic_matrix'],true))$text.=" * @param array<int|string|null> \$groups\n";
   if($name==='Phit\fit_ols_matrix')$text.=" * @param array<int|float|null>|null \$weights Positive weights: weighted least squares, as lm(weights = )\n";
   if($name==='Phit\fit_mixed_gaussian_matrix')$text.=" * @param array<array{z:array<array<int|float|null>>,groups:array<int|string|null>,correlated?:bool}> \$random\n";
-  $text.=" * @return array{\n";
+  $text.=" * @return {$fitClass[$name]} A fit object, read like this array:\n * array{\n";
   foreach($keys as $key=>$type)$text.=" *   $key: $type,\n";
   $text.=" * }\n * @throws \\Exception Statistical or input error (codes 1001–1008).\n */\n";
  }
  if($alias!==$name)$text=preg_replace('~ \*/\n$~'," * @deprecated Since phit 0.4.0; use \\$name(). Removed in phit 0.5.\n */\n",$text);
  $name=$alias;
- $text.='function '.substr($name,strlen('Phit\\')).'('.implode(', ',$params).'): '.$r->getReturnType()." {}\n\n";
+ $returns=$fitClass[$name]??($name==='Phit\tidy'?'Table':(string)$r->getReturnType());
+ $params=array_map(fn($p)=>preg_replace('~^mixed \$fit$~','Fit|array $fit',$p),$params);
+ $text.='function '.substr($name,strlen('Phit\\')).'('.implode(', ',$params).'): '.$returns." {}\n\n";
 }
 // Classes, by the same reflection.
 $classes=['Phit\CsvReader'=>['summary'=>"Reads a CSV file a chunk of rows at a time, as phibble's DataFrame::csvChunks() (after readr::read_delim_chunked()):\n * only the current chunk is held. Options are read_csv()'s; types not given are guessed from the first chunk (guess_max\n * of its rows) and every later chunk is parsed as those types. Problem rows are numbered from the start of the file.",
   'methods'=>['__construct'=>"Opens the file and reads its header line.\n   * @param string \$path A readable file\n   * @param {$io['Phit\read_csv']['options']} \$options\n   * @throws \\ValueError Missing or unreadable file, or an invalid option.",
    'names'=>"Column names: the header's, or X1..Xn with col_names false; [] for an empty file.\n   * @return list<string>",
    'next'=>"The next chunk of at most \$rows rows in read_csv()'s shape, with the 1-based position of its first row and its\n   * row count; null once no rows remain. A chunk without rows comes only to carry problems found after the last row.\n   * @return null|array{position: int, rows: int, names: list<string>, columns: {$io['Phit\read_csv']['result']['columns']}, problems: list<string>}\n   * @throws \\ValueError rows below 1, or a read error."]]];
+// The fit and table objects share these method descriptions.
+$fitMethods=['__construct'=>"Not available: fits come from the model functions.",
+ '__toString'=>"The fit printed in the layout of R's print(summary(fit)), as summary() returns it.",
+ 'summary'=>"The fit printed in the layout of R's print(summary(fit)).",
+ 'tidy'=>"The coefficient table as columns, as tidy() returns it.\n   * @param bool \$confInt Add conf_low and conf_high columns\n   * @param float \$level Confidence level of the intervals, in (0, 1)\n   * @param string \$effects 'fixed' for the coefficient table, or 'ran_vals' for a mixed fit's random effects\n   * @throws \\Exception Code 1001 for an invalid level or effects.",
+ 'predict'=>"Predictions for new data, as predict() returns them for this fit.\n   * @param array<string,list<int|float|bool|string|null>>|object \$newdata Named columns; the response may be absent\n   * @param string \$type 'link' or 'response'\n   * @param bool \$seFit Add standard errors\n   * @param string \$interval 'none', 'confidence', or 'prediction'\n   * @param float \$level Interval level\n   * @param bool \$random Mixed fits: include the random effects of known groups\n   * @param bool \$allowNewLevels Mixed fits: predict unseen groups at the population level\n   * @return array<string,mixed>\n   * @throws \\Exception As predict().",
+ 'toArray'=>"The fit as the array the model function computed.\n   * @return array<string,mixed>",
+ 'jsonSerialize'=>"The same JSON as the array.\n   * @return array<string,mixed>",
+ 'toMimeBundle'=>"A Jupyter display bundle: the printed fit as text/plain and the array as application/json.\n   * @return array{'text/plain': string, 'application/json': array<string,mixed>}",
+ '__debugInfo'=>"The array, for var_dump() and print_r().\n   * @return array<string,mixed>",
+ 'offsetExists'=>"Whether the key is present and not null, as isset() on the array.",
+ 'offsetGet'=>"The key's value, as on the array; a missing key warns and gives null.",
+ 'offsetSet'=>"Not available: fits are read-only.\n   * @throws \\LogicException Always.",
+ 'offsetUnset'=>"Not available: fits are read-only.\n   * @throws \\LogicException Always.",
+ 'count'=>"The number of keys.",
+ 'current'=>"The value at the iterator's position.",
+ 'key'=>"The key at the iterator's position.",
+ 'next'=>"Moves the iterator to the next key.",
+ 'rewind'=>"Moves the iterator to the first key.",
+ 'valid'=>"Whether the iterator's position holds a key."];
+foreach(['LinearFit'=>'a linear model (fit_ols(), fit_ols_matrix())','GeneralizedLinearFit'=>'a generalized linear model (fit_generalized_linear() and the logistic, probit, and Poisson matrix functions)',
+ 'MixedGaussianFit'=>'a Gaussian mixed model (fit_mixed_gaussian() and its matrix functions)','MixedLogisticFit'=>'a binomial logit mixed model (fit_mixed_logistic(), fit_mixed_logistic_matrix())'] as $c=>$what)
+ $classes["Phit\\$c"]=['summary'=>"The fit of $what. echo prints its summary; reading a key works as on the result array;\n * the fit is read-only, and toArray() returns the array.",'methods'=>$fitMethods];
+$classes['Phit\Table']=['summary'=>"Named columns, as tidy() returns them. echo prints them in the layout of R's print.data.frame(); reading a\n * column works as on the array; the table is read-only, and toColumns() or toArray() returns the columns.",
+ 'methods'=>['__construct'=>"Not available: tables come from tidy().",'__toString'=>"The columns in the layout of R's print.data.frame().",
+  'toArray'=>"The columns, name => list.\n   * @return array<string,list<string|float>>",'toColumns'=>"The columns, name => list, for phibble's DataFrame::fromColumns() and phit's data arguments.\n   * @return array<string,list<string|float>>",
+  'count'=>"The number of rows.",'offsetGet'=>"The column's values; a missing column warns and gives null."]+$fitMethods];
+$text.="/**\n * A model fit: the result of every model function. echo prints its summary, and reading a key works as on the result\n * array. The four classes implementing it are LinearFit, GeneralizedLinearFit, MixedGaussianFit, and MixedLogisticFit.\n */\ninterface Fit extends \\ArrayAccess, \\Iterator, \\Countable, \\JsonSerializable, \\Stringable\n{\n";
+foreach(['summary(): string','tidy(bool $confInt = false, float $level = 0.95, string $effects = \'fixed\'): Table','predict(mixed $newdata, string $type = \'link\', bool $seFit = false, string $interval = \'none\', float $level = 0.95, bool $random = true, bool $allowNewLevels = false): array','toArray(): array','toMimeBundle(): array'] as $m)
+ $text.="  public function $m;\n";
+$text.="}\n\n";
+$api['Phit\Fit']=['interface'=>true,'extends'=>(new ReflectionClass('Phit\Fit'))->getInterfaceNames()];
 foreach(get_declared_classes() as $class){
  $rc=new ReflectionClass($class);
  if($rc->getExtensionName()!=='phit')continue;
  if(!isset($classes[$class]))throw new RuntimeException("Undocumented class $class");
  $api[$class]=['methods'=>[]];
- $text.="/**\n * {$classes[$class]['summary']}\n */\nfinal class ".substr($class,strlen('Phit\\'))."\n{\n";
+ $implements=array_values(array_diff($rc->getInterfaceNames(),['Traversable']));
+ if(in_array('Phit\Fit',$implements,true))$implements=['Phit\Fit'];
+ $implements=array_map(fn($i)=>str_starts_with($i,'Phit\\')?substr($i,5):'\\'.$i,$implements);
+ $text.="/**\n * {$classes[$class]['summary']}\n */\nfinal class ".substr($class,strlen('Phit\\')).($implements?' implements '.implode(', ',$implements):'')."\n{\n";
  $methods=$rc->getMethods();usort($methods,fn($a,$b)=>[$a->getName()!=='__construct',$a->getName()]<=>[$b->getName()!=='__construct',$b->getName()]);
  foreach($methods as $m){
   $params=[];$schema=[];
@@ -233,8 +275,9 @@ foreach(get_declared_classes() as $class){
   }
   $api[$class]['methods'][$m->getName()]=['parameters'=>$schema,'return_type'=>(string)$m->getReturnType()];
   $doc=$classes[$class]['methods'][$m->getName()]??throw new RuntimeException("Undocumented method $class::{$m->getName()}");
-  $return=$m->getReturnType()===null?'':': '.$m->getReturnType();
-  $text.="  /**\n   * $doc\n   */\n  public function {$m->getName()}(".implode(', ',$params).")$return {}\n\n";
+  $return=$m->getName()==='tidy'?': Table':($m->getReturnType()===null?'':': '.$m->getReturnType());
+  $hidden=$m->getName()==='__construct'&&$class!=='Phit\CsvReader';
+  $text.="  /**\n   * $doc\n   */\n  ".($hidden?'private':'public')." function {$m->getName()}(".implode(', ',$params).")$return {}\n\n";
  }
  $text=rtrim($text)."\n}\n\n";
 }

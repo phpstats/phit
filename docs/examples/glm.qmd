@@ -13,7 +13,7 @@ The data are [mroz](https://github.com/phpstats/datasets#mroz): 753 married wome
 ```php
 use Phibble\DataFrame;
 
-use function Phit\{fit_generalized_linear, predict, summary, tidy};
+use function Phit\{fit_generalized_linear, predict};
 
 $mroz = DataFrame::fromCsv(
     'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mroz.csv',
@@ -24,9 +24,9 @@ $logit = fit_generalized_linear(
     $mroz,
     family: 'binomial',
 );
-echo summary($logit), "\n";
+echo $logit, "\n";
 
-$t = tidy($logit, confInt: true);
+$t = $logit->tidy(confInt: true);
 echo DataFrame::fromColumns([
     'term' => $t['term'],
     'odds_ratio' => array_map('exp', $t['estimate']),
@@ -94,7 +94,7 @@ The data are [insurance](https://github.com/phpstats/datasets#insurance): car in
 ```php
 use Phibble\DataFrame;
 
-use function Phit\{fit_generalized_linear, summary};
+use function Phit\fit_generalized_linear;
 
 $insurance = DataFrame::fromCsv(
     'https://raw.githubusercontent.com/phpstats/datasets/main/csv/insurance.csv',
@@ -105,7 +105,7 @@ $poisson = fit_generalized_linear(
     $insurance,
     family: 'poisson',
 );
-echo summary($poisson);
+echo $poisson;
 ```
 
 ```

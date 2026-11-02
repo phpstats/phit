@@ -56,6 +56,7 @@ function sameTidy(array $ours, array $expected): bool
 $fixture = json_decode(file_get_contents(__DIR__.'/fixtures/summary/summary.json'), true, flags: JSON_THROW_ON_ERROR);
 $rowsChecked = 0;
 $randomChecked = 0;
+$tablesChecked = 0;
 foreach ($fixture['cases'] as $case) {
     $args = $case['args'];
     if (isset($args['data'])) {
@@ -64,12 +65,28 @@ foreach ($fixture['cases'] as $case) {
     $fit = ('Phit\\'.$case['function'])(...$args);
     $text = Phit\summary($fit);
     scheck($text === $case['summary'], "{$case['name']}: summary text differs:\n$text");
-    scheck(sameTidy(Phit\tidy($fit, confInt: true), $case['tidy']), "{$case['name']}: tidy differs");
+    scheck(sameTidy(Phit\tidy($fit, confInt: true)->toArray(), $case['tidy']), "{$case['name']}: tidy differs");
+
+    // The printed table: byte for byte against the fixture, and against R's print.data.frame() of R's own estimates
+    // with the same layout (every line the same length, the same labels) and numbers within 1e-6 relative.
+    scheck((string) Phit\tidy($fit, confInt: true) === $case['table'], "{$case['name']}: table text differs");
+    if (isset($case['r_table'])) {
+        $ours = explode("\n", $case['table']);
+        $theirs = explode("\n", $case['r_table']);
+        scheck(array_map('strlen', $ours) === array_map('strlen', $theirs), "{$case['name']}: table layout differs from R");
+        foreach ($ours as $i => $line) {
+            foreach (array_map(null, preg_split('/\s+/', trim($line)), preg_split('/\s+/', trim($theirs[$i]))) as [$a, $b]) {
+                $same = $a === $b || (is_numeric($a) && is_numeric($b) && abs($a - $b) <= 1e-6 * max(abs((float) $b), 1e-300));
+                scheck($same, "{$case['name']}: table line $i differs from R: '$line' vs '{$theirs[$i]}'");
+            }
+        }
+        $tablesChecked++;
+    }
 
     // Random effects: the same rows as the fixture, and lme4's ranef(condVar = TRUE) to 1e-4 (scaled by max(1, |x|)),
     // which absorbs lme4's optimizer tolerance. Matrix fits name their groups and columns generically.
     if (isset($case['ran_vals'])) {
-        $values = Phit\tidy($fit, effects: 'ran_vals');
+        $values = Phit\tidy($fit, effects: 'ran_vals')->toArray();
         scheck(sameTidy($values, $case['ran_vals']), "{$case['name']}: ran_vals differ");
         $r = $case['r_ran_vals'];
         scheck($values['level'] === $r['level'], "{$case['name']}: ran_vals levels differ from R");
@@ -109,9 +126,9 @@ foreach (get_extension_funcs('phit') as $function) {
 $mixed = Phit\fit_mixed_gaussian(
     'Reaction ~ Days + (Days | Subject)', $fixture['data']['sleepstudy'],
 );
-$short = $mixed;
+$short = $mixed->toArray();
 $short['random'][0]['covariance'] = [[1.0]];
-$ragged = $mixed;
+$ragged = $mixed->toArray();
 $ragged['random'][0]['covariance'][1] = [1.0];
 
 foreach ([
@@ -150,4 +167,4 @@ try {
     scheck($e->getCode() === 1001 && $e->getMessage() === 'level must be in (0, 1)', 'tidy level error');
 }
 
-echo 'PHP summary and tidy tests passed ('.count($fixture['cases'])." models; $rowsChecked coefficient rows match R; random effects of $randomChecked mixed fits match lme4)\n";
+echo 'PHP summary and tidy tests passed ('.count($fixture['cases'])." models; $rowsChecked coefficient rows match R; random effects of $randomChecked mixed fits match lme4; $tablesChecked tables match R's print.data.frame())\n";

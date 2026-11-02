@@ -598,14 +598,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The example uses <a href="https://github.com/phpstats/datasets#sleepstudy">sleepstudy</a> from lme4: average reaction times, in milliseconds, of 18 subjects over ten days of sleep deprivation. It reads the file by URL with phibble.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phibble\DataFrame<span class="ot">;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_mixed_gaussian<span class="ot">,</span> fit_mixed_logistic<span class="ot">,</span> summary}<span class="ot">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_mixed_gaussian<span class="ot">,</span> fit_mixed_logistic}<span class="ot">;</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="va">$sleep</span> <span class="op">=</span> DataFrame::fromCsv(</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://raw.githubusercontent.com/phpstats/datasets/main/csv/sleepstudy.csv'</span><span class="ot">,</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_mixed_gaussian(<span class="st">'Reaction ~ Days + (Days | Subject)'</span><span class="ot">,</span> <span class="va">$sleep</span>)<span class="ot">;</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> summary(<span class="va">$fit</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="va">$fit</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Linear mixed model fit by REML
 Formula: Reaction ~ Days + (Days | Subject)
 
@@ -625,7 +625,7 @@ Days          10.467      1.546   6.771 1.27e-11</code></pre>
 <ul>
 <li><code>(Days | Subject)</code> gives each subject its own intercept and slope, with a correlation between them. The fit uses REML, as <code>lme4::lmer()</code> does by default.</li>
 <li>The random-effects table gives each term’s variance and standard deviation. <code>Corr</code> is the estimated correlation between a subject’s intercept and slope.</li>
-<li>A subject’s effects are its predicted intercept and slope relative to the average, shrunk toward zero. <code>tidy($fit, effects: 'ran_vals')</code> returns them with their conditional standard errors, one row per term and subject.</li>
+<li>A subject’s effects are its predicted intercept and slope relative to the average, shrunk toward zero. <code>$fit-&gt;tidy(effects: 'ran_vals')</code> returns them with their conditional standard errors, one row per term and subject.</li>
 </ul>
 </section>
 <section id="reading-a-fit_mixed_gaussian-result" class="level2">
@@ -729,7 +729,7 @@ Days          10.467      1.546   6.771 1.27e-11</code></pre>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">$herds</span><span class="ot">,</span></span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    quadraturePoints<span class="ot">:</span> <span class="dv">10</span><span class="ot">,</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> summary(<span class="va">$fit</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="va">$fit</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Generalized linear mixed model fit by maximum likelihood (adaptive Gauss-Hermite quadrature, 10 points)
 Family: binomial (logit)
 Formula: cbind(incidence, size - incidence) ~ factor(period) + (1 | herd)

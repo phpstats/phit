@@ -58,7 +58,7 @@ $cases=[
  'Phit\fit_mixed_logistic_matrix'=>['logistic-mixed-r.json',fn($c)=>Phit\fit_mixed_logistic_matrix($c['x'],$c['y'],$c['groups'],weights:$c['weights'],offset:$c['offset'], intercept: false)],
 ];
 foreach($cases as $name=>[$file,$call]){
- $c=json_decode(file_get_contents(__DIR__.'/fixtures/'.$file),true,flags:JSON_THROW_ON_ERROR)['cases'][0];$r=$call($c);
+ $c=json_decode(file_get_contents(__DIR__.'/fixtures/'.$file),true,flags:JSON_THROW_ON_ERROR)['cases'][0];$r=$call($c)->toArray();
  $keys=array_keys($r);sort($keys);check_stability($keys===$schema[$name]['result_keys'],"$name result/stub keys");
  check_stability($r['diagnostics']['converged']&&is_array($r['diagnostics']['warnings']),"$name diagnostics");
  foreach(['iterations','evaluations','gradient_max','boundary','singular'] as $key)if(array_key_exists($key,$r))check_stability($r['diagnostics'][$key]===$r[$key],"$name/$key diagnostics alias");

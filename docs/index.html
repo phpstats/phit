@@ -533,18 +533,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Fit statistical models, compute probability distributions, and summarize data in PHP. Model functions accept formulas or explicit designs and return PHP arrays.</p>
-<p>Formulas follow R: <code>mpg ~ wt + factor(cyl)</code> models fuel economy from weight and the number of cylinders. phit builds the numeric design from named columns, including factors, interactions, and transformations such as <code>log(wt)</code>. <code>summary()</code> prints the fit as R does.</p>
+<p>Fit statistical models, compute probability distributions, and summarize data in PHP. Model functions accept formulas or explicit designs and return fit objects that print like R’s and read like arrays.</p>
+<p>Formulas follow R: <code>mpg ~ wt + factor(cyl)</code> models fuel economy from weight and the number of cylinders. phit builds the numeric design from named columns, including factors, interactions, and transformations such as <code>log(wt)</code>. <code>echo $fit</code> prints the fit as R does.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phibble\DataFrame<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_ols<span class="ot">,</span> summary}<span class="ot">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\fit_ols<span class="ot">;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$cars</span> <span class="op">=</span> DataFrame::fromCsv(</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv'</span><span class="ot">,</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_ols(<span class="st">'mpg ~ wt + factor(cyl)'</span><span class="ot">,</span> <span class="va">$cars</span>)<span class="ot">;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> summary(<span class="va">$fit</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="va">$fit</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Linear model fit by least squares
 Formula: mpg ~ wt + factor(cyl)
 

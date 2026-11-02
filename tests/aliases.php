@@ -31,7 +31,7 @@ alias_check(!in_array('family', $parameters, true) && !in_array('link', $paramet
 
 // fit_ols takes only a formula: a matrix goes to fit_ols_matrix.
 $formula = Phit\fit_ols('score ~ study_hours + prior_score', $schools);
-alias_check($formula === Phit\fit_ols(data: $schools, formula: 'score ~ study_hours + prior_score'), 'fit_ols named arguments');
+alias_check($formula->toArray() === Phit\fit_ols(data: $schools, formula: 'score ~ study_hours + prior_score')->toArray(), 'fit_ols named arguments');
 alias_check(Phit\fit_ols_matrix($x, $y)['coefficients'] === $formula['coefficients'], 'matrix and formula fits agree exactly');
 $parameters = array_map(fn ($p) => $p->getName(), (new ReflectionFunction('Phit\fit_ols'))->getParameters());
 alias_check($parameters === ['formula', 'data', 'missing', 'weights'], 'fit_ols parameters: ' . json_encode($parameters));

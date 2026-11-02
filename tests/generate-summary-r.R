@@ -42,6 +42,18 @@ ran_vals <- lapply(fits[mixed], function(fit) {
   list(group = as.character(r$grpvar), level = as.character(r$grp), term = as.character(r$term),
        estimate = r$condval, std_error = r$condsd)
 })
+# R's print.data.frame() of the tidy columns with Wald intervals (t for lm, normal for glm), as Phit\Table prints.
+tidy_table <- function(fit, ci) {
+  coef_table <- coef(summary(fit))
+  df <- data.frame(term = rownames(coef_table), estimate = coef_table[, 1], std_error = coef_table[, 2],
+                   statistic = coef_table[, 3], p_value = coef_table[, 4], conf_low = ci[, 1], conf_high = ci[, 2])
+  rownames(df) <- NULL
+  paste0(paste(capture.output(print(df)), collapse = "\n"), "\n")
+}
+tables <- list(
+  ols_mtcars = tidy_table(fits$ols_mtcars, confint(fits$ols_mtcars)),
+  logistic_mroz = tidy_table(fits$logistic_mroz, confint.default(fits$logistic_mroz))
+)
 writeLines(toJSON(list(R = R.version.string, lme4 = as.character(packageVersion("lme4")), rows = rows,
-                       ran_vals = ran_vals), digits = NA,
+                       ran_vals = ran_vals, tables = tables), digits = NA,
                   auto_unbox = TRUE, pretty = TRUE), file.path(dir, "summary-r.json"))

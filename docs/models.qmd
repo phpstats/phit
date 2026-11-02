@@ -52,7 +52,7 @@ The examples on this page use [mroz](https://github.com/phpstats/datasets#mroz),
 ```php
 use Phibble\DataFrame;
 
-use function Phit\{fit_generalized_linear, predict, summary, tidy};
+use function Phit\{fit_generalized_linear, predict};
 
 $mroz = DataFrame::fromCsv(
     'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mroz.csv',
@@ -63,7 +63,7 @@ $logit = fit_generalized_linear(
     $mroz,
     family: 'binomial',
 );
-echo summary($logit);
+echo $logit;
 ```
 
 ```
@@ -95,18 +95,16 @@ $probit = fit_generalized_linear(
     family: 'binomial',
     link: 'probit',
 );
-echo DataFrame::fromColumns(tidy($probit)), "\n";
+echo $probit->tidy(), "\n";
 ```
 
 ```
-# A tibble: 5 × 5
-  term        estimate std_error statistic  p_value
-  <chr>          <dbl>     <dbl>     <dbl>    <dbl>
-1 (Intercept)   2.04     0.314        6.50 7.81e-11
-2 k5           -0.862    0.112       -7.70 1.31e-14
-3 age          -0.0341   0.00676     -5.04 4.64e- 7
-4 wcyes         0.649    0.117        5.55 2.88e- 8
-5 inc          -0.0189   0.00455     -4.16 3.13e- 5
+         term    estimate   std_error statistic      p_value
+1 (Intercept)  2.04041083 0.313704033  6.504254 7.807968e-11
+2          k5 -0.86163605 0.111835767 -7.704477 1.313806e-14
+3         age -0.03407628 0.006760578 -5.040439 4.644661e-07
+4       wcyes  0.64902968 0.116968459  5.548758 2.877060e-08
+5         inc -0.01894043 0.004548823 -4.163809 3.129816e-05
 ```
 
 Predicted probabilities come from `predict()` with `type: 'response'`.
@@ -155,7 +153,7 @@ $poisson = fit_generalized_linear(
     $insurance,
     family: 'poisson',
 );
-echo summary($poisson);
+echo $poisson;
 ```
 
 ```
@@ -183,30 +181,31 @@ AIC: 548.85
 
 ## Printing a fit
 
-`summary()` prints any model result in the layout of R's `print(summary(fit))`, as the examples above show.
+`echo $fit` prints any model fit in the layout of R's `print(summary(fit))`, as the examples above show. `summary($fit)` returns the same text.
 
 - The coefficient table follows R's `printCoefmat(digits = 4)`, without significance stars.
 - A linear model adds the residual standard error, R-squared, and the F statistic. A GLM adds the dispersion, the deviances, and AIC. A mixed model adds its fit criteria and random-effect variances, as lme4 prints them.
 
-`tidy()` returns the same coefficient table as columns: `term`, `estimate`, `std_error`, `statistic`, and `p_value`. `confInt: true` adds `conf_low` and `conf_high` at `level` (default 0.95):
+`$fit->tidy()`, or `tidy($fit)`, returns the coefficient table as a `Phit\Table`, which prints in the layout of R's `print.data.frame()` and reads by column. The columns are `term`, `estimate`, `std_error`, `statistic`, and `p_value`. `confInt: true` adds `conf_low` and `conf_high` at `level` (default 0.95):
 
 - The intervals are Wald intervals. They use t with `df_residual` degrees of freedom for fits that report t statistics, and the normal distribution otherwise.
 - For mixed fits, `tidy()` gives the fixed effects by default. `effects: 'ran_vals'` gives each group's random effects with `group`, `level`, `term`, `estimate`, and `std_error` columns, as broom.mixed does.
 
 ```php
-echo DataFrame::fromColumns(
-    tidy($poisson, confInt: true, level: 0.9),
-), "\n";
+echo $poisson->tidy(confInt: true, level: 0.9), "\n";
 ```
 
 ```
-# A tibble: 4 × 7
-  term              estimate std_error statistic  p_value conf_low conf_high
-  <chr>                <dbl>     <dbl>     <dbl>    <dbl>    <dbl>     <dbl>
-1 (Intercept)        -2.03      0.0269   -75.5   0         -2.08     -1.99  
-2 factor(District)2   0.0224    0.0430     0.520 0.603     -0.0483    0.0930
-3 factor(District)3   0.0133    0.0503     0.263 0.792     -0.0695    0.0960
-4 factor(District)4   0.222     0.0616     3.60  0.000315   0.121     0.323 
+               term    estimate  std_error   statistic      p_value    conf_low
+1       (Intercept) -2.03284394 0.02690935 -75.5441569 0.0000000000 -2.07710588
+2 factor(District)2  0.02236521 0.04297031   0.5204805 0.6027287229 -0.04831466
+3 factor(District)3  0.01325031 0.05032327   0.2633038 0.7923163987 -0.06952410
+4 factor(District)4  0.22184337 0.06157595   3.6027600 0.0003148562  0.12055995
+    conf_high
+1 -1.98858200
+2  0.09304508
+3  0.09602472
+4  0.32312680
 ```
 
 ## Result keys

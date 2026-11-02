@@ -24,7 +24,7 @@ Phit\fit_ols(
     array|object $data,
     string $missing = 'drop',
     array|string|null $weights = NULL,
-): array
+): LinearFit
 ```
 
 | Parameter | Type | Default | Description |
@@ -37,6 +37,7 @@ Phit\fit_ols(
 **Returns**
 
 ```php
+LinearFit A fit object, read like this array:
 array{
   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
@@ -91,7 +92,7 @@ Phit\fit_generalized_linear(
     string $link = '',
     string $missing = 'drop',
     array|string|null $weights = NULL,
-): array
+): GeneralizedLinearFit
 ```
 
 | Parameter | Type | Default | Description |
@@ -106,6 +107,7 @@ Phit\fit_generalized_linear(
 **Returns**
 
 ```php
+GeneralizedLinearFit A fit object, read like this array:
 array{
   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
@@ -215,7 +217,7 @@ Predicts new data from a `fit_ols()`, `fit_generalized_linear()`, `fit_mixed_gau
 
 ```php
 Phit\predict(
-    array $fit,
+    Fit|array $fit,
     array|object $newdata,
     string $type = 'link',
     bool $seFit = false,
@@ -228,7 +230,7 @@ Phit\predict(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$fit` | `array` | required | A formula fit result, with the keys `formula`, `coefficients`, `covariance`, `columns`, and `predvars` |
+| `$fit` | `Fit\|array` | required | A formula fit, or its `toArray()` array, with the keys `formula`, `coefficients`, `covariance`, `columns`, and `predvars` |
 | `$newdata` | `array\|object` | required | Named columns, as for the fit; the response may be absent |
 | `$type` | `string` | `'link'` | `'link'` (linear predictor) or `'response'` |
 | `$seFit` | `bool` | `false` | Also return standard errors of the predictions; fixed-effect fits only |
@@ -276,7 +278,7 @@ Phit\fit_ols_matrix(
     ?array $weights = NULL,
     ?array $offset = NULL,
     bool $intercept = true,
-): array
+): LinearFit
 ```
 
 | Parameter | Type | Default | Description |
@@ -291,6 +293,7 @@ Phit\fit_ols_matrix(
 **Returns**
 
 ```php
+LinearFit A fit object, read like this array:
 array{
   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
@@ -336,7 +339,7 @@ Phit\fit_logistic_matrix(
     ?array $weights = NULL,
     ?array $offset = NULL,
     bool $intercept = true,
-): array
+): GeneralizedLinearFit
 ```
 
 | Parameter | Type | Default | Description |
@@ -351,6 +354,7 @@ Phit\fit_logistic_matrix(
 **Returns**
 
 ```php
+GeneralizedLinearFit A fit object, read like this array:
 array{
   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
@@ -396,7 +400,7 @@ Phit\fit_probit_matrix(
     ?array $weights = NULL,
     ?array $offset = NULL,
     bool $intercept = true,
-): array
+): GeneralizedLinearFit
 ```
 
 | Parameter | Type | Default | Description |
@@ -411,6 +415,7 @@ Phit\fit_probit_matrix(
 **Returns**
 
 ```php
+GeneralizedLinearFit A fit object, read like this array:
 array{
   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
@@ -456,7 +461,7 @@ Phit\fit_poisson_matrix(
     ?array $weights = NULL,
     ?array $offset = NULL,
     bool $intercept = true,
-): array
+): GeneralizedLinearFit
 ```
 
 | Parameter | Type | Default | Description |
@@ -471,6 +476,7 @@ Phit\fit_poisson_matrix(
 **Returns**
 
 ```php
+GeneralizedLinearFit A fit object, read like this array:
 array{
   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
@@ -513,13 +519,13 @@ Prints a model fit in the layout of R's `print(summary(fit))`, as text ending in
 
 ```php
 Phit\summary(
-    array $fit,
+    Fit|array $fit,
 ): string
 ```
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$fit` | `array` | required | Result of a model function, such as `fit_ols()` or `fit_mixed_gaussian()` |
+| `$fit` | `Fit\|array` | required | Result of a model function, such as `fit_ols()` or `fit_mixed_gaussian()` |
 
 **Returns** `string`
 
@@ -538,22 +544,162 @@ Returns a fit's coefficient table as columns, like broom's `tidy()`.
 
 ```php
 Phit\tidy(
-    array $fit,
+    Fit|array $fit,
     bool $confInt = false,
     float $level = 0.95,
     string $effects = 'fixed',
-): array
+): Table
 ```
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$fit` | `array` | required | Result of a model function, such as `fit_ols()` or `fit_mixed_gaussian()` |
+| `$fit` | `Fit\|array` | required | Result of a model function, such as `fit_ols()` or `fit_mixed_gaussian()` |
 | `$confInt` | `bool` | `false` | Add conf_low and conf_high columns |
 | `$level` | `float` | `0.95` | Confidence level of the intervals, in (0, 1) |
 | `$effects` | `string` | `'fixed'` | `'fixed'` for the coefficient table, or `'ran_vals'` for a mixed fit's random effects |
 
-**Returns** `array{term: list<string>, estimate: list<float>, std_error: list<float>, statistic: list<float>, p_value: list<float>, conf_low?: list<float>, conf_high?: list<float>}\|array{group: list<string>, level: list<string>, term: list<string>, estimate: list<float>, std_error: list<float>, conf_low?: list<float>, conf_high?: list<float>}`
+**Returns** `Table Columns term, estimate, std_error, statistic, and p_value, or with effects 'ran_vals' group, level, term, estimate, and std_error; confInt adds conf_low and conf_high`
 
 **Errors** `Exception`: code 1001 when `fit` is not the result of a model function, `level` is outside (0, 1), or `effects` is not `'fixed'` or `'ran_vals'` (`'ran_vals'` needs a mixed fit).
 
 **See also** [Details](../models.qmd#printing-a-fit) · [Example](../examples/glm.qmd)
+
+## Fit and table objects {#objects}
+
+Every model function returns a fit object that implements `Phit\Fit`: `LinearFit`, `GeneralizedLinearFit`, `MixedGaussianFit`, or `MixedLogisticFit`, by the kind of model. `echo $fit` prints its summary. Reading a key, such as `$fit['coefficients']`, works as on the result array, and nested values are plain arrays. `isset()`, `count()`, `foreach`, and `json_encode()` work as on the array. Writing or unsetting a key throws `LogicException`; `toArray()` returns an array copy. `summary()`, `tidy()`, and `predict()` also accept that array.
+
+### `Phit\Fit` {#Fit}
+
+The interface of every fit object. Each of the four classes has these methods.
+
+#### `Fit::__toString()` {#Fit-toString}
+
+The fit printed in the layout of R's print(summary(fit)), as summary() returns it.
+
+```php
+public function __toString(): string
+```
+
+#### `Fit::count()` {#Fit-count}
+
+The number of keys.
+
+```php
+public function count(): int
+```
+
+#### `Fit::predict()` {#Fit-predict}
+
+Predictions for new data, as predict() returns them for this fit.
+
+```php
+public function predict(mixed $newdata, string $type = 'link', bool $seFit = false, string $interval = 'none', float $level = 0.95, bool $random = true, bool $allowNewLevels = false): array
+```
+
+| Parameter | Description |
+| --- | --- |
+| `$newdata` | Named columns; the response may be absent |
+| `$type` | 'link' or 'response' |
+| `$seFit` | Add standard errors |
+| `$interval` | 'none', 'confidence', or 'prediction' |
+| `$level` | Interval level |
+| `$random` | Mixed fits: include the random effects of known groups |
+| `$allowNewLevels` | Mixed fits: predict unseen groups at the population level |
+
+**Returns** `array<string,mixed>`
+
+**Errors** `Exception`: as predict().
+
+#### `Fit::summary()` {#Fit-summary}
+
+The fit printed in the layout of R's print(summary(fit)).
+
+```php
+public function summary(): string
+```
+
+#### `Fit::tidy()` {#Fit-tidy}
+
+The coefficient table as columns, as tidy() returns it.
+
+```php
+public function tidy(bool $confInt = false, float $level = 0.95, string $effects = 'fixed'): Table
+```
+
+| Parameter | Description |
+| --- | --- |
+| `$confInt` | Add conf_low and conf_high columns |
+| `$level` | Confidence level of the intervals, in (0, 1) |
+| `$effects` | 'fixed' for the coefficient table, or 'ran_vals' for a mixed fit's random effects |
+
+**Errors** `Exception`: code 1001 for an invalid level or effects.
+
+#### `Fit::toArray()` {#Fit-toArray}
+
+The fit as the array the model function computed.
+
+```php
+public function toArray(): array
+```
+
+**Returns** `array<string,mixed>`
+
+#### `Fit::toMimeBundle()` {#Fit-toMimeBundle}
+
+A Jupyter display bundle: the printed fit as text/plain and the array as application/json.
+
+```php
+public function toMimeBundle(): array
+```
+
+**Returns** `array{'text/plain': string, 'application/json': array<string,mixed>}`
+
+### `Phit\Table` {#Table}
+
+Named columns, as tidy() returns them. echo prints them in the layout of R's print.data.frame(); reading a column works as on the array; the table is read-only, and toColumns() or toArray() returns the columns.
+
+#### `Table::__toString()` {#Table-toString}
+
+The columns in the layout of R's print.data.frame().
+
+```php
+public function __toString(): string
+```
+
+#### `Table::count()` {#Table-count}
+
+The number of rows.
+
+```php
+public function count(): int
+```
+
+#### `Table::toArray()` {#Table-toArray}
+
+The columns, name => list.
+
+```php
+public function toArray(): array
+```
+
+**Returns** `array<string,list<string\|float>>`
+
+#### `Table::toColumns()` {#Table-toColumns}
+
+The columns, name => list, for phibble's DataFrame::fromColumns() and phit's data arguments.
+
+```php
+public function toColumns(): array
+```
+
+**Returns** `array<string,list<string\|float>>`
+
+#### `Table::toMimeBundle()` {#Table-toMimeBundle}
+
+A Jupyter display bundle: the printed fit as text/plain and the array as application/json.
+
+```php
+public function toMimeBundle(): array
+```
+
+**Returns** `array{'text/plain': string, 'application/json': array<string,mixed>}`

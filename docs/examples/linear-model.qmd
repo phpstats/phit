@@ -11,14 +11,14 @@ The data are [mtcars](https://github.com/phpstats/datasets#mtcars): fuel consump
 ```php
 use Phibble\DataFrame;
 
-use function Phit\{fit_ols, predict, summary};
+use function Phit\{fit_ols, predict};
 
 $cars = DataFrame::fromCsv(
     'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv',
 );
 
 $fit = fit_ols('mpg ~ wt + factor(cyl)', $cars);
-echo summary($fit), "\n";
+echo $fit, "\n";
 
 $new = ['wt' => [2.5, 3.5], 'cyl' => [4, 8]];
 $p = predict($fit, $new, interval: 'prediction');

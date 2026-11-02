@@ -2,21 +2,21 @@
 title: "phit"
 ---
 
-Fit statistical models, compute probability distributions, and summarize data in PHP. Model functions accept formulas or explicit designs and return PHP arrays.
+Fit statistical models, compute probability distributions, and summarize data in PHP. Model functions accept formulas or explicit designs and return fit objects that print like R's and read like arrays.
 
-Formulas follow R: `mpg ~ wt + factor(cyl)` models fuel economy from weight and the number of cylinders. phit builds the numeric design from named columns, including factors, interactions, and transformations such as `log(wt)`. `summary()` prints the fit as R does.
+Formulas follow R: `mpg ~ wt + factor(cyl)` models fuel economy from weight and the number of cylinders. phit builds the numeric design from named columns, including factors, interactions, and transformations such as `log(wt)`. `echo $fit` prints the fit as R does.
 
 ```php
 use Phibble\DataFrame;
 
-use function Phit\{fit_ols, summary};
+use function Phit\fit_ols;
 
 $cars = DataFrame::fromCsv(
     'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv',
 );
 
 $fit = fit_ols('mpg ~ wt + factor(cyl)', $cars);
-echo summary($fit);
+echo $fit;
 ```
 
 ```

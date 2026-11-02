@@ -170,7 +170,7 @@ def parse_stubs():
         functions[name] = {'name': name, 'description': description, 'params': params, 'return_type': ret.strip(),
                            'returns': returns, 'throws': throws, 'deprecated': deprecated}
     classes = {}
-    for doc, name, body in re.findall(r'/\*\*((?:(?!\*/).)*?)\*/\nfinal class (\w+)\n\{\n(.*?)\n\}', text, re.S):
+    for doc, name, body in re.findall(r'/\*\*((?:(?!\*/).)*?)\*/\nfinal class (\w+)(?: implements [^\n]+)?\n\{\n(.*?)\n\}', text, re.S):
         methods = []
         for mdoc, mname, margs, mret in re.findall(
                 r'/\*\*((?:(?!\*/).)*?)\*/\n  public function (\w+)\(([^)]*)\)(?:: ([^{]+?))? \{\}', body, re.S):
@@ -280,12 +280,14 @@ def entry(fn, level='###'):
     return out
 
 
-def page(file, title, intro, sections, functions):
+def page(file, title, intro, sections, functions, classes=None):
     out = ['---', f'title: "{title}"', '---', '', GENERATED, intro, '']
     for heading, names in sections:
         out += [f'## {heading}', '']
         for name in names:
             out += entry(functions[name])
+    if file == 'models' and classes:
+        out += objects_section(classes)
     return file, '\n'.join(out).rstrip() + '\n'
 
 
@@ -327,15 +329,11 @@ def distributions_page(functions):
     return 'distributions', '\n'.join(out).rstrip() + '\n'
 
 
-def csv_page(functions, classes):
-    out = ['---', 'title: "CSV functions"', '---', '', GENERATED,
-           'The native CSV reader, which requires the extension. See [Reading CSV files](../io.qmd) for options, '
-           'types, missing values, and errors.', '', '## Reading a file', '']
-    out += entry(functions['read_csv'])
-    cls = classes['CsvReader']
-    out += ['## Reading in chunks', '', '### `CsvReader` {#CsvReader}', '', ' '.join(cls['description']), '']
+def class_methods(shown, cls, prefix):
+    """Reference entries for a class's public methods, as `shown::method()`."""
+    out = []
     for m in cls['methods']:
-        anchor = 'CsvReader-' + m['name'].strip('_')
+        anchor = prefix + '-' + m['name'].strip('_')
         ret = f": {m['return_type']}" if m['return_type'] else ''
         doc, tags = [], []
         for line in m['doc']:
@@ -345,7 +343,7 @@ def csv_page(functions, classes):
                 tags[-1] += ' ' + line.strip()
             else:
                 doc.append(line)
-        out += [f"#### `CsvReader::{m['name']}()` {{#{anchor}}}", '', ' '.join(doc), '', '```php',
+        out += [f"#### `{shown}::{m['name']}()` {{#{anchor}}}", '', ' '.join(doc), '', '```php',
                 f"public function {m['name']}({m['args']}){ret}", '```', '']
         params = [t for t in tags if t.startswith('@param')]
         if params:
@@ -359,12 +357,45 @@ def csv_page(functions, classes):
                 out += [f"**Returns** `{cell(t[len('@return'):].strip())}`", '']
             elif t.startswith('@throws'):
                 out += [f"**Errors** {errors(' '.join(t[len('@throws'):].split()))}", '']
+    return out
+
+
+# Methods shown for the fit and table objects; ArrayAccess, Iterator, and the rest are summarized in prose.
+SHOWN_METHODS = {'__toString', 'summary', 'tidy', 'predict', 'toArray', 'toColumns', 'toMimeBundle', 'count'}
+
+
+def objects_section(classes):
+    fit = classes['LinearFit']
+    out = ['## Fit and table objects {#objects}', '',
+           'Every model function returns a fit object that implements `Phit\\Fit`: `LinearFit`, '
+           '`GeneralizedLinearFit`, `MixedGaussianFit`, or `MixedLogisticFit`, by the kind of model. '
+           '`echo $fit` prints its summary. Reading a key, such as `$fit[\'coefficients\']`, works as on the result '
+           'array, and nested values are plain arrays. `isset()`, `count()`, `foreach`, and `json_encode()` work as on '
+           'the array. Writing or unsetting a key throws `LogicException`; `toArray()` returns an array copy. '
+           '`summary()`, `tidy()`, and `predict()` also accept that array.', '',
+           '### `Phit\\Fit` {#Fit}', '', 'The interface of every fit object. Each of the four classes has these methods.', '']
+    out += class_methods('Fit', {'methods': [m for m in fit['methods'] if m['name'] in SHOWN_METHODS]}, 'Fit')
+    table = classes['Table']
+    out += ['### `Phit\\Table` {#Table}', '', ' '.join(table['description']), '']
+    out += class_methods('Table', {'methods': [m for m in table['methods'] if m['name'] in SHOWN_METHODS]}, 'Table')
+    return out
+
+
+def csv_page(functions, classes):
+    out = ['---', 'title: "CSV functions"', '---', '', GENERATED,
+           'The native CSV reader, which requires the extension. See [Reading CSV files](../io.qmd) for options, '
+           'types, missing values, and errors.', '', '## Reading a file', '']
+    out += entry(functions['read_csv'])
+    cls = classes['CsvReader']
+    out += ['## Reading in chunks', '', '### `CsvReader` {#CsvReader}', '', ' '.join(cls['description']), '']
+    out += class_methods('CsvReader', cls, 'CsvReader')
     return 'csv', '\n'.join(out).rstrip() + '\n'
 
 
 def index_page(functions, classes):
     out = ['---', 'title: "Functions and methods"', '---', '', GENERATED,
-           f'phit provides {len(functions)} functions in the `Phit` namespace and one class, `CsvReader`. '
+           f'phit provides {len(functions)} functions in the `Phit` namespace, the fit and table objects the models return, and '
+           'the `CsvReader` class. '
            'Each name links to its reference entry. Import functions with `use function Phit\\{...};`.', '']
     groups = [('Models', 'models', [n for _, _, _, secs in [PAGES[0]] for _, ns in secs for n in ns]),
               ('Mixed models', 'mixed-models', [n for _, ns in PAGES[1][3] for n in ns]),
@@ -403,7 +434,7 @@ def build():
     missing = sorted(set(functions) - covered)
     if missing:
         raise SystemExit(f'Functions without a reference page: {missing}')
-    pages = [page(*p, functions) for p in PAGES]
+    pages = [page(*p, functions, classes) for p in PAGES]
     pages += [distributions_page(functions), csv_page(functions, classes), index_page(functions, classes)]
     return {OUT / f'{name}.qmd': text for name, text in pages}, functions
 

@@ -318,6 +318,103 @@ whose printer has no random terms (linear or GLM) throws
     - `random effects and their variances differ in size`
     - `random effects and group labels differ in size`
 
+## Fit objects
+
+Every model function returns an instance of one of four final classes, chosen
+by the result's `model` key:
+
+| `model` | Class |
+| --- | --- |
+| `linear` | `Phit\LinearFit` |
+| `generalized_linear` | `Phit\GeneralizedLinearFit` |
+| `mixed_gaussian` | `Phit\MixedGaussianFit` |
+| `mixed_logistic` | `Phit\MixedLogisticFit` |
+
+Each class implements the interface `Phit\Fit`. That interface extends
+`ArrayAccess`, `Iterator`, `Countable`, `JsonSerializable`, and `Stringable`,
+and it declares `summary()`, `tidy()`, `predict()`, `toArray()`, and
+`toMimeBundle()`. A fit holds the result array exactly as the model function
+computed it.
+
+- Fits cannot be constructed from PHP. `new Phit\LinearFit()` throws.
+- `__toString()` and `summary()` return `summary()`'s text for the array.
+- `tidy(bool $confInt = false, float $level = 0.95, string $effects = 'fixed')`
+  returns `Phit\tidy($fit, ...)`.
+- `predict($newdata, ...)` has the same parameters and defaults as
+  `Phit\predict()` after `$fit`, and returns the same array.
+- `toArray()`, `jsonSerialize()`, and `__debugInfo()` return the array.
+- `toMimeBundle()` returns
+  `['text/plain' => summary text, 'application/json' => the array]`, in that
+  key order.
+- Reading:
+  - `offsetGet($key)` returns the array's value, and nested values are plain
+    arrays.
+  - A missing key raises `E_WARNING` and returns null. The handler sees the
+    message `Phit\LinearFit::offsetGet(): Undefined array key "{key}"`, using
+    the class's own name. Integer keys are looked up by their decimal string.
+  - `offsetExists($key)` is `isset($array[$key])`, so it is false for a null
+    value.
+- Writing: `offsetSet` and `offsetUnset` throw `LogicException` with the
+  message `A Phit fit is read-only; call toArray() for an array copy`.
+- `count()` is the number of top-level keys.
+- Iteration (`Iterator`) visits the top-level keys in the array's order, and
+  `iterator_to_array($fit) === $fit->toArray()`. `key()` returns the key as a
+  string, and `current()` returns the value.
+- `clone` copies the fit.
+- The free functions `summary()`, `tidy()`, and `predict()` take a fit or an
+  array in the same shape. Any other value throws 1001 with
+  `fit must be a result of a Phit model function: not a fit object or array`.
+  `predict()` reports the same condition through its own malformed-fit
+  message.
+
+## Table objects
+
+`tidy()` and `$fit->tidy()` return a final `Phit\Table` holding the columns,
+name => list. Tables cannot be constructed from PHP. `Phit\Table` implements
+`ArrayAccess`, `Iterator`, `Countable`, `JsonSerializable`, and `Stringable`.
+
+- `toArray()`, `toColumns()`, `jsonSerialize()`, and `__debugInfo()` return
+  the columns. `toMimeBundle()` returns `['text/plain' => the printed table,
+  'application/json' => the columns]`.
+- `offsetGet` and `offsetExists` work by column name, with the same missing-key
+  warning (from `Phit\Table::offsetGet()`).
+- Writes throw `LogicException` with the message
+  `A Phit table is read-only; call toArray() for an array copy`.
+- `count()` is the number of rows, which is the length of the first column, or
+  0 when there are no columns. Iteration visits the columns.
+
+### Printed layout
+
+The layout follows R's `print.data.frame()` at the default width of 80.
+
+1. A column is text when every value is a string or null. Otherwise it is
+   numeric, and an int or float value is read as a double.
+2. A text cell is the string, and null prints as `<NA>`.
+3. A numeric column is formatted by one `format_real(present values, 7)` call
+   over its non-null values, and each formatted cell is then trimmed. Null
+   prints as `NA`. NaN and infinities print as in `format_real`.
+4. Row labels are `1` to `n`. The label column's width is the widest label, and
+   labels are left-aligned.
+5. Each column's width is the wider of its name and its widest cell. Names and
+   cells are right-aligned.
+6. Columns are split into blocks from left to right. A block takes columns
+   while `label width + Σ (1 + column width)` stays at 79 or less, and every
+   block has at least one column.
+7. Each block prints a header line, then one line per row:
+   - The header is `label width` spaces, then for each column one space and the
+     right-aligned name.
+   - A row is the left-aligned label, then for each column one space and the
+     right-aligned cell.
+   - Every line ends in `\n`. Blocks follow one another with no blank line.
+8. A table with no rows prints `<0 rows> ` followed by the column names joined
+   by `, `, then a newline.
+
+The fixtures have a `table` field, `(string) tidy($fit, confInt: true)`, for
+every case. For `ols_mtcars` and `logistic_mroz` they also have `r_table`, which
+is R's `print.data.frame()` of R's own estimates with the same columns. The test
+requires identical line lengths and numbers within 1e-6 relative. The logistic
+fit differs from R's IRLS in the 8th digit.
+
 ## Errors
 
 Every error is an `\Exception` with code 1001.

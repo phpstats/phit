@@ -30,7 +30,7 @@ Phit\fit_mixed_gaussian(
     float $tolerance = 1.0E-7,
     string $optimizer = 'bobyqa',
     float $objectiveTolerance = 1.0E-12,
-): array
+): MixedGaussianFit
 ```
 
 | Parameter | Type | Default | Description |
@@ -49,6 +49,7 @@ Phit\fit_mixed_gaussian(
 **Returns**
 
 ```php
+MixedGaussianFit A fit object, read like this array:
 array{
   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
@@ -116,7 +117,7 @@ Phit\fit_mixed_logistic(
     int $quadraturePoints = 1,
     int $maxEvaluations = 20000,
     float $tolerance = 1.0E-7,
-): array
+): MixedLogisticFit
 ```
 
 | Parameter | Type | Default | Description |
@@ -132,6 +133,7 @@ Phit\fit_mixed_logistic(
 **Returns**
 
 ```php
+MixedLogisticFit A fit object, read like this array:
 array{
   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
@@ -215,7 +217,7 @@ Phit\fit_mixed_gaussian_matrix(
     string $optimizer = 'bobyqa',
     float $objectiveTolerance = 1.0E-12,
     bool $intercept = true,
-): array
+): MixedGaussianFit
 ```
 
 | Parameter | Type | Default | Description |
@@ -237,6 +239,7 @@ Phit\fit_mixed_gaussian_matrix(
 **Returns**
 
 ```php
+MixedGaussianFit A fit object, read like this array:
 array{
   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
@@ -292,7 +295,7 @@ Phit\fit_mixed_gaussian_intercept_matrix(
     array $groups,
     string $missing = 'drop',
     bool $intercept = true,
-): array
+): MixedGaussianFit
 ```
 
 | Parameter | Type | Default | Description |
@@ -306,6 +309,7 @@ Phit\fit_mixed_gaussian_intercept_matrix(
 **Returns**
 
 ```php
+MixedGaussianFit A fit object, read like this array:
 array{
   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
@@ -367,7 +371,7 @@ Phit\fit_mixed_logistic_matrix(
     int $maxEvaluations = 20000,
     float $tolerance = 1.0E-7,
     bool $intercept = true,
-): array
+): MixedLogisticFit
 ```
 
 | Parameter | Type | Default | Description |
@@ -386,6 +390,7 @@ Phit\fit_mixed_logistic_matrix(
 **Returns**
 
 ```php
+MixedLogisticFit A fit object, read like this array:
 array{
   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,

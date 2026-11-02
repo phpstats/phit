@@ -5,6 +5,8 @@ function intercept_check(bool $condition, string $label): void {
     if (!$condition) throw new RuntimeException($label);
 }
 function intercept_compare(mixed $actual, mixed $expected, string $label): void {
+    if ($actual instanceof Phit\Fit) $actual = $actual->toArray();
+    if ($expected instanceof Phit\Fit) $expected = $expected->toArray();
     if (is_array($expected)) {
         intercept_check(array_keys($actual) === array_keys($expected), "$label keys");
         foreach ($expected as $key => $value) intercept_compare($actual[$key], $value, "$label/$key");

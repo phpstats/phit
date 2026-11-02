@@ -472,6 +472,32 @@ fn nullable(values: &[Option<f64>]) -> PhpResult<ZBox<ZendHashTable>> {
 )]
 #[allow(clippy::too_many_arguments)] // Named PHP arguments mirror R's predict().
 pub fn predict(
+    fit: &Zval,
+    newdata: &Zval,
+    r#type: &str,
+    seFit: bool,
+    interval: &str,
+    level: f64,
+    random: bool,
+    allowNewLevels: bool,
+) -> PhpResult<ZBox<ZendHashTable>> {
+    let fit =
+        crate::fit::fit_data(fit).ok_or_else(|| malformed_fit("not a fit object or array"))?;
+    predict_from(
+        fit,
+        newdata,
+        r#type,
+        seFit,
+        interval,
+        level,
+        random,
+        allowNewLevels,
+    )
+}
+
+/// `predict()` for a fit's result array.
+#[allow(clippy::too_many_arguments, non_snake_case)]
+pub fn predict_from(
     fit: &ZendHashTable,
     newdata: &Zval,
     r#type: &str,
@@ -793,7 +819,7 @@ pub fn fit_ols(
     data: &Zval,
     missing: &str,
     weights: Option<&Zval>,
-) -> PhpResult<ZBox<ZendHashTable>> {
+) -> PhpResult<Zval> {
     let Prepared { design, weights } = prepare(formula, data, missing, weights, true)?;
     reject_random(&design, "Phit\\fit_ols")?;
     let y = numeric_response(&design, "Phit\\fit_ols")?;
@@ -865,7 +891,7 @@ pub fn fit_generalized_linear(
     link: &str,
     missing: &str,
     weights: Option<&Zval>,
-) -> PhpResult<ZBox<ZendHashTable>> {
+) -> PhpResult<Zval> {
     let link = match (family, link) {
         ("gaussian", "" | "identity") => "identity",
         ("binomial", "" | "logit") => "logit",
@@ -1025,7 +1051,7 @@ pub fn fit_mixed_gaussian(
     tolerance: f64,
     optimizer: &str,
     objectiveTolerance: f64,
-) -> PhpResult<ZBox<ZendHashTable>> {
+) -> PhpResult<Zval> {
     let optimizer = match optimizer {
         "bobyqa" => stats_core::LmmOptimizer::Bobyqa,
         "nelder_mead" => stats_core::LmmOptimizer::NelderMead,
@@ -1116,7 +1142,7 @@ pub fn fit_mixed_logistic(
     quadraturePoints: i64,
     maxEvaluations: i64,
     tolerance: f64,
-) -> PhpResult<ZBox<ZendHashTable>> {
+) -> PhpResult<Zval> {
     let Prepared {
         design,
         mut weights,

@@ -5,7 +5,11 @@
 // function, which no per-function attribute reaches, so the allow is crate-level.
 #![allow(non_snake_case)]
 
-use ext_php_rs::{boxed::ZBox, prelude::*, types::ZendHashTable};
+use ext_php_rs::{
+    boxed::ZBox,
+    prelude::*,
+    types::{ZendHashTable, Zval},
+};
 mod csv;
 mod descriptive;
 mod distributions;
@@ -335,7 +339,7 @@ fn finish_result(
     retained_rows: Vec<i64>,
     dropped_rows: Vec<i64>,
     function: &str,
-) -> PhpResult<ZBox<ZendHashTable>> {
+) -> PhpResult<Zval> {
     output.insert("model", model_kind(function))?;
     // Additive diagnostics: keep all historical top-level model-specific keys.
     let mut diagnostics = ZendHashTable::new();
@@ -404,7 +408,7 @@ fn finish_result(
             ),
         );
     }
-    Ok(output)
+    fit::into_fit(output)
 }
 
 fn ols_output(result: stats_core::OlsResult) -> PhpResult<ZBox<ZendHashTable>> {
@@ -479,6 +483,7 @@ macro_rules! glm_output {
     }};
 }
 
+mod fit;
 mod formula;
 
 #[php_function]
@@ -493,7 +498,7 @@ pub fn fit_ols_matrix(
     weights: Option<&ZendHashTable>,
     offset: Option<&ZendHashTable>,
     intercept: bool,
-) -> PhpResult<ZBox<ZendHashTable>> {
+) -> PhpResult<Zval> {
     let input = prepare_data(
         x,
         y,
@@ -528,7 +533,7 @@ pub fn fit_logistic_matrix(
     weights: Option<&ZendHashTable>,
     offset: Option<&ZendHashTable>,
     intercept: bool,
-) -> PhpResult<ZBox<ZendHashTable>> {
+) -> PhpResult<Zval> {
     let input = prepare_data(x, y, missing, "binary", None, weights, offset, intercept)?;
     let result = stats_core::fit_logistic_with_data(input.x, input.y, input.weights, input.offset)
         .map_err(stats_exception)?;
@@ -554,7 +559,7 @@ pub fn fit_probit_matrix(
     weights: Option<&ZendHashTable>,
     offset: Option<&ZendHashTable>,
     intercept: bool,
-) -> PhpResult<ZBox<ZendHashTable>> {
+) -> PhpResult<Zval> {
     let input = prepare_data(x, y, missing, "binary", None, weights, offset, intercept)?;
     let result = stats_core::fit_probit_with_data(input.x, input.y, input.weights, input.offset)
         .map_err(stats_exception)?;
@@ -580,7 +585,7 @@ pub fn fit_poisson_matrix(
     weights: Option<&ZendHashTable>,
     offset: Option<&ZendHashTable>,
     intercept: bool,
-) -> PhpResult<ZBox<ZendHashTable>> {
+) -> PhpResult<Zval> {
     let input = prepare_data(x, y, missing, "count", None, weights, offset, intercept)?;
     let result = stats_core::fit_poisson_with_data(input.x, input.y, input.weights, input.offset)
         .map_err(stats_exception)?;
@@ -605,7 +610,7 @@ pub fn fit_mixed_gaussian_intercept_matrix(
     groups: &ZendHashTable,
     missing: &str,
     intercept: bool,
-) -> PhpResult<ZBox<ZendHashTable>> {
+) -> PhpResult<Zval> {
     let input = prepare_data(
         x,
         y,
@@ -728,7 +733,9 @@ fn lmm_output(
     out.insert(
         "optimizer_implementation",
         match result.optimizer {
-            stats_core::LmmOptimizer::Bobyqa => "bobyqa 0.3.2 / PRIMA Rust port",
+            stats_core::LmmOptimizer::Bobyqa => {
+                "bobyqa 0.3.2 (Rust implementation of PRIMA BOBYQA)"
+            }
             stats_core::LmmOptimizer::NelderMead => "argmin 0.11.0 / Nelder-Mead",
         },
     )?;
@@ -832,7 +839,7 @@ pub fn fit_mixed_gaussian_matrix(
     optimizer: &str,
     objectiveTolerance: f64,
     intercept: bool,
-) -> PhpResult<ZBox<ZendHashTable>> {
+) -> PhpResult<Zval> {
     if missing != "drop" && missing != "raise" {
         return Err(input_exception(
             stats_core::ErrorKind::InvalidInput,
@@ -1052,7 +1059,7 @@ pub fn fit_mixed_logistic_matrix(
     maxEvaluations: i64,
     tolerance: f64,
     intercept: bool,
-) -> PhpResult<ZBox<ZendHashTable>> {
+) -> PhpResult<Zval> {
     if let Some(weights) = weights {
         for (_, value) in weights.iter() {
             if number(value)?.is_some_and(|v| v > stats_core::MAX_LOGISTIC_MIXED_TRIALS) {
@@ -1125,7 +1132,7 @@ pub fn get_module(module: ModuleBuilder) -> ModuleBuilder {
         .function(wrap_function!(fit_mixed_gaussian_intercept_matrix))
         .function(wrap_function!(fit_mixed_gaussian_matrix))
         .function(wrap_function!(fit_mixed_logistic_matrix));
-    let module = formula::register(module);
+    let module = fit::register(formula::register(module));
     let module = distributions::register(module);
     let module = smoothing::register(descriptive::register(module));
     printer::register(csv::register(draws::register(optimize::register(module))))

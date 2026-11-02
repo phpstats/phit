@@ -727,6 +727,90 @@ fn random_effects(terms: &[RandomTerm], residual: Option<f64>) -> String {
     table(&header, &rows, &[1])
 }
 
+/// One column of a printed table: text, or numbers formatted together. `None` is a missing value.
+pub enum Cells {
+    Text(Vec<Option<String>>),
+    Numbers(Vec<Option<f64>>),
+}
+
+/// A table in the layout of R's `print.data.frame()`: row numbers left-aligned in an unnamed first column, every
+/// other column right-aligned under its name, one space apart. Numbers are formatted per column as
+/// `format(x, digits = 7)`, a missing number prints `NA` and a missing string `<NA>`. As R does at its default width
+/// of 80, columns are split into blocks whose lines hold at most 79 characters, each block with its own header and
+/// row numbers; a column wider than that is a block of its own.
+pub fn data_frame(names: &[String], columns: &[Cells]) -> String {
+    let rows = columns.first().map_or(0, |c| match c {
+        Cells::Text(v) => v.len(),
+        Cells::Numbers(v) => v.len(),
+    });
+    if rows == 0 {
+        return format!("<0 rows> {}\n", names.join(", "));
+    }
+    let texts: Vec<Vec<String>> = columns
+        .iter()
+        .map(|column| match column {
+            Cells::Text(values) => values
+                .iter()
+                .map(|v| v.clone().unwrap_or_else(|| "<NA>".into()))
+                .collect(),
+            Cells::Numbers(values) => {
+                let present: Vec<f64> = values.iter().flatten().copied().collect();
+                let mut formatted = format_real(&present, 7).into_iter();
+                values
+                    .iter()
+                    .map(|v| match v {
+                        Some(_) => formatted.next().unwrap_or_default(),
+                        None => "NA".into(),
+                    })
+                    .collect()
+            }
+        })
+        .collect();
+    let labels: Vec<String> = (1..=rows).map(|i| i.to_string()).collect();
+    let label_width = labels.iter().map(String::len).max().unwrap_or(0);
+    let widths: Vec<usize> = names
+        .iter()
+        .zip(&texts)
+        .map(|(name, cells)| {
+            cells
+                .iter()
+                .map(|c| c.chars().count())
+                .chain([name.chars().count()])
+                .max()
+                .unwrap_or(0)
+        })
+        .collect();
+    // Blocks of columns, filled greedily while a line stays within 79 characters.
+    let mut blocks: Vec<std::ops::Range<usize>> = vec![];
+    let mut start = 0;
+    while start < names.len() {
+        let mut end = start + 1;
+        let mut line = label_width + 1 + widths[start];
+        while end < names.len() && line + 1 + widths[end] <= 79 {
+            line += 1 + widths[end];
+            end += 1;
+        }
+        blocks.push(start..end);
+        start = end;
+    }
+    let mut out = String::new();
+    for block in blocks {
+        out += &" ".repeat(label_width);
+        for c in block.clone() {
+            out += &format!(" {:>w$}", names[c], w = widths[c]);
+        }
+        out += "\n";
+        for (r, label) in labels.iter().enumerate() {
+            out += &format!("{label:<label_width$}");
+            for c in block.clone() {
+                out += &format!(" {:>w$}", texts[c][r].trim(), w = widths[c]);
+            }
+            out += "\n";
+        }
+    }
+    out
+}
+
 /// Wald confidence intervals: t with `df` degrees of freedom when given, else the standard normal.
 pub fn confidence_intervals(
     estimates: &[f64],
@@ -796,6 +880,21 @@ mod tests {
         );
         assert_eq!(format_pval(&[0.04, 0.3], 3), ["0.04", "0.30"]);
         assert_eq!(format_pval(&[f64::NAN], 3), ["NA"]);
+    }
+
+    #[test]
+    fn data_frame_follows_print_data_frame() {
+        let table = data_frame(
+            &["term".into(), "estimate".into()],
+            &[
+                Cells::Text(vec![Some("(Intercept)".into()), Some("wt".into())]),
+                Cells::Numbers(vec![Some(37.28512616734203), Some(-5.344471572722675)]),
+            ],
+        );
+        assert_eq!(
+            table,
+            "         term  estimate\n1 (Intercept) 37.285126\n2          wt -5.344472\n"
+        );
     }
 
     #[test]

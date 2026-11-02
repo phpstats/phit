@@ -23,7 +23,7 @@ function pcompare(mixed $actual, mixed $expected, string $label, float $abs, flo
     }
     $comparisons++;
 }
-function fit_case(array $case, array $data): array {
+function fit_case(array $case, array $data): Phit\Fit {
     $args = $case['args'];
     return @match ($case['function']) {
         'lm' => Phit\fit_ols($case['formula'], $data, weights: $args['weights'] ?? null),

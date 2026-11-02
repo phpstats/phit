@@ -504,7 +504,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="principles" class="level2">
 <h2 class="anchored" data-anchor-id="principles">Principles</h2>
 <ul>
-<li><strong>Plain inputs and outputs.</strong> Functions take PHP arrays, or a table object with <code>toModelData()</code> or <code>toColumns()</code>, and return associative arrays. There are no model objects or services.</li>
+<li><strong>Plain inputs and outputs.</strong> Functions take PHP arrays, or a table object with <code>toModelData()</code> or <code>toColumns()</code>, Model functions return fit objects that print their summary and read like the result array; everything else returns arrays or numbers. There are no services.</li>
 <li><strong>Two levels of input.</strong> The formula functions build a design from named columns as R does. The <code>*_matrix</code> functions take a literal design for code that builds its own. Both call the same estimators.</li>
 <li><strong>Documented defaults.</strong> OLS inference is homoskedastic with 95% t intervals. Logistic, probit, and Poisson fits use maximum likelihood with 95% normal Wald intervals. Rank-deficient designs are rejected, and undefined statistics are <code>NAN</code> or <code>INF</code>.</li>
 <li><strong>Visible missing-data handling.</strong> Incomplete rows are dropped with a warning and reported in every result, or rejected with <code>missing: 'raise'</code>. See <a href="./missing-data.html">Missing values</a>.</li>

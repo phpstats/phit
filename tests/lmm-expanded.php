@@ -12,13 +12,13 @@ function expanded_terms(array $random,array $input):array{
 }
 $f=json_decode(file_get_contents(__DIR__.'/fixtures/lmm-expanded-r.json'),true,flags:JSON_THROW_ON_ERROR);
 foreach($f['cases'] as $c){
- $r=Phit\fit_mixed_gaussian_matrix(x:$c['x'],y:$c['y'],random:$c['terms'],reml:$c['reml'],weights:$c['weights'],offset:$c['offset'], intercept: false);
+ $r=Phit\fit_mixed_gaussian_matrix(x:$c['x'],y:$c['y'],random:$c['terms'],reml:$c['reml'],weights:$c['weights'],offset:$c['offset'], intercept: false)->toArray();
  $r['terms']=expanded_terms($r['random'],$c['terms']);
  foreach($c['references'] as $optimizer=>$ref)foreach($ref['result'] as $k=>$v){
   [$abs,$rel]=in_array($k,['log_likelihood','aic','bic'],true)?[5e-6,1e-9]:($optimizer==='bobyqa'?[1e-5,1e-5]:[1e-3,3e-4]);
   compat_compare($r[$k],$v,$c['name'].'/'.$optimizer.'/'.$k,$abs,$rel);
  }
- $nm=Phit\fit_mixed_gaussian_matrix($c['x'],$c['y'],$c['terms'],reml:$c['reml'],weights:$c['weights'],offset:$c['offset'],optimizer:'nelder_mead', intercept: false);
+ $nm=Phit\fit_mixed_gaussian_matrix($c['x'],$c['y'],$c['terms'],reml:$c['reml'],weights:$c['weights'],offset:$c['offset'],optimizer:'nelder_mead', intercept: false)->toArray();
  $nm['terms']=expanded_terms($nm['random'],$c['terms']);
  foreach($c['references']['Nelder_Mead']['result'] as $k=>$v){
   [$abs,$rel]=in_array($k,['log_likelihood','aic','bic'],true)?[5e-6,1e-9]:[1e-3,3e-4];

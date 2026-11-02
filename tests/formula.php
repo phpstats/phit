@@ -28,6 +28,7 @@ function fwarnings(callable $call): array {
         return true;
     });
     try { $result = $call(); } finally { restore_error_handler(); }
+    if ($result instanceof Phit\Fit) $result = $result->toArray();
     return [$result, $warnings];
 }
 function fthrows(callable $call, int $code, string $fragment, string $label): void {

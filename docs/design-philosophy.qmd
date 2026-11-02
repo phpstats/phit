@@ -6,7 +6,7 @@ phit provides statistical models and numerical routines through PHP functions wi
 
 ## Principles
 
-- **Plain inputs and outputs.** Functions take PHP arrays, or a table object with `toModelData()` or `toColumns()`, and return associative arrays. There are no model objects or services.
+- **Plain inputs and outputs.** Functions take PHP arrays, or a table object with `toModelData()` or `toColumns()`, Model functions return fit objects that print their summary and read like the result array; everything else returns arrays or numbers. There are no services.
 - **Two levels of input.** The formula functions build a design from named columns as R does. The `*_matrix` functions take a literal design for code that builds its own. Both call the same estimators.
 - **Documented defaults.** OLS inference is homoskedastic with 95% t intervals. Logistic, probit, and Poisson fits use maximum likelihood with 95% normal Wald intervals. Rank-deficient designs are rejected, and undefined statistics are `NAN` or `INF`.
 - **Visible missing-data handling.** Incomplete rows are dropped with a warning and reported in every result, or rejected with `missing: 'raise'`. See [Missing values](missing-data.qmd).

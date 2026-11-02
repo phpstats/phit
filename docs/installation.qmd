@@ -48,18 +48,18 @@ On macOS, install the Xcode command-line tools (`xcode-select --install`), Rust 
 
 ## Prebuilt Linux binaries
 
-Each [GitHub release](https://github.com/phpstats/phit/releases) has the binaries PIE uses. They are built on Debian Bookworm for NTS, non-debug PHP, and can be installed by hand. The names follow this pattern, shown for v0.5.1:
+Each [GitHub release](https://github.com/phpstats/phit/releases) has the binaries PIE uses. They are built on Debian Bookworm for NTS, non-debug PHP, and can be installed by hand. The names follow this pattern, shown for v0.6.0:
 
 | PHP | x86_64 | arm64 |
 | --- | --- | --- |
-| 8.3 | `php_phit-v0.5.1_php8.3-x86_64-linux-glibc-nts.zip` | `php_phit-v0.5.1_php8.3-arm64-linux-glibc-nts.zip` |
-| 8.4 | `php_phit-v0.5.1_php8.4-x86_64-linux-glibc-nts.zip` | `php_phit-v0.5.1_php8.4-arm64-linux-glibc-nts.zip` |
-| 8.5 | `php_phit-v0.5.1_php8.5-x86_64-linux-glibc-nts.zip` | `php_phit-v0.5.1_php8.5-arm64-linux-glibc-nts.zip` |
+| 8.3 | `php_phit-v0.6.0_php8.3-x86_64-linux-glibc-nts.zip` | `php_phit-v0.6.0_php8.3-arm64-linux-glibc-nts.zip` |
+| 8.4 | `php_phit-v0.6.0_php8.4-x86_64-linux-glibc-nts.zip` | `php_phit-v0.6.0_php8.4-arm64-linux-glibc-nts.zip` |
+| 8.5 | `php_phit-v0.6.0_php8.5-x86_64-linux-glibc-nts.zip` | `php_phit-v0.6.0_php8.5-arm64-linux-glibc-nts.zip` |
 
 Each archive holds `phit.so`, `INSTALL.txt`, a `manifest.json` with the build environment and minimum glibc, the license, and the third-party notices. A `.sha256` file sits beside each archive.
 
 ```sh
-f=php_phit-v0.5.1_php8.4-x86_64-linux-glibc-nts
+f=php_phit-v0.6.0_php8.4-x86_64-linux-glibc-nts
 sha256sum -c "$f.sha256"
 unzip "$f.zip" -d phit
 sudo cp phit/phit.so "$(php-config --extension-dir)/"
@@ -73,7 +73,7 @@ Then add `extension=phit.so` to the PHP configuration of each runtime that needs
 php -r 'echo phpversion("phit"), PHP_EOL;'
 ```
 
-The command prints the installed version, such as `0.5.1`.
+The command prints the installed version, such as `0.6.0`.
 
 The command line and PHP-FPM often read different configuration files. Check the web runtime separately, for example with `extension_loaded('phit')` in a request. Restart PHP-FPM workers after installing or upgrading. [Deploying to servers](deployment.qmd) covers containers and FPM.
 

@@ -96,12 +96,16 @@ foreach ($cases as [$name, $function, $args]) {
         'function' => $function,
         'args' => $args,
         'summary' => Phit\summary($fit),
-        'tidy' => Phit\tidy($fit, confInt: true),
+        'tidy' => Phit\tidy($fit, confInt: true)->toArray(),
+        'table' => (string) Phit\tidy($fit, confInt: true),
         'r_rows' => $r['rows'][$rName[$name] ?? $name],
     ];
+    if (isset($r['tables'][$name])) {
+        $out['cases'][array_key_last($out['cases'])]['r_table'] = $r['tables'][$name];
+    }
     if (str_contains($function, 'mixed')) {
         $case = &$out['cases'][array_key_last($out['cases'])];
-        $case['ran_vals'] = Phit\tidy($fit, effects: 'ran_vals');
+        $case['ran_vals'] = Phit\tidy($fit, effects: 'ran_vals')->toArray();
         $case['r_ran_vals'] = $r['ran_vals'][$rName[$name] ?? $name];
         unset($case);
     }

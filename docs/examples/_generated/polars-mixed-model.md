@@ -3,7 +3,7 @@
 ```php
 use Phiz\Plot;
 
-use function Phit\{fit_mixed_gaussian, summary};
+use function Phit\fit_mixed_gaussian;
 use function Phpolars\scan_csv;
 
 $data = scan_csv(
@@ -20,7 +20,7 @@ $fit = fit_mixed_gaussian(
 );
 $data['fitted'] = $fit['fitted'];
 
-echo summary($fit);
+echo $fit;
 
 // Each subject's days as points, and one fitted line per subject.
 $chart = Plot::of($data)

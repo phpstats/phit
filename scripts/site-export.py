@@ -28,7 +28,7 @@ def manifest(benchmarks, verifications):
         'title': 'phit',
         'tagline': 'Regression, mixed models, and probability distributions for PHP.',
         'summary': 'Fit statistical models, compute probability distributions, and summarize data in PHP. Model '
-                   'functions accept formulas or explicit designs and return PHP arrays.',
+                   'functions accept formulas or explicit designs and return fit objects that print like R\'s and read like arrays.',
         'install': ['pie install phpstats/phit'],
         'php': ['8.3', '8.4', '8.5'],
         'requires': ['PIE', 'unzip or the PHP zip extension', 'NTS (non-thread-safe) PHP'],
@@ -44,12 +44,12 @@ def manifest(benchmarks, verifications):
         'example': {
             # The output is what this code prints: tests/fixtures/summary/summary.json, case ols_mtcars.
             'chain': "use Phibble\\DataFrame;\n\n"
-                     "use function Phit\\{fit_ols, summary};\n\n"
+                     "use function Phit\\fit_ols;\n\n"
                      "$cars = DataFrame::fromCsv(\n"
                      "    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv',\n"
                      ");\n\n"
                      "$fit = fit_ols('mpg ~ wt + factor(cyl)', $cars);\n"
-                     "echo summary($fit);",
+                     "echo $fit;",
             'pipe': None,
             'output': 'Linear model fit by least squares\nFormula: mpg ~ wt + factor(cyl)\n\nCoefficients:\n             Estimate Std. Error t value Pr(>|t|)\n(Intercept)   33.9908     1.8878  18.006  < 2e-16\nwt            -3.2056     0.7539  -4.252 0.000213\nfactor(cyl)6  -4.2556     1.3861  -3.070 0.004718\nfactor(cyl)8  -6.0709     1.6523  -3.674 0.000999\n\nResidual standard error: 2.557 on 28 degrees of freedom\nMultiple R-squared: 0.8374, Adjusted R-squared: 0.82\nF-statistic: 48.08 on 3 and 28 DF, p-value: 3.594e-11',
         },

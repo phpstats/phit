@@ -539,7 +539,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The data are <a href="https://github.com/phpstats/datasets#mroz">mroz</a>: 753 married women in 1975, from the Panel Study of Income Dynamics. <code>lfp</code> is <code>yes</code> if the woman was in the labor force, <code>k5</code> is her number of children under 6, <code>age</code> is in years, <code>wc</code> is <code>yes</code> if she attended college, and <code>inc</code> is the family’s income without her earnings, in $1,000.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phibble\DataFrame<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_generalized_linear<span class="ot">,</span> predict<span class="ot">,</span> summary<span class="ot">,</span> <span class="bu">tidy</span>}<span class="ot">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_generalized_linear<span class="ot">,</span> predict}<span class="ot">;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$mroz</span> <span class="op">=</span> DataFrame::fromCsv(</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mroz.csv'</span><span class="ot">,</span></span>
@@ -550,9 +550,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="va">$mroz</span><span class="ot">,</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    family<span class="ot">:</span> <span class="st">'binomial'</span><span class="ot">,</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> summary(<span class="va">$logit</span>)<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="va">$logit</span><span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="va">$t</span> <span class="op">=</span> <span class="bu">tidy</span>(<span class="va">$logit</span><span class="ot">,</span> confInt<span class="ot">:</span> <span class="kw">true</span>)<span class="ot">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="va">$t</span> <span class="op">=</span> <span class="va">$logit</span>-&gt;<span class="bu">tidy</span>(confInt<span class="ot">:</span> <span class="kw">true</span>)<span class="ot">;</span></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> DataFrame::fromColumns([</span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'term'</span> =&gt; <span class="va">$t</span>[<span class="st">'term'</span>]<span class="ot">,</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">'odds_ratio'</span> =&gt; <span class="fu">array_map</span>(<span class="st">'exp'</span><span class="ot">,</span> <span class="va">$t</span>[<span class="st">'estimate'</span>])<span class="ot">,</span></span>
@@ -615,7 +615,7 @@ AIC: 934.31
 <p>The data are <a href="https://github.com/phpstats/datasets#insurance">insurance</a>: car insurance claims in the third quarter of 1973 for 64 groups of policyholders. <code>Claims</code> is the number of claims, <code>Holders</code> the number of policyholders, and <code>District</code> the district of residence, where 4 is the major cities.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phibble\DataFrame<span class="ot">;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_generalized_linear<span class="ot">,</span> summary}<span class="ot">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\fit_generalized_linear<span class="ot">;</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="va">$insurance</span> <span class="op">=</span> DataFrame::fromCsv(</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://raw.githubusercontent.com/phpstats/datasets/main/csv/insurance.csv'</span><span class="ot">,</span></span>
@@ -626,7 +626,7 @@ AIC: 934.31
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="va">$insurance</span><span class="ot">,</span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    family<span class="ot">:</span> <span class="st">'poisson'</span><span class="ot">,</span></span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> summary(<span class="va">$poisson</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="va">$poisson</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <pre><code>Generalized linear model fit by maximum likelihood
 Family: poisson (log)
 Formula: Claims ~ factor(District) + offset(log(Holders))
