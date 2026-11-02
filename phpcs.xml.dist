@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="phit">
-    <description>The phpstats naming conventions. Nothing else is enforced here: this is not a formatting standard.</description>
+    <description>The PHPstats naming conventions. Nothing else is enforced here: this is not a formatting standard.</description>
 
     <file>docs</file>
     <file>examples</file>
