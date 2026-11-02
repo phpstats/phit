@@ -143,7 +143,7 @@ The distribution functions use their own module, not the estimators' statrs path
 | Poisson | cdflib incomplete gamma | Loader Poisson mass; log-scale gamma tails |
 | Exponential, logistic | Closed-form Rust | `expm1`, `log1p`, and stable softplus |
 
-- The runtime pins the MIT-licensed `cdflib = 0.4.3`. GPL nmath ports were not used.
+- The tail probabilities come from the MIT-licensed `cdflib = 0.4.3`.
 - Both tails are computed independently, with custom log-scale expansions below `1e-280`.
 - Continuous quantiles use bracketed Newton steps on the log tail.
 - The mean-form negative binomial converts its parameters without overflowing `size + mu`.

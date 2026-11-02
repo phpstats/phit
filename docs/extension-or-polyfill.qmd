@@ -29,7 +29,7 @@ Each polyfill release reproduces one phit release. Polyfill 0.5.1 reproduces phi
 
 | Area | Polyfill |
 | --- | --- |
-| Formula models and prediction | `model_matrix`, `fit_ols`, `fit_generalized_linear`, `fit_mixed_gaussian`, `fit_mixed_logistic`, and `predict`, with a port of the formula parser |
+| Formula models and prediction | `model_matrix`, `fit_ols`, `fit_generalized_linear`, `fit_mixed_gaussian`, `fit_mixed_logistic`, and `predict`, with a PHP implementation of the formula parser |
 | Matrix models | All `*_matrix` functions |
 | Mixed models | The same structures as the extension. `fit_mixed_gaussian`: random intercepts and slopes, `(x || g)`, several terms, and nesting, by REML or ML with BOBYQA or Nelder–Mead. `fit_mixed_logistic`: one binomial logit `(1 | g)`, by Laplace or adaptive quadrature with up to 61 points. |
 | Distributions, descriptive statistics, seeded sampling | All functions |

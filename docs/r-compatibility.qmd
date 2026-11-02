@@ -27,7 +27,7 @@ Base R's `stats` package supplies `lm()` and `glm()`. lme4 is a separate R packa
 
 | Method or lme4 wrapper | In phit | Compared with R |
 | --- | --- | --- |
-| BOBYQA | Yes: Rust `bobyqa` 0.3.2, a PRIMA port | Yes: lme4's `bobyqa` (minqa) |
+| BOBYQA | Yes: Rust `bobyqa` 0.3.2, a Rust implementation of [PRIMA](https://github.com/libprima/prima)'s BOBYQA | Yes: lme4's `bobyqa` (minqa) |
 | Nelder–Mead | Yes: Rust `argmin` 0.11.0, `optimizer: 'nelder_mead'` | Yes: lme4's `Nelder_Mead` |
 | `nloptwrap` | No | Yes |
 | `nlminbwrap` | No | Yes |

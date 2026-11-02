@@ -1077,7 +1077,7 @@ fitted[0] 1.3461538461538</code></pre>
 <tbody>
 <tr class="odd">
 <td>Implementation</td>
-<td>Rust PRIMA port</td>
+<td>Rust <code>bobyqa</code> crate, an implementation of PRIMA’s BOBYQA</td>
 <td>Rust <code>argmin</code></td>
 </tr>
 <tr class="even">
@@ -1216,7 +1216,7 @@ fitted[0] 1.3461538461538</code></pre>
 </ul>
 <p><strong>Optimizer.</strong></p>
 <ul>
-<li>BOBYQA (Rust PRIMA port), starting from the ordinary binomial GLM coefficients and a group SD of one. The result is compared with the exact zero-variance GLM.</li>
+<li>BOBYQA (the Rust <code>bobyqa</code> crate, an implementation of PRIMA’s BOBYQA), starting from the ordinary binomial GLM coefficients and a group SD of one. The result is compared with the exact zero-variance GLM.</li>
 <li>Fixed columns are RMS-scaled. Scaled coefficients are bounded to ±100 and the group SD to [0, 20]. Reaching a bound raises an exception.</li>
 <li><code>tolerance</code> is the final trust radius in (0, 0.1], and <code>maxEvaluations</code> limits optimizer calls.</li>
 <li>Each group’s mode is found by bracketed Newton steps with positive curvature.</li>

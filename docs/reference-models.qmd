@@ -342,7 +342,7 @@ $r = Phit\fit_mixed_gaussian_matrix(
 
 | Setting | BOBYQA (`'bobyqa'`) | Nelder–Mead (`'nelder_mead'`) |
 | --- | --- | --- |
-| Implementation | Rust PRIMA port | Rust `argmin` |
+| Implementation | Rust `bobyqa` crate, an implementation of PRIMA's BOBYQA | Rust `argmin` |
 | Stopping control | `tolerance`: final trust radius in (0, 0.1] | `objectiveTolerance`: standard deviation of the simplex objective values |
 | Initial step | 0.1 | 0.1 |
 
@@ -422,7 +422,7 @@ Phit\fit_mixed_logistic_matrix(
 
 **Optimizer.**
 
-- BOBYQA (Rust PRIMA port), starting from the ordinary binomial GLM coefficients and a group SD of one. The result is compared with the exact zero-variance GLM.
+- BOBYQA (the Rust `bobyqa` crate, an implementation of PRIMA's BOBYQA), starting from the ordinary binomial GLM coefficients and a group SD of one. The result is compared with the exact zero-variance GLM.
 - Fixed columns are RMS-scaled. Scaled coefficients are bounded to ±100 and the group SD to [0, 20]. Reaching a bound raises an exception.
 - `tolerance` is the final trust radius in (0, 0.1], and `maxEvaluations` limits optimizer calls.
 - Each group's mode is found by bracketed Newton steps with positive curvature.

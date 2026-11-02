@@ -2,9 +2,10 @@
 title: "Licensing"
 ---
 
-The project's own Rust, PHP, R and Python code and original documentation use the
-**MIT license**, copyright 2026 Erik Westlund. The exact text is in the repository's
-root LICENSE; both Rust crate manifests declare the SPDX identifier `MIT`.
+The project's own Rust, PHP, R, and Python code and original documentation are
+released under the **MIT license**. The text is in the repository's root
+[LICENSE](https://github.com/phpstats/phit/blob/main/LICENSE), and both Rust
+crate manifests declare the SPDX identifier `MIT`.
 
 This does not relicense third-party material:
 
