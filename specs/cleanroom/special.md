@@ -62,7 +62,17 @@ pub fn ln_beta_lower_fraction(a: f64, b: f64, x: f64, ln_x: f64, ln_y: f64) -> f
 - When `|x - np|` is small relative to `x + np`, use the series in `(x - np)/(x + np)` from Loader's paper, summed
   until the terms no longer change the sum.
 - For `x = 0`, the result is np.
-- The relative error must be at most 1e-13. Check it against `special.json` (`deviance_term`, triples).
+- Near the top of the double range, `x + np` or `2x` overflows. The series then has `v = 0` and a first term of
+  `∞ · 0 = NaN`, and a sum that is NaN never stops changing. D is homogeneous of degree one,
+  `D(cx, c·np) = c·D(x, np)`, and multiplying by a power of two is exact. So when x or np exceeds a quarter of the
+  largest double, evaluate D at x/4 and np/4 and multiply by 4. When x/4 underflows to zero, that evaluation gives
+  np/4 by the `x = 0` rule.
+- When the direct formula overflows (`x ln(x/np)` is infinite although D may be finite), evaluate it again the same
+  way at a quarter of the scale. The result is infinite only when D exceeds the largest double.
+- The series also stops when its partial sum is not finite, so no input can make it loop.
+- The relative error must be at most 1e-13. Check it against `special.json` (`deviance_term`, triples), and, near the
+  top of the range, against x ln(x/np) + np − x evaluated in high precision. Results at 2^k times an input must
+  equal 2^k times the result at that input exactly.
 
 ### ln_poisson_raw
 

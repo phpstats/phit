@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.2
+
+### Fixed
+
+- The beta distribution no longer hangs when a shape parameter is near the
+  largest double, as in `Phit\dist_beta_logpdf(0.01, 12.2, 1e308)`. Its
+  saddle-point deviance term overflowed and then looped forever. It now
+  evaluates at a quarter of the scale there, which is exact, and returns the
+  correct value. The pdf, logpdf, cdf, sf, quantile, and rng functions were
+  affected. Other results are unchanged bit for bit.
+
 ## 0.6.1
 
 ### Changed

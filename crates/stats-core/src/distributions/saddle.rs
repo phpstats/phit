@@ -137,8 +137,26 @@ fn stirling_plus_half_log(t: f64) -> f64 {
     }
 }
 
+/// Above this, x + np or 2x may overflow inside the deviance term.
+const DEVIANCE_SCALE_LIMIT: f64 = f64::MAX / 4.0;
+
 /// x ln(x / np) + np - x for x >= 0 and np > 0, accurate when x ≈ np (where both terms nearly cancel).
 pub fn deviance_term(x: f64, np: f64) -> f64 {
+    // D is homogeneous of degree one, D(cx, c·np) = c·D(x, np), and scaling by a power of two is exact. Near the top
+    // of the range, evaluate at a quarter of the scale, where x + np and 2x stay finite.
+    if x > DEVIANCE_SCALE_LIMIT || np > DEVIANCE_SCALE_LIMIT {
+        return 4.0 * deviance_unscaled(0.25 * x, 0.25 * np);
+    }
+    let d = deviance_unscaled(x, np);
+    if d == f64::INFINITY {
+        // x ln(x / np) overflowed although D may be finite; at a quarter scale only a D above the range overflows.
+        return 4.0 * deviance_unscaled(0.25 * x, 0.25 * np);
+    }
+    d
+}
+
+/// The deviance term where x + np and 2x are finite. A tiny x scaled to zero also gives np.
+fn deviance_unscaled(x: f64, np: f64) -> f64 {
     if x == 0.0 {
         return np;
     }
@@ -154,13 +172,13 @@ pub fn deviance_term(x: f64, np: f64) -> f64 {
         loop {
             pow *= v2;
             let next = sum + pow / k;
-            if next == sum {
-                break;
+            // A non-finite sum cannot settle, so it ends the series rather than looping.
+            if next == sum || !next.is_finite() {
+                return next;
             }
             sum = next;
             k += 2.0;
         }
-        return sum;
     }
     let ratio = x / np;
     let log_ratio = if ratio.is_finite() && ratio > 0.0 {
@@ -433,6 +451,52 @@ mod tests {
     #[test]
     fn deviance_term_table() {
         check("deviance_term", 1e-13, false, |r| deviance_term(r[0], r[1]));
+    }
+
+    fn relative_difference(got: f64, want: f64) -> f64 {
+        (got - want).abs() / want.abs()
+    }
+
+    #[test]
+    fn deviance_term_near_the_top_of_the_range() {
+        // x + np and 2x overflow here; the series once took 0 · ∞ = NaN for its first term and never settled.
+        // Expected values are x ln(x / np) + np - x at 60 digits (mpmath) for the exact doubles.
+        let cases = [
+            (1e308, 9.9e307, 5.033_585_350_144_054e303),
+            (f64::MAX, 1.7e308, 2.754_767_021_251_925_8e305),
+            // x ln(x / np) alone overflows, but D does not.
+            (4.4e307, 6.6e305, 1.414_470_234_267_167_8e308),
+            // A tiny x against a huge np, where a quarter of x underflows to zero.
+            (5e-324, 1e308, 1e308),
+            (1e-300, 1e308, 1e308),
+        ];
+        for (x, np, want) in cases {
+            let got = deviance_term(x, np);
+            assert!(
+                relative_difference(got, want) <= 1e-13,
+                "deviance_term({x:e}, {np:e}) = {got:e}, want {want:e}"
+            );
+        }
+        assert_eq!(deviance_term(f64::MAX, f64::MAX), 0.0);
+        // D above the largest double.
+        assert_eq!(deviance_term(1e308, 1e-300), f64::INFINITY);
+    }
+
+    #[test]
+    fn deviance_term_scales_exactly_by_powers_of_two() {
+        // D(cx, c·np) = c·D(x, np), and multiplying by a power of two is exact, so the scaled evaluation must agree
+        // bit for bit with the unscaled one on both sides of the scaling limit.
+        for (x, np) in [(1.9, 1.8), (1.0, 1.05), (1.9, 0.2), (0.3, 1.9)] {
+            let small = deviance_term(x, np);
+            for k in [1000, 1021, 1022, 1023] {
+                let c = 2f64.powi(k);
+                assert_eq!(
+                    deviance_term(x * c, np * c),
+                    small * c,
+                    "D({x} · 2^{k}, {np} · 2^{k})"
+                );
+            }
+        }
     }
 
     #[test]

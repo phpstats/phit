@@ -29,7 +29,7 @@
  ],
  "verify": {
   "command": "php -r 'echo phpversion(\"phit\"), PHP_EOL;'",
-  "output": "0.6.1",
+  "output": "0.6.2",
   "note": "PHP-FPM reads its own php.ini, so enable the extension there and restart FPM."
  },
  "installation": "installation",

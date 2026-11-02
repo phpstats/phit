@@ -69,3 +69,61 @@ fn tiny_df_t_quantiles_bracket_quickly_with_unchanged_values() {
     );
     assert!(start.elapsed() < Duration::from_millis(50));
 }
+
+#[test]
+fn beta_with_a_parameter_near_the_largest_double_returns_the_right_values() {
+    // The saddle-point binomial term once looped forever here: its deviance term took x + np beyond the largest
+    // double. ln f(x) = (a - 1) ln x + (b - 1) ln(1 - x) - ln B(a, b), at 60 digits (mpmath):
+    let logpdf = returns_promptly("beta logpdf, beta = 1e308", || {
+        Beta::new(12.2, 1e308).unwrap().logpdf(0.01)
+    });
+    let want = -1.005_033_585_350_144_2e306;
+    assert!(
+        ((logpdf - want) / want).abs() <= 1e-13,
+        "logpdf {logpdf:e}, want {want:e}"
+    );
+    // At the median, about 1.1868e-307, the deviance term of the failures against nq ≈ 1e308 takes the series.
+    let at_median = returns_promptly("beta logpdf at the median, beta = 1e308", || {
+        Beta::new(12.2, 1e308)
+            .unwrap()
+            .logpdf(1.186_833_452_513_425_2e-307)
+    });
+    let want = 707.042_693_433_071_7;
+    assert!(
+        ((at_median - want) / want).abs() <= 1e-13,
+        "logpdf at the median {at_median}, want {want}"
+    );
+    assert_eq!(
+        returns_promptly("beta pdf, beta = 1e308", || {
+            Beta::new(12.2, 1e308).unwrap().pdf(0.01)
+        }),
+        0.0
+    );
+    // Nearly all of the mass lies below 1e-306.
+    assert_eq!(
+        returns_promptly("beta cdf, beta = 1e308", || {
+            Beta::new(12.2, 1e308).unwrap().cdf(0.01)
+        }),
+        1.0
+    );
+    assert_eq!(
+        returns_promptly("beta sf, beta = 1e308", || {
+            Beta::new(12.2, 1e308).unwrap().sf(0.01)
+        }),
+        0.0
+    );
+    for (name, evaluate) in [
+        (
+            "beta quantile, beta = 1e308",
+            (|| Beta::new(12.2, 1e308).unwrap().quantile(0.5)) as fn() -> f64,
+        ),
+        ("beta quantile, beta = MAX", || {
+            Beta::new(12.2, f64::MAX).unwrap().quantile(0.5)
+        }),
+        ("beta logpdf, alpha = 1e308", || {
+            Beta::new(1e308, 12.2).unwrap().logpdf(0.99)
+        }),
+    ] {
+        returns_promptly(name, evaluate);
+    }
+}
