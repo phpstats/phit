@@ -32,25 +32,21 @@ $result = Phit\fit_ols_matrix(
     x: [[1.0], [2.0], [3.0], [4.0], [5.0]],
     y: [2.1, 4.2, 5.8, 8.1, 10.2],
 );
-printf(
-    "coefficients %.4f, %.4f\n",
-    ...$result['coefficients'],
-);
-printf(
-    "std errors %.6f, %.6f\n",
-    ...$result['std_errors'],
-);
-printf(
-    "R-squared %.6f, log-likelihood %.6f\n",
-    $result['r_squared'],
-    $result['log_likelihood'],
-);
+echo Phit\summary($result);
+echo 'log-likelihood ', $result['log_likelihood'], "\n";
 ```
 
 ```
-coefficients 0.0500, 2.0100
-std errors 0.198074, 0.059722
-R-squared 0.997359, log-likelihood 2.516218
+Linear model fit by least squares
+
+Coefficients:
+   Estimate Std. Error t value Pr(>|t|)
+x1  0.05000    0.19807   0.252    0.817
+x2  2.01000    0.05972  33.656 5.77e-05
+
+Residual standard error: 0.1889 on 3 degrees of freedom
+Multiple R-squared: 0.9974, Adjusted R-squared: 0.9965
+log-likelihood 2.5162182263625
 ```
 
 **Input.** An n × k predictor matrix and n outcomes. The default prepends ones, giving p = k + 1 coefficients; `intercept: false` gives p = k. The retained sample must have n > p.
@@ -273,13 +269,13 @@ $r = Phit\fit_poisson_matrix(
     y: $counts,
     offset: array_map('log', $exposure),
 );
-printf("rate %.4f\n", exp($r['coefficients'][0]));
-printf("fitted[0] %.4f\n", $r['fitted'][0]);
+echo 'rate ', exp($r['coefficients'][0]), "\n";
+echo 'fitted[0] ', $r['fitted'][0], "\n";
 ```
 
 ```
-rate 1.3462
-fitted[0] 1.3462
+rate 1.3461538461538
+fitted[0] 1.3461538461538
 ```
 
 - The offset is on the linear-predictor scale. A unit exposure has offset zero.

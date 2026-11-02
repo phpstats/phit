@@ -35,5 +35,13 @@ rows <- lapply(fits, function(fit) {
   printed <- capture.output(printCoefmat(coef(summary(fit)), digits = 4, signif.stars = FALSE))
   trimws(printed[-1], "right")
 })
-writeLines(toJSON(list(R = R.version.string, lme4 = as.character(packageVersion("lme4")), rows = rows),
+# Each mixed fit's conditional modes and standard errors, as broom.mixed's tidy(effects = "ran_vals") reads them.
+mixed <- c("lmer_sleepstudy_reml", "lmer_sleepstudy_ml", "glmer_cbpp_laplace", "glmer_cbpp_agq10")
+ran_vals <- lapply(fits[mixed], function(fit) {
+  r <- as.data.frame(ranef(fit, condVar = TRUE))
+  list(group = as.character(r$grpvar), level = as.character(r$grp), term = as.character(r$term),
+       estimate = r$condval, std_error = r$condsd)
+})
+writeLines(toJSON(list(R = R.version.string, lme4 = as.character(packageVersion("lme4")), rows = rows,
+                       ran_vals = ran_vals), digits = NA,
                   auto_unbox = TRUE, pretty = TRUE), file.path(dir, "summary-r.json"))

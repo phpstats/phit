@@ -10,7 +10,7 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/reference-models</loc>
-    <lastmod>2026-11-01T23:09:47.198Z</lastmod>
+    <lastmod>2026-11-02T11:28:07.588Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/ols-math</loc>
@@ -34,7 +34,7 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/mixed-models</loc>
-    <lastmod>2026-11-01T23:09:50.735Z</lastmod>
+    <lastmod>2026-11-02T11:30:24.402Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/licensing</loc>
@@ -42,39 +42,39 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/installation</loc>
-    <lastmod>2026-11-01T20:52:53.097Z</lastmod>
+    <lastmod>2026-11-02T11:31:12.990Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/getting-started</loc>
-    <lastmod>2026-11-01T23:09:50.740Z</lastmod>
+    <lastmod>2026-11-02T02:44:42.617Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/functions/sampling</loc>
-    <lastmod>2026-11-01T23:38:04.744Z</lastmod>
+    <lastmod>2026-11-02T11:30:12.358Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/functions/mixed-models</loc>
-    <lastmod>2026-11-01T23:38:04.743Z</lastmod>
+    <lastmod>2026-11-02T11:30:12.358Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/functions/draws</loc>
-    <lastmod>2026-11-01T23:38:04.744Z</lastmod>
+    <lastmod>2026-11-02T11:30:12.358Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/functions/csv</loc>
-    <lastmod>2026-11-01T23:38:04.744Z</lastmod>
+    <lastmod>2026-11-02T11:30:12.359Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/extension-or-polyfill</loc>
-    <lastmod>2026-11-01T20:52:53.099Z</lastmod>
+    <lastmod>2026-11-02T11:31:12.992Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/examples/mixed-model</loc>
-    <lastmod>2026-11-02T02:13:05.605Z</lastmod>
+    <lastmod>2026-11-02T11:30:24.595Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/examples/glm</loc>
-    <lastmod>2026-11-02T02:13:18.478Z</lastmod>
+    <lastmod>2026-11-02T11:28:08.333Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/draw-numerics</loc>
@@ -94,7 +94,7 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/contracts</loc>
-    <lastmod>2026-11-01T23:09:50.727Z</lastmod>
+    <lastmod>2026-11-02T02:37:16.638Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/data/lmm/index</loc>
@@ -102,7 +102,7 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/descriptive</loc>
-    <lastmod>2026-11-01T19:07:19.779Z</lastmod>
+    <lastmod>2026-11-02T11:28:07.795Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/development</loc>
@@ -114,11 +114,11 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/examples/distributions</loc>
-    <lastmod>2026-11-01T18:14:28.282Z</lastmod>
+    <lastmod>2026-11-02T11:28:08.405Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/examples/linear-model</loc>
-    <lastmod>2026-11-02T02:13:18.993Z</lastmod>
+    <lastmod>2026-11-02T02:38:13.066Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/examples/polars-mixed-model</loc>
@@ -126,39 +126,39 @@
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/formulas</loc>
-    <lastmod>2026-11-01T19:04:56.619Z</lastmod>
+    <lastmod>2026-11-02T02:39:37.824Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/functions/distributions</loc>
-    <lastmod>2026-11-01T23:38:04.744Z</lastmod>
+    <lastmod>2026-11-02T11:30:12.359Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/functions/index</loc>
-    <lastmod>2026-11-01T23:38:04.744Z</lastmod>
+    <lastmod>2026-11-02T11:30:12.359Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/functions/models</loc>
-    <lastmod>2026-11-01T23:38:04.743Z</lastmod>
+    <lastmod>2026-11-02T11:30:12.358Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/functions/statistics</loc>
-    <lastmod>2026-11-01T23:38:04.743Z</lastmod>
+    <lastmod>2026-11-02T11:30:12.358Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs</loc>
-    <lastmod>2026-11-01T23:10:00.513Z</lastmod>
+    <lastmod>2026-11-02T02:38:13.067Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/io</loc>
-    <lastmod>2026-11-01T20:00:32.630Z</lastmod>
+    <lastmod>2026-11-02T02:39:37.673Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/missing-data</loc>
-    <lastmod>2026-11-01T21:22:57.754Z</lastmod>
+    <lastmod>2026-11-02T11:28:07.924Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/models</loc>
-    <lastmod>2026-11-01T23:09:50.723Z</lastmod>
+    <lastmod>2026-11-02T11:30:24.402Z</lastmod>
   </url>
   <url>
     <loc>https://phit.phpstats.org/docs/notebooks/lmm-general-math</loc>

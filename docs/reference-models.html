@@ -610,22 +610,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    x<span class="ot">:</span> [[<span class="fl">1.0</span>]<span class="ot">,</span> [<span class="fl">2.0</span>]<span class="ot">,</span> [<span class="fl">3.0</span>]<span class="ot">,</span> [<span class="fl">4.0</span>]<span class="ot">,</span> [<span class="fl">5.0</span>]]<span class="ot">,</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    y<span class="ot">:</span> [<span class="fl">2.1</span><span class="ot">,</span> <span class="fl">4.2</span><span class="ot">,</span> <span class="fl">5.8</span><span class="ot">,</span> <span class="fl">8.1</span><span class="ot">,</span> <span class="fl">10.2</span>]<span class="ot">,</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"coefficients %.4f, %.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    ...<span class="va">$result</span>[<span class="st">'coefficients'</span>]<span class="ot">,</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"std errors %.6f, %.6f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    ...<span class="va">$result</span>[<span class="st">'std_errors'</span>]<span class="ot">,</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R-squared %.6f, log-likelihood %.6f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="va">$result</span>[<span class="st">'r_squared'</span>]<span class="ot">,</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="va">$result</span>[<span class="st">'log_likelihood'</span>]<span class="ot">,</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>coefficients 0.0500, 2.0100
-std errors 0.198074, 0.059722
-R-squared 0.997359, log-likelihood 2.516218</code></pre>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> Phit\summary(<span class="va">$result</span>)<span class="ot">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="st">'log-likelihood '</span><span class="ot">,</span> <span class="va">$result</span>[<span class="st">'log_likelihood'</span>]<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Linear model fit by least squares
+
+Coefficients:
+   Estimate Std. Error t value Pr(&gt;|t|)
+x1  0.05000    0.19807   0.252    0.817
+x2  2.01000    0.05972  33.656 5.77e-05
+
+Residual standard error: 0.1889 on 3 degrees of freedom
+Multiple R-squared: 0.9974, Adjusted R-squared: 0.9965
+log-likelihood 2.5162182263625</code></pre>
 <p><strong>Input.</strong> An n × k predictor matrix and n outcomes. The default prepends ones, giving p = k + 1 coefficients; <code>intercept: false</code> gives p = k. The retained sample must have n &gt; p.</p>
 <table class="caption-top table">
 <colgroup>
@@ -984,10 +980,10 @@ R-squared 0.997359, log-likelihood 2.516218</code></pre>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    y<span class="ot">:</span> <span class="va">$counts</span><span class="ot">,</span></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    offset<span class="ot">:</span> <span class="fu">array_map</span>(<span class="st">'log'</span><span class="ot">,</span> <span class="va">$exposure</span>)<span class="ot">,</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"rate %.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="fu">exp</span>(<span class="va">$r</span>[<span class="st">'coefficients'</span>][<span class="dv">0</span>]))<span class="ot">;</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(<span class="st">"fitted[0] %.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$r</span>[<span class="st">'fitted'</span>][<span class="dv">0</span>])<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>rate 1.3462
-fitted[0] 1.3462</code></pre>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="st">'rate '</span><span class="ot">,</span> <span class="fu">exp</span>(<span class="va">$r</span>[<span class="st">'coefficients'</span>][<span class="dv">0</span>])<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="st">'fitted[0] '</span><span class="ot">,</span> <span class="va">$r</span>[<span class="st">'fitted'</span>][<span class="dv">0</span>]<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>rate 1.3461538461538
+fitted[0] 1.3461538461538</code></pre>
 <ul>
 <li>The offset is on the linear-predictor scale. A unit exposure has offset zero.</li>
 <li>Each fitted count is its exposure times the rate. Divide a fitted count by its exposure to get a rate.</li>

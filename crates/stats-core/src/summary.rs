@@ -311,6 +311,16 @@ pub struct RandomTerm {
     pub covariance: Vec<Vec<f64>>,
     pub correlated: bool,
     pub n_groups: usize,
+    /// Each group's conditional modes, when the fit reports them.
+    pub values: Option<RandomValues>,
+}
+
+/// One random term's conditional modes and their conditional standard errors, as lme4's
+/// `ranef(fit, condVar = TRUE)`: one row per group, one column per term column.
+pub struct RandomValues {
+    pub levels: Vec<String>,
+    pub estimates: Vec<Vec<f64>>,
+    pub std_errors: Vec<Vec<f64>>,
 }
 
 /// How one kind of fitted model prints, in the layout of R's `print(summary(fit))`. Each model kind implements it,
@@ -335,6 +345,10 @@ pub trait Printer {
     }
     /// Degrees of freedom for t confidence intervals, or `None` for normal intervals.
     fn interval_df(&self) -> Option<f64>;
+    /// The random-effect terms of a mixed model, or `None` for a model without random effects.
+    fn random_terms(&self) -> Option<&[RandomTerm]> {
+        None
+    }
 }
 
 /// The text of `print(summary(fit))` for any printer, ending with one newline.
@@ -609,6 +623,10 @@ impl Printer for MixedGaussian {
     fn interval_df(&self) -> Option<f64> {
         None
     }
+
+    fn random_terms(&self) -> Option<&[RandomTerm]> {
+        Some(&self.fit.terms)
+    }
 }
 
 /// A binomial logit mixed model, as lme4's `summary.merMod` for `glmer()`.
@@ -650,6 +668,10 @@ impl Printer for MixedLogistic {
 
     fn interval_df(&self) -> Option<f64> {
         None
+    }
+
+    fn random_terms(&self) -> Option<&[RandomTerm]> {
+        Some(&self.fit.terms)
     }
 }
 

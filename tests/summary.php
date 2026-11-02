@@ -32,11 +32,14 @@ function sameToken(string $a, string $b): bool
 // path on Linux. The printed summary must still match byte for byte.
 function sameTidy(array $ours, array $expected): bool
 {
-    if (array_keys($ours) !== array_keys($expected) || $ours['term'] !== $expected['term']) {
+    if (array_keys($ours) !== array_keys($expected)) {
         return false;
     }
     foreach ($expected as $column => $values) {
-        if ($column === 'term') {
+        if (in_array($column, ['term', 'group', 'level'], true)) {
+            if ($ours[$column] !== $values) {
+                return false;
+            }
             continue;
         }
         foreach ($values as $i => $v) {
@@ -52,6 +55,7 @@ function sameTidy(array $ours, array $expected): bool
 
 $fixture = json_decode(file_get_contents(__DIR__.'/fixtures/summary/summary.json'), true, flags: JSON_THROW_ON_ERROR);
 $rowsChecked = 0;
+$randomChecked = 0;
 foreach ($fixture['cases'] as $case) {
     $args = $case['args'];
     if (isset($args['data'])) {
@@ -61,6 +65,24 @@ foreach ($fixture['cases'] as $case) {
     $text = Phit\summary($fit);
     scheck($text === $case['summary'], "{$case['name']}: summary text differs:\n$text");
     scheck(sameTidy(Phit\tidy($fit, confInt: true), $case['tidy']), "{$case['name']}: tidy differs");
+
+    // Random effects: the same rows as the fixture, and lme4's ranef(condVar = TRUE) to 1e-4 (scaled by max(1, |x|)),
+    // which absorbs lme4's optimizer tolerance. Matrix fits name their groups and columns generically.
+    if (isset($case['ran_vals'])) {
+        $values = Phit\tidy($fit, effects: 'ran_vals');
+        scheck(sameTidy($values, $case['ran_vals']), "{$case['name']}: ran_vals differ");
+        $r = $case['r_ran_vals'];
+        scheck($values['level'] === $r['level'], "{$case['name']}: ran_vals levels differ from R");
+        if (! str_contains($case['function'], 'matrix')) {
+            scheck($values['group'] === $r['group'] && $values['term'] === $r['term'], "{$case['name']}: ran_vals terms differ from R");
+        }
+        foreach (['estimate', 'std_error'] as $column) {
+            foreach ($r[$column] as $i => $v) {
+                scheck(abs($values[$column][$i] - $v) <= 1e-4 * max(1.0, abs($v)), "{$case['name']}: ran_vals $column $i differs from R");
+            }
+        }
+        $randomChecked++;
+    }
 
     // The printed coefficient rows: every number R prints must print the same here.
     $lines = explode("\n", $text);
@@ -106,6 +128,21 @@ foreach ([
         scheck($e->getCode() === 1001, "summary of $label: code {$e->getCode()}");
     }
 }
+foreach ([
+    [fn () => Phit\tidy($fit, effects: 'random'), "effects must be 'fixed' or 'ran_vals'"],
+    [fn () => Phit\tidy(Phit\fit_ols('mpg ~ wt', $fixture['data']['mtcars']), effects: 'ran_vals'), "effects 'ran_vals' needs a mixed model fit"],
+] as [$call, $message]) {
+    try {
+        $call();
+        scheck(false, "tidy accepted: $message");
+    } catch (Exception $e) {
+        scheck($e->getCode() === 1001 && $e->getMessage() === $message, "tidy error: {$e->getMessage()}");
+    }
+}
+$withInterval = Phit\tidy($mixed, confInt: true, effects: 'ran_vals');
+scheck(abs($withInterval['conf_high'][0] - $withInterval['estimate'][0] - 1.959963984540054 * $withInterval['std_error'][0]) < 1e-9,
+    'ran_vals normal intervals');
+
 try {
     Phit\tidy($fit, confInt: true, level: 1.0);
     scheck(false, 'tidy accepted level 1');
@@ -113,4 +150,4 @@ try {
     scheck($e->getCode() === 1001 && $e->getMessage() === 'level must be in (0, 1)', 'tidy level error');
 }
 
-echo 'PHP summary and tidy tests passed ('.count($fixture['cases'])." models; $rowsChecked coefficient rows match R)\n";
+echo 'PHP summary and tidy tests passed ('.count($fixture['cases'])." models; $rowsChecked coefficient rows match R; random effects of $randomChecked mixed fits match lme4)\n";

@@ -82,7 +82,7 @@ Days          10.467      1.546   6.771 1.27e-11
 
 - `(Days | Subject)` gives each subject its own intercept and slope, with a correlation between them. The fit uses REML, as `lme4::lmer()` does by default.
 - The random-effects table gives each term's variance and standard deviation. `Corr` is the estimated correlation between a subject's intercept and slope.
-- A subject's effects are its predicted intercept and slope relative to the average, shrunk toward zero. They are in `$fit['random'][0]['effects']`, one row per subject.
+- A subject's effects are its predicted intercept and slope relative to the average, shrunk toward zero. `tidy($fit, effects: 'ran_vals')` returns them with their conditional standard errors, one row per term and subject.
 
 ## Reading a fit_mixed_gaussian result
 

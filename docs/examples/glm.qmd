@@ -41,10 +41,10 @@ $women = [
     'inc' => [20, 20],
 ];
 $p = predict($logit, $women, type: 'response');
-printf(
-    "P(in labor force), age 35: %.3f with no young child, %.3f with one\n",
-    ...$p['fit'],
-);
+echo DataFrame::fromColumns([
+    'k5' => $women['k5'],
+    'probability' => $p['fit'],
+]), "\n";
 ```
 
 ```
@@ -75,7 +75,11 @@ AIC: 934.31
 4 wcyes            2.95     2.00      4.35 
 5 inc              0.969    0.955     0.984
 
-P(in labor force), age 35: 0.684 with no young child, 0.341 with one
+# A tibble: 2 × 2
+     k5 probability
+  <int>       <dbl>
+1     0       0.684
+2     1       0.341
 ```
 
 - `lfp` is a string column, so it becomes a factor. Its first level, `no`, is failure, and the model gives the log odds of `yes`.

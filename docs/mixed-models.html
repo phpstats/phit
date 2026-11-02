@@ -506,7 +506,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#supported-structures" id="toc-supported-structures" class="nav-link active" data-scroll-target="#supported-structures">Supported structures</a></li>
-  <li><a href="#a-random-intercept-model" id="toc-a-random-intercept-model" class="nav-link" data-scroll-target="#a-random-intercept-model">A random-intercept model</a></li>
+  <li><a href="#a-random-intercept-and-slope" id="toc-a-random-intercept-and-slope" class="nav-link" data-scroll-target="#a-random-intercept-and-slope">A random intercept and slope</a></li>
   <li><a href="#reading-a-fit_mixed_gaussian-result" id="toc-reading-a-fit_mixed_gaussian-result" class="nav-link" data-scroll-target="#reading-a-fit_mixed_gaussian-result">Reading a fit_mixed_gaussian result</a></li>
   <li><a href="#singular-fits" id="toc-singular-fits" class="nav-link" data-scroll-target="#singular-fits">Singular fits</a></li>
   <li><a href="#a-binomial-random-intercept-model" id="toc-a-binomial-random-intercept-model" class="nav-link" data-scroll-target="#a-binomial-random-intercept-model">A binomial random-intercept model</a></li>
@@ -593,47 +593,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p>Any other random-effect structure, family or link throws code 1007. Random slopes, several random terms, the Poisson and probit families, and REML are not available in <code>fit_mixed_logistic()</code>. Random-effect terms in <code>fit_ols()</code> or <code>fit_generalized_linear()</code> also throw code 1007.</p>
 </section>
-<section id="a-random-intercept-model" class="level2">
-<h2 class="anchored" data-anchor-id="a-random-intercept-model">A random-intercept model</h2>
-<p>The example uses <a href="https://github.com/phpstats/phit/blob/main/docs/data/schools.csv"><code>docs/data/schools.csv</code></a>: 250 simulated students in 12 schools, with study hours, a prior score, and a test score. <code>read_csv()</code> needs the extension; with the polyfill, read the file another way.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_mixed_gaussian<span class="ot">,</span> read_csv}<span class="ot">;</span></span>
+<section id="a-random-intercept-and-slope" class="level2">
+<h2 class="anchored" data-anchor-id="a-random-intercept-and-slope">A random intercept and slope</h2>
+<p>The example uses <a href="https://github.com/phpstats/datasets#sleepstudy">sleepstudy</a> from lme4: average reaction times, in milliseconds, of 18 subjects over ten days of sleep deprivation. It reads the file by URL with phibble.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phibble\DataFrame<span class="ot">;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">$csv</span> <span class="op">=</span> read_csv(<span class="st">'docs/data/schools.csv'</span>)<span class="ot">;</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">$schools</span> <span class="op">=</span> <span class="fu">array_combine</span>(</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">$csv</span>[<span class="st">'names'</span>]<span class="ot">,</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">array_column</span>(<span class="va">$csv</span>[<span class="st">'columns'</span>]<span class="ot">,</span> <span class="st">'values'</span>)<span class="ot">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_mixed_gaussian<span class="ot">,</span> fit_mixed_logistic<span class="ot">,</span> summary}<span class="ot">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="va">$sleep</span> <span class="op">=</span> DataFrame::fromCsv(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://raw.githubusercontent.com/phpstats/datasets/main/csv/sleepstudy.csv'</span><span class="ot">,</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_mixed_gaussian(</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'score ~ study_hours + prior_score + (1 | school)'</span><span class="ot">,</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="va">$schools</span><span class="ot">,</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$fit</span>[<span class="st">'columns'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$name</span>) {</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"%-12s %8.4f %8.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">$name</span><span class="ot">,</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="va">$fit</span>[<span class="st">'coefficients'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">$fit</span>[<span class="st">'std_errors'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="va">$school</span> <span class="op">=</span> <span class="va">$fit</span>[<span class="st">'random'</span>][<span class="dv">0</span>]<span class="ot">;</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"%s: school SD %.4f, residual SD %.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'method'</span>]<span class="ot">,</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sqrt</span>(<span class="va">$school</span>[<span class="st">'covariance'</span>][<span class="dv">0</span>][<span class="dv">0</span>])<span class="ot">,</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'sigma'</span>]<span class="ot">,</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"%s %+.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="va">$school</span>[<span class="st">'group_labels'</span>][<span class="dv">0</span>]<span class="ot">,</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="va">$school</span>[<span class="st">'effects'</span>][<span class="dv">0</span>][<span class="dv">0</span>]<span class="ot">,</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>(Intercept)   46.6627   2.2438
-study_hours    1.6141   0.1609
-prior_score    0.2453   0.0419
-REML: school SD 4.4579, residual SD 5.0566
-school-01 +0.1353</code></pre>
-<p>A school’s effect is its predicted intercept relative to the average school, shrunk toward zero.</p>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_mixed_gaussian(<span class="st">'Reaction ~ Days + (Days | Subject)'</span><span class="ot">,</span> <span class="va">$sleep</span>)<span class="ot">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> summary(<span class="va">$fit</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Linear mixed model fit by REML
+Formula: Reaction ~ Days + (Days | Subject)
+
+REML criterion at convergence: 1743.6
+
+Random effects:
+Groups   Name        Variance Std.Dev. Corr
+Subject  (Intercept)   612.09   24.740
+         Days           35.07    5.922 0.07
+Residual               654.94   25.592
+Number of obs: 180, groups: Subject, 18
+
+Fixed effects:
+            Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)  251.405      6.825  36.838  &lt; 2e-16
+Days          10.467      1.546   6.771 1.27e-11</code></pre>
+<ul>
+<li><code>(Days | Subject)</code> gives each subject its own intercept and slope, with a correlation between them. The fit uses REML, as <code>lme4::lmer()</code> does by default.</li>
+<li>The random-effects table gives each term’s variance and standard deviation. <code>Corr</code> is the estimated correlation between a subject’s intercept and slope.</li>
+<li>A subject’s effects are its predicted intercept and slope relative to the average, shrunk toward zero. <code>tidy($fit, effects: 'ran_vals')</code> returns them with their conditional standard errors, one row per term and subject.</li>
+</ul>
 </section>
 <section id="reading-a-fit_mixed_gaussian-result" class="level2">
 <h2 class="anchored" data-anchor-id="reading-a-fit_mixed_gaussian-result">Reading a fit_mixed_gaussian result</h2>
@@ -722,46 +715,41 @@ school-01 +0.1353</code></pre>
 </section>
 <section id="singular-fits" class="level2">
 <h2 class="anchored" data-anchor-id="singular-fits">Singular fits</h2>
-<p>A random-effect variance estimated at or near zero, or a correlation at ±1, makes the covariance singular. The fit returns with <code>singular</code> true and the warning <code>random-effect covariance is singular or near singular</code> in <code>diagnostics.warnings</code>. With these data, <code>score ~ study_hours + (1 + study_hours | school)</code> is singular because the estimated slope variance is near zero. A singular fit usually means the random-effect structure is more complex than the data support.</p>
+<p>A random-effect variance estimated at or near zero, or a correlation at ±1, makes the covariance singular. The fit returns with <code>singular</code> true and the warning <code>random-effect covariance is singular or near singular</code> in <code>diagnostics.warnings</code>. A singular fit usually means the random-effect structure is more complex than the data support.</p>
 </section>
 <section id="a-binomial-random-intercept-model" class="level2">
 <h2 class="anchored" data-anchor-id="a-binomial-random-intercept-model">A binomial random-intercept model</h2>
-<p><code>docs/data/cbpp.csv</code> holds lme4’s <code>cbpp</code> data: cases of contagious bovine pleuropneumonia in 15 herds over four periods.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_mixed_logistic<span class="ot">,</span> read_csv}<span class="ot">;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">$csv</span> <span class="op">=</span> read_csv(</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'docs/data/cbpp.csv'</span><span class="ot">,</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    [<span class="st">'types'</span> =&gt; [<span class="st">'c'</span><span class="ot">,</span> <span class="st">'i'</span><span class="ot">,</span> <span class="st">'i'</span><span class="ot">,</span> <span class="st">'c'</span>]]<span class="ot">,</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="va">$herds</span> <span class="op">=</span> <span class="fu">array_combine</span>(</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">$csv</span>[<span class="st">'names'</span>]<span class="ot">,</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">array_column</span>(<span class="va">$csv</span>[<span class="st">'columns'</span>]<span class="ot">,</span> <span class="st">'values'</span>)<span class="ot">,</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="va">$herds</span>[<span class="st">'healthy'</span>] <span class="op">=</span> <span class="fu">array_map</span>(</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fn</span> (<span class="va">$n</span><span class="ot">,</span> <span class="va">$k</span>) =&gt; <span class="va">$n</span> <span class="op">-</span> <span class="va">$k</span><span class="ot">,</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="va">$herds</span>[<span class="st">'size'</span>]<span class="ot">,</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="va">$herds</span>[<span class="st">'incidence'</span>]<span class="ot">,</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_mixed_logistic(</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cbind(incidence, healthy) ~ period + (1 | herd)'</span><span class="ot">,</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="va">$herds</span><span class="ot">,</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    quadraturePoints<span class="ot">:</span> <span class="dv">10</span><span class="ot">,</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$fit</span>[<span class="st">'named'</span>] <span class="kw">as</span> <span class="va">$name</span> =&gt; <span class="va">$b</span>) {</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(<span class="st">"%-12s %8.4f</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span> <span class="va">$name</span><span class="ot">,</span> <span class="va">$b</span>)<span class="ot">;</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"herd SD %.4f, %s</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'random_intercept_sd'</span>]<span class="ot">,</span></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'integration'</span>]<span class="ot">,</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>(Intercept)   -1.3992
-period2       -0.9914
-period3       -1.1278
-period4       -1.5795
-herd SD 0.6475, adaptive_gauss_hermite</code></pre>
+<p><a href="https://github.com/phpstats/datasets#cbpp">cbpp</a> is lme4’s data on contagious bovine pleuropneumonia: the number of new cases (<code>incidence</code>) among the cattle in each of 15 herds (<code>size</code>) over four periods.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">$herds</span> <span class="op">=</span> DataFrame::fromCsv(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://raw.githubusercontent.com/phpstats/datasets/main/csv/cbpp.csv'</span><span class="ot">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_mixed_logistic(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cbind(incidence, size - incidence) ~ factor(period) + (1 | herd)'</span><span class="ot">,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="va">$herds</span><span class="ot">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    quadraturePoints<span class="ot">:</span> <span class="dv">10</span><span class="ot">,</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> summary(<span class="va">$fit</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Generalized linear mixed model fit by maximum likelihood (adaptive Gauss-Hermite quadrature, 10 points)
+Family: binomial (logit)
+Formula: cbind(incidence, size - incidence) ~ factor(period) + (1 | herd)
+
+  AIC   BIC logLik deviance df.resid
+194.0 204.1  -92.0    184.0       51
+
+Random effects:
+Groups Name        Variance Std.Dev.
+herd   (Intercept)   0.4193   0.6475
+Number of obs: 56, groups: herd, 15
+
+Fixed effects:
+                Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)      -1.3992     0.2335  -5.992 2.07e-09
+factor(period)2  -0.9914     0.3068  -3.232 0.001230
+factor(period)3  -1.1278     0.3268  -3.451 0.000558
+factor(period)4  -1.5795     0.4276  -3.694 0.000221</code></pre>
 <ul>
+<li><code>cbind(incidence, size - incidence)</code> gives the successes and failures for each row, as in <code>glm()</code>.</li>
 <li><code>quadraturePoints</code> is lme4’s <code>nAGQ</code>. The Laplace default (1) is fastest.</li>
 <li>More points approximate the likelihood more closely, which matters most for small groups and rare events.</li>
 <li>No number of points guarantees accuracy for every data set. Compare a few values when the estimates matter.</li>

@@ -227,7 +227,8 @@ $descriptions = [
         "Returns a fit's coefficient table as columns, like broom's `tidy()`.",
         '- The columns are `term`, `estimate`, `std_error`, `statistic`, and `p_value`. `confInt: true` adds `conf_low` and `conf_high` at `level`.',
         '- Intervals are Wald intervals: t with `df_residual` degrees of freedom when the fit reports t statistics, and the normal distribution otherwise.',
-        '- Mixed fits give the fixed effects only; `summary()` prints the variance components.',
+        "- For mixed fits, the default `effects: 'fixed'` gives the fixed effects, and `summary()` prints the variance components.",
+        "- `effects: 'ran_vals'` gives a mixed fit's random effects, as broom.mixed does: `group`, `level`, `term`, `estimate`, and `std_error`, one row per term, column, and group. The estimates are the conditional modes and the standard errors their conditional standard deviations, as `lme4::ranef(condVar = TRUE)` reports them. Intervals use the normal distribution.",
     ],
     'read_csv' => [
         "Reads a delimited text file into typed columns, with the records, names, guessed types, values, and problem messages of phibble's PHP reader and `readr::read_delim()`.",
@@ -247,7 +248,7 @@ $throws = [
     'draws' => ['\\Exception', 'A code from 1001 to 1005 for an input or numerical error.'],
     'optimize' => ['\\Exception', 'Code 1001 for an input error.'],
     'summary' => ['\\Exception', 'Code 1001 when `fit` is not the result of a model function.'],
-    'tidy' => ['\\Exception', 'Code 1001 when `fit` is not the result of a model function or `level` is outside (0, 1).'],
+    'tidy' => ['\\Exception', "Code 1001 when `fit` is not the result of a model function, `level` is outside (0, 1), or `effects` is not `'fixed'` or `'ran_vals'` (`'ran_vals'` needs a mixed fit)."],
     'read_csv' => ['\\ValueError', 'A missing or unreadable file, or an invalid option.'],
 ];
 

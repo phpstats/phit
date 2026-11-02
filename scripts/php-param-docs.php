@@ -117,4 +117,5 @@ return [
     'tidy:fit' => 'Result of a model function, such as fit_ols() or fit_mixed_gaussian()',
     'tidy:confInt' => 'Add conf_low and conf_high columns',
     'tidy:level' => 'Confidence level of the intervals, in (0, 1)',
+    'tidy:effects' => "'fixed' for the coefficient table, or 'ran_vals' for a mixed fit's random effects",
 ];

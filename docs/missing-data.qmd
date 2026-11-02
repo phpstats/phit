@@ -22,22 +22,13 @@ $cars['hp'][3] = null;
 
 $fit = fit_ols('mpg ~ wt', $cars);
 
-printf(
-    "%d of %d rows used, %d dropped\n",
-    $fit['n_observations'],
-    $fit['n_input'],
-    $fit['n_dropped'],
-);
-printf(
-    "dropped: %s\n%d residuals\n",
-    implode(', ', $fit['dropped_rows']),
-    count($fit['residuals']),
-);
+$accounting = ['n_input', 'n_observations', 'n_dropped', 'dropped_rows'];
+echo json_encode(array_intersect_key($fit, array_flip($accounting))), "\n";
+echo count($fit['residuals']), " residuals\n";
 ```
 
 ```
-30 of 32 rows used, 2 dropped
-dropped: 1, 2
+{"n_input":32,"n_observations":30,"n_dropped":2,"dropped_rows":[1,2]}
 30 residuals
 ```
 

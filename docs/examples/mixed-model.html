@@ -539,7 +539,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="code">Code</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phibble\DataFrame<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\fit_mixed_gaussian<span class="ot">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_mixed_gaussian<span class="ot">,</span> summary<span class="ot">,</span> <span class="bu">tidy</span>}<span class="ot">;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$sleep</span> <span class="op">=</span> DataFrame::fromCsv(</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://raw.githubusercontent.com/phpstats/datasets/main/csv/sleepstudy.csv'</span><span class="ot">,</span></span>
@@ -549,66 +549,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Reaction ~ Days + (1 | Subject)'</span><span class="ot">,</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="va">$sleep</span><span class="ot">,</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$fit</span>[<span class="st">'columns'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$name</span>) {</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">"%-12s %7.2f (se %.2f)</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="va">$name</span><span class="ot">,</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">$fit</span>[<span class="st">'coefficients'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="va">$fit</span>[<span class="st">'std_errors'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="va">$subject</span> <span class="op">=</span> <span class="va">$fit</span>[<span class="st">'random'</span>][<span class="dv">0</span>]<span class="ot">;</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"</span><span class="sc">\n</span><span class="st">subject SD %.2f, residual SD %.2f</span><span class="sc">\n\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sqrt</span>(<span class="va">$subject</span>[<span class="st">'covariance'</span>][<span class="dv">0</span>][<span class="dv">0</span>])<span class="ot">,</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'sigma'</span>]<span class="ot">,</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$subject</span>[<span class="st">'group_labels'</span>] <span class="kw">as</span> <span class="va">$g</span> =&gt; <span class="va">$label</span>) {</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="va">$se</span> <span class="op">=</span> <span class="fu">sqrt</span>(<span class="va">$subject</span>[<span class="st">'effects_cond_var'</span>][<span class="va">$g</span>][<span class="dv">0</span>][<span class="dv">0</span>])<span class="ot">;</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>        <span class="st">"%s %+7.2f (se %.2f)</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>        <span class="va">$label</span><span class="ot">,</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>        <span class="va">$subject</span>[<span class="st">'effects'</span>][<span class="va">$g</span>][<span class="dv">0</span>]<span class="ot">,</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>        <span class="va">$se</span><span class="ot">,</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> summary(<span class="va">$fit</span>)<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> DataFrame::fromColumns(<span class="bu">tidy</span>(<span class="va">$fit</span><span class="ot">,</span> effects<span class="ot">:</span> <span class="st">'ran_vals'</span>))<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="output" class="level2">
 <h2 class="anchored" data-anchor-id="output">Output</h2>
-<pre><code>(Intercept)   251.41 (se 9.75)
-Days           10.47 (se 0.80)
+<pre><code>Linear mixed model fit by REML
+Formula: Reaction ~ Days + (1 | Subject)
 
-subject SD 37.12, residual SD 30.99
+REML criterion at convergence: 1786.5
 
-308  +40.78 (se 9.48)
-309  -77.85 (se 9.48)
-310  -63.11 (se 9.48)
-330   +4.41 (se 9.48)
-331  +10.22 (se 9.48)
-332   +8.22 (se 9.48)
-333  +16.50 (se 9.48)
-334   -3.00 (se 9.48)
-335  -45.28 (se 9.48)
-337  +72.18 (se 9.48)
-349  -21.20 (se 9.48)
-350  +14.11 (se 9.48)
-351   -7.86 (se 9.48)
-352  +36.38 (se 9.48)
-369   +7.04 (se 9.48)
-370   -6.36 (se 9.48)
-371   -3.29 (se 9.48)
-372  +18.12 (se 9.48)</code></pre>
+Random effects:
+Groups   Name        Variance Std.Dev.
+Subject  (Intercept)   1378.2    37.12
+Residual                960.5    30.99
+Number of obs: 180, groups: Subject, 18
+
+Fixed effects:
+            Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept) 251.4051     9.7467   25.79   &lt;2e-16
+Days         10.4673     0.8042   13.02   &lt;2e-16
+
+# A tibble: 18 × 5
+   group   level term        estimate std_error
+   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;
+ 1 Subject 308   (Intercept)    40.8       9.48
+ 2 Subject 309   (Intercept)   -77.8       9.48
+ 3 Subject 310   (Intercept)   -63.1       9.48
+ 4 Subject 330   (Intercept)     4.41      9.48
+ 5 Subject 331   (Intercept)    10.2       9.48
+ 6 Subject 332   (Intercept)     8.22      9.48
+ 7 Subject 333   (Intercept)    16.5       9.48
+ 8 Subject 334   (Intercept)    -3.00      9.48
+ 9 Subject 335   (Intercept)   -45.3       9.48
+10 Subject 337   (Intercept)    72.2       9.48
+11 Subject 349   (Intercept)   -21.2       9.48
+12 Subject 350   (Intercept)    14.1       9.48
+13 Subject 351   (Intercept)    -7.86      9.48
+14 Subject 352   (Intercept)    36.4       9.48
+15 Subject 369   (Intercept)     7.04      9.48
+16 Subject 370   (Intercept)    -6.36      9.48
+17 Subject 371   (Intercept)    -3.29      9.48
+18 Subject 372   (Intercept)    18.1       9.48</code></pre>
 </section>
 <section id="interpretation" class="level2">
 <h2 class="anchored" data-anchor-id="interpretation">Interpretation</h2>
 <ul>
 <li><code>(1 | Subject)</code> gives each subject an intercept of its own, assumed to come from a normal distribution. The fit uses REML, as <code>lme4::lmer()</code> does by default.</li>
 <li>The <code>Days</code> coefficient is the average change in reaction time per additional day of sleep deprivation. The model gives every subject the same slope.</li>
-<li>The subject SD describes how baseline reaction times vary between subjects. The residual SD describes how each subject’s days vary around their own line.</li>
-<li><code>effects</code> are each subject’s predicted intercept relative to the average, as R’s <code>ranef()</code> reports. They are shrunk toward zero, more so for subjects with fewer observations. Every subject here has ten days, so their conditional standard errors are equal.</li>
+<li>The Subject standard deviation (37.12) describes how baseline reaction times vary between subjects. The residual standard deviation (30.99) describes how each subject’s days vary around their own line.</li>
+<li><code>tidy($fit, effects: 'ran_vals')</code> gives each subject’s predicted intercept relative to the average and its conditional standard error, as R’s <code>ranef(condVar = TRUE)</code> and broom.mixed report them. They are shrunk toward zero, more so for subjects with fewer observations. Every subject here has ten days, so their conditional standard errors are equal.</li>
 <li>In these data the slopes also differ between subjects; <code>(Days | Subject)</code> fits a random slope as well. See <a href="../mixed-models.html">Mixed models</a>.</li>
 </ul>
 <p><strong>See also:</strong> <a href="../mixed-models.html">Mixed models</a> for the supported structures, the full result, singular fits, and <code>fit_mixed_logistic()</code></p>

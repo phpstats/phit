@@ -539,7 +539,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The data are <a href="https://github.com/phpstats/datasets#mroz">mroz</a>: 753 married women in 1975, from the Panel Study of Income Dynamics. <code>lfp</code> is <code>yes</code> if the woman was in the labor force, <code>k5</code> is her number of children under 6, <code>age</code> is in years, <code>wc</code> is <code>yes</code> if she attended college, and <code>inc</code> is the family’s income without her earnings, in $1,000.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phibble\DataFrame<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_generalized_linear<span class="ot">,</span> predict}<span class="ot">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_generalized_linear<span class="ot">,</span> predict<span class="ot">,</span> summary<span class="ot">,</span> <span class="bu">tidy</span>}<span class="ot">;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$mroz</span> <span class="op">=</span> DataFrame::fromCsv(</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mroz.csv'</span><span class="ot">,</span></span>
@@ -550,38 +550,59 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="va">$mroz</span><span class="ot">,</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    family<span class="ot">:</span> <span class="st">'binomial'</span><span class="ot">,</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="st">"            log odds   odds ratio, 95% CI</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$logit</span>[<span class="st">'columns'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$name</span>) {</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="va">$b</span> <span class="op">=</span> <span class="va">$logit</span>[<span class="st">'coefficients'</span>][<span class="va">$i</span>]<span class="ot">;</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="va">$ci</span> <span class="op">=</span> <span class="fu">array_map</span>(<span class="st">'exp'</span><span class="ot">,</span> <span class="va">$logit</span>[<span class="st">'conf_int'</span>][<span class="va">$i</span>])<span class="ot">;</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"%-11s %8.3f   %6.3f [%.3f, %.3f]</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">$name</span><span class="ot">,</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        <span class="va">$b</span><span class="ot">,</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="fu">exp</span>(<span class="va">$b</span>)<span class="ot">,</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        ...<span class="va">$ci</span><span class="ot">,</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="va">$women</span> <span class="op">=</span> [</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">'k5'</span> =&gt; [<span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span>]<span class="ot">,</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">'age'</span> =&gt; [<span class="dv">35</span><span class="ot">,</span> <span class="dv">35</span>]<span class="ot">,</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">'wc'</span> =&gt; [<span class="st">'no'</span><span class="ot">,</span> <span class="st">'no'</span>]<span class="ot">,</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">'inc'</span> =&gt; [<span class="dv">20</span><span class="ot">,</span> <span class="dv">20</span>]<span class="ot">,</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> predict(<span class="va">$logit</span><span class="ot">,</span> <span class="va">$women</span><span class="ot">,</span> type<span class="ot">:</span> <span class="st">'response'</span>)<span class="ot">;</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">"P(in labor force), age 35: %.3f with no young child, %.3f with one</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    ...<span class="va">$p</span>[<span class="st">'fit'</span>]<span class="ot">,</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>            log odds   odds ratio, 95% CI
-(Intercept)    3.386   29.558 [10.498, 83.223]
-k5            -1.430    0.239 [0.165, 0.348]
-age           -0.057    0.945 [0.924, 0.966]
-wcyes          1.082    2.950 [2.001, 4.350]
-inc           -0.031    0.969 [0.955, 0.984]
-P(in labor force), age 35: 0.684 with no young child, 0.341 with one</code></pre>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> summary(<span class="va">$logit</span>)<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="va">$t</span> <span class="op">=</span> <span class="bu">tidy</span>(<span class="va">$logit</span><span class="ot">,</span> confInt<span class="ot">:</span> <span class="kw">true</span>)<span class="ot">;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> DataFrame::fromColumns([</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'term'</span> =&gt; <span class="va">$t</span>[<span class="st">'term'</span>]<span class="ot">,</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">'odds_ratio'</span> =&gt; <span class="fu">array_map</span>(<span class="st">'exp'</span><span class="ot">,</span> <span class="va">$t</span>[<span class="st">'estimate'</span>])<span class="ot">,</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">'conf_low'</span> =&gt; <span class="fu">array_map</span>(<span class="st">'exp'</span><span class="ot">,</span> <span class="va">$t</span>[<span class="st">'conf_low'</span>])<span class="ot">,</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'conf_high'</span> =&gt; <span class="fu">array_map</span>(<span class="st">'exp'</span><span class="ot">,</span> <span class="va">$t</span>[<span class="st">'conf_high'</span>])<span class="ot">,</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>])<span class="ot">,</span> <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span><span class="ot">;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="va">$women</span> <span class="op">=</span> [</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">'k5'</span> =&gt; [<span class="dv">0</span><span class="ot">,</span> <span class="dv">1</span>]<span class="ot">,</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">'age'</span> =&gt; [<span class="dv">35</span><span class="ot">,</span> <span class="dv">35</span>]<span class="ot">,</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">'wc'</span> =&gt; [<span class="st">'no'</span><span class="ot">,</span> <span class="st">'no'</span>]<span class="ot">,</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">'inc'</span> =&gt; [<span class="dv">20</span><span class="ot">,</span> <span class="dv">20</span>]<span class="ot">,</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> predict(<span class="va">$logit</span><span class="ot">,</span> <span class="va">$women</span><span class="ot">,</span> type<span class="ot">:</span> <span class="st">'response'</span>)<span class="ot">;</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> DataFrame::fromColumns([</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">'k5'</span> =&gt; <span class="va">$women</span>[<span class="st">'k5'</span>]<span class="ot">,</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">'probability'</span> =&gt; <span class="va">$p</span>[<span class="st">'fit'</span>]<span class="ot">,</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>])<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Generalized linear model fit by maximum likelihood
+Family: binomial (logit)
+Formula: lfp ~ k5 + age + wc + inc
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)  3.38634    0.52816   6.412 1.44e-10
+k5          -1.42976    0.19123  -7.477 7.62e-14
+age         -0.05672    0.01128  -5.030 4.90e-07
+wcyes        1.08181    0.19811   5.461 4.74e-08
+inc         -0.03141    0.00765  -4.105 4.04e-05
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 1029.75 on 752 degrees of freedom
+Residual deviance:  924.31 on 748 degrees of freedom
+AIC: 934.31
+
+# A tibble: 5 × 4
+  term        odds_ratio conf_low conf_high
+  &lt;chr&gt;            &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)     29.6     10.5      83.2  
+2 k5               0.239    0.165     0.348
+3 age              0.945    0.924     0.966
+4 wcyes            2.95     2.00      4.35 
+5 inc              0.969    0.955     0.984
+
+# A tibble: 2 × 2
+     k5 probability
+  &lt;int&gt;       &lt;dbl&gt;
+1     0       0.684
+2     1       0.341</code></pre>
 <ul>
 <li><code>lfp</code> is a string column, so it becomes a factor. Its first level, <code>no</code>, is failure, and the model gives the log odds of <code>yes</code>.</li>
 <li><code>exp()</code> turns a log-odds coefficient into an odds ratio, with the other predictors held fixed. <code>wcyes</code> compares women who attended college with women who did not.</li>
@@ -594,7 +615,7 @@ P(in labor force), age 35: 0.684 with no young child, 0.341 with one</code></pre
 <p>The data are <a href="https://github.com/phpstats/datasets#insurance">insurance</a>: car insurance claims in the third quarter of 1973 for 64 groups of policyholders. <code>Claims</code> is the number of claims, <code>Holders</code> the number of policyholders, and <code>District</code> the district of residence, where 4 is the major cities.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phibble\DataFrame<span class="ot">;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\fit_generalized_linear<span class="ot">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_generalized_linear<span class="ot">,</span> summary}<span class="ot">;</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="va">$insurance</span> <span class="op">=</span> DataFrame::fromCsv(</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://raw.githubusercontent.com/phpstats/datasets/main/csv/insurance.csv'</span><span class="ot">,</span></span>
@@ -605,30 +626,23 @@ P(in labor force), age 35: 0.684 with no young child, 0.341 with one</code></pre
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="va">$insurance</span><span class="ot">,</span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    family<span class="ot">:</span> <span class="st">'poisson'</span><span class="ot">,</span></span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="st">"                  log rate   exp, 95% CI</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$poisson</span>[<span class="st">'columns'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$name</span>) {</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="va">$b</span> <span class="op">=</span> <span class="va">$poisson</span>[<span class="st">'coefficients'</span>][<span class="va">$i</span>]<span class="ot">;</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="va">$ci</span> <span class="op">=</span> <span class="fu">array_map</span>(<span class="st">'exp'</span><span class="ot">,</span> <span class="va">$poisson</span>[<span class="st">'conf_int'</span>][<span class="va">$i</span>])<span class="ot">;</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"%-16s %8.3f   %.3f [%.3f, %.3f]</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">$name</span><span class="ot">,</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="va">$b</span><span class="ot">,</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        <span class="fu">exp</span>(<span class="va">$b</span>)<span class="ot">,</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        ...<span class="va">$ci</span><span class="ot">,</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"residual deviance %.1f on %d df</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="va">$poisson</span>[<span class="st">'deviance'</span>]<span class="ot">,</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="va">$poisson</span>[<span class="st">'df_residual'</span>]<span class="ot">,</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>                  log rate   exp, 95% CI
-(Intercept)        -2.033   0.131 [0.124, 0.138]
-factor(District)2    0.022   1.023 [0.940, 1.112]
-factor(District)3    0.013   1.013 [0.918, 1.118]
-factor(District)4    0.222   1.248 [1.106, 1.409]
-residual deviance 223.5 on 60 df</code></pre>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> summary(<span class="va">$poisson</span>)<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Generalized linear model fit by maximum likelihood
+Family: poisson (log)
+Formula: Claims ~ factor(District) + offset(log(Holders))
+
+Coefficients:
+                  Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)       -2.03284    0.02691 -75.544  &lt; 2e-16
+factor(District)2  0.02237    0.04297   0.520 0.602729
+factor(District)3  0.01325    0.05032   0.263 0.792316
+factor(District)4  0.22184    0.06158   3.603 0.000315
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 236.26 on 63 degrees of freedom
+Residual deviance: 223.53 on 60 degrees of freedom
+AIC: 548.85</code></pre>
 <ul>
 <li><code>offset(log(Holders))</code> puts the model on claims per policyholder, so groups of different sizes are comparable.</li>
 <li>District 1 is the reference. The exponentiated intercept is its claim rate per policyholder, and each district coefficient’s exponent is that district’s rate ratio to district 1.</li>

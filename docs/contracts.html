@@ -505,8 +505,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#deprecated-aliases" id="toc-deprecated-aliases" class="nav-link active" data-scroll-target="#deprecated-aliases">Deprecated aliases</a></li>
-  <li><a href="#signatures" id="toc-signatures" class="nav-link" data-scroll-target="#signatures">Signatures</a></li>
+  <li><a href="#signatures" id="toc-signatures" class="nav-link active" data-scroll-target="#signatures">Signatures</a></li>
   <li><a href="#formula-interfaces" id="toc-formula-interfaces" class="nav-link" data-scroll-target="#formula-interfaces">Formula interfaces</a></li>
   <li><a href="#matrix-model-contracts" id="toc-matrix-model-contracts" class="nav-link" data-scroll-target="#matrix-model-contracts">Matrix model contracts</a></li>
   <li><a href="#fixed-intercept-convention-and-migration" id="toc-fixed-intercept-convention-and-migration" class="nav-link" data-scroll-target="#fixed-intercept-convention-and-migration">Fixed intercept</a></li>
@@ -599,10 +598,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Import the functions you use:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_ols<span class="ot">,</span> predict<span class="ot">,</span> dist_normal_quantile}<span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>stubs/phit.php</code> in the repository declares every signature with PHPDoc array shapes for IDEs and static analysis. Do not load it at runtime.</p>
-<section id="deprecated-aliases" class="level2">
-<h2 class="anchored" data-anchor-id="deprecated-aliases">Deprecated aliases</h2>
-<p><code>fit_lm</code>, <code>fit_glm</code>, <code>fit_lmer</code>, <code>fit_glmer</code>, <code>fit_logistic</code>, <code>fit_probit</code>, <code>fit_poisson</code>, <code>fit_mixed</code>, <code>fit_mixed_intercept</code>, and <code>fit_logistic_mixed</code>, and <code>fit_ols</code> called with a matrix, still exist as deprecated aliases: each call raises <code>E_USER_DEPRECATED</code> that names the current function and returns its result.</p>
-</section>
 <section id="signatures" class="level2">
 <h2 class="anchored" data-anchor-id="signatures">Signatures</h2>
 <p>The formula functions are listed in <a href="./formulas.html">Model formulas</a>. The four fixed-effect matrix functions share one signature:</p>

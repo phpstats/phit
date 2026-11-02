@@ -550,9 +550,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Read a delimited text file into typed columns with <code>read_csv()</code>, or a chunk of rows at a time with <code>CsvReader</code>. The parsing rules follow readr 2 (<code>readr::read_delim()</code>) as phibble’s PHP reader implements them. These are the native readers behind phibble’s <code>DataFrame::fromCsv()</code>, <code>csvChunks()</code>, and <code>fromCsvChunked()</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span> <span class="op">=</span> Phit\read_csv(<span class="st">'housing.csv'</span>)<span class="ot">;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span>[<span class="st">'names'</span>]<span class="ot">;</span>   <span class="co">// ['area_m2', 'bedrooms', 'monthly_rent']</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span>[<span class="st">'columns'</span>]<span class="ot">;</span> <span class="co">// Typed float, int, and float.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// mtcars.csv from https://github.com/phpstats/datasets</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span> <span class="op">=</span> Phit\read_csv(<span class="st">'mtcars.csv'</span>)<span class="ot">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span>[<span class="st">'names'</span>]<span class="ot">;</span>   <span class="co">// ['rownames', 'mpg', 'cyl', 'disp', 'hp', ...]</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span>[<span class="st">'columns'</span>]<span class="ot">;</span> <span class="co">// Typed string, float, int, float, int, ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The CSV readers need the extension. The <a href="./extension-or-polyfill.html">polyfill</a> does not provide them.</p>
 <p><code>read_csv()</code> is narrower than <code>DataFrame::fromCsv()</code>, which adds these in PHP around the native call:</p>
 <ul>

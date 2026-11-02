@@ -539,59 +539,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="code">Code</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phibble\DataFrame<span class="ot">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_ols<span class="ot">,</span> predict}<span class="ot">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\{fit_ols<span class="ot">,</span> predict<span class="ot">,</span> summary}<span class="ot">;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">$cars</span> <span class="op">=</span> DataFrame::fromCsv(</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv'</span><span class="ot">,</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_ols(<span class="st">'mpg ~ wt + factor(cyl)'</span><span class="ot">,</span> <span class="va">$cars</span>)<span class="ot">;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$fit</span>[<span class="st">'columns'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$name</span>) {</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"%-14s %7.2f  95%% CI [%6.2f, %6.2f]</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">$name</span><span class="ot">,</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        <span class="va">$fit</span>[<span class="st">'coefficients'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        ...<span class="va">$fit</span>[<span class="st">'conf_int'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">printf</span>(</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R-squared %.3f, residual SD %.2f</span><span class="sc">\n\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'r_squared'</span>]<span class="ot">,</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="va">$fit</span>[<span class="st">'sigma'</span>]<span class="ot">,</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="va">$new</span> <span class="op">=</span> [<span class="st">'wt'</span> =&gt; [<span class="fl">2.5</span><span class="ot">,</span> <span class="fl">3.5</span>]<span class="ot">,</span> <span class="st">'cyl'</span> =&gt; [<span class="dv">4</span><span class="ot">,</span> <span class="dv">8</span>]]<span class="ot">;</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> predict(<span class="va">$fit</span><span class="ot">,</span> <span class="va">$new</span><span class="ot">,</span> interval<span class="ot">:</span> <span class="st">'prediction'</span>)<span class="ot">;</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> (<span class="va">$p</span>[<span class="st">'fit'</span>] <span class="kw">as</span> <span class="va">$i</span> =&gt; <span class="va">$mpg</span>) {</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">printf</span>(</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        <span class="st">"%5.0f lb, %d cyl %6.2f  95%% PI [%5.2f, %5.2f]</span><span class="sc">\n</span><span class="st">"</span><span class="ot">,</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1000</span> <span class="op">*</span> <span class="va">$new</span>[<span class="st">'wt'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>        <span class="va">$new</span>[<span class="st">'cyl'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>        <span class="va">$mpg</span><span class="ot">,</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>        <span class="va">$p</span>[<span class="st">'lower'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>        <span class="va">$p</span>[<span class="st">'upper'</span>][<span class="va">$i</span>]<span class="ot">,</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    )<span class="ot">;</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> summary(<span class="va">$fit</span>)<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="va">$new</span> <span class="op">=</span> [<span class="st">'wt'</span> =&gt; [<span class="fl">2.5</span><span class="ot">,</span> <span class="fl">3.5</span>]<span class="ot">,</span> <span class="st">'cyl'</span> =&gt; [<span class="dv">4</span><span class="ot">,</span> <span class="dv">8</span>]]<span class="ot">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="va">$p</span> <span class="op">=</span> predict(<span class="va">$fit</span><span class="ot">,</span> <span class="va">$new</span><span class="ot">,</span> interval<span class="ot">:</span> <span class="st">'prediction'</span>)<span class="ot">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> DataFrame::fromColumns([</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">'wt'</span> =&gt; <span class="va">$new</span>[<span class="st">'wt'</span>]<span class="ot">,</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cyl'</span> =&gt; <span class="va">$new</span>[<span class="st">'cyl'</span>]<span class="ot">,</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mpg'</span> =&gt; <span class="va">$p</span>[<span class="st">'fit'</span>]<span class="ot">,</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">'lower'</span> =&gt; <span class="va">$p</span>[<span class="st">'lower'</span>]<span class="ot">,</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">'upper'</span> =&gt; <span class="va">$p</span>[<span class="st">'upper'</span>]<span class="ot">,</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>])<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="output" class="level2">
 <h2 class="anchored" data-anchor-id="output">Output</h2>
-<pre><code>(Intercept)      33.99  95% CI [ 30.12,  37.86]
-wt               -3.21  95% CI [ -4.75,  -1.66]
-factor(cyl)6     -4.26  95% CI [ -7.09,  -1.42]
-factor(cyl)8     -6.07  95% CI [ -9.46,  -2.69]
-R-squared 0.837, residual SD 2.56
+<pre><code>Linear model fit by least squares
+Formula: mpg ~ wt + factor(cyl)
 
- 2500 lb, 4 cyl  25.98  95% PI [20.50, 31.46]
- 3500 lb, 8 cyl  16.70  95% PI [11.22, 22.18]</code></pre>
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   33.9908     1.8878  18.006  &lt; 2e-16
+wt            -3.2056     0.7539  -4.252 0.000213
+factor(cyl)6  -4.2556     1.3861  -3.070 0.004718
+factor(cyl)8  -6.0709     1.6523  -3.674 0.000999
+
+Residual standard error: 2.557 on 28 degrees of freedom
+Multiple R-squared: 0.8374, Adjusted R-squared: 0.82
+F-statistic: 48.08 on 3 and 28 DF, p-value: 3.594e-11
+
+# A tibble: 2 × 5
+     wt   cyl   mpg lower upper
+  &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1   2.5     4  26.0  20.5  31.5
+2   3.5     8  16.7  11.2  22.2</code></pre>
 </section>
 <section id="interpretation" class="level2">
 <h2 class="anchored" data-anchor-id="interpretation">Interpretation</h2>
 <ul>
 <li><code>factor(cyl)</code> treats the number of cylinders as categories. Four cylinders is the reference, and <code>factor(cyl)6</code> and <code>factor(cyl)8</code> compare six and eight cylinders with four for cars of the same weight.</li>
 <li>The <code>wt</code> coefficient is the difference in miles per gallon associated with 1,000 lb more weight among cars with the same number of cylinders. It describes these 32 cars, not the effect of adding weight to a car.</li>
-<li>With 32 cars and correlated predictors, the intervals are wide.</li>
+<li>With 32 cars and correlated predictors, the standard errors are large relative to the estimates.</li>
 <li>A prediction interval covers one new car’s mileage. A confidence interval (<code>interval: 'confidence'</code>) covers the mean mileage of such cars and is narrower.</li>
 </ul>
 <p><strong>See also:</strong> <a href="../getting-started.html">A first model</a> · <a href="../models.html">Linear and generalized linear models</a> · <a href="../formulas.html">Model formulas</a></p>

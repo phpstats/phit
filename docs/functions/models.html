@@ -519,6 +519,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#fit_probit_matrix" id="toc-fit_probit_matrix" class="nav-link" data-scroll-target="#fit_probit_matrix"><code>fit_probit_matrix()</code></a></li>
   <li><a href="#fit_poisson_matrix" id="toc-fit_poisson_matrix" class="nav-link" data-scroll-target="#fit_poisson_matrix"><code>fit_poisson_matrix()</code></a></li>
   </ul></li>
+  <li><a href="#printing-results" id="toc-printing-results" class="nav-link" data-scroll-target="#printing-results">Printing results</a>
+  <ul class="collapse">
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><code>summary()</code></a></li>
+  <li><a href="#tidy" id="toc-tidy" class="nav-link" data-scroll-target="#tidy"><code>tidy()</code></a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -557,7 +562,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Factor levels left unused after missing rows are dropped are removed, as <code>lm()</code> does.</li>
 <li>A rank-deficient design throws instead of returning R’s <code>NA</code> coefficients.</li>
 <li>Rows with <code>null</code> or <code>NAN</code> in a variable the formula uses are dropped with one warning; <code>missing: 'raise'</code> rejects them instead. <code>retained_rows</code> and <code>dropped_rows</code> give the original row positions.</li>
-<li>An array as the first argument is deprecated; use <code>fit_ols_matrix()</code>.</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_ols(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$formula</span><span class="ot">,</span></span>
@@ -585,7 +589,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$formula</code></td>
 <td><code>string</code></td>
 <td>required</td>
-<td>R formula, such as <code>'y ~ log(x) + f * z + offset(log(t))'</code>; an array here is the deprecated matrix form</td>
+<td>R formula, such as <code>'y ~ log(x) + f * z + offset(log(t))'</code></td>
 </tr>
 <tr class="even">
 <td><code>$data</code></td>
@@ -609,36 +613,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Returns</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">array</span>{</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  coefficients<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  covariance<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  std_errors<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  p_values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  conf_int<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">array</span>{<span class="dt">float</span><span class="ot">,</span><span class="dt">float</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  fitted<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  residuals<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  log_likelihood<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  df_residual<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  diagnostics<span class="ot">:</span> <span class="dt">array</span>{converged<span class="ot">:</span><span class="dt">bool</span><span class="ot">,</span>solver<span class="ot">:</span><span class="dt">string</span><span class="ot">,</span>warnings<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span>iterations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>evaluations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>gradient_max<span class="ot">?:</span><span class="dt">float</span><span class="ot">,</span>boundary<span class="ot">?:</span><span class="dt">bool</span><span class="ot">,</span>singular<span class="ot">?:</span><span class="dt">bool</span>}<span class="ot">,</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  n_input<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  n_observations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  n_dropped<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  retained_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  dropped_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  t_statistics<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  rss<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  residual_variance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  sigma<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  r_squared<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  adj_r_squared<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  formula<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  response<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  columns<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  terms<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  assign<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  intercept<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  named<span class="ot">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  predvars<span class="ot">:</span> <span class="dt">array</span>{levels<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;&gt;</span><span class="ot">,</span>poly<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">array</span>{alpha<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span>norm2<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span>}<span class="op">&gt;</span>}<span class="ot">,</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  model<span class="ot">:</span> <span class="st">'linear'</span><span class="op">|</span><span class="st">'generalized_linear'</span><span class="op">|</span><span class="st">'mixed_gaussian'</span><span class="op">|</span><span class="st">'mixed_logistic'</span><span class="ot">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  coefficients<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  covariance<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  std_errors<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  p_values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  conf_int<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">array</span>{<span class="dt">float</span><span class="ot">,</span><span class="dt">float</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  fitted<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  residuals<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  log_likelihood<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  df_residual<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  diagnostics<span class="ot">:</span> <span class="dt">array</span>{converged<span class="ot">:</span><span class="dt">bool</span><span class="ot">,</span>solver<span class="ot">:</span><span class="dt">string</span><span class="ot">,</span>warnings<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span>iterations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>evaluations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>gradient_max<span class="ot">?:</span><span class="dt">float</span><span class="ot">,</span>boundary<span class="ot">?:</span><span class="dt">bool</span><span class="ot">,</span>singular<span class="ot">?:</span><span class="dt">bool</span>}<span class="ot">,</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  n_input<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  n_observations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  n_dropped<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  retained_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  dropped_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  t_statistics<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  rss<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  residual_variance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  sigma<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  r_squared<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  adj_r_squared<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  formula<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  response<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  columns<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  terms<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  assign<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  intercept<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  named<span class="ot">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  predvars<span class="ot">:</span> <span class="dt">array</span>{levels<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;&gt;</span><span class="ot">,</span>poly<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">array</span>{alpha<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span>norm2<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span>}<span class="op">&gt;</span>}<span class="ot">,</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.</p>
 <p><strong>See also</strong> <a href="../formulas.html#fit_ols-and-fit_generalized_linear">Details</a> · <a href="../examples/linear-model.html">Example</a></p>
 </section>
@@ -714,44 +719,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Returns</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">array</span>{</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  coefficients<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  covariance<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  std_errors<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  p_values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  conf_int<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">array</span>{<span class="dt">float</span><span class="ot">,</span><span class="dt">float</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  fitted<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  residuals<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  log_likelihood<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  df_residual<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  diagnostics<span class="ot">:</span> <span class="dt">array</span>{converged<span class="ot">:</span><span class="dt">bool</span><span class="ot">,</span>solver<span class="ot">:</span><span class="dt">string</span><span class="ot">,</span>warnings<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span>iterations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>evaluations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>gradient_max<span class="ot">?:</span><span class="dt">float</span><span class="ot">,</span>boundary<span class="ot">?:</span><span class="dt">bool</span><span class="ot">,</span>singular<span class="ot">?:</span><span class="dt">bool</span>}<span class="ot">,</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  n_input<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  n_observations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  n_dropped<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  retained_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  dropped_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  z_statistics<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  null_deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  aic<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  iterations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  converged<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  family<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">link</span><span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  formula<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  response<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  columns<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  terms<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  assign<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  intercept<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  named<span class="ot">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  predvars<span class="ot">:</span> <span class="dt">array</span>{levels<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;&gt;</span><span class="ot">,</span>poly<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">array</span>{alpha<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span>norm2<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span>}<span class="op">&gt;</span>}<span class="ot">,</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  t_statistics<span class="ot">?:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  rss<span class="ot">?:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  residual_variance<span class="ot">?:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  sigma<span class="ot">?:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  r_squared<span class="ot">?:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  adj_r_squared<span class="ot">?:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  model<span class="ot">:</span> <span class="st">'linear'</span><span class="op">|</span><span class="st">'generalized_linear'</span><span class="op">|</span><span class="st">'mixed_gaussian'</span><span class="op">|</span><span class="st">'mixed_logistic'</span><span class="ot">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  coefficients<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  covariance<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  std_errors<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  p_values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  conf_int<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">array</span>{<span class="dt">float</span><span class="ot">,</span><span class="dt">float</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  fitted<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  residuals<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  log_likelihood<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  df_residual<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  diagnostics<span class="ot">:</span> <span class="dt">array</span>{converged<span class="ot">:</span><span class="dt">bool</span><span class="ot">,</span>solver<span class="ot">:</span><span class="dt">string</span><span class="ot">,</span>warnings<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span>iterations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>evaluations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>gradient_max<span class="ot">?:</span><span class="dt">float</span><span class="ot">,</span>boundary<span class="ot">?:</span><span class="dt">bool</span><span class="ot">,</span>singular<span class="ot">?:</span><span class="dt">bool</span>}<span class="ot">,</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  n_input<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  n_observations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  n_dropped<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  retained_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  dropped_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  z_statistics<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  null_deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  aic<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  iterations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  converged<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  family<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">link</span><span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  formula<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  response<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  columns<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  terms<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  assign<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  intercept<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  named<span class="ot">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  predvars<span class="ot">:</span> <span class="dt">array</span>{levels<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;&gt;</span><span class="ot">,</span>poly<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">array</span>{alpha<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span>norm2<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span>}<span class="op">&gt;</span>}<span class="ot">,</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  t_statistics<span class="ot">?:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  rss<span class="ot">?:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  residual_variance<span class="ot">?:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  sigma<span class="ot">?:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  r_squared<span class="ot">?:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>  adj_r_squared<span class="ot">?:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.</p>
 <p><strong>See also</strong> <a href="../formulas.html#fit_ols-and-fit_generalized_linear">Details</a> · <a href="../examples/glm.html">Example</a></p>
 </section>
@@ -1005,28 +1011,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Returns</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">array</span>{</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  coefficients<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  covariance<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  std_errors<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  p_values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  conf_int<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">array</span>{<span class="dt">float</span><span class="ot">,</span><span class="dt">float</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  fitted<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  residuals<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  log_likelihood<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  df_residual<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  diagnostics<span class="ot">:</span> <span class="dt">array</span>{converged<span class="ot">:</span><span class="dt">bool</span><span class="ot">,</span>solver<span class="ot">:</span><span class="dt">string</span><span class="ot">,</span>warnings<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span>iterations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>evaluations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>gradient_max<span class="ot">?:</span><span class="dt">float</span><span class="ot">,</span>boundary<span class="ot">?:</span><span class="dt">bool</span><span class="ot">,</span>singular<span class="ot">?:</span><span class="dt">bool</span>}<span class="ot">,</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  n_input<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  n_observations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  n_dropped<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  retained_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  dropped_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  t_statistics<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  rss<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  residual_variance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  sigma<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  r_squared<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  adj_r_squared<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  model<span class="ot">:</span> <span class="st">'linear'</span><span class="op">|</span><span class="st">'generalized_linear'</span><span class="op">|</span><span class="st">'mixed_gaussian'</span><span class="op">|</span><span class="st">'mixed_logistic'</span><span class="ot">,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  coefficients<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  covariance<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  std_errors<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  p_values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  conf_int<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">array</span>{<span class="dt">float</span><span class="ot">,</span><span class="dt">float</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  fitted<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  residuals<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  log_likelihood<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  df_residual<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  diagnostics<span class="ot">:</span> <span class="dt">array</span>{converged<span class="ot">:</span><span class="dt">bool</span><span class="ot">,</span>solver<span class="ot">:</span><span class="dt">string</span><span class="ot">,</span>warnings<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span>iterations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>evaluations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>gradient_max<span class="ot">?:</span><span class="dt">float</span><span class="ot">,</span>boundary<span class="ot">?:</span><span class="dt">bool</span><span class="ot">,</span>singular<span class="ot">?:</span><span class="dt">bool</span>}<span class="ot">,</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  n_input<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  n_observations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  n_dropped<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  retained_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  dropped_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  t_statistics<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  rss<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  residual_variance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  sigma<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  r_squared<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  adj_r_squared<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1008 for an input or statistical error.</p>
 <p><strong>See also</strong> <a href="../reference-models.html#ols-input-and-output">Details</a></p>
 </section>
@@ -1101,28 +1108,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Returns</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">array</span>{</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  coefficients<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  covariance<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  std_errors<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  p_values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  conf_int<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">array</span>{<span class="dt">float</span><span class="ot">,</span><span class="dt">float</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  fitted<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  residuals<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  log_likelihood<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  df_residual<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  diagnostics<span class="ot">:</span> <span class="dt">array</span>{converged<span class="ot">:</span><span class="dt">bool</span><span class="ot">,</span>solver<span class="ot">:</span><span class="dt">string</span><span class="ot">,</span>warnings<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span>iterations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>evaluations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>gradient_max<span class="ot">?:</span><span class="dt">float</span><span class="ot">,</span>boundary<span class="ot">?:</span><span class="dt">bool</span><span class="ot">,</span>singular<span class="ot">?:</span><span class="dt">bool</span>}<span class="ot">,</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  n_input<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  n_observations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  n_dropped<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  retained_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  dropped_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  z_statistics<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  null_deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  aic<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  iterations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  converged<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  model<span class="ot">:</span> <span class="st">'linear'</span><span class="op">|</span><span class="st">'generalized_linear'</span><span class="op">|</span><span class="st">'mixed_gaussian'</span><span class="op">|</span><span class="st">'mixed_logistic'</span><span class="ot">,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  coefficients<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  covariance<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  std_errors<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  p_values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  conf_int<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">array</span>{<span class="dt">float</span><span class="ot">,</span><span class="dt">float</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  fitted<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  residuals<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  log_likelihood<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  df_residual<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  diagnostics<span class="ot">:</span> <span class="dt">array</span>{converged<span class="ot">:</span><span class="dt">bool</span><span class="ot">,</span>solver<span class="ot">:</span><span class="dt">string</span><span class="ot">,</span>warnings<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span>iterations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>evaluations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>gradient_max<span class="ot">?:</span><span class="dt">float</span><span class="ot">,</span>boundary<span class="ot">?:</span><span class="dt">bool</span><span class="ot">,</span>singular<span class="ot">?:</span><span class="dt">bool</span>}<span class="ot">,</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  n_input<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  n_observations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  n_dropped<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  retained_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  dropped_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  z_statistics<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  null_deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  aic<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  iterations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  converged<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1008 for an input or statistical error.</p>
 <p><strong>See also</strong> <a href="../reference-models.html#binary-logistic-regression">Details</a></p>
 </section>
@@ -1197,28 +1205,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Returns</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="dt">array</span>{</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  coefficients<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  covariance<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  std_errors<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  p_values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  conf_int<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">array</span>{<span class="dt">float</span><span class="ot">,</span><span class="dt">float</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  fitted<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  residuals<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  log_likelihood<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  df_residual<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  diagnostics<span class="ot">:</span> <span class="dt">array</span>{converged<span class="ot">:</span><span class="dt">bool</span><span class="ot">,</span>solver<span class="ot">:</span><span class="dt">string</span><span class="ot">,</span>warnings<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span>iterations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>evaluations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>gradient_max<span class="ot">?:</span><span class="dt">float</span><span class="ot">,</span>boundary<span class="ot">?:</span><span class="dt">bool</span><span class="ot">,</span>singular<span class="ot">?:</span><span class="dt">bool</span>}<span class="ot">,</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  n_input<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  n_observations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  n_dropped<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  retained_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  dropped_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  z_statistics<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  null_deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  aic<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  iterations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  converged<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  model<span class="ot">:</span> <span class="st">'linear'</span><span class="op">|</span><span class="st">'generalized_linear'</span><span class="op">|</span><span class="st">'mixed_gaussian'</span><span class="op">|</span><span class="st">'mixed_logistic'</span><span class="ot">,</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  coefficients<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  covariance<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  std_errors<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  p_values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  conf_int<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">array</span>{<span class="dt">float</span><span class="ot">,</span><span class="dt">float</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  fitted<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  residuals<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  log_likelihood<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  df_residual<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  diagnostics<span class="ot">:</span> <span class="dt">array</span>{converged<span class="ot">:</span><span class="dt">bool</span><span class="ot">,</span>solver<span class="ot">:</span><span class="dt">string</span><span class="ot">,</span>warnings<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span>iterations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>evaluations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>gradient_max<span class="ot">?:</span><span class="dt">float</span><span class="ot">,</span>boundary<span class="ot">?:</span><span class="dt">bool</span><span class="ot">,</span>singular<span class="ot">?:</span><span class="dt">bool</span>}<span class="ot">,</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  n_input<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  n_observations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  n_dropped<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  retained_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  dropped_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  z_statistics<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  null_deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  aic<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  iterations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  converged<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1008 for an input or statistical error.</p>
 <p><strong>See also</strong> <a href="../reference-models.html#probit-regression">Details</a></p>
 </section>
@@ -1293,30 +1302,134 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Returns</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="dt">array</span>{</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  coefficients<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  covariance<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  std_errors<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  p_values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  conf_int<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">array</span>{<span class="dt">float</span><span class="ot">,</span><span class="dt">float</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  fitted<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  residuals<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  log_likelihood<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  df_residual<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  diagnostics<span class="ot">:</span> <span class="dt">array</span>{converged<span class="ot">:</span><span class="dt">bool</span><span class="ot">,</span>solver<span class="ot">:</span><span class="dt">string</span><span class="ot">,</span>warnings<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span>iterations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>evaluations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>gradient_max<span class="ot">?:</span><span class="dt">float</span><span class="ot">,</span>boundary<span class="ot">?:</span><span class="dt">bool</span><span class="ot">,</span>singular<span class="ot">?:</span><span class="dt">bool</span>}<span class="ot">,</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  n_input<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  n_observations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  n_dropped<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  retained_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  dropped_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  z_statistics<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  null_deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  aic<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  iterations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  converged<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  model<span class="ot">:</span> <span class="st">'linear'</span><span class="op">|</span><span class="st">'generalized_linear'</span><span class="op">|</span><span class="st">'mixed_gaussian'</span><span class="op">|</span><span class="st">'mixed_logistic'</span><span class="ot">,</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  coefficients<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  covariance<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;&gt;</span><span class="ot">,</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  std_errors<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  p_values<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  conf_int<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">array</span>{<span class="dt">float</span><span class="ot">,</span><span class="dt">float</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  fitted<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  residuals<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  log_likelihood<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  df_residual<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  diagnostics<span class="ot">:</span> <span class="dt">array</span>{converged<span class="ot">:</span><span class="dt">bool</span><span class="ot">,</span>solver<span class="ot">:</span><span class="dt">string</span><span class="ot">,</span>warnings<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span>iterations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>evaluations<span class="ot">?:</span><span class="dt">int</span><span class="ot">,</span>gradient_max<span class="ot">?:</span><span class="dt">float</span><span class="ot">,</span>boundary<span class="ot">?:</span><span class="dt">bool</span><span class="ot">,</span>singular<span class="ot">?:</span><span class="dt">bool</span>}<span class="ot">,</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  n_input<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  n_observations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  n_dropped<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  retained_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  dropped_rows<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">int</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  z_statistics<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  null_deviance<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  aic<span class="ot">:</span> <span class="dt">float</span><span class="ot">,</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  iterations<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  converged<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1008 for an input or statistical error.</p>
 <p><strong>See also</strong> <a href="../reference-models.html#poisson-regression">Details</a></p>
+</section>
+</section>
+<section id="printing-results" class="level2">
+<h2 class="anchored" data-anchor-id="printing-results">Printing results</h2>
+<section id="summary" class="level3">
+<h3 class="anchored" data-anchor-id="summary"><code>summary()</code></h3>
+<p>Prints a model fit in the layout of R’s <code>print(summary(fit))</code>, as text ending in a newline.</p>
+<ul>
+<li>Takes the result of any model function: OLS and GLM fits, formula or matrix, and Gaussian and logistic mixed fits.</li>
+<li>The coefficient table follows R’s <code>printCoefmat(digits = 4)</code> without significance stars. A linear model adds the residual standard error, R-squared, and the F statistic; a GLM adds the dispersion, deviances, and AIC; a mixed model adds its fit criteria and the random-effect variances, as lme4 prints them.</li>
+<li>Matrix fits name their coefficients x1, x2, and so on, and leave out the lines that need a formula.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Phit\summary(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$fit</span><span class="ot">,</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">string</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$fit</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Result of a model function, such as <code>fit_ols()</code> or <code>fit_mixed_gaussian()</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>string</code></p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001 when <code>fit</code> is not the result of a model function.</p>
+<p><strong>See also</strong> <a href="../models.html#printing-a-fit">Details</a> · <a href="../examples/linear-model.html">Example</a></p>
+</section>
+<section id="tidy" class="level3">
+<h3 class="anchored" data-anchor-id="tidy"><code>tidy()</code></h3>
+<p>Returns a fit’s coefficient table as columns, like broom’s <code>tidy()</code>.</p>
+<ul>
+<li>The columns are <code>term</code>, <code>estimate</code>, <code>std_error</code>, <code>statistic</code>, and <code>p_value</code>. <code>confInt: true</code> adds <code>conf_low</code> and <code>conf_high</code> at <code>level</code>.</li>
+<li>Intervals are Wald intervals: t with <code>df_residual</code> degrees of freedom when the fit reports t statistics, and the normal distribution otherwise.</li>
+<li>For mixed fits, the default <code>effects: 'fixed'</code> gives the fixed effects, and <code>summary()</code> prints the variance components.</li>
+<li><code>effects: 'ran_vals'</code> gives a mixed fit’s random effects, as broom.mixed does: <code>group</code>, <code>level</code>, <code>term</code>, <code>estimate</code>, and <code>std_error</code>, one row per term, column, and group. The estimates are the conditional modes and the standard errors their conditional standard deviations, as <code>lme4::ranef(condVar = TRUE)</code> reports them. Intervals use the normal distribution.</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Phit\<span class="bu">tidy</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span> <span class="va">$fit</span><span class="ot">,</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">bool</span> <span class="va">$confInt</span> <span class="op">=</span> <span class="kw">false</span><span class="ot">,</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> <span class="va">$level</span> <span class="op">=</span> <span class="fl">0.95</span><span class="ot">,</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$effects</span> <span class="op">=</span> <span class="st">'fixed'</span><span class="ot">,</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> <span class="dt">array</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$fit</code></td>
+<td><code>array</code></td>
+<td>required</td>
+<td>Result of a model function, such as <code>fit_ols()</code> or <code>fit_mixed_gaussian()</code></td>
+</tr>
+<tr class="even">
+<td><code>$confInt</code></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Add conf_low and conf_high columns</td>
+</tr>
+<tr class="odd">
+<td><code>$level</code></td>
+<td><code>float</code></td>
+<td><code>0.95</code></td>
+<td>Confidence level of the intervals, in (0, 1)</td>
+</tr>
+<tr class="even">
+<td><code>$effects</code></td>
+<td><code>string</code></td>
+<td><code>'fixed'</code></td>
+<td><code>'fixed'</code> for the coefficient table, or <code>'ran_vals'</code> for a mixed fit’s random effects</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong> <code>array{term: list&lt;string&gt;, estimate: list&lt;float&gt;, std_error: list&lt;float&gt;, statistic: list&lt;float&gt;, p_value: list&lt;float&gt;, conf_low?: list&lt;float&gt;, conf_high?: list&lt;float&gt;}\|array{group: list&lt;string&gt;, level: list&lt;string&gt;, term: list&lt;string&gt;, estimate: list&lt;float&gt;, std_error: list&lt;float&gt;, conf_low?: list&lt;float&gt;, conf_high?: list&lt;float&gt;}</code></p>
+<p><strong>Errors</strong> <code>Exception</code>: code 1001 when <code>fit</code> is not the result of a model function, <code>level</code> is outside (0, 1), or <code>effects</code> is not <code>'fixed'</code> or <code>'ran_vals'</code> (<code>'ran_vals'</code> needs a mixed fit).</p>
+<p><strong>See also</strong> <a href="../models.html#printing-a-fit">Details</a> · <a href="../examples/glm.html">Example</a></p>
 
 
 </section>

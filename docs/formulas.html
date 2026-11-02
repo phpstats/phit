@@ -588,26 +588,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>PHP reflection reports <code>$data</code> and <code>$weights</code> as <code>mixed</code>. The stubs in <code>stubs/phit.php</code> document the accepted types.</p>
 <section id="example" class="level2">
 <h2 class="anchored" data-anchor-id="example">Example</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\fit_ols<span class="ot">;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> Phibble\DataFrame<span class="ot">;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">$data</span> <span class="op">=</span> [</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rent'</span> =&gt; [</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="fl">1879.25</span><span class="ot">,</span> <span class="fl">1805.03</span><span class="ot">,</span> <span class="fl">2022.29</span><span class="ot">,</span> <span class="fl">1267.85</span><span class="ot">,</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="fl">1509.24</span><span class="ot">,</span> <span class="fl">2240.10</span><span class="ot">,</span> <span class="fl">959.51</span><span class="ot">,</span> <span class="fl">2386.54</span><span class="ot">,</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'area'</span> =&gt; [</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="fl">74.4</span><span class="ot">,</span> <span class="fl">57.4</span><span class="ot">,</span> <span class="fl">66.4</span><span class="ot">,</span> <span class="fl">49.1</span><span class="ot">,</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="fl">45.7</span><span class="ot">,</span> <span class="fl">92.4</span><span class="ot">,</span> <span class="fl">37.0</span><span class="ot">,</span> <span class="fl">93.9</span><span class="ot">,</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'district'</span> =&gt; [</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">'north'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">'south'</span><span class="ot">,</span> <span class="st">'north'</span><span class="ot">,</span> <span class="st">'east'</span><span class="ot">,</span> <span class="st">'south'</span><span class="ot">,</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    ]<span class="ot">,</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>]<span class="ot">;</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_ols(<span class="st">'log(rent) ~ log(area) + district'</span><span class="ot">,</span> <span class="va">$data</span>)<span class="ot">;</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="fu">implode</span>(<span class="st">', '</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'columns'</span>])<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>(Intercept), log(area), districtnorth, districtsouth</code></pre>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="kw">function</span> Phit\fit_ols<span class="ot">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="va">$cars</span> <span class="op">=</span> DataFrame::fromCsv(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv'</span><span class="ot">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)<span class="ot">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="va">$fit</span> <span class="op">=</span> fit_ols(<span class="st">'log(mpg) ~ log(wt) + factor(cyl)'</span><span class="ot">,</span> <span class="va">$cars</span>)<span class="ot">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="kw">echo</span> <span class="fu">implode</span>(<span class="st">', '</span><span class="ot">,</span> <span class="va">$fit</span>[<span class="st">'columns'</span>])<span class="ot">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span><span class="ot">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>(Intercept), log(wt), factor(cyl)6, factor(cyl)8</code></pre>
 <p><code>columns</code> names the coefficients in order. <code>named</code> maps each name to its coefficient, and every list key, such as <code>p_values</code>, follows <code>columns</code>.</p>
 </section>
 <section id="data" class="level2">

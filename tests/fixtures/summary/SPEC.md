@@ -9,7 +9,7 @@ every case in `summary.json`.
 
 ```php
 function summary(array $fit): string {}
-function tidy(array $fit, bool $confInt = false, float $level = 0.95): array {}
+function tidy(array $fit, bool $confInt = false, float $level = 0.95, string $effects = 'fixed'): array {}
 ```
 
 ## Rounding primitive
@@ -270,15 +270,50 @@ Each distinct group is listed once, in order of first appearance.
 - Columns, in order: `term` (the names above), `estimate`, `std_error`,
   `statistic`, and `p_value`. `term` is a list of strings and the rest are lists of floats, and a null element in
   the fit becomes NaN.
-- With `conf_int`, the columns `conf_low` and `conf_high` are added.
+- With `confInt`, the columns `conf_low` and `conf_high` are added.
   - The interval is `estimate ∓ q · std_error`, with `q` the
     `(1 + level) / 2` quantile.
   - `q` comes from t with `df_residual` degrees of freedom when the fit has
     `t_statistics`, and from the standard normal otherwise.
   - For OLS this matches R's `confint(lm)`. For GLMs it gives Wald intervals,
     not profile intervals.
-- Mixed fits give fixed effects only, as broom.mixed's `effects = "fixed"`
-  does. Variance components appear only in `summary()`.
+- `effects` must be `'fixed'` or `'ran_vals'`. Otherwise it throws
+  `effects must be 'fixed' or 'ran_vals'`. It is checked after `level` and
+  before the fit.
+- `effects: 'fixed'` (the default) gives the columns above. For mixed fits
+  these are the fixed effects, as broom.mixed's `effects = "fixed"` gives.
+  Variance components appear only in `summary()`.
+
+### effects: 'ran_vals'
+
+This mode returns a mixed fit's random effects, as broom.mixed's
+`effects = "ran_vals"` does. The printer's `random_terms()` returns them. A fit
+whose printer has no random terms (linear or GLM) throws
+`effects 'ran_vals' needs a mixed model fit`.
+
+- The columns, in order, are `group`, `level`, `term`, `estimate`, and
+  `std_error`. With `confInt`, `conf_low` and `conf_high` are added from the
+  standard normal at `level`.
+- Rows are ordered by random term, then by the term's column, then by group,
+  in the order of `group_labels`. lme4's `as.data.frame(ranef(fit))` uses the
+  same order.
+- `group` is the term's group name, `term` is the column name, and `level` is
+  the group label as a string. Integers print as decimal integers.
+- `estimate` is the conditional mode. `std_error` is the square root of the
+  diagonal of the conditional covariance.
+- The values are read from the keys below, using the same defaults for the
+  group and column names as `summary()`:
+  - A term with a `covariance` reads its `effects` (one row per group),
+    `effects_cond_var` (one k×k matrix per group), and `group_labels`.
+  - The single-intercept form (no `random` key, or a term without
+    `covariance`) reads the top-level `random_effects`,
+    `random_effects_cond_var` (variances), and `group_labels`.
+  - When any of the three keys is absent, `summary()` still works and
+    `'ran_vals'` throws `missing random effects`.
+  - Mismatched sizes throw one of the following:
+    - `random effects and their variances differ in length` (flat form)
+    - `random effects and their variances differ in size`
+    - `random effects and group labels differ in size`
 
 ## Errors
 
@@ -293,7 +328,11 @@ Every error is an `\Exception` with code 1001.
   - `random terms must be arrays`
   - `a random term's covariance must be square`
   - `a random term's columns and covariance differ in size`
+  - `missing random effects`, and the three size errors listed under
+    `effects: 'ran_vals'`
 - `level must be in (0, 1)`.
+- `effects must be 'fixed' or 'ran_vals'`.
+- `effects 'ran_vals' needs a mixed model fit`.
 
 ## Fixtures
 
@@ -309,6 +348,9 @@ Every error is an `\Exception` with code 1001.
   - `summary`, the exact expected text.
   - `tidy`, the expected `tidy($fit, confInt: true)`.
   - `r_rows`, R's printed coefficient rows.
+  - Mixed cases only: `ran_vals`, the expected `tidy($fit, effects: 'ran_vals')`.
+    Also `r_ran_vals`, lme4's `as.data.frame(ranef(fit, condVar = TRUE))` as
+    group, level, term, estimate, and std_error.
 
 `tests/summary.php` checks the summary text byte for byte. It checks the tidy
 terms exactly and the tidy numbers to a relative difference of 1e-5, because
@@ -317,3 +359,11 @@ to 7e-7 for the mixed logistic fits on Linux. It also checks that each number in
 R's row, allowing one unit in the last printed place. Random-effect variances
 are not compared with R, because lme4's optimizer stops at a slightly
 different point.
+
+`ran_vals` is checked against the fixture in the same way as `tidy`. It is
+checked against lme4 as follows:
+
+- Levels must be identical.
+- Group and term names must be identical, except for matrix fits.
+- Estimates and standard errors must agree to `1e-4 · max(1, |x|)`. The
+  largest observed difference is 2.7e-5.

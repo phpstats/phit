@@ -5,7 +5,7 @@ use crate::stats_exception;
 use ext_php_rs::{boxed::ZBox, prelude::*, types::ZendHashTable, types::Zval};
 use stats_core::summary::{
     self, Coefficients, GeneralizedLinear, Linear, MixedFit, MixedGaussian, MixedLogistic, Printer,
-    RandomTerm,
+    RandomTerm, RandomValues,
 };
 use stats_core::{ErrorKind, StatsError};
 
@@ -104,6 +104,76 @@ fn coefficients(fit: &ZendHashTable) -> PhpResult<Coefficients> {
     })
 }
 
+/// Group labels as text: lme4 prints integer and string labels alike.
+fn labels(value: Option<&Zval>) -> Option<Vec<String>> {
+    value?
+        .array()?
+        .values()
+        .map(|v| {
+            v.str()
+                .map(str::to_owned)
+                .or_else(|| v.long().map(|l| l.to_string()))
+                .or_else(|| v.double().map(|d| d.to_string()))
+        })
+        .collect()
+}
+
+/// A term's conditional modes and standard errors, when the fit has them: `effects` rows with `effects_cond_var`
+/// k×k matrices, or (`flat`) one value per group with one variance per group.
+fn random_values(
+    labels: Option<Vec<String>>,
+    effects: Option<&Zval>,
+    cond_var: Option<&Zval>,
+    k: usize,
+    flat: bool,
+) -> PhpResult<Option<RandomValues>> {
+    let (Some(levels), Some(_), Some(_)) = (labels, effects, cond_var) else {
+        return Ok(None);
+    };
+    let (estimates, std_errors): (Vec<Vec<f64>>, Vec<Vec<f64>>) = if flat {
+        let e = floats(effects, "random_effects")?;
+        let v = floats(cond_var, "random_effects_cond_var")?;
+        if v.len() != e.len() {
+            return Err(not_a_fit(
+                "random effects and their variances differ in length",
+            ));
+        }
+        (
+            e.into_iter().map(|x| vec![x]).collect(),
+            v.into_iter().map(|x| vec![x.sqrt()]).collect(),
+        )
+    } else {
+        let e = matrix(effects, "effects")?;
+        let v = cond_var
+            .and_then(Zval::array)
+            .ok_or_else(|| not_a_fit("missing effects_cond_var"))?
+            .values()
+            .map(|m| matrix(Some(m), "effects_cond_var"))
+            .collect::<PhpResult<Vec<_>>>()?;
+        if v.len() != e.len()
+            || v.iter()
+                .any(|m| m.len() != k || m.iter().any(|r| r.len() != k))
+        {
+            return Err(not_a_fit(
+                "random effects and their variances differ in size",
+            ));
+        }
+        let se = v
+            .iter()
+            .map(|m| (0..k).map(|j| m[j][j].sqrt()).collect())
+            .collect();
+        (e, se)
+    };
+    if estimates.len() != levels.len() || estimates.iter().any(|r| r.len() != k) {
+        return Err(not_a_fit("random effects and group labels differ in size"));
+    }
+    Ok(Some(RandomValues {
+        levels,
+        estimates,
+        std_errors,
+    }))
+}
+
 fn random_terms(fit: &ZendHashTable) -> PhpResult<Vec<RandomTerm>> {
     let one_intercept = |group: String| -> PhpResult<Vec<RandomTerm>> {
         Ok(vec![RandomTerm {
@@ -112,6 +182,13 @@ fn random_terms(fit: &ZendHashTable) -> PhpResult<Vec<RandomTerm>> {
             covariance: vec![vec![required_float(fit, "random_intercept_variance")?]],
             correlated: false,
             n_groups: long(fit, "n_groups").ok_or_else(|| not_a_fit("missing n_groups"))? as usize,
+            values: random_values(
+                labels(fit.get("group_labels")),
+                fit.get("random_effects"),
+                fit.get("random_effects_cond_var"),
+                1,
+                true,
+            )?,
         }])
     };
     let Some(random) = fit.get("random").and_then(Zval::array) else {
@@ -145,12 +222,20 @@ fn random_terms(fit: &ZendHashTable) -> PhpResult<Vec<RandomTerm>> {
             .map(|a| a.len())
             .unwrap_or(0);
         let correlated = term.get("correlated").and_then(Zval::bool).unwrap_or(true);
+        let values = random_values(
+            labels(term.get("group_labels")),
+            term.get("effects"),
+            term.get("effects_cond_var"),
+            k,
+            false,
+        )?;
         terms.push(RandomTerm {
             group,
             columns,
             covariance,
             correlated,
             n_groups,
+            values,
         });
     }
     Ok(terms)
@@ -273,33 +358,25 @@ pub fn summary(fit: &ZendHashTable) -> PhpResult<String> {
     Ok(summary::render(printer(fit)?.as_ref()))
 }
 
-#[php_function]
-#[php(name = "Phit\\tidy", defaults(confInt = false, level = 0.95))]
-#[allow(non_snake_case)] // PHP parameter names are camelCase.
-pub fn tidy(fit: &ZendHashTable, confInt: bool, level: f64) -> PhpResult<ZBox<ZendHashTable>> {
-    if !(level > 0.0 && level < 1.0) {
-        return Err(invalid("level must be in (0, 1)"));
+fn column<T: ext_php_rs::convert::IntoZval + Clone>(
+    values: &[T],
+) -> PhpResult<ZBox<ZendHashTable>> {
+    let mut column = ZendHashTable::new();
+    for v in values {
+        column.push(v.clone())?;
     }
-    let printer = printer(fit)?;
+    Ok(column)
+}
+
+/// The fixed effects, as broom's `tidy()`.
+fn tidy_fixed(printer: &dyn Printer, confInt: bool, level: f64) -> PhpResult<ZBox<ZendHashTable>> {
     let c = printer.coefficients();
     let mut out = ZendHashTable::new();
-    let mut term = ZendHashTable::new();
-    for name in &c.names {
-        term.push(name.as_str())?;
-    }
-    out.insert("term", term)?;
-    for (key, values) in [
-        ("estimate", &c.estimates),
-        ("std_error", &c.std_errors),
-        ("statistic", &c.statistics),
-        ("p_value", &c.p_values),
-    ] {
-        let mut column = ZendHashTable::new();
-        for v in values {
-            column.push(*v)?;
-        }
-        out.insert(key, column)?;
-    }
+    out.insert("term", column(&c.names)?)?;
+    out.insert("estimate", column(&c.estimates)?)?;
+    out.insert("std_error", column(&c.std_errors)?)?;
+    out.insert("statistic", column(&c.statistics)?)?;
+    out.insert("p_value", column(&c.p_values)?)?;
     if confInt {
         let intervals = summary::confidence_intervals(
             &c.estimates,
@@ -307,15 +384,77 @@ pub fn tidy(fit: &ZendHashTable, confInt: bool, level: f64) -> PhpResult<ZBox<Ze
             printer.interval_df(),
             level,
         );
-        let (mut low, mut high) = (ZendHashTable::new(), ZendHashTable::new());
-        for (l, h) in intervals {
-            low.push(l)?;
-            high.push(h)?;
-        }
-        out.insert("conf_low", low)?;
-        out.insert("conf_high", high)?;
+        let (low, high): (Vec<f64>, Vec<f64>) = intervals.into_iter().unzip();
+        out.insert("conf_low", column(&low)?)?;
+        out.insert("conf_high", column(&high)?)?;
     }
     Ok(out)
+}
+
+/// Each group's conditional modes and standard errors, as broom.mixed's `tidy(effects = "ran_vals")`: one row per
+/// term, column, and group, in that order. Intervals use the normal distribution.
+fn tidy_random(printer: &dyn Printer, confInt: bool, level: f64) -> PhpResult<ZBox<ZendHashTable>> {
+    let terms = printer
+        .random_terms()
+        .ok_or_else(|| invalid("effects 'ran_vals' needs a mixed model fit"))?;
+    let (mut group, mut levels, mut term) = (vec![], vec![], vec![]);
+    let (mut estimate, mut std_error) = (vec![], vec![]);
+    for t in terms {
+        let values = t
+            .values
+            .as_ref()
+            .ok_or_else(|| not_a_fit("missing random effects"))?;
+        for (j, name) in t.columns.iter().enumerate() {
+            for (g, label) in values.levels.iter().enumerate() {
+                group.push(t.group.clone());
+                levels.push(label.clone());
+                term.push(name.clone());
+                estimate.push(values.estimates[g][j]);
+                std_error.push(values.std_errors[g][j]);
+            }
+        }
+    }
+    let mut out = ZendHashTable::new();
+    out.insert("group", column(&group)?)?;
+    out.insert("level", column(&levels)?)?;
+    out.insert("term", column(&term)?)?;
+    out.insert("estimate", column(&estimate)?)?;
+    out.insert("std_error", column(&std_error)?)?;
+    if confInt {
+        let (low, high): (Vec<f64>, Vec<f64>) =
+            summary::confidence_intervals(&estimate, &std_error, None, level)
+                .into_iter()
+                .unzip();
+        out.insert("conf_low", column(&low)?)?;
+        out.insert("conf_high", column(&high)?)?;
+    }
+    Ok(out)
+}
+
+#[php_function]
+#[php(
+    name = "Phit\\tidy",
+    defaults(confInt = false, level = 0.95, effects = "\"fixed\"")
+)]
+#[allow(non_snake_case)] // PHP parameter names are camelCase.
+pub fn tidy(
+    fit: &ZendHashTable,
+    confInt: bool,
+    level: f64,
+    effects: &str,
+) -> PhpResult<ZBox<ZendHashTable>> {
+    if !(level > 0.0 && level < 1.0) {
+        return Err(invalid("level must be in (0, 1)"));
+    }
+    if !matches!(effects, "fixed" | "ran_vals") {
+        return Err(invalid("effects must be 'fixed' or 'ran_vals'"));
+    }
+    let printer = printer(fit)?;
+    if effects == "fixed" {
+        tidy_fixed(printer.as_ref(), confInt, level)
+    } else {
+        tidy_random(printer.as_ref(), confInt, level)
+    }
 }
 
 pub fn register(module: ModuleBuilder) -> ModuleBuilder {

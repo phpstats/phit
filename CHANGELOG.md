@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.1
+
+`tidy($fit, effects: 'ran_vals')` returns a mixed fit's random effects as
+columns, as broom.mixed's `tidy(effects = "ran_vals")` does. The columns are
+`group`, `level`, `term`, `estimate`, and `std_error`, with one row per term,
+column, and group, and `confInt: true` adds normal intervals. The estimates
+are the conditional modes, and the standard errors are their conditional
+standard deviations, as `lme4::ranef(condVar = TRUE)` reports them. On
+sleepstudy and cbpp they agree with lme4 2.0.6 to 2.7e-5. The default,
+`effects: 'fixed'`, is unchanged.
+
 ## 0.5.0
 
 `summary()` prints a model fit in the layout of R's `print(summary(fit))`, and

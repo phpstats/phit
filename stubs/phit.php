@@ -3004,14 +3004,16 @@ function summary(array $fit): string {}
  * Returns a fit's coefficient table as columns, like broom's `tidy()`.
  * - The columns are `term`, `estimate`, `std_error`, `statistic`, and `p_value`. `confInt: true` adds `conf_low` and `conf_high` at `level`.
  * - Intervals are Wald intervals: t with `df_residual` degrees of freedom when the fit reports t statistics, and the normal distribution otherwise.
- * - Mixed fits give the fixed effects only; `summary()` prints the variance components.
+ * - For mixed fits, the default `effects: 'fixed'` gives the fixed effects, and `summary()` prints the variance components.
+ * - `effects: 'ran_vals'` gives a mixed fit's random effects, as broom.mixed does: `group`, `level`, `term`, `estimate`, and `std_error`, one row per term, column, and group. The estimates are the conditional modes and the standard errors their conditional standard deviations, as `lme4::ranef(condVar = TRUE)` reports them. Intervals use the normal distribution.
  * @param array<string,mixed> $fit Result of a model function, such as fit_ols() or fit_mixed_gaussian()
  * @param bool $confInt Add conf_low and conf_high columns
  * @param float $level Confidence level of the intervals, in (0, 1)
- * @return array{term: list<string>, estimate: list<float>, std_error: list<float>, statistic: list<float>, p_value: list<float>, conf_low?: list<float>, conf_high?: list<float>}
- * @throws \Exception Code 1001 when `fit` is not the result of a model function or `level` is outside (0, 1).
+ * @param string $effects 'fixed' for the coefficient table, or 'ran_vals' for a mixed fit's random effects
+ * @return array{term: list<string>, estimate: list<float>, std_error: list<float>, statistic: list<float>, p_value: list<float>, conf_low?: list<float>, conf_high?: list<float>}|array{group: list<string>, level: list<string>, term: list<string>, estimate: list<float>, std_error: list<float>, conf_low?: list<float>, conf_high?: list<float>}
+ * @throws \Exception Code 1001 when `fit` is not the result of a model function, `level` is outside (0, 1), or `effects` is not `'fixed'` or `'ran_vals'` (`'ran_vals'` needs a mixed fit).
  */
-function tidy(array $fit, bool $confInt = false, float $level = 0.95): array {}
+function tidy(array $fit, bool $confInt = false, float $level = 0.95, string $effects = 'fixed'): array {}
 
 /**
  * Finds a root of `f` in [`lower`, `upper`], like R's `uniroot()`.

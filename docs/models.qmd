@@ -191,7 +191,7 @@ AIC: 548.85
 `tidy()` returns the same coefficient table as columns: `term`, `estimate`, `std_error`, `statistic`, and `p_value`. `confInt: true` adds `conf_low` and `conf_high` at `level` (default 0.95):
 
 - The intervals are Wald intervals. They use t with `df_residual` degrees of freedom for fits that report t statistics, and the normal distribution otherwise.
-- For mixed fits, `tidy()` gives the fixed effects only.
+- For mixed fits, `tidy()` gives the fixed effects by default. `effects: 'ran_vals'` gives each group's random effects with `group`, `level`, `term`, `estimate`, and `std_error` columns, as broom.mixed does.
 
 ```php
 echo DataFrame::fromColumns(

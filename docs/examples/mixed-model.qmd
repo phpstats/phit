@@ -11,7 +11,7 @@ The data are [sleepstudy](https://github.com/phpstats/datasets#sleepstudy): aver
 ```php
 use Phibble\DataFrame;
 
-use function Phit\{fit_mixed_gaussian, summary};
+use function Phit\{fit_mixed_gaussian, summary, tidy};
 
 $sleep = DataFrame::fromCsv(
     'https://raw.githubusercontent.com/phpstats/datasets/main/csv/sleepstudy.csv',
@@ -23,15 +23,7 @@ $fit = fit_mixed_gaussian(
 );
 echo summary($fit), "\n";
 
-$subject = $fit['random'][0];
-echo DataFrame::fromColumns([
-    'Subject' => $subject['group_labels'],
-    'effect' => array_column($subject['effects'], 0),
-    'se' => array_map(
-        fn ($v) => sqrt($v[0][0]),
-        $subject['effects_cond_var'],
-    ),
-]), "\n";
+echo DataFrame::fromColumns(tidy($fit, effects: 'ran_vals')), "\n";
 ```
 
 ## Output
@@ -53,27 +45,27 @@ Fixed effects:
 (Intercept) 251.4051     9.7467   25.79   <2e-16
 Days         10.4673     0.8042   13.02   <2e-16
 
-# A tibble: 18 × 3
-   Subject effect    se
-     <int>  <dbl> <dbl>
- 1     308  40.8   9.48
- 2     309 -77.8   9.48
- 3     310 -63.1   9.48
- 4     330   4.41  9.48
- 5     331  10.2   9.48
- 6     332   8.22  9.48
- 7     333  16.5   9.48
- 8     334  -3.00  9.48
- 9     335 -45.3   9.48
-10     337  72.2   9.48
-11     349 -21.2   9.48
-12     350  14.1   9.48
-13     351  -7.86  9.48
-14     352  36.4   9.48
-15     369   7.04  9.48
-16     370  -6.36  9.48
-17     371  -3.29  9.48
-18     372  18.1   9.48
+# A tibble: 18 × 5
+   group   level term        estimate std_error
+   <chr>   <chr> <chr>          <dbl>     <dbl>
+ 1 Subject 308   (Intercept)    40.8       9.48
+ 2 Subject 309   (Intercept)   -77.8       9.48
+ 3 Subject 310   (Intercept)   -63.1       9.48
+ 4 Subject 330   (Intercept)     4.41      9.48
+ 5 Subject 331   (Intercept)    10.2       9.48
+ 6 Subject 332   (Intercept)     8.22      9.48
+ 7 Subject 333   (Intercept)    16.5       9.48
+ 8 Subject 334   (Intercept)    -3.00      9.48
+ 9 Subject 335   (Intercept)   -45.3       9.48
+10 Subject 337   (Intercept)    72.2       9.48
+11 Subject 349   (Intercept)   -21.2       9.48
+12 Subject 350   (Intercept)    14.1       9.48
+13 Subject 351   (Intercept)    -7.86      9.48
+14 Subject 352   (Intercept)    36.4       9.48
+15 Subject 369   (Intercept)     7.04      9.48
+16 Subject 370   (Intercept)    -6.36      9.48
+17 Subject 371   (Intercept)    -3.29      9.48
+18 Subject 372   (Intercept)    18.1       9.48
 ```
 
 ## Interpretation
@@ -81,7 +73,7 @@ Days         10.4673     0.8042   13.02   <2e-16
 - `(1 | Subject)` gives each subject an intercept of its own, assumed to come from a normal distribution. The fit uses REML, as `lme4::lmer()` does by default.
 - The `Days` coefficient is the average change in reaction time per additional day of sleep deprivation. The model gives every subject the same slope.
 - The Subject standard deviation (37.12) describes how baseline reaction times vary between subjects. The residual standard deviation (30.99) describes how each subject's days vary around their own line.
-- `effects` are each subject's predicted intercept relative to the average, as R's `ranef()` reports. They are shrunk toward zero, more so for subjects with fewer observations. Every subject here has ten days, so their conditional standard errors are equal.
+- `tidy($fit, effects: 'ran_vals')` gives each subject's predicted intercept relative to the average and its conditional standard error, as R's `ranef(condVar = TRUE)` and broom.mixed report them. They are shrunk toward zero, more so for subjects with fewer observations. Every subject here has ten days, so their conditional standard errors are equal.
 - In these data the slopes also differ between subjects; `(Days | Subject)` fits a random slope as well. See [Mixed models](../mixed-models.qmd).
 
 **See also:** [Mixed models](../mixed-models.qmd) for the supported structures, the full result, singular fits, and `fit_mixed_logistic()`

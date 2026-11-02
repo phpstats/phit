@@ -113,20 +113,25 @@ $mpg = DataFrame::fromCsv(
 )->toColumns()['mpg'];
 
 $d = stat_density($mpg);
-printf("bandwidth %.3f\n", $d['bw']);
+echo 'bandwidth ', $d['bw'], "\n";
+
 $at = [15.0, 20.0, 25.0];
-echo implode(', ', array_map(
-    fn ($h) => sprintf('%.4f', $h),
-    stat_approx($d['x'], $d['y'], $at),
-)), "\n";
-// Share of cars at or below 20 mpg.
-echo stat_ecdf($mpg, [20.0])[0], "\n";
+echo DataFrame::fromColumns([
+    'mpg' => $at,
+    'density' => stat_approx($d['x'], $d['y'], $at),
+    // Share of cars at or below each value.
+    'ecdf' => stat_ecdf($mpg, $at),
+]), "\n";
 ```
 
 ```
-bandwidth 2.477
-0.0589, 0.0647, 0.0303
-0.5625
+bandwidth 2.4766791044776
+# A tibble: 3 × 3
+    mpg density  ecdf
+  <dbl>   <dbl> <dbl>
+1    15  0.0589 0.188
+2    20  0.0647 0.562
+3    25  0.0303 0.812
 ```
 
 ```php

@@ -99,6 +99,12 @@ foreach ($cases as [$name, $function, $args]) {
         'tidy' => Phit\tidy($fit, confInt: true),
         'r_rows' => $r['rows'][$rName[$name] ?? $name],
     ];
+    if (str_contains($function, 'mixed')) {
+        $case = &$out['cases'][array_key_last($out['cases'])];
+        $case['ran_vals'] = Phit\tidy($fit, effects: 'ran_vals');
+        $case['r_ran_vals'] = $r['ran_vals'][$rName[$name] ?? $name];
+        unset($case);
+    }
     echo "$name\n";
 }
 file_put_contents("$dir/summary.json", json_encode($out, JSON_PRETTY_PRINT | JSON_PRESERVE_ZERO_FRACTION

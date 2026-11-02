@@ -4,64 +4,68 @@ title: "Densities, quantiles, and random draws"
 
 Evaluate a normal distribution with mean 100 and standard deviation 15, compare Student's t critical values with the normal's, and draw seeded random numbers.
 
-The example runs with the phit extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)).
+The example prints tables with phibble (`composer require phpstats/phibble`) and runs with the phit extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)).
 
 ## Code
 
 ```php
+use Phibble\DataFrame;
+
 use function Phit\{dist_normal_cdf, dist_normal_pdf};
 use function Phit\{dist_normal_quantile, dist_normal_rng};
 use function Phit\dist_normal_sf;
 use function Phit\{dist_t_quantile, dist_t_sf};
 
 // Normal with mean 100 and SD 15.
-$normal = [
-    'density at 115' => dist_normal_pdf(115, 100, 15),
-    'P(X <= 130)' => dist_normal_cdf(130, 100, 15),
-    'quantile 0.95' => dist_normal_quantile(.95, 100, 15),
-];
-foreach ($normal as $label => $value) {
-    printf("%-16s %.5f\n", $label, $value);
-}
-echo "\n";
+echo DataFrame::fromColumns([
+    'quantity' => ['density at 115', 'P(X <= 130)', 'quantile 0.95'],
+    'value' => [
+        dist_normal_pdf(115, 100, 15),
+        dist_normal_cdf(130, 100, 15),
+        dist_normal_quantile(.95, 100, 15),
+    ],
+]), "\n\n";
 
-// Two-sided 95% critical value, and P(|T| > 1.96).
-foreach ([3, 10, 30] as $df) {
-    printf(
-        "t, df %2d: critical %.3f, tail %.4f\n",
-        $df,
-        dist_t_quantile(0.975, $df),
-        2 * dist_t_sf(1.96, $df),
-    );
-}
-printf(
-    "normal:   critical %.3f, tail %.4f\n\n",
-    dist_normal_quantile(0.975),
-    2 * dist_normal_sf(1.96),
-);
+// Two-sided 95% critical values, and P(|T| > 1.96).
+$df = [3, 10, 30];
+echo DataFrame::fromColumns([
+    'distribution' => ['t, df 3', 't, df 10', 't, df 30', 'normal'],
+    'critical' => [
+        ...array_map(fn ($v) => dist_t_quantile(0.975, $v), $df),
+        dist_normal_quantile(0.975),
+    ],
+    'tail' => [
+        ...array_map(fn ($v) => 2 * dist_t_sf(1.96, $v), $df),
+        2 * dist_normal_sf(1.96),
+    ],
+]), "\n\n";
 
-$draws = dist_normal_rng(5, 42, 100, 15);
-vprintf("%.2f, %.2f, %.2f, %.2f, %.2f\n", $draws);
+echo implode(', ', dist_normal_rng(5, 42, 100, 15)), "\n";
 
 $many = dist_normal_rng(100000, 7, 100, 15);
-$mean = array_sum($many) / count($many);
-printf("mean of 100000 draws %.2f\n", $mean);
+echo 'mean of 100000 draws ', array_sum($many) / count($many), "\n";
 ```
 
 ## Output
 
 ```
-density at 115   0.01613
-P(X <= 130)      0.97725
-quantile 0.95    124.67280
+# A tibble: 3 × 2
+  quantity          value
+  <chr>             <dbl>
+1 density at 115   0.0161
+2 P(X <= 130)      0.977 
+3 quantile 0.95  125.    
 
-t, df  3: critical 3.182, tail 0.1449
-t, df 10: critical 2.228, tail 0.0784
-t, df 30: critical 2.042, tail 0.0593
-normal:   critical 1.960, tail 0.0500
+# A tibble: 4 × 3
+  distribution critical   tail
+  <chr>           <dbl>  <dbl>
+1 t, df 3          3.18 0.145 
+2 t, df 10         2.23 0.0784
+3 t, df 30         2.04 0.0593
+4 normal           1.96 0.0500
 
-100.53, 96.59, 80.59, 85.53, 85.28
-mean of 100000 draws 100.00
+100.52835466511, 96.594495946498, 80.588363237338, 85.533635781581, 85.276248423651
+mean of 100000 draws 99.995690773619
 ```
 
 ## Notes
