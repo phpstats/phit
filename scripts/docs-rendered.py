@@ -45,6 +45,10 @@ def rendered_blocks(path):
 
 
 def main():
+    if not (DOCS / 'index.html').is_file():
+        # The Docker build context and the source archive leave the rendered site out.
+        print('docs-rendered: skipped (no rendered site in docs/)')
+        return
     pages = sorted(p for p in DOCS.rglob('*.qmd')
                    if not any(part.startswith(('_', '.')) for part in p.relative_to(DOCS).parts))
     stale = []
