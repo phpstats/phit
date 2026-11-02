@@ -3117,13 +3117,13 @@ final class LinearFit implements Fit
    * Not available: fits are read-only.
    * @throws \LogicException Always.
    */
-  public function offsetSet(mixed $_offset, mixed $_value): void {}
+  public function offsetSet(mixed $offset, mixed $value): void {}
 
   /**
    * Not available: fits are read-only.
    * @throws \LogicException Always.
    */
-  public function offsetUnset(mixed $_offset): void {}
+  public function offsetUnset(mixed $offset): void {}
 
   /**
    * Predictions for new data, as predict() returns them for this fit.
@@ -3238,13 +3238,13 @@ final class GeneralizedLinearFit implements Fit
    * Not available: fits are read-only.
    * @throws \LogicException Always.
    */
-  public function offsetSet(mixed $_offset, mixed $_value): void {}
+  public function offsetSet(mixed $offset, mixed $value): void {}
 
   /**
    * Not available: fits are read-only.
    * @throws \LogicException Always.
    */
-  public function offsetUnset(mixed $_offset): void {}
+  public function offsetUnset(mixed $offset): void {}
 
   /**
    * Predictions for new data, as predict() returns them for this fit.
@@ -3359,13 +3359,13 @@ final class MixedGaussianFit implements Fit
    * Not available: fits are read-only.
    * @throws \LogicException Always.
    */
-  public function offsetSet(mixed $_offset, mixed $_value): void {}
+  public function offsetSet(mixed $offset, mixed $value): void {}
 
   /**
    * Not available: fits are read-only.
    * @throws \LogicException Always.
    */
-  public function offsetUnset(mixed $_offset): void {}
+  public function offsetUnset(mixed $offset): void {}
 
   /**
    * Predictions for new data, as predict() returns them for this fit.
@@ -3480,13 +3480,13 @@ final class MixedLogisticFit implements Fit
    * Not available: fits are read-only.
    * @throws \LogicException Always.
    */
-  public function offsetSet(mixed $_offset, mixed $_value): void {}
+  public function offsetSet(mixed $offset, mixed $value): void {}
 
   /**
    * Not available: fits are read-only.
    * @throws \LogicException Always.
    */
-  public function offsetUnset(mixed $_offset): void {}
+  public function offsetUnset(mixed $offset): void {}
 
   /**
    * Predictions for new data, as predict() returns them for this fit.
@@ -3601,13 +3601,13 @@ final class Table implements \Stringable, \ArrayAccess, \Iterator, \Countable, \
    * Not available: fits are read-only.
    * @throws \LogicException Always.
    */
-  public function offsetSet(mixed $_offset, mixed $_value): void {}
+  public function offsetSet(mixed $offset, mixed $value): void {}
 
   /**
    * Not available: fits are read-only.
    * @throws \LogicException Always.
    */
-  public function offsetUnset(mixed $_offset): void {}
+  public function offsetUnset(mixed $offset): void {}
 
   /**
    * Moves the iterator to the first key.

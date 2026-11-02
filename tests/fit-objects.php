@@ -47,7 +47,7 @@ foreach ($fixture['cases'] as $case) {
     // Printing and the methods agree with the free functions, which also take the array.
     ocheck((string) $fit === $case['summary'] && $fit->summary() === $case['summary'], "$name: echo prints the summary");
     ocheck(Phit\summary($fit) === Phit\summary($array), "$name: summary() of the fit and of its array");
-    ocheck((string) $fit->tidy(confInt: true) === $case['table'], "$name: \$fit->tidy() prints the table");
+    ocheck((string) $fit->tidy(confInt: true) === (string) Phit\tidy($fit, confInt: true), "$name: \$fit->tidy() prints the table");
     ocheck(Phit\tidy($array, confInt: true)->toArray() === $fit->tidy(confInt: true)->toArray(), "$name: tidy() of the array");
 
     // Reading works as on the array: keys, nested values, isset, count, iteration, and JSON.

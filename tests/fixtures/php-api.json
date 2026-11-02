@@ -5488,12 +5488,12 @@
             "offsetSet": {
                 "parameters": [
                     {
-                        "name": "_offset",
+                        "name": "offset",
                         "type": "mixed",
                         "optional": false
                     },
                     {
-                        "name": "_value",
+                        "name": "value",
                         "type": "mixed",
                         "optional": false
                     }
@@ -5503,7 +5503,7 @@
             "offsetUnset": {
                 "parameters": [
                     {
-                        "name": "_offset",
+                        "name": "offset",
                         "type": "mixed",
                         "optional": false
                     }
@@ -5658,12 +5658,12 @@
             "offsetSet": {
                 "parameters": [
                     {
-                        "name": "_offset",
+                        "name": "offset",
                         "type": "mixed",
                         "optional": false
                     },
                     {
-                        "name": "_value",
+                        "name": "value",
                         "type": "mixed",
                         "optional": false
                     }
@@ -5673,7 +5673,7 @@
             "offsetUnset": {
                 "parameters": [
                     {
-                        "name": "_offset",
+                        "name": "offset",
                         "type": "mixed",
                         "optional": false
                     }
@@ -5828,12 +5828,12 @@
             "offsetSet": {
                 "parameters": [
                     {
-                        "name": "_offset",
+                        "name": "offset",
                         "type": "mixed",
                         "optional": false
                     },
                     {
-                        "name": "_value",
+                        "name": "value",
                         "type": "mixed",
                         "optional": false
                     }
@@ -5843,7 +5843,7 @@
             "offsetUnset": {
                 "parameters": [
                     {
-                        "name": "_offset",
+                        "name": "offset",
                         "type": "mixed",
                         "optional": false
                     }
@@ -5998,12 +5998,12 @@
             "offsetSet": {
                 "parameters": [
                     {
-                        "name": "_offset",
+                        "name": "offset",
                         "type": "mixed",
                         "optional": false
                     },
                     {
-                        "name": "_value",
+                        "name": "value",
                         "type": "mixed",
                         "optional": false
                     }
@@ -6013,7 +6013,7 @@
             "offsetUnset": {
                 "parameters": [
                     {
-                        "name": "_offset",
+                        "name": "offset",
                         "type": "mixed",
                         "optional": false
                     }
@@ -6168,12 +6168,12 @@
             "offsetSet": {
                 "parameters": [
                     {
-                        "name": "_offset",
+                        "name": "offset",
                         "type": "mixed",
                         "optional": false
                     },
                     {
-                        "name": "_value",
+                        "name": "value",
                         "type": "mixed",
                         "optional": false
                     }
@@ -6183,7 +6183,7 @@
             "offsetUnset": {
                 "parameters": [
                     {
-                        "name": "_offset",
+                        "name": "offset",
                         "type": "mixed",
                         "optional": false
                     }

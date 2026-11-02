@@ -411,9 +411,12 @@ The layout follows R's `print.data.frame()` at the default width of 80.
 
 The fixtures have a `table` field, `(string) tidy($fit, confInt: true)`, for
 every case. For `ols_mtcars` and `logistic_mroz` they also have `r_table`, which
-is R's `print.data.frame()` of R's own estimates with the same columns. The test
-requires identical line lengths and numbers within 1e-6 relative. The logistic
-fit differs from R's IRLS in the 8th digit.
+is R's `print.data.frame()` of R's own estimates with the same columns. Both checks
+require identical line lengths and labels.
+- Against the fixture, numbers must agree within 1e-5 relative, because the glmer fits
+  differ in the 7th digit on Linux.
+- Against R, numbers must agree within 1e-6 relative, because the logistic fit differs
+  from R's IRLS in the 8th digit.
 
 ## Errors
 

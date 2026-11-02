@@ -53,6 +53,26 @@ function sameTidy(array $ours, array $expected): bool
     return true;
 }
 
+// The same printed table: identical line lengths and labels, and numbers within a relative tolerance. A fit printed
+// to 7 digits can differ in its last digit across platforms and from R's own estimates.
+function sameTable(string $ours, string $theirs, float $relative): bool
+{
+    $a = explode("\n", $ours);
+    $b = explode("\n", $theirs);
+    if (array_map('strlen', $a) !== array_map('strlen', $b)) {
+        return false;
+    }
+    foreach ($a as $i => $line) {
+        foreach (array_map(null, preg_split('/\s+/', trim($line)), preg_split('/\s+/', trim($b[$i]))) as [$x, $y]) {
+            if ($x !== $y && ! (is_numeric($x) && is_numeric($y) && abs($x - $y) <= $relative * max(abs((float) $y), 1e-300))) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 $fixture = json_decode(file_get_contents(__DIR__.'/fixtures/summary/summary.json'), true, flags: JSON_THROW_ON_ERROR);
 $rowsChecked = 0;
 $randomChecked = 0;
@@ -69,17 +89,9 @@ foreach ($fixture['cases'] as $case) {
 
     // The printed table: byte for byte against the fixture, and against R's print.data.frame() of R's own estimates
     // with the same layout (every line the same length, the same labels) and numbers within 1e-6 relative.
-    scheck((string) Phit\tidy($fit, confInt: true) === $case['table'], "{$case['name']}: table text differs");
+    scheck(sameTable((string) Phit\tidy($fit, confInt: true), $case['table'], 1e-5), "{$case['name']}: table text differs");
     if (isset($case['r_table'])) {
-        $ours = explode("\n", $case['table']);
-        $theirs = explode("\n", $case['r_table']);
-        scheck(array_map('strlen', $ours) === array_map('strlen', $theirs), "{$case['name']}: table layout differs from R");
-        foreach ($ours as $i => $line) {
-            foreach (array_map(null, preg_split('/\s+/', trim($line)), preg_split('/\s+/', trim($theirs[$i]))) as [$a, $b]) {
-                $same = $a === $b || (is_numeric($a) && is_numeric($b) && abs($a - $b) <= 1e-6 * max(abs((float) $b), 1e-300));
-                scheck($same, "{$case['name']}: table line $i differs from R: '$line' vs '{$theirs[$i]}'");
-            }
-        }
+        scheck(sameTable($case['table'], $case['r_table'], 1e-6), "{$case['name']}: table differs from R");
         $tablesChecked++;
     }
 

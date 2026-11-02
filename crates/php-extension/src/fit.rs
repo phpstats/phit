@@ -188,11 +188,13 @@ macro_rules! fit_class {
                 offset_get(&self.data, offset)
             }
 
-            pub fn offset_set(&mut self, _offset: &Zval, _value: &Zval) -> PhpResult {
+            pub fn offset_set(&mut self, offset: &Zval, value: &Zval) -> PhpResult {
+                let _ = (offset, value);
                 Err(read_only("A Phit fit"))
             }
 
-            pub fn offset_unset(&mut self, _offset: &Zval) -> PhpResult {
+            pub fn offset_unset(&mut self, offset: &Zval) -> PhpResult {
+                let _ = offset;
                 Err(read_only("A Phit fit"))
             }
 
@@ -323,11 +325,13 @@ impl Table {
         offset_get(&self.columns, offset)
     }
 
-    pub fn offset_set(&mut self, _offset: &Zval, _value: &Zval) -> PhpResult {
+    pub fn offset_set(&mut self, offset: &Zval, value: &Zval) -> PhpResult {
+        let _ = (offset, value);
         Err(read_only("A Phit table"))
     }
 
-    pub fn offset_unset(&mut self, _offset: &Zval) -> PhpResult {
+    pub fn offset_unset(&mut self, offset: &Zval) -> PhpResult {
+        let _ = offset;
         Err(read_only("A Phit table"))
     }
 
