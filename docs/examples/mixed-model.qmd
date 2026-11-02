@@ -2,42 +2,24 @@
 title: "Fit a mixed model"
 ---
 
-Fit test scores on study hours with a random intercept for each school, then read the fixed effects, the variance components, and each school's estimated effect.
+Fit reaction time on days of sleep deprivation with a random intercept for each subject, then read the fixed effects, the variance components, and each subject's estimated effect.
 
-The example runs with the phit extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)). The data are 30 simulated students, five from each of six schools, taken from [`docs/data/schools.csv`](https://github.com/phpstats/phit/blob/main/docs/data/schools.csv). `score` is a test score in points, and `study_hours` is time spent studying, in hours.
+The data are [sleepstudy](https://github.com/phpstats/datasets#sleepstudy): average reaction time per day for 18 subjects in a sleep-deprivation study, days 0 to 9. `Reaction` is in milliseconds. The example reads the file by URL with phibble (`composer require phpstats/phibble`) and runs with the phit extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)).
 
 ## Code
 
 ```php
+use Phibble\DataFrame;
+
 use function Phit\fit_mixed_gaussian;
 
-// One line per school, five students each.
-$students = [
-    'school' => array_merge(...array_map(
-        fn ($s) => array_fill(0, 5, "school-0$s"),
-        range(1, 6),
-    )),
-    'study_hours' => [
-        11.58, 2.7, 10.02, 3.71, 4.38,
-        4.3, 2.8, 11.5, 1.15, 3.9,
-        7.27, 1.24, 6.08, 1.37, 11.43,
-        8.82, 11.44, 5.52, 2.04, 4.93,
-        3.52, 3.39, 1.15, 8.2, 9.63,
-        6.3, 9.93, 2.54, 2.08, 5.78,
-    ],
-    'score' => [
-        78.3, 67.2, 88.2, 68.5, 60.1,
-        69.2, 59.1, 92.1, 64.4, 67.1,
-        72.9, 55.8, 62.6, 52.6, 83.1,
-        63.7, 83.9, 52.8, 51.9, 57.1,
-        68.3, 67.6, 60.5, 81.6, 75.2,
-        81.5, 89.4, 60.7, 62.5, 68.6,
-    ],
-];
+$sleep = DataFrame::fromCsv(
+    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/sleepstudy.csv',
+);
 
 $fit = fit_mixed_gaussian(
-    'score ~ study_hours + (1 | school)',
-    $students,
+    'Reaction ~ Days + (1 | Subject)',
+    $sleep,
 );
 
 foreach ($fit['columns'] as $i => $name) {
@@ -49,19 +31,19 @@ foreach ($fit['columns'] as $i => $name) {
     );
 }
 
-$school = $fit['random'][0];
+$subject = $fit['random'][0];
 printf(
-    "\nschool SD %.2f, residual SD %.2f\n\n",
-    sqrt($school['covariance'][0][0]),
+    "\nsubject SD %.2f, residual SD %.2f\n\n",
+    sqrt($subject['covariance'][0][0]),
     $fit['sigma'],
 );
 
-foreach ($school['group_labels'] as $g => $label) {
-    $se = sqrt($school['effects_cond_var'][$g][0][0]);
+foreach ($subject['group_labels'] as $g => $label) {
+    $se = sqrt($subject['effects_cond_var'][$g][0][0]);
     printf(
-        "%s %+6.2f (se %.2f)\n",
+        "%s %+7.2f (se %.2f)\n",
         $label,
-        $school['effects'][$g][0],
+        $subject['effects'][$g][0],
         $se,
     );
 }
@@ -70,26 +52,37 @@ foreach ($school['group_labels'] as $g => $label) {
 ## Output
 
 ```
-(Intercept)    53.29 (se 2.70)
-study_hours     2.77 (se 0.27)
+(Intercept)   251.41 (se 9.75)
+Days           10.47 (se 0.80)
 
-school SD 4.93, residual SD 5.10
+subject SD 37.12, residual SD 30.99
 
-school-01  +0.99 (se 2.07)
-school-02  +3.27 (se 2.07)
-school-03  -2.54 (se 2.07)
-school-04  -7.89 (se 2.07)
-school-05  +2.47 (se 2.07)
-school-06  +3.69 (se 2.07)
+308  +40.78 (se 9.48)
+309  -77.85 (se 9.48)
+310  -63.11 (se 9.48)
+330   +4.41 (se 9.48)
+331  +10.22 (se 9.48)
+332   +8.22 (se 9.48)
+333  +16.50 (se 9.48)
+334   -3.00 (se 9.48)
+335  -45.28 (se 9.48)
+337  +72.18 (se 9.48)
+349  -21.20 (se 9.48)
+350  +14.11 (se 9.48)
+351   -7.86 (se 9.48)
+352  +36.38 (se 9.48)
+369   +7.04 (se 9.48)
+370   -6.36 (se 9.48)
+371   -3.29 (se 9.48)
+372  +18.12 (se 9.48)
 ```
 
 ## Interpretation
 
-- `(1 | school)` gives each school its own intercept, assumed to come from a normal distribution. The fit uses REML, as `lme4::lmer()` does by default.
-- The `study_hours` coefficient is an association within schools. The model gives every school the same slope.
-- The school SD describes how school intercepts vary. The residual SD describes how students vary around their school's line.
-- With six schools, the school SD is estimated imprecisely.
-- `effects` are each school's predicted intercept relative to the average, as R's `ranef()` reports. They are shrunk toward zero, more so for schools with fewer students.
-- The conditional standard errors are equal because every school has five students.
+- `(1 | Subject)` gives each subject an intercept of its own, assumed to come from a normal distribution. The fit uses REML, as `lme4::lmer()` does by default.
+- The `Days` coefficient is the average change in reaction time per additional day of sleep deprivation. The model gives every subject the same slope.
+- The subject SD describes how baseline reaction times vary between subjects. The residual SD describes how each subject's days vary around their own line.
+- `effects` are each subject's predicted intercept relative to the average, as R's `ranef()` reports. They are shrunk toward zero, more so for subjects with fewer observations. Every subject here has ten days, so their conditional standard errors are equal.
+- In these data the slopes also differ between subjects; `(Days | Subject)` fits a random slope as well. See [Mixed models](../mixed-models.qmd).
 
-**See also:** [Mixed models](../mixed-models.qmd) for the supported structures, the full result, singular fits, and `fit_mixed_logistic()` · [Interactive shrinkage vignette](https://phit.phpstats.org/vignettes/school-shrinkage)
+**See also:** [Mixed models](../mixed-models.qmd) for the supported structures, the full result, singular fits, and `fit_mixed_logistic()`

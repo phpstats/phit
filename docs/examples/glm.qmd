@@ -2,35 +2,26 @@
 title: "Fit logistic and Poisson models"
 ---
 
-Model lease renewals with logistic regression and support-ticket rates with Poisson regression, both with `fit_generalized_linear()`.
+Model married women's labor-force participation with logistic regression, and car insurance claim rates with Poisson regression, both with `fit_generalized_linear()`.
 
-The examples run with the phit extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)). Both data sets are small and made up.
+The examples read the data by URL with phibble (`composer require phpstats/phibble`) and run with the phit extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)).
 
 ## Logistic regression
 
-`$leases` records whether each of 16 tenants renewed (1 or 0), their rent increase in percent, and their tenure in years.
+The data are [mroz](https://github.com/phpstats/datasets#mroz): 753 married women in 1975, from the Panel Study of Income Dynamics. `lfp` is `yes` if the woman was in the labor force, `k5` is her number of children under 6, `age` is in years, `wc` is `yes` if she attended college, and `inc` is the family's income without her earnings, in $1,000.
 
 ```php
+use Phibble\DataFrame;
+
 use function Phit\{fit_generalized_linear, predict};
 
-$leases = [
-    'renewed' => [
-        1, 1, 0, 1, 1, 0, 1, 0,
-        1, 0, 1, 1, 0, 0, 1, 0,
-    ],
-    'increase' => [
-        2.0, 3.5, 8.0, 1.0, 6.5, 4.0, 2.5, 9.0,
-        5.0, 4.5, 3.0, 7.0, 10.0, 6.0, 5.5, 7.5,
-    ],
-    'tenure' => [
-        4, 2, 1, 6, 3, 1, 5, 2,
-        3, 1, 2, 6, 4, 3, 1, 2,
-    ],
-];
+$mroz = DataFrame::fromCsv(
+    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mroz.csv',
+);
 
 $logit = fit_generalized_linear(
-    'renewed ~ increase + tenure',
-    $leases,
+    'lfp ~ k5 + age + wc + inc',
+    $mroz,
     family: 'binomial',
 );
 
@@ -47,58 +38,59 @@ foreach ($logit['columns'] as $i => $name) {
     );
 }
 
-$p = predict(
-    $logit,
-    ['increase' => [3.0, 8.0], 'tenure' => [2, 2]],
-    type: 'response',
-);
+$women = [
+    'k5' => [0, 1],
+    'age' => [35, 35],
+    'wc' => ['no', 'no'],
+    'inc' => [20, 20],
+];
+$p = predict($logit, $women, type: 'response');
 printf(
-    "P(renew), 2 years' tenure: %.3f at 3%%, %.3f at 8%%\n",
+    "P(in labor force), age 35: %.3f with no young child, %.3f with one\n",
     ...$p['fit'],
 );
 ```
 
 ```
             log odds   odds ratio, 95% CI
-(Intercept)    2.791   16.293 [0.092, 2900.806]
-increase      -1.031    0.357 [0.117, 1.089]
-tenure         1.323    3.756 [0.692, 20.382]
-P(renew), 2 years' tenure: 0.913 at 3%, 0.057 at 8%
+(Intercept)    3.386   29.558 [10.498, 83.223]
+k5            -1.430    0.239 [0.165, 0.348]
+age           -0.057    0.945 [0.924, 0.966]
+wcyes          1.082    2.950 [2.001, 4.350]
+inc           -0.031    0.969 [0.955, 0.984]
+P(in labor force), age 35: 0.684 with no young child, 0.341 with one
 ```
 
-- `exp()` turns a log-odds coefficient into an odds ratio for a one-unit difference, with the other predictor held fixed.
-- An odds ratio is not a ratio of probabilities. `type: 'response'` returns predicted probabilities.
-- The exponentiated intercept is the odds at a 0% increase and zero tenure, outside the data.
-- With 16 leases every interval includes an odds ratio of 1, so the direction of each association is uncertain.
+- `lfp` is a string column, so it becomes a factor. Its first level, `no`, is failure, and the model gives the log odds of `yes`.
+- `exp()` turns a log-odds coefficient into an odds ratio, with the other predictors held fixed. `wcyes` compares women who attended college with women who did not.
+- An odds ratio is not a ratio of probabilities. `type: 'response'` returns predicted probabilities, which depend on every predictor's value.
+- The coefficients describe associations in this sample, not the effect of having a child or attending college.
 
 ## Poisson regression with an exposure offset
 
-`$accounts` records the support tickets of 10 accounts, the months each account was observed, and its plan.
+The data are [insurance](https://github.com/phpstats/datasets#insurance): car insurance claims in the third quarter of 1973 for 64 groups of policyholders. `Claims` is the number of claims, `Holders` the number of policyholders, and `District` the district of residence, where 4 is the major cities.
 
 ```php
+use Phibble\DataFrame;
+
 use function Phit\fit_generalized_linear;
 
-$accounts = [
-    'tickets' => [3, 7, 1, 12, 4, 0, 9, 2, 5, 15],
-    'months' => [6, 12, 3, 12, 8, 2, 12, 5, 7, 12],
-    'plan' => [
-        'basic', 'pro', 'basic', 'pro', 'basic',
-        'basic', 'pro', 'basic', 'pro', 'pro',
-    ],
-];
+$insurance = DataFrame::fromCsv(
+    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/insurance.csv',
+);
 
 $poisson = fit_generalized_linear(
-    'tickets ~ plan + offset(log(months))',
-    $accounts,
+    'Claims ~ factor(District) + offset(log(Holders))',
+    $insurance,
     family: 'poisson',
 );
 
-echo "            log rate   exp, 95% CI\n";
+echo "                  log rate   exp, 95% CI\n";
 foreach ($poisson['columns'] as $i => $name) {
     $b = $poisson['coefficients'][$i];
     $ci = array_map('exp', $poisson['conf_int'][$i]);
     printf(
-        "%-11s %8.3f   %.3f [%.3f, %.3f]\n",
+        "%-16s %8.3f   %.3f [%.3f, %.3f]\n",
         $name,
         $b,
         exp($b),
@@ -106,22 +98,24 @@ foreach ($poisson['columns'] as $i => $name) {
     );
 }
 printf(
-    "residual deviance %.3f on %d df\n",
+    "residual deviance %.1f on %d df\n",
     $poisson['deviance'],
     $poisson['df_residual'],
 );
 ```
 
 ```
-            log rate   exp, 95% CI
-(Intercept)   -0.875   0.417 [0.224, 0.774]
-planpro        0.739   2.095 [1.060, 4.140]
-residual deviance 5.617 on 8 df
+                  log rate   exp, 95% CI
+(Intercept)        -2.033   0.131 [0.124, 0.138]
+factor(District)2    0.022   1.023 [0.940, 1.112]
+factor(District)3    0.013   1.013 [0.918, 1.118]
+factor(District)4    0.222   1.248 [1.106, 1.409]
+residual deviance 223.5 on 60 df
 ```
 
-- `offset(log(months))` puts the model on tickets per month, so accounts observed for different lengths of time are comparable.
-- `basic` is the reference plan. The exponentiated intercept is its monthly ticket rate, and the exponentiated `planpro` is the pro-to-basic rate ratio.
-- The rate ratio is an association, since pro accounts may differ from basic accounts in other ways.
-- Poisson regression assumes the variance equals the mean. A deviance far above its degrees of freedom would suggest overdispersion and standard errors that are too small. With ten accounts this check is weak.
+- `offset(log(Holders))` puts the model on claims per policyholder, so groups of different sizes are comparable.
+- District 1 is the reference. The exponentiated intercept is its claim rate per policyholder, and each district coefficient's exponent is that district's rate ratio to district 1.
+- The rate ratios are unadjusted for car group and age, which also differ between districts.
+- The Poisson model assumes the variance equals the mean. Here the residual deviance is far above its degrees of freedom, so the variation exceeds that assumption and the standard errors are too small. Car group and age, left out of this model, account for part of it.
 
 **See also:** [Linear and generalized linear models](../models.qmd) for links, weights, result keys, and the differences from R's `glm()`

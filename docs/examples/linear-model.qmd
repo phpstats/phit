@@ -2,35 +2,26 @@
 title: "Fit a linear model and predict"
 ---
 
-Fit monthly rent from floor area and district, then predict the rent of two new flats with 95% prediction intervals.
+Fit fuel economy from weight and number of cylinders, then predict two cars with 95% prediction intervals.
 
-The example runs with the phit extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)). The data are ten simulated flats: `rent` is the monthly rent in an unnamed currency, `area` is the floor area in square meters, and `district` is one of three districts.
+The data are [mtcars](https://github.com/phpstats/datasets#mtcars): fuel consumption and design of 32 cars (1973–74 models) from *Motor Trend*. `mpg` is miles per US gallon, `wt` is weight in 1,000 lb, and `cyl` is the number of cylinders. The example reads the file by URL with phibble (`composer require phpstats/phibble`) and runs with the phit extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)).
 
 ## Code
 
 ```php
+use Phibble\DataFrame;
+
 use function Phit\{fit_ols, predict};
 
-$flats = [
-    'rent' => [
-        1879.25, 1805.03, 2022.29, 1267.85, 1509.24,
-        2240.10, 959.51, 2386.54, 1655.80, 1420.00,
-    ],
-    'area' => [
-        74.4, 57.4, 66.4, 49.1, 45.7,
-        92.4, 37.0, 93.9, 61.2, 52.3,
-    ],
-    'district' => [
-        'north', 'south', 'north', 'east', 'south',
-        'north', 'east', 'south', 'east', 'south',
-    ],
-];
+$cars = DataFrame::fromCsv(
+    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv',
+);
 
-$fit = fit_ols('rent ~ area + district', $flats);
+$fit = fit_ols('mpg ~ wt + factor(cyl)', $cars);
 
 foreach ($fit['columns'] as $i => $name) {
     printf(
-        "%-14s %8.2f  95%% CI [%8.2f, %8.2f]\n",
+        "%-14s %7.2f  95%% CI [%6.2f, %6.2f]\n",
         $name,
         $fit['coefficients'][$i],
         ...$fit['conf_int'][$i],
@@ -42,18 +33,15 @@ printf(
     $fit['sigma'],
 );
 
-$new = [
-    'area' => [50.0, 80.0],
-    'district' => ['east', 'north'],
-];
+$new = ['wt' => [2.5, 3.5], 'cyl' => [4, 8]];
 $p = predict($fit, $new, interval: 'prediction');
 
-foreach ($p['fit'] as $i => $rent) {
+foreach ($p['fit'] as $i => $mpg) {
     printf(
-        "%.0f m2, %-5s %8.2f  95%% PI [%7.2f, %7.2f]\n",
-        $new['area'][$i],
-        $new['district'][$i],
-        $rent,
+        "%5.0f lb, %d cyl %6.2f  95%% PI [%5.2f, %5.2f]\n",
+        1000 * $new['wt'][$i],
+        $new['cyl'][$i],
+        $mpg,
         $p['lower'][$i],
         $p['upper'][$i],
     );
@@ -63,22 +51,21 @@ foreach ($p['fit'] as $i => $rent) {
 ## Output
 
 ```
-(Intercept)      352.64  95% CI [  -87.49,   792.77]
-area              19.18  95% CI [   11.27,    27.09]
-districtnorth    203.64  95% CI [ -166.19,   573.47]
-districtsouth    232.16  95% CI [  -60.58,   524.90]
-R-squared 0.927, residual SD 146.29
+(Intercept)      33.99  95% CI [ 30.12,  37.86]
+wt               -3.21  95% CI [ -4.75,  -1.66]
+factor(cyl)6     -4.26  95% CI [ -7.09,  -1.42]
+factor(cyl)8     -6.07  95% CI [ -9.46,  -2.69]
+R-squared 0.837, residual SD 2.56
 
-50 m2, east   1311.65  95% PI [ 898.26, 1725.04]
-80 m2, north  2090.69  95% PI [1676.97, 2504.41]
+ 2500 lb, 4 cyl  25.98  95% PI [20.50, 31.46]
+ 3500 lb, 8 cyl  16.70  95% PI [11.22, 22.18]
 ```
 
 ## Interpretation
 
-- `district` becomes a factor. Its first level alphabetically, `east`, is the reference.
-- Each district coefficient compares that district with `east` for flats of the same area.
-- The `area` coefficient is an association within districts, not the effect of enlarging a flat.
-- Ten flats give wide intervals, so the district differences are uncertain.
-- A prediction interval covers one new flat's rent. A confidence interval (`interval: 'confidence'`) covers the mean rent and is narrower.
+- `factor(cyl)` treats the number of cylinders as categories. Four cylinders is the reference, and `factor(cyl)6` and `factor(cyl)8` compare six and eight cylinders with four for cars of the same weight.
+- The `wt` coefficient is the difference in miles per gallon associated with 1,000 lb more weight among cars with the same number of cylinders. It describes these 32 cars, not the effect of adding weight to a car.
+- With 32 cars and correlated predictors, the intervals are wide.
+- A prediction interval covers one new car's mileage. A confidence interval (`interval: 'confidence'`) covers the mean mileage of such cars and is narrower.
 
 **See also:** [A first model](../getting-started.qmd) · [Linear and generalized linear models](../models.qmd) · [Model formulas](../formulas.qmd)

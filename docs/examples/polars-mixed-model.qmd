@@ -3,26 +3,19 @@ title: "Fit a mixed model to a Polars table and chart it"
 include-in-header: _phiz-scripts.html
 ---
 
-Read a CSV file with Polars, fit test scores with a random intercept for each school, and chart each school's fitted line with phiz.
+Read a CSV file with Polars, fit reaction time with a random intercept for each subject, and chart each subject's fitted line with phiz.
 
 The example needs the phpolars extension ([phpolars installation](https://phpolars.phpstats.org/docs/deployment)) and phiz (`composer require phpstats/phiz`). phit can be the extension or the plain-PHP polyfill ([Extension or polyfill](../extension-or-polyfill.qmd)). [Runnable script](https://github.com/phpstats/phit/blob/main/docs/examples/scripts/polars-mixed-model.php)
 
-## Data
-
-The data are 250 simulated students in 12 schools, in [`docs/data/schools.csv`](https://github.com/phpstats/phit/blob/main/docs/data/schools.csv). `score` is a test score in points, and `study_hours` is time spent studying, in hours. Save the file beside the script:
-
-```sh
-curl -O \
-  https://raw.githubusercontent.com/phpstats/phit/main/docs/data/schools.csv
-```
+The data are [sleepstudy](https://github.com/phpstats/datasets#sleepstudy): average reaction time in milliseconds per day for 18 subjects in a sleep-deprivation study, days 0 to 9. Polars reads the file by URL.
 
 {{< include _generated/polars-mixed-model.md >}}
 
 ## Interpretation
 
 - `toColumns()` converts the Polars result to PHP arrays once for use by phit and phiz.
-- The `study_hours` coefficient is an association within schools.
-- `fitted` holds conditional fitted values, which include each school's predicted intercept. `fixed_fitted` leaves them out.
-- The model gives every school the same slope, so the fitted lines are parallel.
+- The `Days` coefficient is the average change in reaction time per additional day of sleep deprivation.
+- `fitted` holds conditional fitted values, which include each subject's predicted intercept. `fixed_fitted` leaves them out.
+- The model gives every subject the same slope, so the fitted lines are parallel. The points show that the slopes differ between subjects; `(Days | Subject)` fits a random slope as well.
 
-**See also:** [Fit a mixed model](mixed-model.qmd) for reading the variance components and school effects · [Mixed models](../mixed-models.qmd) for the supported structures · phpolars' [Getting started](https://phpolars.phpstats.org/docs/getting-started) · phiz's [Get started](https://phiz.phpstats.org/docs/get-started)
+**See also:** [Fit a mixed model](mixed-model.qmd) for reading the variance components and subject effects · [Mixed models](../mixed-models.qmd) for the supported structures · phpolars' [Getting started](https://phpolars.phpstats.org/docs/getting-started) · phiz's [Get started](https://phiz.phpstats.org/docs/get-started)
