@@ -537,25 +537,25 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#where-these-data-come-from" id="toc-where-these-data-come-from" class="nav-link active" data-scroll-target="#where-these-data-come-from">Where these data come from</a></li>
+  <li><a href="#where-these-data-come-from" id="toc-where-these-data-come-from" class="nav-link active" data-scroll-target="#where-these-data-come-from">Data source</a></li>
   <li><a href="#read-the-matrices" id="toc-read-the-matrices" class="nav-link" data-scroll-target="#read-the-matrices">Read the matrices</a></li>
-  <li><a href="#what-does-fitting-minimize" id="toc-what-does-fitting-minimize" class="nav-link" data-scroll-target="#what-does-fitting-minimize">1. What does fitting minimize?</a>
+  <li><a href="#what-does-fitting-minimize" id="toc-what-does-fitting-minimize" class="nav-link" data-scroll-target="#what-does-fitting-minimize">1. The least-squares objective</a>
   <ul class="collapse">
   <li><a href="#expand-the-dot-products" id="toc-expand-the-dot-products" class="nav-link" data-scroll-target="#expand-the-dot-products">Expand the dot products</a></li>
   </ul></li>
   <li><a href="#svd-gives-a-stable-solution-and-a-rank-check" id="toc-svd-gives-a-stable-solution-and-a-rank-check" class="nav-link" data-scroll-target="#svd-gives-a-stable-solution-and-a-rank-check">2. SVD gives a stable solution and a rank check</a>
   <ul class="collapse">
-  <li><a href="#what-problem-does-svd-help-us-understand" id="toc-what-problem-does-svd-help-us-understand" class="nav-link" data-scroll-target="#what-problem-does-svd-help-us-understand">What problem does SVD help us understand?</a></li>
-  <li><a href="#why-scale-the-columns-first" id="toc-why-scale-the-columns-first" class="nav-link" data-scroll-target="#why-scale-the-columns-first">Why scale the columns first?</a></li>
-  <li><a href="#what-do-u-s-and-v-mean" id="toc-what-do-u-s-and-v-mean" class="nav-link" data-scroll-target="#what-do-u-s-and-v-mean">What do U, S and V mean?</a></li>
+  <li><a href="#what-problem-does-svd-help-us-understand" id="toc-what-problem-does-svd-help-us-understand" class="nav-link" data-scroll-target="#what-problem-does-svd-help-us-understand">The role of the SVD</a></li>
+  <li><a href="#why-scale-the-columns-first" id="toc-why-scale-the-columns-first" class="nav-link" data-scroll-target="#why-scale-the-columns-first">Column scaling</a></li>
+  <li><a href="#what-do-u-s-and-v-mean" id="toc-what-do-u-s-and-v-mean" class="nav-link" data-scroll-target="#what-do-u-s-and-v-mean">U, S, and V</a></li>
   <li><a href="#derive-the-least-squares-solution-from-the-decomposition" id="toc-derive-the-least-squares-solution-from-the-decomposition" class="nav-link" data-scroll-target="#derive-the-least-squares-solution-from-the-decomposition">Derive the least-squares solution from the decomposition</a></li>
-  <li><a href="#why-small-singular-values-matter" id="toc-why-small-singular-values-matter" class="nav-link" data-scroll-target="#why-small-singular-values-matter">Why small singular values matter</a></li>
+  <li><a href="#why-small-singular-values-matter" id="toc-why-small-singular-values-matter" class="nav-link" data-scroll-target="#why-small-singular-values-matter">Small singular values</a></li>
   </ul></li>
   <li><a href="#residuals-and-degrees-of-freedom" id="toc-residuals-and-degrees-of-freedom" class="nav-link" data-scroll-target="#residuals-and-degrees-of-freedom">3. Residuals and degrees of freedom</a></li>
   <li><a href="#covariance-standard-errors-and-t-tests" id="toc-covariance-standard-errors-and-t-tests" class="nav-link" data-scroll-target="#covariance-standard-errors-and-t-tests">4. Covariance, standard errors and t-tests</a></li>
   <li><a href="#r-squared-and-the-intercept-convention" id="toc-r-squared-and-the-intercept-convention" class="nav-link" data-scroll-target="#r-squared-and-the-intercept-convention">5. R-squared and the intercept convention</a></li>
   <li><a href="#gaussian-likelihood-explains-the-same-estimator" id="toc-gaussian-likelihood-explains-the-same-estimator" class="nav-link" data-scroll-target="#gaussian-likelihood-explains-the-same-estimator">6. Gaussian likelihood explains the same estimator</a></li>
-  <li><a href="#verify-what-we-calculated" id="toc-verify-what-we-calculated" class="nav-link" data-scroll-target="#verify-what-we-calculated">7. Verify what we calculated</a></li>
+  <li><a href="#verify-what-we-calculated" id="toc-verify-what-we-calculated" class="nav-link" data-scroll-target="#verify-what-we-calculated">7. Verification</a></li>
   <li><a href="#missing-data-singularity-and-perfect-fits" id="toc-missing-data-singularity-and-perfect-fits" class="nav-link" data-scroll-target="#missing-data-singularity-and-perfect-fits">8. Missing data, singularity and perfect fits</a></li>
   </ul>
 </nav>
@@ -584,7 +584,7 @@ window.Quarto = {
 
 <p>This executable companion to <a href="../ols-math.html">OLS mathematics and Rust notes</a> uses Python to show the intermediate matrices; phit’s estimator is in <code>crates/stats-core/src/ols.rs</code>. It uses the saved simulated housing observations shared by the PHP example and the R fixtures.</p>
 <p>We model <span class="math inline">\(y=X\beta+\epsilon\)</span>. Rows are observations, columns are coefficients, and the first column of the mathematical design is ones (automatically added by the default PHP call). Our unknowns are the intercept and slope. We assume full column rank and <span class="math inline">\(n&gt;p\)</span>. Run cells from top to bottom; see <a href="../notebooks/index.html">notebook setup</a>.</p>
-<div id="c606a444" class="cell" data-execution_count="1">
+<div id="40772058" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -743,7 +743,7 @@ window.Quarto = {
 </div>
 </div>
 <section id="where-these-data-come-from" class="level3">
-<h3 class="anchored" data-anchor-id="where-these-data-come-from">Where these data come from</h3>
+<h3 class="anchored" data-anchor-id="where-these-data-come-from">Data source</h3>
 <p>Each row is a simulated apartment: <code>area_m2</code> is floor area in square metres, <code>bedrooms</code> is a correlated count, and <code>monthly_rent</code> is rent in fictional currency units per month. The generator uses seed <code>20261011</code> and saves the eight observations in <a href="../data/housing.csv">housing.csv</a>. See <code>tests/generate-learning-data.R</code> for the complete generation process. The saved CSV, rather than independently generated samples in each language, is the input to every implementation.</p>
 <p>We generate area uniformly between 35 and 110 square metres, then generate bedrooms from area plus noise, rounded and bounded to 1–4. Rent follows</p>
 <p><span class="math display">\[\mathrm{rent}_i=650+18\,\mathrm{area}_i+\epsilon_i,
@@ -754,7 +754,7 @@ window.Quarto = {
 <section id="read-the-matrices" class="level3">
 <h3 class="anchored" data-anchor-id="read-the-matrices">Read the matrices</h3>
 <p><span class="math inline">\(X\)</span> has <span class="math inline">\(n=8\)</span> rows (observations) and <span class="math inline">\(p=2\)</span> columns (intercept and slope). <span class="math inline">\(y\)</span> is a column vector, so its mathematical dimensions are <span class="math inline">\(8\times1\)</span>. NumPy stores our vectors as one-dimensional arrays; we display them as columns. The second column contains the observed floor areas; the first column of ones is a constructed intercept column, not a measurement or a starting guess. The superscript <span class="math inline">\(\top\)</span> means <strong>transpose</strong>: swap rows and columns, without changing the values. In Python, <code>X.T</code> is <span class="math inline">\(X^\top\)</span>.</p>
-<div id="83efaf6c" class="cell" data-execution_count="2">
+<div id="0848538d" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="st">"X"</span>, X)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="st">"y"</span>, y)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"X</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op"</span>, X.T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -771,13 +771,13 @@ window.Quarto = {
 <p>Matrix multiplication takes a row from the left matrix and a column from the right matrix, multiplies their corresponding entries, and adds the products. The inner dimensions must match: <span class="math inline">\((a\times b)(b\times c)\)</span> produces <span class="math inline">\(a\times c\)</span>. Numbers in these displays are rounded to six significant digits for readability; calculations and verification use the full precision values.</p>
 </section>
 <section id="what-does-fitting-minimize" class="level2">
-<h2 class="anchored" data-anchor-id="what-does-fitting-minimize">1. What does fitting minimize?</h2>
+<h2 class="anchored" data-anchor-id="what-does-fitting-minimize">1. The least-squares objective</h2>
 <p>For a candidate <span class="math inline">\(\beta\)</span>, fitted values are <span class="math inline">\(X\beta\)</span> and residuals are <span class="math inline">\(r=y-X\beta\)</span>. The residual sum of squares is</p>
 <p><span class="math display">\[RSS(\beta)=r^\top r=\sum_i(y_i-x_i^\top\beta)^2.\]</span></p>
 <p>OLS chooses <span class="math inline">\(\hat\beta=\arg\min_\beta RSS(\beta)\)</span>. Squaring makes large errors costly and gives a smooth quadratic. Differentiating gives <span class="math inline">\(-2X^\top(y-X\beta)\)</span>; at the minimum,</p>
 <p><span class="math display">\[X^\top X\hat\beta=X^\top y.\]</span></p>
 <p>These normal equations explain the answer. Computing <span class="math inline">\((X^\top X)^{-1}\)</span> directly is a poor numerical strategy: forming <span class="math inline">\(X^\top X\)</span> squares the condition number. The implementation solves through SVD instead.</p>
-<div id="9f70fd58" class="cell" data-execution_count="3">
+<div id="1348450d" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rss_at(beta):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    residuals <span class="op">=</span> y <span class="op">-</span> X <span class="op">@</span> np.asarray(beta)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> residuals <span class="op">@</span> residuals</span>
@@ -790,7 +790,7 @@ Gradient there: [  847.18  32810.806]</code></pre>
 </div>
 </div>
 <p>At the trial coefficients <span class="math inline">\(\beta=[650,18]^\top\)</span>, each fitted outcome is <span class="math inline">\(1\cdot650+\mathrm{area}_i\cdot18\)</span>. The residual is the observed outcome minus that fit.</p>
-<div id="a4afe1b9" class="cell" data-execution_count="4">
+<div id="864574a8" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>trial_beta <span class="op">=</span> np.array([<span class="fl">650.</span>, <span class="fl">18.</span>])</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"</span><span class="dv">\b</span><span class="vs">eta_{</span><span class="dv">\m</span><span class="vs">athrm{trial}}"</span>, trial_beta)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"X</span><span class="dv">\b</span><span class="vs">eta_{</span><span class="dv">\m</span><span class="vs">athrm{trial}}"</span>, X <span class="op">@</span> trial_beta)</span>
@@ -817,7 +817,7 @@ Gradient there: [  847.18  32810.806]</code></pre>
 <section id="expand-the-dot-products" class="level3">
 <h3 class="anchored" data-anchor-id="expand-the-dot-products">Expand the dot products</h3>
 <p>Every entry in a matrix product is one row–column dot product. Below, we show the first two and last terms of long sums; <span class="math inline">\(\cdots\)</span> stands for the omitted terms. <strong>The result includes all eight observations</strong>, not just the displayed terms. Both factors and results are rounded for display, so the equals sign describes the operation and <span class="math inline">\(\approx\)</span> marks the displayed numerical result.</p>
-<div id="a4c9989f" class="cell" data-execution_count="5">
+<div id="b831549c" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(p):</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(p):</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        show_dot(<span class="vs">rf"</span><span class="kw">(</span><span class="vs">X</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op X</span><span class="kw">)</span><span class="vs">_</span><span class="ch">{{</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="vs">,</span><span class="sc">{</span>j<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ch">}}</span><span class="vs">"</span>, X[:, i], X[:, j])</span>
@@ -852,20 +852,20 @@ Gradient there: [  847.18  32810.806]</code></pre>
 <section id="svd-gives-a-stable-solution-and-a-rank-check" class="level2">
 <h2 class="anchored" data-anchor-id="svd-gives-a-stable-solution-and-a-rank-check">2. SVD gives a stable solution and a rank check</h2>
 <section id="what-problem-does-svd-help-us-understand" class="level3">
-<h3 class="anchored" data-anchor-id="what-problem-does-svd-help-us-understand">What problem does SVD help us understand?</h3>
+<h3 class="anchored" data-anchor-id="what-problem-does-svd-help-us-understand">The role of the SVD</h3>
 <p><strong>SVD means singular value decomposition.</strong> A decomposition rewrites one matrix as a product of simpler matrices. It does not change the data or guess the coefficients. For our model, multiplying <span class="math inline">\(X\beta\)</span> takes two coefficient values and produces eight fitted rents. That is a map from a two-dimensional coefficient space into an eight-dimensional observation space.</p>
 <p>The possible fitted vectors form the <strong>column space</strong> of <span class="math inline">\(X\)</span>: all linear combinations of its intercept and area columns. It is a two-dimensional plane through the origin inside that eight-dimensional space. The observed <span class="math inline">\(y\)</span> will generally lie outside this plane because it includes noise. Least squares seeks the point on the plane closest to <span class="math inline">\(y\)</span> in squared Euclidean distance.</p>
 <p>These are spaces of vectors, not a scatterplot of area against rent: the eight coordinates of an observation-space vector correspond to the eight apartments.</p>
 </section>
 <section id="why-scale-the-columns-first" class="level3">
-<h3 class="anchored" data-anchor-id="why-scale-the-columns-first">Why scale the columns first?</h3>
+<h3 class="anchored" data-anchor-id="why-scale-the-columns-first">Column scaling</h3>
 <p>Scale the columns with <span class="math inline">\(D=\operatorname{diag}(\|X_j\|)\)</span>, so <span class="math inline">\(A=XD^{-1}\)</span>. Decompose <span class="math inline">\(A=USV^\top\)</span>. Then</p>
 <p><span class="math display">\[\hat\beta=D^{-1}VS^{-1}U^\top y.\]</span></p>
 <p>The notation <span class="math inline">\(\|X_j\|=\sqrt{\sum_i X_{ij}^2}\)</span> is the Euclidean length of column <span class="math inline">\(j\)</span>. <span class="math inline">\(D\)</span> has those lengths on its diagonal and zeros elsewhere. Multiplying by <span class="math inline">\(D^{-1}\)</span> divides each column by its length, giving unit-length columns in <span class="math inline">\(A\)</span>. This is column scaling, <strong>not centering or z-score standardization</strong>. The intercept column is scaled too; no observations are changed or removed.</p>
 <p>Define scaled coefficients <span class="math inline">\(\theta=D\beta\)</span>. Then <span class="math inline">\(A\theta=X\beta\)</span>, so this change of units preserves every possible fitted vector. We solve for <span class="math inline">\(\theta\)</span> and recover <span class="math inline">\(\beta=D^{-1}\theta\)</span>. Scaling prevents the numerical rank decision from being dominated simply by the choice of metres versus centimetres.</p>
 </section>
 <section id="what-do-u-s-and-v-mean" class="level3">
-<h3 class="anchored" data-anchor-id="what-do-u-s-and-v-mean">What do U, S and V mean?</h3>
+<h3 class="anchored" data-anchor-id="what-do-u-s-and-v-mean">U, S, and V</h3>
 <p>For our full-rank design, the thin SVD is</p>
 <p><span class="math display">\[A=USV^\top,\qquad
 U^\top U=I_2,\qquad V^\top V=VV^\top=I_2.\]</span></p>
@@ -906,7 +906,7 @@ U^\top U=I_2,\qquad V^\top V=VV^\top=I_2.\]</span></p>
 <p>So an input direction <span class="math inline">\(v_j\)</span> of length one becomes an output direction <span class="math inline">\(u_j\)</span> stretched to length <span class="math inline">\(s_j\)</span>. Reading <span class="math inline">\(A\theta=USV^\top\theta\)</span> right to left: change coordinates using <span class="math inline">\(V^\top\)</span>, scale them using <span class="math inline">\(S\)</span>, and combine the observation-space directions using <span class="math inline">\(U\)</span>. <span class="math inline">\(V^\top\)</span> is a rotation or reflection; the rectangular <span class="math inline">\(U\)</span> embeds two coordinates into the eight-dimensional fitted plane. The thin <span class="math inline">\(U\)</span> is not an invertible <span class="math inline">\(8\times8\)</span> rotation.</p>
 <p>Singular values are <strong>not regression coefficients or error standard deviations</strong>. They describe the design matrix, independent of the observed rents <span class="math inline">\(y\)</span>.</p>
 <p>If a singular value is numerically zero, at least one coefficient cannot be uniquely identified. We reject the design. The threshold is <span class="math inline">\(\epsilon\max(n,p)s_{max}\)</span>. Scaling makes this decision less dependent on predictor units. The Rust code calls nalgebra’s <code>svd.solve()</code> for the scaled solution, then undoes the column scaling.</p>
-<div id="0aded65a" class="cell" data-execution_count="6">
+<div id="5130af93" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>scales <span class="op">=</span> np.linalg.norm(X, axis<span class="op">=</span><span class="dv">0</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> X <span class="op">/</span> scales</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>U, singular_values, Vt <span class="op">=</span> np.linalg.svd(A, full_matrices<span class="op">=</span><span class="va">False</span>)</span>
@@ -925,7 +925,7 @@ Normal-equation gradient (approximately zero): [-2.27373675e-12 -1.54490355e-10]
 </div>
 </div>
 <p>The thin SVD keeps only the <span class="math inline">\(p=2\)</span> needed columns of <span class="math inline">\(U\)</span>. Here <span class="math inline">\(U\)</span> is <span class="math inline">\(8\times2\)</span>, <span class="math inline">\(S\)</span> is <span class="math inline">\(2\times2\)</span>, and <span class="math inline">\(V^\top\)</span> is <span class="math inline">\(2\times2\)</span>. <span class="math inline">\(S\)</span> is diagonal: its only nonzero entries are the singular values. <span class="math inline">\(D^{-1}\)</span> undoes the original column scaling.</p>
-<div id="35d1bd8c" class="cell" data-execution_count="7">
+<div id="ae1059c4" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> np.diag(scales)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>D_inverse <span class="op">=</span> np.diag(<span class="dv">1</span> <span class="op">/</span> scales)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>S <span class="op">=</span> np.diag(singular_values)</span>
@@ -973,7 +973,7 @@ Normal-equation gradient (approximately zero): [-2.27373675e-12 -1.54490355e-10]
 </div>
 </div>
 <p>Check those geometric claims using the actual matrices:</p>
-<div id="a8938d73" class="cell" data-execution_count="8">
+<div id="8917a8d6" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"U</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op U"</span>, U.T <span class="op">@</span> U)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"V</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op V"</span>, Vt <span class="op">@</span> Vt.T)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"Av_1"</span>, A <span class="op">@</span> Vt.T[:, <span class="dv">0</span>])</span>
@@ -1009,7 +1009,7 @@ y_\perp=y-Uc.\]</span></p>
 \hat\theta=V\hat z,\qquad
 \hat\beta=D^{-1}\hat\theta.\]</span></p>
 <p>This explains the solution formula rather than just prescribing a sequence of matrix multiplications. It also gives <span class="math inline">\(\hat y=UU^\top y\)</span> and <span class="math inline">\(r=y-UU^\top y\)</span>. <span class="math inline">\(UU^\top\)</span> is a projection matrix, not the <span class="math inline">\(8\times8\)</span> identity: it preserves vectors in the fitted plane and removes perpendicular components. There are two fitted directions and six residual directions, which is where <span class="math inline">\(n-p=8-2=6\)</span> comes from.</p>
-<div id="25bbe268" class="cell" data-execution_count="9">
+<div id="2c7629d0" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>coordinates <span class="op">=</span> U.T <span class="op">@</span> y</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>projected_y <span class="op">=</span> U <span class="op">@</span> coordinates</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>perpendicular_y <span class="op">=</span> y <span class="op">-</span> projected_y</span>
@@ -1033,7 +1033,7 @@ y_\perp=y-Uc.\]</span></p>
 </div>
 </div>
 <p>Reading the final product from right to left: <span class="math inline">\(U^\top y\)</span> expresses the outcome in the left singular-vector directions; <span class="math inline">\(S^{-1}\)</span> divides by the singular values; <span class="math inline">\(V\)</span> converts back to scaled coefficient coordinates; <span class="math inline">\(D^{-1}\)</span> restores the original predictor units. Each intermediate coefficient vector is <span class="math inline">\(2\times1\)</span>. The signs of corresponding singular vectors can differ across software while giving the same reconstructed matrix and coefficients.</p>
-<div id="af34954e" class="cell" data-execution_count="10">
+<div id="4a31611e" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(p):</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    show_dot(<span class="vs">rf"</span><span class="kw">(</span><span class="vs">U</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op y</span><span class="kw">)</span><span class="vs">_</span><span class="ch">{{</span><span class="sc">{</span>j<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ch">}}</span><span class="vs">"</span>, U[:, j], y)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>scaled_coordinates <span class="op">=</span> (U.T <span class="op">@</span> y) <span class="op">/</span> singular_values</span>
@@ -1055,10 +1055,10 @@ y_\perp=y-Uc.\]</span></p>
 <p><span class="math inline">\(S^{-1}\)</span> and <span class="math inline">\(D^{-1}\)</span> are diagonal, so multiplying by them simply divides each coordinate by its corresponding singular value or column scale.</p>
 </section>
 <section id="why-small-singular-values-matter" class="level3">
-<h3 class="anchored" data-anchor-id="why-small-singular-values-matter">Why small singular values matter</h3>
+<h3 class="anchored" data-anchor-id="why-small-singular-values-matter">Small singular values</h3>
 <p>If <span class="math inline">\(s_j=0\)</span>, then <span class="math inline">\(Av_j=0\)</span>: moving the coefficients along that nonzero direction does not change any fitted outcome. The data cannot distinguish those coefficient choices. For example, adding a second copy of area lets one area coefficient increase while the other decreases by the same amount. Only their sum matters.</p>
 <p>If <span class="math inline">\(s_j\)</span> is small but positive, division by <span class="math inline">\(s_j\)</span> amplifies changes in the outcome coordinates. The design is identifiable but coefficients can be sensitive to noise. The condition number <span class="math inline">\(\kappa(A)=s_{\max}/s_{\min}\)</span> measures that sensitivity in the scaled coordinates. Strongly correlated predictors often produce small singular values; full rank alone does not guarantee precise estimates.</p>
-<div id="44fdb987" class="cell" data-execution_count="11">
+<div id="cbb4d4cf" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Condition number of scaled design:"</span>, singular_values[<span class="dv">0</span>] <span class="op">/</span> singular_values[<span class="op">-</span><span class="dv">1</span>])</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>duplicated <span class="op">=</span> np.column_stack([X, X[:, <span class="dv">1</span>]])</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>duplicated_scaled <span class="op">=</span> duplicated <span class="op">/</span> np.linalg.norm(duplicated, axis<span class="op">=</span><span class="dv">0</span>)</span>
@@ -1089,7 +1089,7 @@ Numerical rank threshold: 3.0465504588638278e-15</code></pre>
 <p>Full rank means we estimate <span class="math inline">\(p\)</span> coefficients, leaving <span class="math inline">\(n-p\)</span> independent residual directions. The unbiased variance estimate is</p>
 <p><span class="math display">\[s^2=\frac{RSS}{n-p},\qquad s=\sqrt{s^2}.\]</span></p>
 <p>The result fields are <code>fitted</code>, <code>residuals</code>, <code>rss</code>, <code>df_residual</code>, <code>residual_variance</code>, and <code>sigma</code>. We preserve actual floating-point residuals; we do not round nearly perfect fits to zero.</p>
-<div id="addd67ea" class="cell" data-execution_count="12">
+<div id="35c5ddb8" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fitted <span class="op">=</span> X <span class="op">@</span> beta</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>residuals <span class="op">=</span> y <span class="op">-</span> fitted</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>rss <span class="op">=</span> residuals <span class="op">@</span> residuals</span>
@@ -1171,7 +1171,7 @@ Numerical rank threshold: 3.0465504588638278e-15</code></pre>
 <pre><code>RSS=204471.40305666; residual df=6; variance=34078.56717611; sigma=184.60381138</code></pre>
 </div>
 </div>
-<div id="b417af44" class="cell" data-execution_count="13">
+<div id="d2591384" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"</span><span class="er">\</span><span class="vs">hat y=X</span><span class="er">\</span><span class="vs">hat</span><span class="dv">\b</span><span class="vs">eta"</span>, fitted)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"r=y-</span><span class="er">\</span><span class="vs">hat y"</span>, residuals)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"X</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op r"</span>, X.T <span class="op">@</span> residuals)</span>
@@ -1190,7 +1190,7 @@ Numerical rank threshold: 3.0465504588638278e-15</code></pre>
 </div>
 </div>
 <p><span class="math inline">\(X\hat\beta\)</span> multiplies a <span class="math inline">\(8\times2\)</span> matrix by a <span class="math inline">\(2\times1\)</span> vector, giving eight fitted outcomes. <span class="math inline">\(r^\top r\)</span> multiplies <span class="math inline">\((1\times8)(8\times1)\)</span>, giving a scalar: the sum of squared residuals. At the optimum, <span class="math inline">\(X^\top r\)</span> is approximately zero. This says the residual vector is perpendicular to every predictor column.</p>
-<div id="d348dc1b" class="cell" data-execution_count="14">
+<div id="8d55d1c1" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>show_dot(<span class="vs">r"</span><span class="er">\</span><span class="vs">hat y_1"</span>, X[<span class="dv">0</span>], beta)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>show_dot(<span class="vs">r"</span><span class="er">\</span><span class="vs">hat y_2"</span>, X[<span class="dv">1</span>], beta)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>show_dot(<span class="vs">r"</span><span class="dv">\m</span><span class="vs">athrm{RSS}=r</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op r"</span>, residuals, residuals)</span>
@@ -1222,7 +1222,7 @@ Numerical rank threshold: 3.0465504588638278e-15</code></pre>
 <p>The code computes the latter expression, without forming <span class="math inline">\(X^\top X\)</span>. Standard errors are the square roots of the diagonal. Under Gaussian errors, <span class="math inline">\((\hat\beta_j-\beta_j)/SE_j\)</span> has a Student t distribution with <span class="math inline">\(n-p\)</span> degrees of freedom. For <span class="math inline">\(H_0:\beta_j=0\)</span>, the statistic is <span class="math inline">\(t_j=\hat\beta_j/SE_j\)</span>, the two-sided p-value is <span class="math inline">\(2P(T\ge |t_j|)\)</span>, and the 95% interval is <span class="math inline">\(\hat\beta_j\pm t_{0.975,n-p}SE_j\)</span>.</p>
 <p>Use the survival function for upper tails to avoid subtracting a CDF close to one. These are conventional homoskedastic standard errors, not robust estimates.</p>
 <p>For the fixed 95% interval, Rust finds the critical value by bisection on <span class="math inline">\(P(T&gt;t)=0.025\)</span>. Large-sample checks found that statrs’ inverse-beta quantile lost precision at high residual degrees of freedom. Solving on the survival function preserves agreement with R; this notebook independently uses SciPy’s <code>t.ppf</code>. See the <a href="https://phit.phpstats.org/benchmarks/ols">large-data report</a> and the focused Rust critical-value test for the regression evidence.</p>
-<div id="b45d0183" class="cell" data-execution_count="15">
+<div id="dcddc10f" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>scaled_inverse <span class="op">=</span> (Vt.T <span class="op">/</span> singular_values) <span class="op">@</span> (Vt <span class="op">/</span> singular_values[:, <span class="va">None</span>])</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>covariance <span class="op">=</span> variance <span class="op">*</span> scaled_inverse <span class="op">/</span> scales[:, <span class="va">None</span>] <span class="op">/</span> scales[<span class="va">None</span>, :]</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>se <span class="op">=</span> np.sqrt(np.diag(covariance))</span>
@@ -1302,7 +1302,7 @@ Numerical rank threshold: 3.0465504588638278e-15</code></pre>
 </div>
 </div>
 </div>
-<div id="1e8d34e2" class="cell" data-execution_count="16">
+<div id="cb058a35" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"</span><span class="kw">(</span><span class="vs">X</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op X</span><span class="kw">)</span><span class="dv">^</span><span class="vs">{-1}=D</span><span class="dv">^</span><span class="vs">{-1}VS</span><span class="dv">^</span><span class="vs">{-2}V</span><span class="dv">^</span><span class="ch">\t</span><span class="vs">op D</span><span class="dv">^</span><span class="vs">{-1}"</span>, covariance <span class="op">/</span> variance)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"</span><span class="dv">\w</span><span class="vs">idehat{</span><span class="er">\</span><span class="vs">operatorname{Var}}</span><span class="kw">(</span><span class="er">\</span><span class="vs">hat</span><span class="dv">\b</span><span class="vs">eta</span><span class="kw">)</span><span class="vs">"</span>, covariance)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>show_matrix(<span class="vs">r"</span><span class="er">\</span><span class="vs">operatorname{SE}</span><span class="kw">(</span><span class="er">\</span><span class="vs">hat</span><span class="dv">\b</span><span class="vs">eta</span><span class="kw">)</span><span class="vs">"</span>, se)</span>
@@ -1330,7 +1330,7 @@ Numerical rank threshold: 3.0465504588638278e-15</code></pre>
 <h2 class="anchored" data-anchor-id="r-squared-and-the-intercept-convention">5. R-squared and the intercept convention</h2>
 <p>With a column of exact ones, use <span class="math inline">\(TSS=\sum_i(y_i-\bar y)^2\)</span> and <span class="math inline">\(R^2=1-RSS/TSS\)</span>. Adjusted R-squared is <span class="math inline">\(1-(1-R^2)(n-1)/(n-p)\)</span>.</p>
 <p>Without an intercept, use uncentered <span class="math inline">\(TSS=\sum_i y_i^2\)</span> and adjusted R-squared <span class="math inline">\(1-(1-R^2)n/(n-p)\)</span>, matching R’s no-intercept convention. Do not compare centered and uncentered R-squared as if they used the same baseline.</p>
-<div id="2af72a6c" class="cell" data-execution_count="17">
+<div id="5dcbfa53" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>has_intercept <span class="op">=</span> <span class="bu">bool</span>(np.<span class="bu">any</span>(np.<span class="bu">all</span>(X <span class="op">==</span> <span class="dv">1</span>, axis<span class="op">=</span><span class="dv">0</span>)))</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>tss <span class="op">=</span> np.<span class="bu">sum</span>((y <span class="op">-</span> y.mean()) <span class="op">**</span> <span class="dv">2</span>) <span class="cf">if</span> has_intercept <span class="cf">else</span> y <span class="op">@</span> y</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>r_squared <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> rss <span class="op">/</span> tss</span>
@@ -1350,7 +1350,7 @@ Numerical rank threshold: 3.0465504588638278e-15</code></pre>
 \quad\Longrightarrow\quad\hat v_{ML}=RSS/n.\]</span></p>
 <p>This ML variance differs from <span class="math inline">\(RSS/(n-p)\)</span> used for standard errors. At the estimates,</p>
 <p><span class="math display">\[\ell(\hat\beta,\hat v_{ML})=-\frac n2[\log(2\pi)+\log(RSS/n)+1].\]</span></p>
-<div id="b3eea27e" class="cell" data-execution_count="18">
+<div id="ca76cd7e" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>ml_variance <span class="op">=</span> rss <span class="op">/</span> n</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>log_likelihood <span class="op">=</span> <span class="op">-</span>n <span class="op">/</span> <span class="dv">2</span> <span class="op">*</span> (np.log(<span class="dv">2</span> <span class="op">*</span> np.pi) <span class="op">+</span> np.log(ml_variance) <span class="op">+</span> <span class="dv">1</span>)</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_likelihood_at(candidate, v):</span>
@@ -1366,9 +1366,9 @@ Log-likelihood=-51.946475724</code></pre>
 </div>
 </section>
 <section id="verify-what-we-calculated" class="level2">
-<h2 class="anchored" data-anchor-id="verify-what-we-calculated">7. Verify what we calculated</h2>
+<h2 class="anchored" data-anchor-id="verify-what-we-calculated">7. Verification</h2>
 <p>These checks compare the independently displayed steps to the committed R reference. The <a href="https://phit.phpstats.org/verification/ols">three implementation notebook</a> executes R, statsmodels and the PHP extension on the same data and checks every returned statistical field. Cross-implementation agreement is evidence; it does not replace understanding the formulas.</p>
-<div id="f2f926e3" class="cell" data-execution_count="19">
+<div id="1a4ef4d2" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>calculated <span class="op">=</span> <span class="bu">dict</span>(coefficients<span class="op">=</span>beta, covariance<span class="op">=</span>covariance, std_errors<span class="op">=</span>se,</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>                  t_statistics<span class="op">=</span>t_statistics, p_values<span class="op">=</span>p_values, conf_int<span class="op">=</span>conf_int,</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                  fitted<span class="op">=</span>fitted, residuals<span class="op">=</span>residuals, rss<span class="op">=</span>rss, residual_variance<span class="op">=</span>variance,</span>

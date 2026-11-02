@@ -18,7 +18,7 @@ phit is a PHP extension, so it is installed once per PHP installation rather tha
 | Operating system | Linux and macOS. Windows is not supported. |
 | Installer | [PIE](https://github.com/php/pie), with `unzip` or PHP's zip extension to unpack prebuilt binaries |
 
-## How PIE installs phit
+## PIE installation {#how-pie-installs-phit}
 
 PIE finds the latest release on Packagist, installs `phit.so` into the extension directory, and enables it for the PHP it runs under. To target another PHP installation, pass `--with-php-config=/path/to/php-config`.
 

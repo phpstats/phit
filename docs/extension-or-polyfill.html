@@ -471,7 +471,7 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#versions" id="toc-versions" class="nav-link active" data-scroll-target="#versions">Versions</a></li>
-  <li><a href="#how-they-coexist" id="toc-how-they-coexist" class="nav-link" data-scroll-target="#how-they-coexist">How they coexist</a></li>
+  <li><a href="#how-they-coexist" id="toc-how-they-coexist" class="nav-link" data-scroll-target="#how-they-coexist">Coexistence</a></li>
   <li><a href="#coverage" id="toc-coverage" class="nav-link" data-scroll-target="#coverage">Coverage</a></li>
   <li><a href="#differences" id="toc-differences" class="nav-link" data-scroll-target="#differences">Differences</a></li>
   <li><a href="#speed" id="toc-speed" class="nav-link" data-scroll-target="#speed">Speed</a></li>
@@ -552,7 +552,7 @@ ul.task-list li input[type="checkbox"] {
 <p>Each polyfill release reproduces one phit release. Polyfill 0.5.1 reproduces phit v0.5.1 and provides 234 of its 235 functions.</p>
 </section>
 <section id="how-they-coexist" class="level2">
-<h2 class="anchored" data-anchor-id="how-they-coexist">How they coexist</h2>
+<h2 class="anchored" data-anchor-id="how-they-coexist">Coexistence</h2>
 <ul>
 <li>Composer loads the polyfill’s <code>bootstrap.php</code> through its <code>files</code> autoload. If <code>extension_loaded('phit')</code> is true, the bootstrap defines nothing, so every <code>Phit\</code> function is the extension’s. Installing both is safe.</li>
 <li>The polyfill does not fill gaps in an older extension. If the loaded extension is older than the polyfill’s phit release, functions added since then stay undefined.</li>

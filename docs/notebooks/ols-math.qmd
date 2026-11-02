@@ -58,7 +58,7 @@ display(observations)
 display(observations.corr().rename_axis("Sample Pearson correlations"))
 ```
 
-### Where these data come from
+### Data source {#where-these-data-come-from}
 
 Each row is a simulated apartment: `area_m2` is floor area in square metres,
 `bedrooms` is a correlated count, and `monthly_rent` is rent in fictional currency
@@ -108,7 +108,7 @@ The inner dimensions must match: $(a\times b)(b\times c)$ produces $a\times c$.
 Numbers in these displays are rounded to six significant digits for readability;
 calculations and verification use the full precision values.
 
-## 1. What does fitting minimize?
+## 1. The least-squares objective {#what-does-fitting-minimize}
 
 For a candidate $\beta$, fitted values are $X\beta$ and residuals are $r=y-X\beta$. The residual sum of squares is
 
@@ -175,7 +175,7 @@ their sum. This is why $X^\top X$ is symmetric.
 
 ## 2. SVD gives a stable solution and a rank check
 
-### What problem does SVD help us understand?
+### The role of the SVD {#what-problem-does-svd-help-us-understand}
 
 **SVD means singular value decomposition.** A decomposition rewrites one matrix
 as a product of simpler matrices. It does not change the data or guess the
@@ -192,7 +192,7 @@ the point on the plane closest to $y$ in squared Euclidean distance.
 These are spaces of vectors, not a scatterplot of area against rent: the eight
 coordinates of an observation-space vector correspond to the eight apartments.
 
-### Why scale the columns first?
+### Column scaling {#why-scale-the-columns-first}
 
 Scale the columns with $D=\operatorname{diag}(\|X_j\|)$, so $A=XD^{-1}$. Decompose $A=USV^\top$. Then
 
@@ -209,7 +209,7 @@ change of units preserves every possible fitted vector. We solve for $\theta$
 and recover $\beta=D^{-1}\theta$. Scaling prevents the numerical rank decision
 from being dominated simply by the choice of metres versus centimetres.
 
-### What do U, S and V mean?
+### U, S, and V {#what-do-u-s-and-v-mean}
 
 For our full-rank design, the thin SVD is
 
@@ -353,7 +353,7 @@ for j in range(p):
 $S^{-1}$ and $D^{-1}$ are diagonal, so multiplying by them simply divides
 each coordinate by its corresponding singular value or column scale.
 
-### Why small singular values matter
+### Small singular values {#why-small-singular-values-matter}
 
 If $s_j=0$, then $Av_j=0$: moving the coefficients along that nonzero direction
 does not change any fitted outcome. The data cannot distinguish those coefficient
@@ -522,7 +522,7 @@ assert log_likelihood_at(beta, ml_variance) > log_likelihood_at(beta + [0, 0.1],
 assert log_likelihood_at(beta, ml_variance) > log_likelihood_at(beta, 2 * ml_variance)
 ```
 
-## 7. Verify what we calculated
+## 7. Verification {#verify-what-we-calculated}
 
 These checks compare the independently displayed steps to the committed R reference. The [three implementation notebook](https://phit.phpstats.org/verification/ols) executes R, statsmodels and the PHP extension on the same data and checks every returned statistical field. Cross-implementation agreement is evidence; it does not replace understanding the formulas.
 

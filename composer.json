@@ -1,6 +1,6 @@
 {
     "name": "phpstats/phit",
-    "description": "Native Rust statistical modeling for PHP: regression, likelihood and mixed models",
+    "description": "Native Rust statistical modeling for PHP: regression, likelihood, and mixed models",
     "type": "php-ext",
     "license": "MIT",
     "require": {

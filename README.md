@@ -1,7 +1,7 @@
 # phit
 
 phit is a PHP extension, written in Rust, for regression and mixed models,
-probability distributions and descriptive statistics. Models are written as R
+probability distributions, and descriptive statistics. Models are written as R
 formulas over named columns, and results are plain PHP arrays.
 
 **[Documentation](https://phit.phpstats.org/docs)** ·
@@ -11,33 +11,56 @@ formulas over named columns, and results are plain PHP arrays.
 [Verification](https://phit.phpstats.org/docs/verification)
 
 ```php
-use function Phit\{fit_ols, predict};
+use Phibble\DataFrame;
 
-$flats = [
-    'rent' => [1879.25, 1805.03, 2022.29, 1267.85, 1509.24, 2240.10, 959.51, 2386.54, 1655.80, 1420.00],
-    'area' => [74.4, 57.4, 66.4, 49.1, 45.7, 92.4, 37.0, 93.9, 61.2, 52.3],
-    'district' => ['north', 'south', 'north', 'east', 'south', 'north', 'east', 'south', 'east', 'south'],
-];
+use function Phit\{fit_ols, predict, summary};
 
-$fit = fit_ols('rent ~ area + district', $flats);
-$fit['named'];     // ['(Intercept)' => 352.64, 'area' => 19.18, 'districtnorth' => 203.64, 'districtsouth' => 232.16]
-$fit['r_squared']; // 0.927
+$cars = DataFrame::fromCsv(
+    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv',
+);
 
-$p = predict($fit, ['area' => [55.0], 'district' => ['east']], interval: 'prediction');
-// $p['fit'] [1407.55], $p['lower'] [991.59], $p['upper'] [1823.51]
+$fit = fit_ols('mpg ~ wt + factor(cyl)', $cars);
+echo summary($fit);
+
+$p = predict(
+    $fit,
+    ['wt' => [2.5], 'cyl' => [4]],
+    interval: 'prediction',
+);
+// $p['fit'], $p['lower'], and $p['upper'] are lists, one value per row.
 ```
 
-## Install
+```
+Linear model fit by least squares
+Formula: mpg ~ wt + factor(cyl)
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)
+(Intercept)   33.9908     1.8878  18.006  < 2e-16
+wt            -3.2056     0.7539  -4.252 0.000213
+factor(cyl)6  -4.2556     1.3861  -3.070 0.004718
+factor(cyl)8  -6.0709     1.6523  -3.674 0.000999
+
+Residual standard error: 2.557 on 28 degrees of freedom
+Multiple R-squared: 0.8374, Adjusted R-squared: 0.82
+F-statistic: 48.08 on 3 and 28 DF, p-value: 3.594e-11
+```
+
+The example reads [mtcars](https://github.com/phpstats/datasets#mtcars) with
+[phibble](https://github.com/phpstats/phibble)
+(`composer require phpstats/phibble`).
+
+## Installation
 
 ```sh
 pie install phpstats/phit
 ```
 
-phit supports PHP 8.3, 8.4 and 8.5, non-thread-safe builds, on Linux and macOS.
+phit supports PHP 8.3, 8.4, and 8.5, non-thread-safe builds, on Linux and macOS.
 On Linux x86_64 and arm64 with glibc 2.35 or later, [PIE](https://github.com/php/pie)
 downloads a prebuilt binary from the
 [release](https://github.com/phpstats/phit/releases). Elsewhere, including
-macOS, it builds from source, which needs Rust, Clang and libclang, and PHP's
+macOS, it builds from source, which needs Rust, Clang, libclang, and PHP's
 development files. The [installation guide](https://phit.phpstats.org/docs/installation)
 covers both and how to check the install.
 
@@ -46,24 +69,25 @@ covers both and how to check the install.
 plain PHP, except the CSV reader (`read_csv` and `CsvReader`), for hosts where
 extensions cannot be installed.
 
-## What it includes
+## Features
 
 | Area | Functions |
 | --- | --- |
-| Formula models | `fit_ols`, `fit_generalized_linear` (Gaussian, binomial logit and probit, Poisson), `fit_mixed_gaussian`, `fit_mixed_logistic`, `model_matrix`, `predict` |
-| Matrix models | `fit_ols_matrix`, `fit_logistic_matrix`, `fit_probit_matrix`, `fit_poisson_matrix`, `fit_mixed_gaussian_intercept_matrix`, `fit_mixed_gaussian_matrix`, `fit_mixed_logistic_matrix` |
-| Distributions | `dist_*`: densities, CDFs, survival functions, quantiles and seeded samples |
-| Descriptive statistics | `stat_*`: moments, quantiles, weighted statistics, kernel density, interpolation, ECDF |
-| Posterior draws | `draws_moments`, `draws_covariance_map`, `draws_affine` |
-| Optimization | `optimize`, `uniroot` |
-| CSV input | `read_csv`, `CsvReader` |
+| Formula models | `fit_ols`, `fit_generalized_linear` (Gaussian, binomial logit and probit, and Poisson), `fit_mixed_gaussian`, `fit_mixed_logistic`, `model_matrix`, and `predict` |
+| Printing results | `summary` (R's `print(summary(fit))` layout) and `tidy` (broom-style coefficient and random-effect columns) |
+| Matrix models | `fit_ols_matrix`, `fit_logistic_matrix`, `fit_probit_matrix`, `fit_poisson_matrix`, `fit_mixed_gaussian_intercept_matrix`, `fit_mixed_gaussian_matrix`, and `fit_mixed_logistic_matrix` |
+| Distributions | `dist_*`: densities, CDFs, survival functions, quantiles, and seeded samples |
+| Descriptive statistics | `stat_*`: moments, quantiles, weighted statistics, kernel density, interpolation, and the ECDF |
+| Posterior draws | `draws_moments`, `draws_covariance_map`, and `draws_affine` |
+| Optimization | `optimize` and `uniroot` |
+| CSV input | `read_csv` and `CsvReader` |
 
 All functions are in the `Phit` namespace. [stubs/phit.php](stubs/phit.php)
 declares them for IDEs and static analysis; do not load it at runtime.
 
 ## Development
 
-Building from a checkout, running the tests and the release process are
+Building from a checkout, running the tests, and the release process are
 described in the [development guide](https://phit.phpstats.org/docs/development).
 The complete check is:
 

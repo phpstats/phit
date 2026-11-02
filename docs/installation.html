@@ -506,7 +506,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#requirements" id="toc-requirements" class="nav-link active" data-scroll-target="#requirements">Requirements</a></li>
-  <li><a href="#how-pie-installs-phit" id="toc-how-pie-installs-phit" class="nav-link" data-scroll-target="#how-pie-installs-phit">How PIE installs phit</a></li>
+  <li><a href="#how-pie-installs-phit" id="toc-how-pie-installs-phit" class="nav-link" data-scroll-target="#how-pie-installs-phit">PIE installation</a></li>
   <li><a href="#building-from-source" id="toc-building-from-source" class="nav-link" data-scroll-target="#building-from-source">Building from source</a></li>
   <li><a href="#prebuilt-linux-binaries" id="toc-prebuilt-linux-binaries" class="nav-link" data-scroll-target="#prebuilt-linux-binaries">Prebuilt Linux binaries</a></li>
   <li><a href="#verify" id="toc-verify" class="nav-link" data-scroll-target="#verify">Verify</a></li>
@@ -566,7 +566,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </section>
 <section id="how-pie-installs-phit" class="level2">
-<h2 class="anchored" data-anchor-id="how-pie-installs-phit">How PIE installs phit</h2>
+<h2 class="anchored" data-anchor-id="how-pie-installs-phit">PIE installation</h2>
 <p>PIE finds the latest release on Packagist, installs <code>phit.so</code> into the extension directory, and enables it for the PHP it runs under. To target another PHP installation, pass <code>--with-php-config=/path/to/php-config</code>.</p>
 <ul>
 <li><strong>Linux x86_64 and arm64 with glibc 2.35 or later:</strong> PIE downloads a prebuilt binary. No compiler or Rust toolchain is needed.</li>

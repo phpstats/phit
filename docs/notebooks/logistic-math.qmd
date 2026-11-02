@@ -91,7 +91,7 @@ rows using $\vdots$ and columns using $\cdots$; dot products show the first two 
 $\cdots$. Numbers are rounded for readability; calculations use full precision.
 Correlations are sample associations, not evidence of causation.
 
-## 2. Why model log-odds instead of the outcome directly?
+## 2. The log-odds scale {#why-model-log-odds-instead-of-the-outcome-directly}
 
 OLS can produce fitted values outside $[0,1]$. Here the linear predictor
 $\eta_i=x_i^\top\beta$ is mapped through the sigmoid, so $0<\pi_i<1$ in exact
