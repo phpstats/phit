@@ -3,7 +3,7 @@
  "label": "Linear mixed model",
  "kind": "reference",
  "checked": "Coefficients, covariance matrices, standard errors, z statistics, p-values, confidence intervals, conditional and marginal fitted values and residuals, random effects, variance components, log likelihood, and AIC of one Gaussian random intercept fitted by ML. Identical design matrices, groups, and missing-data exclusions across implementations.",
- "description": "docs/verifications/compare_lmm.py fits each case with lme4, statsmodels and fit_mixed_gaussian_intercept_matrix(), and compares every quantity with lme4 under the case's stored tolerance. Case status is recomputed from the saved values.",
+ "description": "Each case is fitted by lme4, statsmodels, and phit, and every quantity is compared with lme4 under the case's stored tolerance. Each case's status is recomputed from the saved values.",
  "reference": "R lme4 lmer(REML = FALSE, bobyqa rhoend = 1e-10)",
  "versions": {
   "R": "4.6.1",
@@ -12,11 +12,11 @@
   "PHP": "8.5.10",
   "Python": "3.14.7"
  },
- "inputs": "Saved lme4 fixtures (tests/fixtures/lmm-r.json): simulated schools with correlated predictors (docs/data/schools.csv), one predictor, no fixed intercept, intercept only, a singleton group, and a zero group-variance boundary, plus missing values in predictors, outcomes, and group IDs.",
+ "inputs": "Saved lme4 fixtures: simulated schools with correlated predictors, one predictor, no fixed intercept, intercept only, a singleton group, and a zero group-variance boundary, plus missing values in predictors, outcomes, and group IDs.",
  "comparison": [
   {
    "id": "atol 1e-07, rtol 1e-06",
-   "applies_to": "Coefficients, covariance, std errors, z statistics, p values, conf int, fixed fitted, fitted, residuals, marginal residuals, random effects, residual variance, random intercept variance, sigma, icc, log likelihood, aic, df residual",
+   "applies_to": "All reported quantities",
    "kind": "tolerance",
    "atol": 1e-07,
    "rtol": 1e-06
@@ -24,8 +24,8 @@
  ],
  "cases": [
   {
-   "name": "simulated_schools",
-   "quantity": "coefficients",
+   "name": "Simulated schools",
+   "quantity": "Coefficients",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 3,
@@ -35,8 +35,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "covariance",
+   "name": "Simulated schools",
+   "quantity": "Covariance matrix",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 9,
@@ -46,8 +46,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "std errors",
+   "name": "Simulated schools",
+   "quantity": "Standard errors",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 3,
@@ -57,7 +57,7 @@
    }
   },
   {
-   "name": "simulated_schools",
+   "name": "Simulated schools",
    "quantity": "z statistics",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
@@ -68,8 +68,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "p values",
+   "name": "Simulated schools",
+   "quantity": "p-values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 3,
@@ -79,8 +79,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "conf int",
+   "name": "Simulated schools",
+   "quantity": "Confidence intervals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 6,
@@ -90,8 +90,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "fixed fitted",
+   "name": "Simulated schools",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -101,8 +101,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "fitted",
+   "name": "Simulated schools",
+   "quantity": "Fitted values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -112,8 +112,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "residuals",
+   "name": "Simulated schools",
+   "quantity": "Residuals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -123,8 +123,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "marginal residuals",
+   "name": "Simulated schools",
+   "quantity": "Residuals (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -134,8 +134,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "random effects",
+   "name": "Simulated schools",
+   "quantity": "Random effects",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 12,
@@ -145,8 +145,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "residual variance",
+   "name": "Simulated schools",
+   "quantity": "Residual variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -158,8 +158,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "random intercept variance",
+   "name": "Simulated schools",
+   "quantity": "Random-intercept variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -171,8 +171,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "sigma",
+   "name": "Simulated schools",
+   "quantity": "Residual standard deviation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -184,8 +184,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "icc",
+   "name": "Simulated schools",
+   "quantity": "Intraclass correlation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -197,8 +197,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "log likelihood",
+   "name": "Simulated schools",
+   "quantity": "Log likelihood",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -210,8 +210,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "aic",
+   "name": "Simulated schools",
+   "quantity": "AIC",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -223,8 +223,8 @@
    }
   },
   {
-   "name": "simulated_schools",
-   "quantity": "df residual",
+   "name": "Simulated schools",
+   "quantity": "Residual degrees of freedom",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -236,8 +236,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "coefficients",
+   "name": "One predictor",
+   "quantity": "Coefficients",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 2,
@@ -247,8 +247,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "covariance",
+   "name": "One predictor",
+   "quantity": "Covariance matrix",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 4,
@@ -258,8 +258,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "std errors",
+   "name": "One predictor",
+   "quantity": "Standard errors",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 2,
@@ -269,7 +269,7 @@
    }
   },
   {
-   "name": "simple",
+   "name": "One predictor",
    "quantity": "z statistics",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
@@ -280,8 +280,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "p values",
+   "name": "One predictor",
+   "quantity": "p-values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 2,
@@ -291,8 +291,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "conf int",
+   "name": "One predictor",
+   "quantity": "Confidence intervals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 4,
@@ -302,8 +302,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "fixed fitted",
+   "name": "One predictor",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -313,8 +313,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "fitted",
+   "name": "One predictor",
+   "quantity": "Fitted values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -324,8 +324,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "residuals",
+   "name": "One predictor",
+   "quantity": "Residuals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -335,8 +335,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "marginal residuals",
+   "name": "One predictor",
+   "quantity": "Residuals (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -346,8 +346,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "random effects",
+   "name": "One predictor",
+   "quantity": "Random effects",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 12,
@@ -357,8 +357,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "residual variance",
+   "name": "One predictor",
+   "quantity": "Residual variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -370,8 +370,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "random intercept variance",
+   "name": "One predictor",
+   "quantity": "Random-intercept variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -383,8 +383,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "sigma",
+   "name": "One predictor",
+   "quantity": "Residual standard deviation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -396,8 +396,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "icc",
+   "name": "One predictor",
+   "quantity": "Intraclass correlation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -409,8 +409,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "log likelihood",
+   "name": "One predictor",
+   "quantity": "Log likelihood",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -422,8 +422,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "aic",
+   "name": "One predictor",
+   "quantity": "AIC",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -435,8 +435,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "df residual",
+   "name": "One predictor",
+   "quantity": "Residual degrees of freedom",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -448,8 +448,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "coefficients",
+   "name": "No fixed intercept",
+   "quantity": "Coefficients",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 2,
@@ -459,8 +459,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "covariance",
+   "name": "No fixed intercept",
+   "quantity": "Covariance matrix",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 4,
@@ -470,8 +470,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "std errors",
+   "name": "No fixed intercept",
+   "quantity": "Standard errors",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 2,
@@ -481,7 +481,7 @@
    }
   },
   {
-   "name": "no_intercept",
+   "name": "No fixed intercept",
    "quantity": "z statistics",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
@@ -492,8 +492,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "p values",
+   "name": "No fixed intercept",
+   "quantity": "p-values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 2,
@@ -503,8 +503,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "conf int",
+   "name": "No fixed intercept",
+   "quantity": "Confidence intervals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 4,
@@ -514,8 +514,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "fixed fitted",
+   "name": "No fixed intercept",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -525,8 +525,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "fitted",
+   "name": "No fixed intercept",
+   "quantity": "Fitted values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -536,8 +536,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "residuals",
+   "name": "No fixed intercept",
+   "quantity": "Residuals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -547,8 +547,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "marginal residuals",
+   "name": "No fixed intercept",
+   "quantity": "Residuals (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -558,8 +558,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "random effects",
+   "name": "No fixed intercept",
+   "quantity": "Random effects",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 12,
@@ -569,8 +569,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "residual variance",
+   "name": "No fixed intercept",
+   "quantity": "Residual variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -582,8 +582,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "random intercept variance",
+   "name": "No fixed intercept",
+   "quantity": "Random-intercept variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -595,8 +595,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "sigma",
+   "name": "No fixed intercept",
+   "quantity": "Residual standard deviation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -608,8 +608,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "icc",
+   "name": "No fixed intercept",
+   "quantity": "Intraclass correlation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -621,8 +621,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "log likelihood",
+   "name": "No fixed intercept",
+   "quantity": "Log likelihood",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -634,8 +634,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "aic",
+   "name": "No fixed intercept",
+   "quantity": "AIC",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -647,8 +647,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "df residual",
+   "name": "No fixed intercept",
+   "quantity": "Residual degrees of freedom",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -660,8 +660,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "coefficients",
+   "name": "Intercept only",
+   "quantity": "Coefficients",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -671,8 +671,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "covariance",
+   "name": "Intercept only",
+   "quantity": "Covariance matrix",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -682,8 +682,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "std errors",
+   "name": "Intercept only",
+   "quantity": "Standard errors",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -693,7 +693,7 @@
    }
   },
   {
-   "name": "intercept_only",
+   "name": "Intercept only",
    "quantity": "z statistics",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
@@ -704,8 +704,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "p values",
+   "name": "Intercept only",
+   "quantity": "p-values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -715,8 +715,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "conf int",
+   "name": "Intercept only",
+   "quantity": "Confidence intervals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 2,
@@ -726,8 +726,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "fixed fitted",
+   "name": "Intercept only",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -737,8 +737,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "fitted",
+   "name": "Intercept only",
+   "quantity": "Fitted values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -748,8 +748,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "residuals",
+   "name": "Intercept only",
+   "quantity": "Residuals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -759,8 +759,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "marginal residuals",
+   "name": "Intercept only",
+   "quantity": "Residuals (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -770,8 +770,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "random effects",
+   "name": "Intercept only",
+   "quantity": "Random effects",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 12,
@@ -781,8 +781,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "residual variance",
+   "name": "Intercept only",
+   "quantity": "Residual variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -794,8 +794,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "random intercept variance",
+   "name": "Intercept only",
+   "quantity": "Random-intercept variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -807,8 +807,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "sigma",
+   "name": "Intercept only",
+   "quantity": "Residual standard deviation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -820,8 +820,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "icc",
+   "name": "Intercept only",
+   "quantity": "Intraclass correlation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -833,8 +833,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "log likelihood",
+   "name": "Intercept only",
+   "quantity": "Log likelihood",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -846,8 +846,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "aic",
+   "name": "Intercept only",
+   "quantity": "AIC",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -859,8 +859,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "df residual",
+   "name": "Intercept only",
+   "quantity": "Residual degrees of freedom",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -872,8 +872,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "coefficients",
+   "name": "Singleton groups",
+   "quantity": "Coefficients",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 3,
@@ -883,8 +883,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "covariance",
+   "name": "Singleton groups",
+   "quantity": "Covariance matrix",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 9,
@@ -894,8 +894,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "std errors",
+   "name": "Singleton groups",
+   "quantity": "Standard errors",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 3,
@@ -905,7 +905,7 @@
    }
   },
   {
-   "name": "singleton_groups",
+   "name": "Singleton groups",
    "quantity": "z statistics",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
@@ -916,8 +916,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "p values",
+   "name": "Singleton groups",
+   "quantity": "p-values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 3,
@@ -927,8 +927,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "conf int",
+   "name": "Singleton groups",
+   "quantity": "Confidence intervals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 6,
@@ -938,8 +938,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "fixed fitted",
+   "name": "Singleton groups",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -949,8 +949,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "fitted",
+   "name": "Singleton groups",
+   "quantity": "Fitted values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -960,8 +960,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "residuals",
+   "name": "Singleton groups",
+   "quantity": "Residuals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -971,8 +971,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "marginal residuals",
+   "name": "Singleton groups",
+   "quantity": "Residuals (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 250,
@@ -982,8 +982,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "random effects",
+   "name": "Singleton groups",
+   "quantity": "Random effects",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 13,
@@ -993,8 +993,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "residual variance",
+   "name": "Singleton groups",
+   "quantity": "Residual variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1006,8 +1006,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "random intercept variance",
+   "name": "Singleton groups",
+   "quantity": "Random-intercept variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1019,8 +1019,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "sigma",
+   "name": "Singleton groups",
+   "quantity": "Residual standard deviation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1032,8 +1032,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "icc",
+   "name": "Singleton groups",
+   "quantity": "Intraclass correlation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1045,8 +1045,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "log likelihood",
+   "name": "Singleton groups",
+   "quantity": "Log likelihood",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1058,8 +1058,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "aic",
+   "name": "Singleton groups",
+   "quantity": "AIC",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1071,8 +1071,8 @@
    }
   },
   {
-   "name": "singleton_groups",
-   "quantity": "df residual",
+   "name": "Singleton groups",
+   "quantity": "Residual degrees of freedom",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1084,8 +1084,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "coefficients",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Coefficients",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1095,8 +1095,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "covariance",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Covariance matrix",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1106,8 +1106,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "std errors",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Standard errors",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1117,7 +1117,7 @@
    }
   },
   {
-   "name": "boundary",
+   "name": "Zero group variance (boundary)",
    "quantity": "z statistics",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
@@ -1128,8 +1128,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "p values",
+   "name": "Zero group variance (boundary)",
+   "quantity": "p-values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1139,8 +1139,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "conf int",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Confidence intervals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 2,
@@ -1150,8 +1150,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "fixed fitted",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 12,
@@ -1161,8 +1161,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "fitted",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Fitted values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 12,
@@ -1172,8 +1172,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "residuals",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Residuals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 12,
@@ -1183,8 +1183,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "marginal residuals",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Residuals (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 12,
@@ -1194,8 +1194,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "random effects",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Random effects",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 4,
@@ -1205,8 +1205,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "residual variance",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Residual variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1218,8 +1218,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "random intercept variance",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Random-intercept variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1231,8 +1231,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "sigma",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Residual standard deviation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1244,8 +1244,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "icc",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Intraclass correlation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1257,8 +1257,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "log likelihood",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Log likelihood",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1270,8 +1270,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "aic",
+   "name": "Zero group variance (boundary)",
+   "quantity": "AIC",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1283,8 +1283,8 @@
    }
   },
   {
-   "name": "boundary",
-   "quantity": "df residual",
+   "name": "Zero group variance (boundary)",
+   "quantity": "Residual degrees of freedom",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1296,8 +1296,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "coefficients",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Coefficients",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 3,
@@ -1307,8 +1307,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "covariance",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Covariance matrix",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 9,
@@ -1318,8 +1318,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "std errors",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Standard errors",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 3,
@@ -1329,7 +1329,7 @@
    }
   },
   {
-   "name": "listwise_missing",
+   "name": "Listwise deletion of missing values",
    "quantity": "z statistics",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
@@ -1340,8 +1340,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "p values",
+   "name": "Listwise deletion of missing values",
+   "quantity": "p-values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 3,
@@ -1351,8 +1351,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "conf int",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Confidence intervals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 6,
@@ -1362,8 +1362,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "fixed fitted",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 247,
@@ -1373,8 +1373,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "fitted",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Fitted values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 247,
@@ -1384,8 +1384,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "residuals",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Residuals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 247,
@@ -1395,8 +1395,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "marginal residuals",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Residuals (fixed effects only)",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 247,
@@ -1406,8 +1406,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "random effects",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Random effects",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 12,
@@ -1417,8 +1417,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "residual variance",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Residual variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1430,8 +1430,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "random intercept variance",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Random-intercept variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1443,8 +1443,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "sigma",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Residual standard deviation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1456,8 +1456,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "icc",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Intraclass correlation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1469,8 +1469,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "log likelihood",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Log likelihood",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1482,8 +1482,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "aic",
+   "name": "Listwise deletion of missing values",
+   "quantity": "AIC",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -1495,8 +1495,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "df residual",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Residual degrees of freedom",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,

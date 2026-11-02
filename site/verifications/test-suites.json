@@ -2,9 +2,9 @@
  "title": "Test suites",
  "label": "Test suites",
  "kind": "reference",
- "checked": "Every PHP test suite run by scripts/check: saved references from R, lme4, mpmath, Python, and phibble, and phit's own contracts.",
- "description": "docs/verifications/run_test_suites.py runs each suite against the release extension and records its exit status and its own summary line. Each row is one suite.",
- "reference": "Saved fixtures under tests/fixtures; each lists its generator and versions",
+ "checked": "Every PHP test suite in the release check: saved references from R, lme4, mpmath, Python, and phibble, and phit's own contracts.",
+ "description": "Each suite runs against the release build of the extension. Its exit status and its own summary line are recorded; each row is one suite.",
+ "reference": "Saved reference fixtures; the reference manifest lists each one's generator, versions, and hash",
  "inputs": [
   {
    "name": "Fixture provenance",
@@ -89,7 +89,7 @@
   {
    "id": "stress",
    "kind": "tolerance",
-   "applies_to": "Extreme inputs; per-case tolerances in tests/fixtures/stress-r.json"
+   "applies_to": "Extreme inputs; per-case tolerances stored with the fixture"
   }
  ],
  "cases": [

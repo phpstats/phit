@@ -3,7 +3,7 @@
  "label": "Logistic regression",
  "kind": "reference",
  "checked": "Coefficients, covariance matrices, standard errors, z statistics, p-values, confidence intervals, fitted values, residuals, log likelihood, deviance, null deviance, and AIC. Identical design matrices and missing-data exclusions across implementations.",
- "description": "docs/verifications/compare_logistic.py fits each design with R, statsmodels, and fit_logistic_matrix(intercept: false), and compares every quantity with R. Case status is recomputed from the saved values.",
+ "description": "Each design is fitted by R, statsmodels, and phit's matrix function, with the intercept supplied as a column. Every quantity is compared with R, and each case's status is recomputed from the saved values.",
  "reference": "R glm(family = binomial)",
  "versions": {
   "R": "4.6.1",
@@ -12,7 +12,7 @@
   "Python": "3.14.7",
   "PHP": "8.5.10"
  },
- "inputs": "Six saved R fixtures (tests/fixtures/logistic-r.json): the simulated learning sample (docs/data/learning.csv), one predictor, no intercept, intercept only, correlated columns, and imbalanced outcomes, plus a listwise-deletion case with two dropped rows.",
+ "inputs": "Six saved R fixtures: the simulated learning sample, one predictor, no intercept, intercept only, correlated columns, and imbalanced outcomes, plus a listwise-deletion case with two dropped rows.",
  "comparison": [
   {
    "id": "model",
@@ -29,8 +29,8 @@
  ],
  "cases": [
   {
-   "name": "simulated_learning",
-   "quantity": "coefficients",
+   "name": "Simulated learning sample",
+   "quantity": "Coefficients",
    "rule": "model",
    "status": "pass",
    "n_compared": 3,
@@ -40,8 +40,8 @@
    }
   },
   {
-   "name": "simulated_learning",
-   "quantity": "covariance",
+   "name": "Simulated learning sample",
+   "quantity": "Covariance matrix",
    "rule": "model",
    "status": "pass",
    "n_compared": 9,
@@ -51,8 +51,8 @@
    }
   },
   {
-   "name": "simulated_learning",
-   "quantity": "std errors",
+   "name": "Simulated learning sample",
+   "quantity": "Standard errors",
    "rule": "model",
    "status": "pass",
    "n_compared": 3,
@@ -62,7 +62,7 @@
    }
   },
   {
-   "name": "simulated_learning",
+   "name": "Simulated learning sample",
    "quantity": "z statistics",
    "rule": "model",
    "status": "pass",
@@ -73,8 +73,8 @@
    }
   },
   {
-   "name": "simulated_learning",
-   "quantity": "p values",
+   "name": "Simulated learning sample",
+   "quantity": "p-values",
    "rule": "model",
    "status": "pass",
    "n_compared": 3,
@@ -84,8 +84,8 @@
    }
   },
   {
-   "name": "simulated_learning",
-   "quantity": "conf int",
+   "name": "Simulated learning sample",
+   "quantity": "Confidence intervals",
    "rule": "model",
    "status": "pass",
    "n_compared": 6,
@@ -95,8 +95,8 @@
    }
   },
   {
-   "name": "simulated_learning",
-   "quantity": "fitted",
+   "name": "Simulated learning sample",
+   "quantity": "Fitted values",
    "rule": "model",
    "status": "pass",
    "n_compared": 80,
@@ -106,8 +106,8 @@
    }
   },
   {
-   "name": "simulated_learning",
-   "quantity": "residuals",
+   "name": "Simulated learning sample",
+   "quantity": "Residuals",
    "rule": "model",
    "status": "pass",
    "n_compared": 80,
@@ -117,8 +117,8 @@
    }
   },
   {
-   "name": "simulated_learning",
-   "quantity": "log likelihood",
+   "name": "Simulated learning sample",
+   "quantity": "Log likelihood",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -130,8 +130,8 @@
    }
   },
   {
-   "name": "simulated_learning",
-   "quantity": "deviance",
+   "name": "Simulated learning sample",
+   "quantity": "Deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -143,8 +143,8 @@
    }
   },
   {
-   "name": "simulated_learning",
-   "quantity": "null deviance",
+   "name": "Simulated learning sample",
+   "quantity": "Null deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -156,8 +156,8 @@
    }
   },
   {
-   "name": "simulated_learning",
-   "quantity": "aic",
+   "name": "Simulated learning sample",
+   "quantity": "AIC",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -169,8 +169,8 @@
    }
   },
   {
-   "name": "simulated_learning",
-   "quantity": "df residual",
+   "name": "Simulated learning sample",
+   "quantity": "Residual degrees of freedom",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -182,8 +182,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "coefficients",
+   "name": "One predictor",
+   "quantity": "Coefficients",
    "rule": "model",
    "status": "pass",
    "n_compared": 2,
@@ -193,8 +193,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "covariance",
+   "name": "One predictor",
+   "quantity": "Covariance matrix",
    "rule": "model",
    "status": "pass",
    "n_compared": 4,
@@ -204,8 +204,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "std errors",
+   "name": "One predictor",
+   "quantity": "Standard errors",
    "rule": "model",
    "status": "pass",
    "n_compared": 2,
@@ -215,7 +215,7 @@
    }
   },
   {
-   "name": "simple",
+   "name": "One predictor",
    "quantity": "z statistics",
    "rule": "model",
    "status": "pass",
@@ -226,8 +226,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "p values",
+   "name": "One predictor",
+   "quantity": "p-values",
    "rule": "model",
    "status": "pass",
    "n_compared": 2,
@@ -237,8 +237,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "conf int",
+   "name": "One predictor",
+   "quantity": "Confidence intervals",
    "rule": "model",
    "status": "pass",
    "n_compared": 4,
@@ -248,8 +248,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "fitted",
+   "name": "One predictor",
+   "quantity": "Fitted values",
    "rule": "model",
    "status": "pass",
    "n_compared": 80,
@@ -259,8 +259,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "residuals",
+   "name": "One predictor",
+   "quantity": "Residuals",
    "rule": "model",
    "status": "pass",
    "n_compared": 80,
@@ -270,8 +270,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "log likelihood",
+   "name": "One predictor",
+   "quantity": "Log likelihood",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -283,8 +283,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "deviance",
+   "name": "One predictor",
+   "quantity": "Deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -296,8 +296,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "null deviance",
+   "name": "One predictor",
+   "quantity": "Null deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -309,8 +309,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "aic",
+   "name": "One predictor",
+   "quantity": "AIC",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -322,8 +322,8 @@
    }
   },
   {
-   "name": "simple",
-   "quantity": "df residual",
+   "name": "One predictor",
+   "quantity": "Residual degrees of freedom",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -335,8 +335,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "coefficients",
+   "name": "No intercept",
+   "quantity": "Coefficients",
    "rule": "model",
    "status": "pass",
    "n_compared": 2,
@@ -346,8 +346,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "covariance",
+   "name": "No intercept",
+   "quantity": "Covariance matrix",
    "rule": "model",
    "status": "pass",
    "n_compared": 4,
@@ -357,8 +357,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "std errors",
+   "name": "No intercept",
+   "quantity": "Standard errors",
    "rule": "model",
    "status": "pass",
    "n_compared": 2,
@@ -368,7 +368,7 @@
    }
   },
   {
-   "name": "no_intercept",
+   "name": "No intercept",
    "quantity": "z statistics",
    "rule": "model",
    "status": "pass",
@@ -379,8 +379,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "p values",
+   "name": "No intercept",
+   "quantity": "p-values",
    "rule": "model",
    "status": "pass",
    "n_compared": 2,
@@ -390,8 +390,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "conf int",
+   "name": "No intercept",
+   "quantity": "Confidence intervals",
    "rule": "model",
    "status": "pass",
    "n_compared": 4,
@@ -401,8 +401,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "fitted",
+   "name": "No intercept",
+   "quantity": "Fitted values",
    "rule": "model",
    "status": "pass",
    "n_compared": 80,
@@ -412,8 +412,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "residuals",
+   "name": "No intercept",
+   "quantity": "Residuals",
    "rule": "model",
    "status": "pass",
    "n_compared": 80,
@@ -423,8 +423,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "log likelihood",
+   "name": "No intercept",
+   "quantity": "Log likelihood",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -436,8 +436,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "deviance",
+   "name": "No intercept",
+   "quantity": "Deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -449,8 +449,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "null deviance",
+   "name": "No intercept",
+   "quantity": "Null deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -462,8 +462,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "aic",
+   "name": "No intercept",
+   "quantity": "AIC",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -475,8 +475,8 @@
    }
   },
   {
-   "name": "no_intercept",
-   "quantity": "df residual",
+   "name": "No intercept",
+   "quantity": "Residual degrees of freedom",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -488,8 +488,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "coefficients",
+   "name": "Intercept only",
+   "quantity": "Coefficients",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -499,8 +499,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "covariance",
+   "name": "Intercept only",
+   "quantity": "Covariance matrix",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -510,8 +510,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "std errors",
+   "name": "Intercept only",
+   "quantity": "Standard errors",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -521,7 +521,7 @@
    }
   },
   {
-   "name": "intercept_only",
+   "name": "Intercept only",
    "quantity": "z statistics",
    "rule": "model",
    "status": "pass",
@@ -532,8 +532,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "p values",
+   "name": "Intercept only",
+   "quantity": "p-values",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -543,8 +543,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "conf int",
+   "name": "Intercept only",
+   "quantity": "Confidence intervals",
    "rule": "model",
    "status": "pass",
    "n_compared": 2,
@@ -554,8 +554,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "fitted",
+   "name": "Intercept only",
+   "quantity": "Fitted values",
    "rule": "model",
    "status": "pass",
    "n_compared": 80,
@@ -565,8 +565,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "residuals",
+   "name": "Intercept only",
+   "quantity": "Residuals",
    "rule": "model",
    "status": "pass",
    "n_compared": 80,
@@ -576,8 +576,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "log likelihood",
+   "name": "Intercept only",
+   "quantity": "Log likelihood",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -589,8 +589,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "deviance",
+   "name": "Intercept only",
+   "quantity": "Deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -602,8 +602,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "null deviance",
+   "name": "Intercept only",
+   "quantity": "Null deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -615,8 +615,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "aic",
+   "name": "Intercept only",
+   "quantity": "AIC",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -628,8 +628,8 @@
    }
   },
   {
-   "name": "intercept_only",
-   "quantity": "df residual",
+   "name": "Intercept only",
+   "quantity": "Residual degrees of freedom",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -641,8 +641,8 @@
    }
   },
   {
-   "name": "correlated",
-   "quantity": "coefficients",
+   "name": "Correlated predictors",
+   "quantity": "Coefficients",
    "rule": "model",
    "status": "pass",
    "n_compared": 3,
@@ -652,8 +652,8 @@
    }
   },
   {
-   "name": "correlated",
-   "quantity": "covariance",
+   "name": "Correlated predictors",
+   "quantity": "Covariance matrix",
    "rule": "model",
    "status": "pass",
    "n_compared": 9,
@@ -663,8 +663,8 @@
    }
   },
   {
-   "name": "correlated",
-   "quantity": "std errors",
+   "name": "Correlated predictors",
+   "quantity": "Standard errors",
    "rule": "model",
    "status": "pass",
    "n_compared": 3,
@@ -674,7 +674,7 @@
    }
   },
   {
-   "name": "correlated",
+   "name": "Correlated predictors",
    "quantity": "z statistics",
    "rule": "model",
    "status": "pass",
@@ -685,8 +685,8 @@
    }
   },
   {
-   "name": "correlated",
-   "quantity": "p values",
+   "name": "Correlated predictors",
+   "quantity": "p-values",
    "rule": "model",
    "status": "pass",
    "n_compared": 3,
@@ -696,8 +696,8 @@
    }
   },
   {
-   "name": "correlated",
-   "quantity": "conf int",
+   "name": "Correlated predictors",
+   "quantity": "Confidence intervals",
    "rule": "model",
    "status": "pass",
    "n_compared": 6,
@@ -707,8 +707,8 @@
    }
   },
   {
-   "name": "correlated",
-   "quantity": "fitted",
+   "name": "Correlated predictors",
+   "quantity": "Fitted values",
    "rule": "model",
    "status": "pass",
    "n_compared": 80,
@@ -718,8 +718,8 @@
    }
   },
   {
-   "name": "correlated",
-   "quantity": "residuals",
+   "name": "Correlated predictors",
+   "quantity": "Residuals",
    "rule": "model",
    "status": "pass",
    "n_compared": 80,
@@ -729,8 +729,8 @@
    }
   },
   {
-   "name": "correlated",
-   "quantity": "log likelihood",
+   "name": "Correlated predictors",
+   "quantity": "Log likelihood",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -742,8 +742,8 @@
    }
   },
   {
-   "name": "correlated",
-   "quantity": "deviance",
+   "name": "Correlated predictors",
+   "quantity": "Deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -755,8 +755,8 @@
    }
   },
   {
-   "name": "correlated",
-   "quantity": "null deviance",
+   "name": "Correlated predictors",
+   "quantity": "Null deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -768,8 +768,8 @@
    }
   },
   {
-   "name": "correlated",
-   "quantity": "aic",
+   "name": "Correlated predictors",
+   "quantity": "AIC",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -781,8 +781,8 @@
    }
   },
   {
-   "name": "correlated",
-   "quantity": "df residual",
+   "name": "Correlated predictors",
+   "quantity": "Residual degrees of freedom",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -794,8 +794,8 @@
    }
   },
   {
-   "name": "imbalanced",
-   "quantity": "coefficients",
+   "name": "Imbalanced outcomes",
+   "quantity": "Coefficients",
    "rule": "model",
    "status": "pass",
    "n_compared": 3,
@@ -805,8 +805,8 @@
    }
   },
   {
-   "name": "imbalanced",
-   "quantity": "covariance",
+   "name": "Imbalanced outcomes",
+   "quantity": "Covariance matrix",
    "rule": "model",
    "status": "pass",
    "n_compared": 9,
@@ -816,8 +816,8 @@
    }
   },
   {
-   "name": "imbalanced",
-   "quantity": "std errors",
+   "name": "Imbalanced outcomes",
+   "quantity": "Standard errors",
    "rule": "model",
    "status": "pass",
    "n_compared": 3,
@@ -827,7 +827,7 @@
    }
   },
   {
-   "name": "imbalanced",
+   "name": "Imbalanced outcomes",
    "quantity": "z statistics",
    "rule": "model",
    "status": "pass",
@@ -838,8 +838,8 @@
    }
   },
   {
-   "name": "imbalanced",
-   "quantity": "p values",
+   "name": "Imbalanced outcomes",
+   "quantity": "p-values",
    "rule": "model",
    "status": "pass",
    "n_compared": 3,
@@ -849,8 +849,8 @@
    }
   },
   {
-   "name": "imbalanced",
-   "quantity": "conf int",
+   "name": "Imbalanced outcomes",
+   "quantity": "Confidence intervals",
    "rule": "model",
    "status": "pass",
    "n_compared": 6,
@@ -860,8 +860,8 @@
    }
   },
   {
-   "name": "imbalanced",
-   "quantity": "fitted",
+   "name": "Imbalanced outcomes",
+   "quantity": "Fitted values",
    "rule": "model",
    "status": "pass",
    "n_compared": 80,
@@ -871,8 +871,8 @@
    }
   },
   {
-   "name": "imbalanced",
-   "quantity": "residuals",
+   "name": "Imbalanced outcomes",
+   "quantity": "Residuals",
    "rule": "model",
    "status": "pass",
    "n_compared": 80,
@@ -882,8 +882,8 @@
    }
   },
   {
-   "name": "imbalanced",
-   "quantity": "log likelihood",
+   "name": "Imbalanced outcomes",
+   "quantity": "Log likelihood",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -895,8 +895,8 @@
    }
   },
   {
-   "name": "imbalanced",
-   "quantity": "deviance",
+   "name": "Imbalanced outcomes",
+   "quantity": "Deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -908,8 +908,8 @@
    }
   },
   {
-   "name": "imbalanced",
-   "quantity": "null deviance",
+   "name": "Imbalanced outcomes",
+   "quantity": "Null deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -921,8 +921,8 @@
    }
   },
   {
-   "name": "imbalanced",
-   "quantity": "aic",
+   "name": "Imbalanced outcomes",
+   "quantity": "AIC",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -934,8 +934,8 @@
    }
   },
   {
-   "name": "imbalanced",
-   "quantity": "df residual",
+   "name": "Imbalanced outcomes",
+   "quantity": "Residual degrees of freedom",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -947,8 +947,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "coefficients",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Coefficients",
    "rule": "model",
    "status": "pass",
    "n_compared": 3,
@@ -958,8 +958,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "covariance",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Covariance matrix",
    "rule": "model",
    "status": "pass",
    "n_compared": 9,
@@ -969,8 +969,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "std errors",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Standard errors",
    "rule": "model",
    "status": "pass",
    "n_compared": 3,
@@ -980,7 +980,7 @@
    }
   },
   {
-   "name": "listwise_missing",
+   "name": "Listwise deletion of missing values",
    "quantity": "z statistics",
    "rule": "model",
    "status": "pass",
@@ -991,8 +991,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "p values",
+   "name": "Listwise deletion of missing values",
+   "quantity": "p-values",
    "rule": "model",
    "status": "pass",
    "n_compared": 3,
@@ -1002,8 +1002,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "conf int",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Confidence intervals",
    "rule": "model",
    "status": "pass",
    "n_compared": 6,
@@ -1013,8 +1013,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "fitted",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Fitted values",
    "rule": "model",
    "status": "pass",
    "n_compared": 78,
@@ -1024,8 +1024,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "residuals",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Residuals",
    "rule": "model",
    "status": "pass",
    "n_compared": 78,
@@ -1035,8 +1035,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "log likelihood",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Log likelihood",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -1048,8 +1048,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "deviance",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -1061,8 +1061,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "null deviance",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Null deviance",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -1074,8 +1074,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "aic",
+   "name": "Listwise deletion of missing values",
+   "quantity": "AIC",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -1087,8 +1087,8 @@
    }
   },
   {
-   "name": "listwise_missing",
-   "quantity": "df residual",
+   "name": "Listwise deletion of missing values",
+   "quantity": "Residual degrees of freedom",
    "rule": "model",
    "status": "pass",
    "n_compared": 1,
@@ -1101,7 +1101,7 @@
   }
  ],
  "exclusions": [
-  "Separated and quasi-separated designs are rejected and tested separately in tests/logistic.php, not compared with R."
+  "Separated and quasi-separated designs are rejected; their tests are in the test-suite record, not compared with R."
  ],
  "known_differences": [
   "R intervals come from confint.default() (Wald), not profile-likelihood confint().",

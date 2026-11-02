@@ -3,7 +3,7 @@
  "label": "Distributions",
  "kind": "reference",
  "checked": "Densities, masses, CDFs, survival functions, their logarithms, and quantiles of every family at saved points.",
- "description": "docs/verifications/compare_distributions.py evaluates every case with phit, R, and SciPy and compares each with mpmath references at 60 digits, rounded once to double. Case status is the largest relative error against the case's rule.",
+ "description": "Each case is evaluated by phit, R, and SciPy and compared with mpmath references computed at 60 digits and rounded once to double. A case passes when its largest relative error meets the case's rule.",
  "reference": "mpmath 1.4.1 at 60 digits, each value rounded once",
  "versions": {
   "mpmath": "1.4.1",
@@ -12,7 +12,8 @@
   "NumPy": "2.5.4",
   "PHP": "8.5.10"
  },
- "inputs": "tests/fixtures/distributions-r.json: the cases and points; references in tests/fixtures/distributions-mpmath.json.",
+ "inputs": "Saved cases and evaluation points for every family and operation, with R values and 60-digit mpmath references.",
+ "data": "tests/fixtures/distributions-mpmath.json",
  "comparison": [
   {
    "id": "probability",
@@ -31,8 +32,8 @@
  ],
  "cases": [
   {
-   "name": "normal(mean=0, sd=1)",
-   "quantity": "pdf",
+   "name": "Normal (mean = 0, sd = 1)",
+   "quantity": "Density",
    "n_compared": 28,
    "rule": "probability",
    "max_rel_error": 1.576728720815538e-16,
@@ -43,8 +44,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=0, sd=1)",
-   "quantity": "logpdf",
+   "name": "Normal (mean = 0, sd = 1)",
+   "quantity": "Log density",
    "n_compared": 28,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -55,8 +56,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=0, sd=1)",
-   "quantity": "cdf",
+   "name": "Normal (mean = 0, sd = 1)",
+   "quantity": "Lower tail",
    "n_compared": 28,
    "rule": "probability",
    "max_rel_error": 2.7757912667303906e-16,
@@ -67,8 +68,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=0, sd=1)",
-   "quantity": "logcdf",
+   "name": "Normal (mean = 0, sd = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 28,
    "rule": "log-and-quantile",
    "max_rel_error": 1.5245750140984627e-16,
@@ -79,8 +80,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=0, sd=1)",
-   "quantity": "sf",
+   "name": "Normal (mean = 0, sd = 1)",
+   "quantity": "Upper tail",
    "n_compared": 28,
    "rule": "probability",
    "max_rel_error": 2.7757912667303906e-16,
@@ -91,8 +92,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=0, sd=1)",
-   "quantity": "logsf",
+   "name": "Normal (mean = 0, sd = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 28,
    "rule": "log-and-quantile",
    "max_rel_error": 1.5245750140984627e-16,
@@ -103,8 +104,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=0, sd=1)",
-   "quantity": "quantile",
+   "name": "Normal (mean = 0, sd = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 6.680088249177139e-16,
@@ -115,8 +116,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=3, sd=2)",
-   "quantity": "pdf",
+   "name": "Normal (mean = 3, sd = 2)",
+   "quantity": "Density",
    "n_compared": 28,
    "rule": "probability",
    "max_rel_error": 1.8217077380159084e-14,
@@ -127,8 +128,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=3, sd=2)",
-   "quantity": "logpdf",
+   "name": "Normal (mean = 3, sd = 2)",
+   "quantity": "Log density",
    "n_compared": 28,
    "rule": "log-and-quantile",
    "max_rel_error": 1.4531511194287054e-16,
@@ -139,8 +140,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=3, sd=2)",
-   "quantity": "cdf",
+   "name": "Normal (mean = 3, sd = 2)",
+   "quantity": "Lower tail",
    "n_compared": 28,
    "rule": "probability",
    "max_rel_error": 2.7757912667303906e-16,
@@ -151,8 +152,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=3, sd=2)",
-   "quantity": "logcdf",
+   "name": "Normal (mean = 3, sd = 2)",
+   "quantity": "Log lower tail",
    "n_compared": 28,
    "rule": "log-and-quantile",
    "max_rel_error": 1.5245750140984627e-16,
@@ -163,8 +164,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=3, sd=2)",
-   "quantity": "sf",
+   "name": "Normal (mean = 3, sd = 2)",
+   "quantity": "Upper tail",
    "n_compared": 28,
    "rule": "probability",
    "max_rel_error": 2.7757912667303906e-16,
@@ -175,8 +176,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=3, sd=2)",
-   "quantity": "logsf",
+   "name": "Normal (mean = 3, sd = 2)",
+   "quantity": "Log upper tail",
    "n_compared": 28,
    "rule": "log-and-quantile",
    "max_rel_error": 1.5245750140984627e-16,
@@ -187,8 +188,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=3, sd=2)",
-   "quantity": "quantile",
+   "name": "Normal (mean = 3, sd = 2)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.2705779139513926e-15,
@@ -199,8 +200,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=1000000, sd=1000)",
-   "quantity": "pdf",
+   "name": "Normal (mean = 1000000, sd = 1000)",
+   "quantity": "Density",
    "n_compared": 28,
    "rule": "probability",
    "max_rel_error": 8.292340590169574e-15,
@@ -211,8 +212,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=1000000, sd=1000)",
-   "quantity": "logpdf",
+   "name": "Normal (mean = 1000000, sd = 1000)",
+   "quantity": "Log density",
    "n_compared": 28,
    "rule": "log-and-quantile",
    "max_rel_error": 1.8223728823293626e-16,
@@ -223,8 +224,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=1000000, sd=1000)",
-   "quantity": "cdf",
+   "name": "Normal (mean = 1000000, sd = 1000)",
+   "quantity": "Lower tail",
    "n_compared": 28,
    "rule": "probability",
    "max_rel_error": 2.7757912667303906e-16,
@@ -235,8 +236,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=1000000, sd=1000)",
-   "quantity": "logcdf",
+   "name": "Normal (mean = 1000000, sd = 1000)",
+   "quantity": "Log lower tail",
    "n_compared": 28,
    "rule": "log-and-quantile",
    "max_rel_error": 1.5245750140984627e-16,
@@ -247,8 +248,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=1000000, sd=1000)",
-   "quantity": "sf",
+   "name": "Normal (mean = 1000000, sd = 1000)",
+   "quantity": "Upper tail",
    "n_compared": 28,
    "rule": "probability",
    "max_rel_error": 2.7757912667303906e-16,
@@ -259,8 +260,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=1000000, sd=1000)",
-   "quantity": "logsf",
+   "name": "Normal (mean = 1000000, sd = 1000)",
+   "quantity": "Log upper tail",
    "n_compared": 28,
    "rule": "log-and-quantile",
    "max_rel_error": 1.5245750140984627e-16,
@@ -271,8 +272,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=1000000, sd=1000)",
-   "quantity": "quantile",
+   "name": "Normal (mean = 1000000, sd = 1000)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -283,8 +284,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=-2, sd=1e-08)",
-   "quantity": "pdf",
+   "name": "Normal (mean = -2, sd = 1e-08)",
+   "quantity": "Density",
    "n_compared": 28,
    "rule": "probability",
    "max_rel_error": 2.8077823441209743e-14,
@@ -295,8 +296,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=-2, sd=1e-08)",
-   "quantity": "logpdf",
+   "name": "Normal (mean = -2, sd = 1e-08)",
+   "quantity": "Log density",
    "n_compared": 28,
    "rule": "log-and-quantile",
    "max_rel_error": 3.5514762445810625e-16,
@@ -307,8 +308,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=-2, sd=1e-08)",
-   "quantity": "cdf",
+   "name": "Normal (mean = -2, sd = 1e-08)",
+   "quantity": "Lower tail",
    "n_compared": 28,
    "rule": "probability",
    "max_rel_error": 2.860702044142732e-14,
@@ -319,8 +320,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=-2, sd=1e-08)",
-   "quantity": "logcdf",
+   "name": "Normal (mean = -2, sd = 1e-08)",
+   "quantity": "Log lower tail",
    "n_compared": 28,
    "rule": "log-and-quantile",
    "max_rel_error": 1.6499534290436625e-16,
@@ -331,8 +332,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=-2, sd=1e-08)",
-   "quantity": "sf",
+   "name": "Normal (mean = -2, sd = 1e-08)",
+   "quantity": "Upper tail",
    "n_compared": 28,
    "rule": "probability",
    "max_rel_error": 2.860702044142732e-14,
@@ -343,8 +344,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=-2, sd=1e-08)",
-   "quantity": "logsf",
+   "name": "Normal (mean = -2, sd = 1e-08)",
+   "quantity": "Log upper tail",
    "n_compared": 28,
    "rule": "log-and-quantile",
    "max_rel_error": 1.6499534290436625e-16,
@@ -355,8 +356,8 @@
    "status": "pass"
   },
   {
-   "name": "normal(mean=-2, sd=1e-08)",
-   "quantity": "quantile",
+   "name": "Normal (mean = -2, sd = 1e-08)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -367,8 +368,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=0.5)",
-   "quantity": "pdf",
+   "name": "Student's t (df = 0.5)",
+   "quantity": "Density",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 1.1832985226950261e-15,
@@ -379,8 +380,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=0.5)",
-   "quantity": "logpdf",
+   "name": "Student's t (df = 0.5)",
+   "quantity": "Log density",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 2.0328668000787259e-16,
@@ -391,8 +392,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=0.5)",
-   "quantity": "cdf",
+   "name": "Student's t (df = 0.5)",
+   "quantity": "Lower tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 2.768839463704317e-16,
@@ -403,8 +404,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=0.5)",
-   "quantity": "logcdf",
+   "name": "Student's t (df = 0.5)",
+   "quantity": "Log lower tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 1.9398580547748083e-16,
@@ -415,8 +416,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=0.5)",
-   "quantity": "sf",
+   "name": "Student's t (df = 0.5)",
+   "quantity": "Upper tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 2.370373440243085e-16,
@@ -427,8 +428,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=0.5)",
-   "quantity": "logsf",
+   "name": "Student's t (df = 0.5)",
+   "quantity": "Log upper tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 1.8500000533356534e-16,
@@ -439,8 +440,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=0.5)",
-   "quantity": "quantile",
+   "name": "Student's t (df = 0.5)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 9.171698457973327e-14,
@@ -452,8 +453,8 @@
    "note": "1 points have no mpmath reference and are not compared"
   },
   {
-   "name": "t(df=1)",
-   "quantity": "pdf",
+   "name": "Student's t (df = 1)",
+   "quantity": "Density",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 1.4903272091069964e-15,
@@ -464,8 +465,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=1)",
-   "quantity": "logpdf",
+   "name": "Student's t (df = 1)",
+   "quantity": "Log density",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 1.9397117841496045e-16,
@@ -476,8 +477,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=1)",
-   "quantity": "cdf",
+   "name": "Student's t (df = 1)",
+   "quantity": "Lower tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 8.881784197001252e-16,
@@ -488,8 +489,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=1)",
-   "quantity": "logcdf",
+   "name": "Student's t (df = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 6.406853007629835e-16,
@@ -500,8 +501,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=1)",
-   "quantity": "sf",
+   "name": "Student's t (df = 1)",
+   "quantity": "Upper tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 8.881784197001252e-16,
@@ -512,8 +513,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=1)",
-   "quantity": "logsf",
+   "name": "Student's t (df = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 6.406853007629835e-16,
@@ -524,8 +525,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=1)",
-   "quantity": "quantile",
+   "name": "Student's t (df = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 8.391727190238936e-15,
@@ -536,8 +537,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=2)",
-   "quantity": "pdf",
+   "name": "Student's t (df = 2)",
+   "quantity": "Density",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 4.141519753652768e-15,
@@ -548,8 +549,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=2)",
-   "quantity": "logpdf",
+   "name": "Student's t (df = 2)",
+   "quantity": "Log density",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 2.1356176692099448e-16,
@@ -560,8 +561,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=2)",
-   "quantity": "cdf",
+   "name": "Student's t (df = 2)",
+   "quantity": "Lower tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 3.521402776728383e-16,
@@ -572,8 +573,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=2)",
-   "quantity": "logcdf",
+   "name": "Student's t (df = 2)",
+   "quantity": "Log lower tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 2.7755575615628914e-17,
@@ -584,8 +585,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=2)",
-   "quantity": "sf",
+   "name": "Student's t (df = 2)",
+   "quantity": "Upper tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 2.710912000252857e-16,
@@ -596,8 +597,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=2)",
-   "quantity": "logsf",
+   "name": "Student's t (df = 2)",
+   "quantity": "Log upper tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
@@ -608,8 +609,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=2)",
-   "quantity": "quantile",
+   "name": "Student's t (df = 2)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 5.961850053029474e-14,
@@ -620,8 +621,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=3.5)",
-   "quantity": "pdf",
+   "name": "Student's t (df = 3.5)",
+   "quantity": "Density",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 3.596443060408965e-15,
@@ -632,8 +633,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=3.5)",
-   "quantity": "logpdf",
+   "name": "Student's t (df = 3.5)",
+   "quantity": "Log density",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 1.4280028958616388e-16,
@@ -644,8 +645,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=3.5)",
-   "quantity": "cdf",
+   "name": "Student's t (df = 3.5)",
+   "quantity": "Lower tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 7.058240489416521e-15,
@@ -656,8 +657,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=3.5)",
-   "quantity": "logcdf",
+   "name": "Student's t (df = 3.5)",
+   "quantity": "Log lower tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 2.67972668973103e-16,
@@ -668,8 +669,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=3.5)",
-   "quantity": "sf",
+   "name": "Student's t (df = 3.5)",
+   "quantity": "Upper tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 7.058240489416521e-15,
@@ -680,8 +681,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=3.5)",
-   "quantity": "logsf",
+   "name": "Student's t (df = 3.5)",
+   "quantity": "Log upper tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 2.67972668973103e-16,
@@ -692,8 +693,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=3.5)",
-   "quantity": "quantile",
+   "name": "Student's t (df = 3.5)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.2205764791935798e-14,
@@ -704,8 +705,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=12)",
-   "quantity": "pdf",
+   "name": "Student's t (df = 12)",
+   "quantity": "Density",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 3.88537427019511e-14,
@@ -716,8 +717,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=12)",
-   "quantity": "logpdf",
+   "name": "Student's t (df = 12)",
+   "quantity": "Log density",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-16,
@@ -728,8 +729,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=12)",
-   "quantity": "cdf",
+   "name": "Student's t (df = 12)",
+   "quantity": "Lower tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 5.592614151476679e-15,
@@ -740,8 +741,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=12)",
-   "quantity": "logcdf",
+   "name": "Student's t (df = 12)",
+   "quantity": "Log lower tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 2.493938913157278e-16,
@@ -752,8 +753,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=12)",
-   "quantity": "sf",
+   "name": "Student's t (df = 12)",
+   "quantity": "Upper tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 5.592614151476679e-15,
@@ -764,8 +765,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=12)",
-   "quantity": "logsf",
+   "name": "Student's t (df = 12)",
+   "quantity": "Log upper tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 2.493938913157278e-16,
@@ -776,8 +777,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=12)",
-   "quantity": "quantile",
+   "name": "Student's t (df = 12)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 2.3793904742492057e-15,
@@ -788,8 +789,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=30)",
-   "quantity": "pdf",
+   "name": "Student's t (df = 30)",
+   "quantity": "Density",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 1.2298971532735455e-13,
@@ -800,8 +801,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=30)",
-   "quantity": "logpdf",
+   "name": "Student's t (df = 30)",
+   "quantity": "Log density",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 1.7208799245250504e-16,
@@ -812,8 +813,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=30)",
-   "quantity": "cdf",
+   "name": "Student's t (df = 30)",
+   "quantity": "Lower tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 3.84788109949276e-14,
@@ -824,8 +825,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=30)",
-   "quantity": "logcdf",
+   "name": "Student's t (df = 30)",
+   "quantity": "Log lower tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 1.9139348272890313e-16,
@@ -836,8 +837,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=30)",
-   "quantity": "sf",
+   "name": "Student's t (df = 30)",
+   "quantity": "Upper tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 3.84788109949276e-14,
@@ -848,8 +849,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=30)",
-   "quantity": "logsf",
+   "name": "Student's t (df = 30)",
+   "quantity": "Log upper tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 1.9139348272890313e-16,
@@ -860,8 +861,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=30)",
-   "quantity": "quantile",
+   "name": "Student's t (df = 30)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 4.2572561165843695e-15,
@@ -872,8 +873,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=100)",
-   "quantity": "pdf",
+   "name": "Student's t (df = 100)",
+   "quantity": "Density",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 1.0728969413889567e-14,
@@ -884,8 +885,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=100)",
-   "quantity": "logpdf",
+   "name": "Student's t (df = 100)",
+   "quantity": "Log density",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 3.11875687422096e-16,
@@ -896,8 +897,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=100)",
-   "quantity": "cdf",
+   "name": "Student's t (df = 100)",
+   "quantity": "Lower tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 2.707297619033512e-14,
@@ -908,8 +909,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=100)",
-   "quantity": "logcdf",
+   "name": "Student's t (df = 100)",
+   "quantity": "Log lower tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 4.844317541245963e-16,
@@ -920,8 +921,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=100)",
-   "quantity": "sf",
+   "name": "Student's t (df = 100)",
+   "quantity": "Upper tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 2.707297619033512e-14,
@@ -932,8 +933,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=100)",
-   "quantity": "logsf",
+   "name": "Student's t (df = 100)",
+   "quantity": "Log upper tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 4.844317541245963e-16,
@@ -944,8 +945,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=100)",
-   "quantity": "quantile",
+   "name": "Student's t (df = 100)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 5.635771930584596e-16,
@@ -956,8 +957,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=10000)",
-   "quantity": "pdf",
+   "name": "Student's t (df = 10000)",
+   "quantity": "Density",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 1.5741331866790323e-14,
@@ -968,8 +969,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=10000)",
-   "quantity": "logpdf",
+   "name": "Student's t (df = 10000)",
+   "quantity": "Log density",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
@@ -980,8 +981,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=10000)",
-   "quantity": "cdf",
+   "name": "Student's t (df = 10000)",
+   "quantity": "Lower tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 8.746467132926009e-16,
@@ -992,8 +993,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=10000)",
-   "quantity": "logcdf",
+   "name": "Student's t (df = 10000)",
+   "quantity": "Log lower tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 4.824577757975806e-16,
@@ -1004,8 +1005,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=10000)",
-   "quantity": "sf",
+   "name": "Student's t (df = 10000)",
+   "quantity": "Upper tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 1.8019989798426725e-13,
@@ -1016,8 +1017,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=10000)",
-   "quantity": "logsf",
+   "name": "Student's t (df = 10000)",
+   "quantity": "Log upper tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 4.824577757975806e-16,
@@ -1028,8 +1029,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=10000)",
-   "quantity": "quantile",
+   "name": "Student's t (df = 10000)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 6.547150108490845e-16,
@@ -1040,8 +1041,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=1000000)",
-   "quantity": "pdf",
+   "name": "Student's t (df = 1000000)",
+   "quantity": "Density",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 1.1727714833975385e-14,
@@ -1052,8 +1053,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=1000000)",
-   "quantity": "logpdf",
+   "name": "Student's t (df = 1000000)",
+   "quantity": "Log density",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
@@ -1064,8 +1065,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=1000000)",
-   "quantity": "cdf",
+   "name": "Student's t (df = 1000000)",
+   "quantity": "Lower tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 8.847784160200941e-15,
@@ -1076,8 +1077,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=1000000)",
-   "quantity": "logcdf",
+   "name": "Student's t (df = 1000000)",
+   "quantity": "Log lower tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 2.669771236920106e-16,
@@ -1088,8 +1089,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=1000000)",
-   "quantity": "sf",
+   "name": "Student's t (df = 1000000)",
+   "quantity": "Upper tail",
    "n_compared": 19,
    "rule": "probability",
    "max_rel_error": 4.806564720610372e-14,
@@ -1100,8 +1101,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=1000000)",
-   "quantity": "logsf",
+   "name": "Student's t (df = 1000000)",
+   "quantity": "Log upper tail",
    "n_compared": 19,
    "rule": "log-and-quantile",
    "max_rel_error": 3.5374249669178424e-16,
@@ -1112,8 +1113,8 @@
    "status": "pass"
   },
   {
-   "name": "t(df=1000000)",
-   "quantity": "quantile",
+   "name": "Student's t (df = 1000000)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 3.4652442276003907e-16,
@@ -1124,8 +1125,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=0.5)",
-   "quantity": "pdf",
+   "name": "Chi-square (df = 0.5)",
+   "quantity": "Density",
    "n_compared": 22,
    "rule": "probability",
    "max_rel_error": 1.3660919971289116e-13,
@@ -1136,8 +1137,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=0.5)",
-   "quantity": "logpdf",
+   "name": "Chi-square (df = 0.5)",
+   "quantity": "Log density",
    "n_compared": 22,
    "rule": "log-and-quantile",
    "max_rel_error": 2.2005877366147595e-16,
@@ -1148,8 +1149,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=0.5)",
-   "quantity": "cdf",
+   "name": "Chi-square (df = 0.5)",
+   "quantity": "Lower tail",
    "n_compared": 22,
    "rule": "probability",
    "max_rel_error": 8.598708942067252e-15,
@@ -1160,8 +1161,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=0.5)",
-   "quantity": "logcdf",
+   "name": "Chi-square (df = 0.5)",
+   "quantity": "Log lower tail",
    "n_compared": 22,
    "rule": "log-and-quantile",
    "max_rel_error": 1.3877787807814457e-16,
@@ -1172,8 +1173,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=0.5)",
-   "quantity": "sf",
+   "name": "Chi-square (df = 0.5)",
+   "quantity": "Upper tail",
    "n_compared": 22,
    "rule": "probability",
    "max_rel_error": 2.2033115941567355e-14,
@@ -1184,8 +1185,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=0.5)",
-   "quantity": "logsf",
+   "name": "Chi-square (df = 0.5)",
+   "quantity": "Log upper tail",
    "n_compared": 22,
    "rule": "log-and-quantile",
    "max_rel_error": 5.819594009826188e-16,
@@ -1196,8 +1197,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=0.5)",
-   "quantity": "quantile",
+   "name": "Chi-square (df = 0.5)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.3594809427783696e-14,
@@ -1209,8 +1210,8 @@
    "note": "2 points have no mpmath reference and are not compared"
   },
   {
-   "name": "chisquare(df=1)",
-   "quantity": "pdf",
+   "name": "Chi-square (df = 1)",
+   "quantity": "Density",
    "n_compared": 22,
    "rule": "probability",
    "max_rel_error": 7.943101657113667e-14,
@@ -1221,8 +1222,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1)",
-   "quantity": "logpdf",
+   "name": "Chi-square (df = 1)",
+   "quantity": "Log density",
    "n_compared": 22,
    "rule": "log-and-quantile",
    "max_rel_error": 3.885780586188048e-16,
@@ -1233,8 +1234,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1)",
-   "quantity": "cdf",
+   "name": "Chi-square (df = 1)",
+   "quantity": "Lower tail",
    "n_compared": 22,
    "rule": "probability",
    "max_rel_error": 6.398981471176793e-16,
@@ -1245,8 +1246,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1)",
-   "quantity": "logcdf",
+   "name": "Chi-square (df = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 22,
    "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
@@ -1257,8 +1258,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1)",
-   "quantity": "sf",
+   "name": "Chi-square (df = 1)",
+   "quantity": "Upper tail",
    "n_compared": 22,
    "rule": "probability",
    "max_rel_error": 5.744355718203801e-14,
@@ -1269,8 +1270,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1)",
-   "quantity": "logsf",
+   "name": "Chi-square (df = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 22,
    "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
@@ -1281,8 +1282,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1)",
-   "quantity": "quantile",
+   "name": "Chi-square (df = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.0526356715474086e-14,
@@ -1294,8 +1295,8 @@
    "note": "1 points have no mpmath reference and are not compared"
   },
   {
-   "name": "chisquare(df=2)",
-   "quantity": "pdf",
+   "name": "Chi-square (df = 2)",
+   "quantity": "Density",
    "n_compared": 23,
    "rule": "probability",
    "max_rel_error": 1.84844061586631e-15,
@@ -1306,8 +1307,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=2)",
-   "quantity": "logpdf",
+   "name": "Chi-square (df = 2)",
+   "quantity": "Log density",
    "n_compared": 23,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
@@ -1318,8 +1319,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=2)",
-   "quantity": "cdf",
+   "name": "Chi-square (df = 2)",
+   "quantity": "Lower tail",
    "n_compared": 23,
    "rule": "probability",
    "max_rel_error": 3.431665068201653e-14,
@@ -1330,8 +1331,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=2)",
-   "quantity": "logcdf",
+   "name": "Chi-square (df = 2)",
+   "quantity": "Log lower tail",
    "n_compared": 23,
    "rule": "log-and-quantile",
    "max_rel_error": 1.4717693951859316e-16,
@@ -1342,8 +1343,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=2)",
-   "quantity": "sf",
+   "name": "Chi-square (df = 2)",
+   "quantity": "Upper tail",
    "n_compared": 23,
    "rule": "probability",
    "max_rel_error": 2.641593055744183e-14,
@@ -1354,8 +1355,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=2)",
-   "quantity": "logsf",
+   "name": "Chi-square (df = 2)",
+   "quantity": "Log upper tail",
    "n_compared": 23,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
@@ -1366,8 +1367,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=2)",
-   "quantity": "quantile",
+   "name": "Chi-square (df = 2)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 2.4369795411866816e-14,
@@ -1378,8 +1379,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=4)",
-   "quantity": "pdf",
+   "name": "Chi-square (df = 4)",
+   "quantity": "Density",
    "n_compared": 24,
    "rule": "probability",
    "max_rel_error": 2.4446177960153225e-14,
@@ -1390,8 +1391,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=4)",
-   "quantity": "logpdf",
+   "name": "Chi-square (df = 4)",
+   "quantity": "Log density",
    "n_compared": 24,
    "rule": "log-and-quantile",
    "max_rel_error": 2.141595284223774e-16,
@@ -1402,8 +1403,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=4)",
-   "quantity": "cdf",
+   "name": "Chi-square (df = 4)",
+   "quantity": "Lower tail",
    "n_compared": 24,
    "rule": "probability",
    "max_rel_error": 2.5382310798771143e-14,
@@ -1414,8 +1415,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=4)",
-   "quantity": "logcdf",
+   "name": "Chi-square (df = 4)",
+   "quantity": "Log lower tail",
    "n_compared": 24,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
@@ -1426,8 +1427,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=4)",
-   "quantity": "sf",
+   "name": "Chi-square (df = 4)",
+   "quantity": "Upper tail",
    "n_compared": 24,
    "rule": "probability",
    "max_rel_error": 4.0421699966002335e-15,
@@ -1438,8 +1439,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=4)",
-   "quantity": "logsf",
+   "name": "Chi-square (df = 4)",
+   "quantity": "Log upper tail",
    "n_compared": 24,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1511812580810426e-16,
@@ -1450,8 +1451,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=4)",
-   "quantity": "quantile",
+   "name": "Chi-square (df = 4)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.5348904147486612e-14,
@@ -1462,8 +1463,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=5)",
-   "quantity": "pdf",
+   "name": "Chi-square (df = 5)",
+   "quantity": "Density",
    "n_compared": 23,
    "rule": "probability",
    "max_rel_error": 3.632447711708161e-14,
@@ -1474,8 +1475,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=5)",
-   "quantity": "logpdf",
+   "name": "Chi-square (df = 5)",
+   "quantity": "Log density",
    "n_compared": 23,
    "rule": "log-and-quantile",
    "max_rel_error": 2.190116269711235e-16,
@@ -1486,8 +1487,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=5)",
-   "quantity": "cdf",
+   "name": "Chi-square (df = 5)",
+   "quantity": "Lower tail",
    "n_compared": 23,
    "rule": "probability",
    "max_rel_error": 9.237469191329563e-14,
@@ -1498,8 +1499,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=5)",
-   "quantity": "logcdf",
+   "name": "Chi-square (df = 5)",
+   "quantity": "Log lower tail",
    "n_compared": 23,
    "rule": "log-and-quantile",
    "max_rel_error": 2.6675196586971336e-15,
@@ -1510,8 +1511,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=5)",
-   "quantity": "sf",
+   "name": "Chi-square (df = 5)",
+   "quantity": "Upper tail",
    "n_compared": 23,
    "rule": "probability",
    "max_rel_error": 7.496855429251891e-15,
@@ -1522,8 +1523,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=5)",
-   "quantity": "logsf",
+   "name": "Chi-square (df = 5)",
+   "quantity": "Log upper tail",
    "n_compared": 23,
    "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-15,
@@ -1534,8 +1535,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=5)",
-   "quantity": "quantile",
+   "name": "Chi-square (df = 5)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.6381821634446705e-14,
@@ -1546,8 +1547,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=30)",
-   "quantity": "pdf",
+   "name": "Chi-square (df = 30)",
+   "quantity": "Density",
    "n_compared": 24,
    "rule": "probability",
    "max_rel_error": 2.2479917769229052e-14,
@@ -1558,8 +1559,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=30)",
-   "quantity": "logpdf",
+   "name": "Chi-square (df = 30)",
+   "quantity": "Log density",
    "n_compared": 24,
    "rule": "log-and-quantile",
    "max_rel_error": 5.148138097197201e-16,
@@ -1570,8 +1571,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=30)",
-   "quantity": "cdf",
+   "name": "Chi-square (df = 30)",
+   "quantity": "Lower tail",
    "n_compared": 24,
    "rule": "probability",
    "max_rel_error": 1.9846196414015684e-14,
@@ -1582,8 +1583,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=30)",
-   "quantity": "logcdf",
+   "name": "Chi-square (df = 30)",
+   "quantity": "Log lower tail",
    "n_compared": 24,
    "rule": "log-and-quantile",
    "max_rel_error": 7.093139598404445e-16,
@@ -1594,8 +1595,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=30)",
-   "quantity": "sf",
+   "name": "Chi-square (df = 30)",
+   "quantity": "Upper tail",
    "n_compared": 24,
    "rule": "probability",
    "max_rel_error": 6.547116976794505e-15,
@@ -1606,8 +1607,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=30)",
-   "quantity": "logsf",
+   "name": "Chi-square (df = 30)",
+   "quantity": "Log upper tail",
    "n_compared": 24,
    "rule": "log-and-quantile",
    "max_rel_error": 1.8613477204852066e-16,
@@ -1618,8 +1619,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=30)",
-   "quantity": "quantile",
+   "name": "Chi-square (df = 30)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.5301721755825018e-15,
@@ -1630,8 +1631,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000)",
-   "quantity": "pdf",
+   "name": "Chi-square (df = 1000)",
+   "quantity": "Density",
    "n_compared": 22,
    "rule": "probability",
    "max_rel_error": 1.4706348220267424e-13,
@@ -1642,8 +1643,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000)",
-   "quantity": "logpdf",
+   "name": "Chi-square (df = 1000)",
+   "quantity": "Log density",
    "n_compared": 22,
    "rule": "log-and-quantile",
    "max_rel_error": 2.0342272285979863e-15,
@@ -1654,8 +1655,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000)",
-   "quantity": "cdf",
+   "name": "Chi-square (df = 1000)",
+   "quantity": "Lower tail",
    "n_compared": 22,
    "rule": "probability",
    "max_rel_error": 3.13880361815151e-14,
@@ -1666,8 +1667,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000)",
-   "quantity": "logcdf",
+   "name": "Chi-square (df = 1000)",
+   "quantity": "Log lower tail",
    "n_compared": 22,
    "rule": "log-and-quantile",
    "max_rel_error": 6.160074302136189e-16,
@@ -1678,8 +1679,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000)",
-   "quantity": "sf",
+   "name": "Chi-square (df = 1000)",
+   "quantity": "Upper tail",
    "n_compared": 22,
    "rule": "probability",
    "max_rel_error": 1.76230173498244e-14,
@@ -1690,8 +1691,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000)",
-   "quantity": "logsf",
+   "name": "Chi-square (df = 1000)",
+   "quantity": "Log upper tail",
    "n_compared": 22,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1864479799149572e-15,
@@ -1702,8 +1703,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000)",
-   "quantity": "quantile",
+   "name": "Chi-square (df = 1000)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 7.101274246878072e-16,
@@ -1714,8 +1715,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000000)",
-   "quantity": "pdf",
+   "name": "Chi-square (df = 1000000)",
+   "quantity": "Density",
    "n_compared": 24,
    "rule": "probability",
    "max_rel_error": 2.6941107112793085e-15,
@@ -1726,8 +1727,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000000)",
-   "quantity": "logpdf",
+   "name": "Chi-square (df = 1000000)",
+   "quantity": "Log density",
    "n_compared": 24,
    "rule": "log-and-quantile",
    "max_rel_error": 6.026818782622407e-16,
@@ -1738,8 +1739,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000000)",
-   "quantity": "cdf",
+   "name": "Chi-square (df = 1000000)",
+   "quantity": "Lower tail",
    "n_compared": 24,
    "rule": "probability",
    "max_rel_error": 1.085315674476275e-13,
@@ -1750,8 +1751,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000000)",
-   "quantity": "logcdf",
+   "name": "Chi-square (df = 1000000)",
+   "quantity": "Log lower tail",
    "n_compared": 24,
    "rule": "log-and-quantile",
    "max_rel_error": 7.382905994364004e-15,
@@ -1762,8 +1763,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000000)",
-   "quantity": "sf",
+   "name": "Chi-square (df = 1000000)",
+   "quantity": "Upper tail",
    "n_compared": 24,
    "rule": "probability",
    "max_rel_error": 4.151540062361633e-13,
@@ -1774,8 +1775,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000000)",
-   "quantity": "logsf",
+   "name": "Chi-square (df = 1000000)",
+   "quantity": "Log upper tail",
    "n_compared": 24,
    "rule": "log-and-quantile",
    "max_rel_error": 8.344073970739281e-13,
@@ -1786,8 +1787,8 @@
    "status": "pass"
   },
   {
-   "name": "chisquare(df=1000000)",
-   "quantity": "quantile",
+   "name": "Chi-square (df = 1000000)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.3009796865803157e-14,
@@ -1798,8 +1799,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=4, df2=40)",
-   "quantity": "pdf",
+   "name": "F (df1 = 4, df2 = 40)",
+   "quantity": "Density",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 2.9324917903488175e-14,
@@ -1810,8 +1811,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=4, df2=40)",
-   "quantity": "logpdf",
+   "name": "F (df1 = 4, df2 = 40)",
+   "quantity": "Log density",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 5.06133182919152e-16,
@@ -1822,8 +1823,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=4, df2=40)",
-   "quantity": "cdf",
+   "name": "F (df1 = 4, df2 = 40)",
+   "quantity": "Lower tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 1.7185409371566202e-15,
@@ -1834,8 +1835,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=4, df2=40)",
-   "quantity": "logcdf",
+   "name": "F (df1 = 4, df2 = 40)",
+   "quantity": "Log lower tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 5.00412491512197e-16,
@@ -1846,8 +1847,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=4, df2=40)",
-   "quantity": "sf",
+   "name": "F (df1 = 4, df2 = 40)",
+   "quantity": "Upper tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 2.430641411951405e-14,
@@ -1858,8 +1859,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=4, df2=40)",
-   "quantity": "logsf",
+   "name": "F (df1 = 4, df2 = 40)",
+   "quantity": "Log upper tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
@@ -1870,8 +1871,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=4, df2=40)",
-   "quantity": "quantile",
+   "name": "F (df1 = 4, df2 = 40)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.0836303157793139e-14,
@@ -1882,8 +1883,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=1, df2=1)",
-   "quantity": "pdf",
+   "name": "F (df1 = 1, df2 = 1)",
+   "quantity": "Density",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 3.966998308112951e-15,
@@ -1894,8 +1895,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=1, df2=1)",
-   "quantity": "logpdf",
+   "name": "F (df1 = 1, df2 = 1)",
+   "quantity": "Log density",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 2.498001805406602e-16,
@@ -1906,8 +1907,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=1, df2=1)",
-   "quantity": "cdf",
+   "name": "F (df1 = 1, df2 = 1)",
+   "quantity": "Lower tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 8.881784197001252e-16,
@@ -1918,8 +1919,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=1, df2=1)",
-   "quantity": "logcdf",
+   "name": "F (df1 = 1, df2 = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 8.881784197001252e-16,
@@ -1930,8 +1931,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=1, df2=1)",
-   "quantity": "sf",
+   "name": "F (df1 = 1, df2 = 1)",
+   "quantity": "Upper tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 8.881784197001252e-16,
@@ -1942,8 +1943,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=1, df2=1)",
-   "quantity": "logsf",
+   "name": "F (df1 = 1, df2 = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 8.881784197001252e-16,
@@ -1954,8 +1955,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=1, df2=1)",
-   "quantity": "quantile",
+   "name": "F (df1 = 1, df2 = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 2.9391608842390674e-14,
@@ -1967,8 +1968,8 @@
    "note": "4 points have no mpmath reference and are not compared"
   },
   {
-   "name": "f(df1=0.5, df2=3)",
-   "quantity": "pdf",
+   "name": "F (df1 = 0.5, df2 = 3)",
+   "quantity": "Density",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 3.852729714175505e-14,
@@ -1979,8 +1980,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=0.5, df2=3)",
-   "quantity": "logpdf",
+   "name": "F (df1 = 0.5, df2 = 3)",
+   "quantity": "Log density",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 2.0860049798621105e-16,
@@ -1991,8 +1992,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=0.5, df2=3)",
-   "quantity": "cdf",
+   "name": "F (df1 = 0.5, df2 = 3)",
+   "quantity": "Lower tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 2.59782391416868e-15,
@@ -2003,8 +2004,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=0.5, df2=3)",
-   "quantity": "logcdf",
+   "name": "F (df1 = 0.5, df2 = 3)",
+   "quantity": "Log lower tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
@@ -2015,8 +2016,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=0.5, df2=3)",
-   "quantity": "sf",
+   "name": "F (df1 = 0.5, df2 = 3)",
+   "quantity": "Upper tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 4.250058540793762e-15,
@@ -2027,8 +2028,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=0.5, df2=3)",
-   "quantity": "logsf",
+   "name": "F (df1 = 0.5, df2 = 3)",
+   "quantity": "Log upper tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 4.740919880509126e-16,
@@ -2039,8 +2040,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=0.5, df2=3)",
-   "quantity": "quantile",
+   "name": "F (df1 = 0.5, df2 = 3)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.5189539458994297e-14,
@@ -2052,8 +2053,8 @@
    "note": "3 points have no mpmath reference and are not compared"
   },
   {
-   "name": "f(df1=10, df2=1000000)",
-   "quantity": "pdf",
+   "name": "F (df1 = 10, df2 = 1000000)",
+   "quantity": "Density",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 3.195287234660121e-14,
@@ -2064,8 +2065,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=10, df2=1000000)",
-   "quantity": "logpdf",
+   "name": "F (df1 = 10, df2 = 1000000)",
+   "quantity": "Log density",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 6.855190917495076e-16,
@@ -2076,8 +2077,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=10, df2=1000000)",
-   "quantity": "cdf",
+   "name": "F (df1 = 10, df2 = 1000000)",
+   "quantity": "Lower tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 1.1310465083755418e-14,
@@ -2088,8 +2089,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=10, df2=1000000)",
-   "quantity": "logcdf",
+   "name": "F (df1 = 10, df2 = 1000000)",
+   "quantity": "Log lower tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1324274851176597e-14,
@@ -2100,8 +2101,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=10, df2=1000000)",
-   "quantity": "sf",
+   "name": "F (df1 = 10, df2 = 1000000)",
+   "quantity": "Upper tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 3.1810691120334446e-14,
@@ -2112,8 +2113,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=10, df2=1000000)",
-   "quantity": "logsf",
+   "name": "F (df1 = 10, df2 = 1000000)",
+   "quantity": "Log upper tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 1.4432899320127035e-14,
@@ -2124,8 +2125,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=10, df2=1000000)",
-   "quantity": "quantile",
+   "name": "F (df1 = 10, df2 = 1000000)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 5.942217604886512e-15,
@@ -2136,8 +2137,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=100, df2=100)",
-   "quantity": "pdf",
+   "name": "F (df1 = 100, df2 = 100)",
+   "quantity": "Density",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 2.3806954066297235e-14,
@@ -2148,8 +2149,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=100, df2=100)",
-   "quantity": "logpdf",
+   "name": "F (df1 = 100, df2 = 100)",
+   "quantity": "Log density",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 1.5761799447276987e-15,
@@ -2160,8 +2161,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=100, df2=100)",
-   "quantity": "cdf",
+   "name": "F (df1 = 100, df2 = 100)",
+   "quantity": "Lower tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 6.831863661648149e-15,
@@ -2172,8 +2173,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=100, df2=100)",
-   "quantity": "logcdf",
+   "name": "F (df1 = 100, df2 = 100)",
+   "quantity": "Log lower tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 4.3959835775603657e-16,
@@ -2184,8 +2185,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=100, df2=100)",
-   "quantity": "sf",
+   "name": "F (df1 = 100, df2 = 100)",
+   "quantity": "Upper tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 3.5347872295571774e-14,
@@ -2196,8 +2197,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=100, df2=100)",
-   "quantity": "logsf",
+   "name": "F (df1 = 100, df2 = 100)",
+   "quantity": "Log upper tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 4.3959835775603657e-16,
@@ -2208,8 +2209,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=100, df2=100)",
-   "quantity": "quantile",
+   "name": "F (df1 = 100, df2 = 100)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 3.293478800553926e-16,
@@ -2220,8 +2221,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=5, df2=0.5)",
-   "quantity": "pdf",
+   "name": "F (df1 = 5, df2 = 0.5)",
+   "quantity": "Density",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 1.5845461875065218e-13,
@@ -2232,8 +2233,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=5, df2=0.5)",
-   "quantity": "logpdf",
+   "name": "F (df1 = 5, df2 = 0.5)",
+   "quantity": "Log density",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 3.3306690738754696e-16,
@@ -2244,8 +2245,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=5, df2=0.5)",
-   "quantity": "cdf",
+   "name": "F (df1 = 5, df2 = 0.5)",
+   "quantity": "Lower tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 2.0886034280282846e-15,
@@ -2256,8 +2257,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=5, df2=0.5)",
-   "quantity": "logcdf",
+   "name": "F (df1 = 5, df2 = 0.5)",
+   "quantity": "Log lower tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 4.440892098500626e-16,
@@ -2268,8 +2269,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=5, df2=0.5)",
-   "quantity": "sf",
+   "name": "F (df1 = 5, df2 = 0.5)",
+   "quantity": "Upper tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 3.287718743294548e-16,
@@ -2280,8 +2281,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=5, df2=0.5)",
-   "quantity": "logsf",
+   "name": "F (df1 = 5, df2 = 0.5)",
+   "quantity": "Log upper tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 2.7755575615628914e-16,
@@ -2292,8 +2293,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=5, df2=0.5)",
-   "quantity": "quantile",
+   "name": "F (df1 = 5, df2 = 0.5)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.594627246961672e-14,
@@ -2305,8 +2306,8 @@
    "note": "4 points have no mpmath reference and are not compared"
   },
   {
-   "name": "f(df1=2, df2=2)",
-   "quantity": "pdf",
+   "name": "F (df1 = 2, df2 = 2)",
+   "quantity": "Density",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 1.4274103523746774e-15,
@@ -2317,8 +2318,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=2, df2=2)",
-   "quantity": "logpdf",
+   "name": "F (df1 = 2, df2 = 2)",
+   "quantity": "Log density",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
@@ -2329,8 +2330,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=2, df2=2)",
-   "quantity": "cdf",
+   "name": "F (df1 = 2, df2 = 2)",
+   "quantity": "Lower tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 2.1611224622953715e-14,
@@ -2341,8 +2342,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=2, df2=2)",
-   "quantity": "logcdf",
+   "name": "F (df1 = 2, df2 = 2)",
+   "quantity": "Log lower tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
@@ -2353,8 +2354,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=2, df2=2)",
-   "quantity": "sf",
+   "name": "F (df1 = 2, df2 = 2)",
+   "quantity": "Upper tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 7.52316384526264e-16,
@@ -2365,8 +2366,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=2, df2=2)",
-   "quantity": "logsf",
+   "name": "F (df1 = 2, df2 = 2)",
+   "quantity": "Log upper tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
@@ -2377,8 +2378,8 @@
    "status": "pass"
   },
   {
-   "name": "f(df1=2, df2=2)",
-   "quantity": "quantile",
+   "name": "F (df1 = 2, df2 = 2)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1928326635383554e-14,
@@ -2390,8 +2391,8 @@
    "note": "1 points have no mpmath reference and are not compared"
   },
   {
-   "name": "beta(alpha=2, beta=5)",
-   "quantity": "pdf",
+   "name": "Beta (alpha = 2, beta = 5)",
+   "quantity": "Density",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 6.914169618895183e-14,
@@ -2402,8 +2403,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=2, beta=5)",
-   "quantity": "logpdf",
+   "name": "Beta (alpha = 2, beta = 5)",
+   "quantity": "Log density",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 1.0708047840169875e-15,
@@ -2414,8 +2415,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=2, beta=5)",
-   "quantity": "cdf",
+   "name": "Beta (alpha = 2, beta = 5)",
+   "quantity": "Lower tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 3.341762518878212e-14,
@@ -2426,8 +2427,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=2, beta=5)",
-   "quantity": "logcdf",
+   "name": "Beta (alpha = 2, beta = 5)",
+   "quantity": "Log lower tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 4.0944316005169936e-16,
@@ -2438,8 +2439,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=2, beta=5)",
-   "quantity": "sf",
+   "name": "Beta (alpha = 2, beta = 5)",
+   "quantity": "Upper tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 1.216442077283859e-15,
@@ -2450,8 +2451,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=2, beta=5)",
-   "quantity": "logsf",
+   "name": "Beta (alpha = 2, beta = 5)",
+   "quantity": "Log upper tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 3.3306690738754696e-16,
@@ -2462,8 +2463,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=2, beta=5)",
-   "quantity": "quantile",
+   "name": "Beta (alpha = 2, beta = 5)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 3.7831234655533586e-14,
@@ -2474,8 +2475,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.5, beta=0.5)",
-   "quantity": "pdf",
+   "name": "Beta (alpha = 0.5, beta = 0.5)",
+   "quantity": "Density",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 2.7115745459525902e-14,
@@ -2486,8 +2487,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.5, beta=0.5)",
-   "quantity": "logpdf",
+   "name": "Beta (alpha = 0.5, beta = 0.5)",
+   "quantity": "Log density",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 5.728309025201289e-16,
@@ -2498,8 +2499,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.5, beta=0.5)",
-   "quantity": "cdf",
+   "name": "Beta (alpha = 0.5, beta = 0.5)",
+   "quantity": "Lower tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 8.881784197001252e-16,
@@ -2510,8 +2511,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.5, beta=0.5)",
-   "quantity": "logcdf",
+   "name": "Beta (alpha = 0.5, beta = 0.5)",
+   "quantity": "Log lower tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 8.881784197001252e-16,
@@ -2522,8 +2523,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.5, beta=0.5)",
-   "quantity": "sf",
+   "name": "Beta (alpha = 0.5, beta = 0.5)",
+   "quantity": "Upper tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 8.881784197001252e-16,
@@ -2534,8 +2535,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.5, beta=0.5)",
-   "quantity": "logsf",
+   "name": "Beta (alpha = 0.5, beta = 0.5)",
+   "quantity": "Log upper tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 8.881784197001252e-16,
@@ -2546,8 +2547,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.5, beta=0.5)",
-   "quantity": "quantile",
+   "name": "Beta (alpha = 0.5, beta = 0.5)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 4.467524544043383e-15,
@@ -2559,8 +2560,8 @@
    "note": "4 points have no mpmath reference and are not compared"
   },
   {
-   "name": "beta(alpha=1, beta=1)",
-   "quantity": "pdf",
+   "name": "Beta (alpha = 1, beta = 1)",
+   "quantity": "Density",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -2571,8 +2572,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=1, beta=1)",
-   "quantity": "logpdf",
+   "name": "Beta (alpha = 1, beta = 1)",
+   "quantity": "Log density",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -2583,8 +2584,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=1, beta=1)",
-   "quantity": "cdf",
+   "name": "Beta (alpha = 1, beta = 1)",
+   "quantity": "Lower tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 2.4369795411866816e-14,
@@ -2595,8 +2596,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=1, beta=1)",
-   "quantity": "logcdf",
+   "name": "Beta (alpha = 1, beta = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 3.469446951953614e-18,
@@ -2607,8 +2608,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=1, beta=1)",
-   "quantity": "sf",
+   "name": "Beta (alpha = 1, beta = 1)",
+   "quantity": "Upper tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 5.169878400698766e-16,
@@ -2619,8 +2620,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=1, beta=1)",
-   "quantity": "logsf",
+   "name": "Beta (alpha = 1, beta = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 1.3877787807814457e-17,
@@ -2631,8 +2632,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=1, beta=1)",
-   "quantity": "quantile",
+   "name": "Beta (alpha = 1, beta = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 2.43697954118668e-14,
@@ -2643,8 +2644,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.1, beta=10)",
-   "quantity": "pdf",
+   "name": "Beta (alpha = 0.1, beta = 10)",
+   "quantity": "Density",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 6.155625869182043e-14,
@@ -2655,8 +2656,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.1, beta=10)",
-   "quantity": "logpdf",
+   "name": "Beta (alpha = 0.1, beta = 10)",
+   "quantity": "Log density",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 4.440892098500626e-16,
@@ -2667,8 +2668,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.1, beta=10)",
-   "quantity": "cdf",
+   "name": "Beta (alpha = 0.1, beta = 10)",
+   "quantity": "Lower tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 5.31889456869137e-15,
@@ -2679,8 +2680,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.1, beta=10)",
-   "quantity": "logcdf",
+   "name": "Beta (alpha = 0.1, beta = 10)",
+   "quantity": "Log lower tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 1.5616132192766846e-16,
@@ -2691,8 +2692,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.1, beta=10)",
-   "quantity": "sf",
+   "name": "Beta (alpha = 0.1, beta = 10)",
+   "quantity": "Upper tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 7.827001391846992e-15,
@@ -2703,8 +2704,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.1, beta=10)",
-   "quantity": "logsf",
+   "name": "Beta (alpha = 0.1, beta = 10)",
+   "quantity": "Log upper tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 2.5495457959454294e-16,
@@ -2715,8 +2716,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=0.1, beta=10)",
-   "quantity": "quantile",
+   "name": "Beta (alpha = 0.1, beta = 10)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.0356248552366792e-14,
@@ -2728,8 +2729,8 @@
    "note": "2 points have no mpmath reference and are not compared"
   },
   {
-   "name": "beta(alpha=50, beta=200)",
-   "quantity": "pdf",
+   "name": "Beta (alpha = 50, beta = 200)",
+   "quantity": "Density",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 3.365953460162258e-14,
@@ -2740,8 +2741,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=50, beta=200)",
-   "quantity": "logpdf",
+   "name": "Beta (alpha = 50, beta = 200)",
+   "quantity": "Log density",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 4.646485158470068e-16,
@@ -2752,8 +2753,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=50, beta=200)",
-   "quantity": "cdf",
+   "name": "Beta (alpha = 50, beta = 200)",
+   "quantity": "Lower tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 9.401694755593362e-15,
@@ -2764,8 +2765,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=50, beta=200)",
-   "quantity": "logcdf",
+   "name": "Beta (alpha = 50, beta = 200)",
+   "quantity": "Log lower tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 1.6653345369377348e-15,
@@ -2776,8 +2777,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=50, beta=200)",
-   "quantity": "sf",
+   "name": "Beta (alpha = 50, beta = 200)",
+   "quantity": "Upper tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 1.829923397736891e-14,
@@ -2788,8 +2789,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=50, beta=200)",
-   "quantity": "logsf",
+   "name": "Beta (alpha = 50, beta = 200)",
+   "quantity": "Log upper tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 1.7763568394002505e-15,
@@ -2800,8 +2801,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=50, beta=200)",
-   "quantity": "quantile",
+   "name": "Beta (alpha = 50, beta = 200)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 6.212339889059507e-16,
@@ -2812,8 +2813,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=1000, beta=1000)",
-   "quantity": "pdf",
+   "name": "Beta (alpha = 1000, beta = 1000)",
+   "quantity": "Density",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 1.4933982257626902e-13,
@@ -2824,8 +2825,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=1000, beta=1000)",
-   "quantity": "logpdf",
+   "name": "Beta (alpha = 1000, beta = 1000)",
+   "quantity": "Log density",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 8.329706900142112e-16,
@@ -2836,8 +2837,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=1000, beta=1000)",
-   "quantity": "cdf",
+   "name": "Beta (alpha = 1000, beta = 1000)",
+   "quantity": "Lower tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 1.230516145232089e-13,
@@ -2848,8 +2849,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=1000, beta=1000)",
-   "quantity": "logcdf",
+   "name": "Beta (alpha = 1000, beta = 1000)",
+   "quantity": "Log lower tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 6.647394850698921e-16,
@@ -2860,8 +2861,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=1000, beta=1000)",
-   "quantity": "sf",
+   "name": "Beta (alpha = 1000, beta = 1000)",
+   "quantity": "Upper tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 4.101800975978386e-14,
@@ -2872,8 +2873,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=1000, beta=1000)",
-   "quantity": "logsf",
+   "name": "Beta (alpha = 1000, beta = 1000)",
+   "quantity": "Log upper tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 4.2189241006902286e-16,
@@ -2884,8 +2885,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=1000, beta=1000)",
-   "quantity": "quantile",
+   "name": "Beta (alpha = 1000, beta = 1000)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 7.78049485093919e-16,
@@ -2896,8 +2897,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=3, beta=1)",
-   "quantity": "pdf",
+   "name": "Beta (alpha = 3, beta = 1)",
+   "quantity": "Density",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 2.3980240297505688e-14,
@@ -2908,8 +2909,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=3, beta=1)",
-   "quantity": "logpdf",
+   "name": "Beta (alpha = 3, beta = 1)",
+   "quantity": "Log density",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 1.2664533792226117e-16,
@@ -2920,8 +2921,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=3, beta=1)",
-   "quantity": "cdf",
+   "name": "Beta (alpha = 3, beta = 1)",
+   "quantity": "Lower tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 8.935591651017832e-14,
@@ -2932,8 +2933,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=3, beta=1)",
-   "quantity": "logcdf",
+   "name": "Beta (alpha = 3, beta = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 2.0751350653063426e-16,
@@ -2944,8 +2945,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=3, beta=1)",
-   "quantity": "sf",
+   "name": "Beta (alpha = 3, beta = 1)",
+   "quantity": "Upper tail",
    "n_compared": 16,
    "rule": "probability",
    "max_rel_error": 6.893171201621005e-16,
@@ -2956,8 +2957,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=3, beta=1)",
-   "quantity": "logsf",
+   "name": "Beta (alpha = 3, beta = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 16,
    "rule": "log-and-quantile",
    "max_rel_error": 1.7006618002054164e-16,
@@ -2968,8 +2969,8 @@
    "status": "pass"
   },
   {
-   "name": "beta(alpha=3, beta=1)",
-   "quantity": "quantile",
+   "name": "Beta (alpha = 3, beta = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.7638695769343766e-14,
@@ -2980,8 +2981,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=2, scale=3)",
-   "quantity": "pdf",
+   "name": "Gamma (shape = 2, scale = 3)",
+   "quantity": "Density",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 3.0213572883079775e-14,
@@ -2992,8 +2993,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=2, scale=3)",
-   "quantity": "logpdf",
+   "name": "Gamma (shape = 2, scale = 3)",
+   "quantity": "Log density",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 1.9625129680108003e-16,
@@ -3004,8 +3005,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=2, scale=3)",
-   "quantity": "cdf",
+   "name": "Gamma (shape = 2, scale = 3)",
+   "quantity": "Lower tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 1.065935571672573e-14,
@@ -3016,8 +3017,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=2, scale=3)",
-   "quantity": "logcdf",
+   "name": "Gamma (shape = 2, scale = 3)",
+   "quantity": "Log lower tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
@@ -3028,8 +3029,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=2, scale=3)",
-   "quantity": "sf",
+   "name": "Gamma (shape = 2, scale = 3)",
+   "quantity": "Upper tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 6.731446585193827e-16,
@@ -3040,8 +3041,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=2, scale=3)",
-   "quantity": "logsf",
+   "name": "Gamma (shape = 2, scale = 3)",
+   "quantity": "Log upper tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
@@ -3052,8 +3053,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=2, scale=3)",
-   "quantity": "quantile",
+   "name": "Gamma (shape = 2, scale = 3)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.5348904147486612e-14,
@@ -3064,8 +3065,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.5, scale=1)",
-   "quantity": "pdf",
+   "name": "Gamma (shape = 0.5, scale = 1)",
+   "quantity": "Density",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 1.9485357449958136e-14,
@@ -3076,8 +3077,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.5, scale=1)",
-   "quantity": "logpdf",
+   "name": "Gamma (shape = 0.5, scale = 1)",
+   "quantity": "Log density",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 2.7755575615628914e-16,
@@ -3088,8 +3089,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.5, scale=1)",
-   "quantity": "cdf",
+   "name": "Gamma (shape = 0.5, scale = 1)",
+   "quantity": "Lower tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 6.398981471176793e-16,
@@ -3100,8 +3101,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.5, scale=1)",
-   "quantity": "logcdf",
+   "name": "Gamma (shape = 0.5, scale = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
@@ -3112,8 +3113,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.5, scale=1)",
-   "quantity": "sf",
+   "name": "Gamma (shape = 0.5, scale = 1)",
+   "quantity": "Upper tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 2.706839986017422e-15,
@@ -3124,8 +3125,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.5, scale=1)",
-   "quantity": "logsf",
+   "name": "Gamma (shape = 0.5, scale = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
@@ -3136,8 +3137,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.5, scale=1)",
-   "quantity": "quantile",
+   "name": "Gamma (shape = 0.5, scale = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.0526356715474086e-14,
@@ -3149,8 +3150,8 @@
    "note": "1 points have no mpmath reference and are not compared"
   },
   {
-   "name": "gamma(shape=1, scale=1)",
-   "quantity": "pdf",
+   "name": "Gamma (shape = 1, scale = 1)",
+   "quantity": "Density",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -3161,8 +3162,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=1, scale=1)",
-   "quantity": "logpdf",
+   "name": "Gamma (shape = 1, scale = 1)",
+   "quantity": "Log density",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -3173,8 +3174,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=1, scale=1)",
-   "quantity": "cdf",
+   "name": "Gamma (shape = 1, scale = 1)",
+   "quantity": "Lower tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 2.4369795411866816e-14,
@@ -3185,8 +3186,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=1, scale=1)",
-   "quantity": "logcdf",
+   "name": "Gamma (shape = 1, scale = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 1.9286549325830718e-16,
@@ -3197,8 +3198,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=1, scale=1)",
-   "quantity": "sf",
+   "name": "Gamma (shape = 1, scale = 1)",
+   "quantity": "Upper tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 1.109064369519786e-15,
@@ -3209,8 +3210,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=1, scale=1)",
-   "quantity": "logsf",
+   "name": "Gamma (shape = 1, scale = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
@@ -3221,8 +3222,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=1, scale=1)",
-   "quantity": "quantile",
+   "name": "Gamma (shape = 1, scale = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 2.43697954118668e-14,
@@ -3233,8 +3234,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.01, scale=1)",
-   "quantity": "pdf",
+   "name": "Gamma (shape = 0.01, scale = 1)",
+   "quantity": "Density",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 4.8958087105874364e-14,
@@ -3245,8 +3246,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.01, scale=1)",
-   "quantity": "logpdf",
+   "name": "Gamma (shape = 0.01, scale = 1)",
+   "quantity": "Log density",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 6.661338147750939e-16,
@@ -3257,8 +3258,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.01, scale=1)",
-   "quantity": "cdf",
+   "name": "Gamma (shape = 0.01, scale = 1)",
+   "quantity": "Lower tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 4.3122009920813178e-16,
@@ -3269,8 +3270,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.01, scale=1)",
-   "quantity": "logcdf",
+   "name": "Gamma (shape = 0.01, scale = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 1.9382347332516614e-16,
@@ -3281,8 +3282,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.01, scale=1)",
-   "quantity": "sf",
+   "name": "Gamma (shape = 0.01, scale = 1)",
+   "quantity": "Upper tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 1.42117170597378e-15,
@@ -3293,8 +3294,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.01, scale=1)",
-   "quantity": "logsf",
+   "name": "Gamma (shape = 0.01, scale = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 4.90433993611296e-16,
@@ -3305,8 +3306,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=0.01, scale=1)",
-   "quantity": "quantile",
+   "name": "Gamma (shape = 0.01, scale = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 4.05748738609783e-14,
@@ -3318,8 +3319,8 @@
    "note": "4 points have no mpmath reference and are not compared"
   },
   {
-   "name": "gamma(shape=100, scale=0.01)",
-   "quantity": "pdf",
+   "name": "Gamma (shape = 100, scale = 0.01)",
+   "quantity": "Density",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 1.4531249060303106e-13,
@@ -3330,8 +3331,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=100, scale=0.01)",
-   "quantity": "logpdf",
+   "name": "Gamma (shape = 100, scale = 0.01)",
+   "quantity": "Log density",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 8.382856420803958e-16,
@@ -3342,8 +3343,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=100, scale=0.01)",
-   "quantity": "cdf",
+   "name": "Gamma (shape = 100, scale = 0.01)",
+   "quantity": "Lower tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 1.0510903183330237e-13,
@@ -3354,8 +3355,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=100, scale=0.01)",
-   "quantity": "logcdf",
+   "name": "Gamma (shape = 100, scale = 0.01)",
+   "quantity": "Log lower tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 3.117018522596653e-16,
@@ -3366,8 +3367,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=100, scale=0.01)",
-   "quantity": "sf",
+   "name": "Gamma (shape = 100, scale = 0.01)",
+   "quantity": "Upper tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 7.442008291008493e-14,
@@ -3378,8 +3379,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=100, scale=0.01)",
-   "quantity": "logsf",
+   "name": "Gamma (shape = 100, scale = 0.01)",
+   "quantity": "Log upper tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
@@ -3390,8 +3391,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=100, scale=0.01)",
-   "quantity": "quantile",
+   "name": "Gamma (shape = 100, scale = 0.01)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 9.211256261017934e-16,
@@ -3402,8 +3403,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=10000, scale=2)",
-   "quantity": "pdf",
+   "name": "Gamma (shape = 10000, scale = 2)",
+   "quantity": "Density",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 1.8815066315526378e-13,
@@ -3414,8 +3415,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=10000, scale=2)",
-   "quantity": "logpdf",
+   "name": "Gamma (shape = 10000, scale = 2)",
+   "quantity": "Log density",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 3.5425765392548994e-16,
@@ -3426,8 +3427,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=10000, scale=2)",
-   "quantity": "cdf",
+   "name": "Gamma (shape = 10000, scale = 2)",
+   "quantity": "Lower tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 2.472941634447821e-14,
@@ -3438,8 +3439,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=10000, scale=2)",
-   "quantity": "logcdf",
+   "name": "Gamma (shape = 10000, scale = 2)",
+   "quantity": "Log lower tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 1.6048447506610779e-15,
@@ -3450,8 +3451,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=10000, scale=2)",
-   "quantity": "sf",
+   "name": "Gamma (shape = 10000, scale = 2)",
+   "quantity": "Upper tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 7.496608311410525e-13,
@@ -3462,8 +3463,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=10000, scale=2)",
-   "quantity": "logsf",
+   "name": "Gamma (shape = 10000, scale = 2)",
+   "quantity": "Log upper tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 5.473443254644788e-15,
@@ -3474,8 +3475,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=10000, scale=2)",
-   "quantity": "quantile",
+   "name": "Gamma (shape = 10000, scale = 2)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 3.1046822961574567e-15,
@@ -3486,8 +3487,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=3, scale=100000)",
-   "quantity": "pdf",
+   "name": "Gamma (shape = 3, scale = 100000)",
+   "quantity": "Density",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 2.1492885127413724e-14,
@@ -3498,8 +3499,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=3, scale=100000)",
-   "quantity": "logpdf",
+   "name": "Gamma (shape = 3, scale = 100000)",
+   "quantity": "Log density",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 1.9403395551340534e-16,
@@ -3510,8 +3511,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=3, scale=100000)",
-   "quantity": "cdf",
+   "name": "Gamma (shape = 3, scale = 100000)",
+   "quantity": "Lower tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 4.436292181894658e-14,
@@ -3522,8 +3523,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=3, scale=100000)",
-   "quantity": "logcdf",
+   "name": "Gamma (shape = 3, scale = 100000)",
+   "quantity": "Log lower tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 2.0244937305580219e-16,
@@ -3534,8 +3535,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=3, scale=100000)",
-   "quantity": "sf",
+   "name": "Gamma (shape = 3, scale = 100000)",
+   "quantity": "Upper tail",
    "n_compared": 17,
    "rule": "probability",
    "max_rel_error": 2.674458564953035e-15,
@@ -3546,8 +3547,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=3, scale=100000)",
-   "quantity": "logsf",
+   "name": "Gamma (shape = 3, scale = 100000)",
+   "quantity": "Log upper tail",
    "n_compared": 17,
    "rule": "log-and-quantile",
    "max_rel_error": 2.2071218483592656e-16,
@@ -3558,8 +3559,8 @@
    "status": "pass"
   },
   {
-   "name": "gamma(shape=3, scale=100000)",
-   "quantity": "quantile",
+   "name": "Gamma (shape = 3, scale = 100000)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.739127596276149e-14,
@@ -3570,8 +3571,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1)",
-   "quantity": "pdf",
+   "name": "Exponential (rate = 1)",
+   "quantity": "Density",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -3582,8 +3583,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1)",
-   "quantity": "logpdf",
+   "name": "Exponential (rate = 1)",
+   "quantity": "Log density",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -3594,8 +3595,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1)",
-   "quantity": "cdf",
+   "name": "Exponential (rate = 1)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -3606,8 +3607,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1)",
-   "quantity": "logcdf",
+   "name": "Exponential (rate = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
@@ -3618,8 +3619,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1)",
-   "quantity": "sf",
+   "name": "Exponential (rate = 1)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -3630,8 +3631,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1)",
-   "quantity": "logsf",
+   "name": "Exponential (rate = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -3642,8 +3643,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1)",
-   "quantity": "quantile",
+   "name": "Exponential (rate = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -3654,8 +3655,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=0.5)",
-   "quantity": "pdf",
+   "name": "Exponential (rate = 0.5)",
+   "quantity": "Density",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -3666,8 +3667,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=0.5)",
-   "quantity": "logpdf",
+   "name": "Exponential (rate = 0.5)",
+   "quantity": "Log density",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
@@ -3678,8 +3679,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=0.5)",
-   "quantity": "cdf",
+   "name": "Exponential (rate = 0.5)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -3690,8 +3691,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=0.5)",
-   "quantity": "logcdf",
+   "name": "Exponential (rate = 0.5)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
@@ -3702,8 +3703,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=0.5)",
-   "quantity": "sf",
+   "name": "Exponential (rate = 0.5)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -3714,8 +3715,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=0.5)",
-   "quantity": "logsf",
+   "name": "Exponential (rate = 0.5)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -3726,8 +3727,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=0.5)",
-   "quantity": "quantile",
+   "name": "Exponential (rate = 0.5)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -3738,8 +3739,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1e-05)",
-   "quantity": "pdf",
+   "name": "Exponential (rate = 1e-05)",
+   "quantity": "Density",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 6.126047622876845e-15,
@@ -3750,8 +3751,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1e-05)",
-   "quantity": "logpdf",
+   "name": "Exponential (rate = 1e-05)",
+   "quantity": "Log density",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.651432151608311e-16,
@@ -3762,8 +3763,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1e-05)",
-   "quantity": "cdf",
+   "name": "Exponential (rate = 1e-05)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.4108126236904708e-16,
@@ -3774,8 +3775,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1e-05)",
-   "quantity": "logcdf",
+   "name": "Exponential (rate = 1e-05)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
@@ -3786,8 +3787,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1e-05)",
-   "quantity": "sf",
+   "name": "Exponential (rate = 1e-05)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 5.644359031512377e-14,
@@ -3798,8 +3799,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1e-05)",
-   "quantity": "logsf",
+   "name": "Exponential (rate = 1e-05)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -3810,8 +3811,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=1e-05)",
-   "quantity": "quantile",
+   "name": "Exponential (rate = 1e-05)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 2.022341282404177e-16,
@@ -3822,8 +3823,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=100000)",
-   "quantity": "pdf",
+   "name": "Exponential (rate = 100000)",
+   "quantity": "Density",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.452732402066595e-14,
@@ -3834,8 +3835,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=100000)",
-   "quantity": "logpdf",
+   "name": "Exponential (rate = 100000)",
+   "quantity": "Log density",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 4.40295196424764e-16,
@@ -3846,8 +3847,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=100000)",
-   "quantity": "cdf",
+   "name": "Exponential (rate = 100000)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -3858,8 +3859,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=100000)",
-   "quantity": "logcdf",
+   "name": "Exponential (rate = 100000)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
@@ -3870,8 +3871,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=100000)",
-   "quantity": "sf",
+   "name": "Exponential (rate = 100000)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.4572708772267695e-14,
@@ -3882,8 +3883,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=100000)",
-   "quantity": "logsf",
+   "name": "Exponential (rate = 100000)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -3894,8 +3895,8 @@
    "status": "pass"
   },
   {
-   "name": "exponential(rate=100000)",
-   "quantity": "quantile",
+   "name": "Exponential (rate = 100000)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.961929253241551e-16,
@@ -3906,8 +3907,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=0, sdlog=1)",
-   "quantity": "pdf",
+   "name": "Log-normal (meanlog = 0, sdlog = 1)",
+   "quantity": "Density",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.7045155006364488e-15,
@@ -3918,8 +3919,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=0, sdlog=1)",
-   "quantity": "logpdf",
+   "name": "Log-normal (meanlog = 0, sdlog = 1)",
+   "quantity": "Log density",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.8056302466570561e-16,
@@ -3930,8 +3931,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=0, sdlog=1)",
-   "quantity": "cdf",
+   "name": "Log-normal (meanlog = 0, sdlog = 1)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 3.856683150892501e-16,
@@ -3942,8 +3943,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=0, sdlog=1)",
-   "quantity": "logcdf",
+   "name": "Log-normal (meanlog = 0, sdlog = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.2198113986416659e-16,
@@ -3954,8 +3955,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=0, sdlog=1)",
-   "quantity": "sf",
+   "name": "Log-normal (meanlog = 0, sdlog = 1)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 7.713366301785011e-16,
@@ -3966,8 +3967,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=0, sdlog=1)",
-   "quantity": "logsf",
+   "name": "Log-normal (meanlog = 0, sdlog = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1738503088424644e-16,
@@ -3978,8 +3979,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=0, sdlog=1)",
-   "quantity": "quantile",
+   "name": "Log-normal (meanlog = 0, sdlog = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.2905842146426917e-14,
@@ -3990,8 +3991,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=2, sdlog=0.5)",
-   "quantity": "pdf",
+   "name": "Log-normal (meanlog = 2, sdlog = 0.5)",
+   "quantity": "Density",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.3088382525637978e-15,
@@ -4002,8 +4003,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=2, sdlog=0.5)",
-   "quantity": "logpdf",
+   "name": "Log-normal (meanlog = 2, sdlog = 0.5)",
+   "quantity": "Log density",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.995196941179538e-16,
@@ -4014,8 +4015,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=2, sdlog=0.5)",
-   "quantity": "cdf",
+   "name": "Log-normal (meanlog = 2, sdlog = 0.5)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 5.785024726338751e-16,
@@ -4026,8 +4027,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=2, sdlog=0.5)",
-   "quantity": "logcdf",
+   "name": "Log-normal (meanlog = 2, sdlog = 0.5)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.2128061284186698e-16,
@@ -4038,8 +4039,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=2, sdlog=0.5)",
-   "quantity": "sf",
+   "name": "Log-normal (meanlog = 2, sdlog = 0.5)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.7355074179016232e-15,
@@ -4050,8 +4051,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=2, sdlog=0.5)",
-   "quantity": "logsf",
+   "name": "Log-normal (meanlog = 2, sdlog = 0.5)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.8882760779951048e-16,
@@ -4062,8 +4063,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=2, sdlog=0.5)",
-   "quantity": "quantile",
+   "name": "Log-normal (meanlog = 2, sdlog = 0.5)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 6.4147886883296885e-15,
@@ -4074,8 +4075,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=-5, sdlog=3)",
-   "quantity": "pdf",
+   "name": "Log-normal (meanlog = -5, sdlog = 3)",
+   "quantity": "Density",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 9.132771920978326e-14,
@@ -4086,8 +4087,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=-5, sdlog=3)",
-   "quantity": "logpdf",
+   "name": "Log-normal (meanlog = -5, sdlog = 3)",
+   "quantity": "Log density",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 2.860230923527725e-16,
@@ -4098,8 +4099,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=-5, sdlog=3)",
-   "quantity": "cdf",
+   "name": "Log-normal (meanlog = -5, sdlog = 3)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.9283415754462518e-16,
@@ -4110,8 +4111,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=-5, sdlog=3)",
-   "quantity": "logcdf",
+   "name": "Log-normal (meanlog = -5, sdlog = 3)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.3920766520350614e-16,
@@ -4122,8 +4123,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=-5, sdlog=3)",
-   "quantity": "sf",
+   "name": "Log-normal (meanlog = -5, sdlog = 3)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 3.856683150892504e-16,
@@ -4134,8 +4135,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=-5, sdlog=3)",
-   "quantity": "logsf",
+   "name": "Log-normal (meanlog = -5, sdlog = 3)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1738503088424644e-16,
@@ -4146,8 +4147,8 @@
    "status": "pass"
   },
   {
-   "name": "lognormal(meanlog=-5, sdlog=3)",
-   "quantity": "quantile",
+   "name": "Log-normal (meanlog = -5, sdlog = 3)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 3.4943246527918936e-14,
@@ -4158,8 +4159,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1)",
-   "quantity": "pdf",
+   "name": "Logistic (location = 0, scale = 1)",
+   "quantity": "Density",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.492706907529673e-16,
@@ -4170,8 +4171,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1)",
-   "quantity": "logpdf",
+   "name": "Logistic (location = 0, scale = 1)",
+   "quantity": "Log density",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4182,8 +4183,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1)",
-   "quantity": "cdf",
+   "name": "Logistic (location = 0, scale = 1)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4194,8 +4195,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1)",
-   "quantity": "logcdf",
+   "name": "Logistic (location = 0, scale = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
@@ -4206,8 +4207,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1)",
-   "quantity": "sf",
+   "name": "Logistic (location = 0, scale = 1)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4218,8 +4219,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1)",
-   "quantity": "logsf",
+   "name": "Logistic (location = 0, scale = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
@@ -4230,8 +4231,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1)",
-   "quantity": "quantile",
+   "name": "Logistic (location = 0, scale = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.5429239464919602e-16,
@@ -4242,8 +4243,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=5, scale=2)",
-   "quantity": "pdf",
+   "name": "Logistic (location = 5, scale = 2)",
+   "quantity": "Density",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.492706907529673e-16,
@@ -4254,8 +4255,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=5, scale=2)",
-   "quantity": "logpdf",
+   "name": "Logistic (location = 5, scale = 2)",
+   "quantity": "Log density",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4266,8 +4267,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=5, scale=2)",
-   "quantity": "cdf",
+   "name": "Logistic (location = 5, scale = 2)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4278,8 +4279,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=5, scale=2)",
-   "quantity": "logcdf",
+   "name": "Logistic (location = 5, scale = 2)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
@@ -4290,8 +4291,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=5, scale=2)",
-   "quantity": "sf",
+   "name": "Logistic (location = 5, scale = 2)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4302,8 +4303,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=5, scale=2)",
-   "quantity": "logsf",
+   "name": "Logistic (location = 5, scale = 2)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-17,
@@ -4314,8 +4315,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=5, scale=2)",
-   "quantity": "quantile",
+   "name": "Logistic (location = 5, scale = 2)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 7.333640325608676e-16,
@@ -4326,8 +4327,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1e-05)",
-   "quantity": "pdf",
+   "name": "Logistic (location = 0, scale = 1e-05)",
+   "quantity": "Density",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.426070282286649e-15,
@@ -4338,8 +4339,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1e-05)",
-   "quantity": "logpdf",
+   "name": "Logistic (location = 0, scale = 1e-05)",
+   "quantity": "Log density",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.441835147249016e-16,
@@ -4350,8 +4351,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1e-05)",
-   "quantity": "cdf",
+   "name": "Logistic (location = 0, scale = 1e-05)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.450673708380787e-15,
@@ -4362,8 +4363,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1e-05)",
-   "quantity": "logcdf",
+   "name": "Logistic (location = 0, scale = 1e-05)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.7763487749723497e-16,
@@ -4374,8 +4375,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1e-05)",
-   "quantity": "sf",
+   "name": "Logistic (location = 0, scale = 1e-05)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.450673708380787e-15,
@@ -4386,8 +4387,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1e-05)",
-   "quantity": "logsf",
+   "name": "Logistic (location = 0, scale = 1e-05)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.7763487749723497e-16,
@@ -4398,8 +4399,8 @@
    "status": "pass"
   },
   {
-   "name": "logistic(location=0, scale=1e-05)",
-   "quantity": "quantile",
+   "name": "Logistic (location = 0, scale = 1e-05)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 1.9622134548579745e-16,
@@ -4410,8 +4411,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=10, prob=0.5)",
-   "quantity": "pmf",
+   "name": "Binomial (size = 10, prob = 0.5)",
+   "quantity": "Probability mass",
    "n_compared": 11,
    "rule": "probability",
    "max_rel_error": 1.1842378929335002e-15,
@@ -4422,8 +4423,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=10, prob=0.5)",
-   "quantity": "logpmf",
+   "name": "Binomial (size = 10, prob = 0.5)",
+   "quantity": "Log probability mass",
    "n_compared": 11,
    "rule": "log-and-quantile",
    "max_rel_error": 6.213992623604218e-16,
@@ -4434,8 +4435,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=10, prob=0.5)",
-   "quantity": "cdf",
+   "name": "Binomial (size = 10, prob = 0.5)",
+   "quantity": "Lower tail",
    "n_compared": 11,
    "rule": "probability",
    "max_rel_error": 6.459479416000911e-16,
@@ -4446,8 +4447,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=10, prob=0.5)",
-   "quantity": "logcdf",
+   "name": "Binomial (size = 10, prob = 0.5)",
+   "quantity": "Log lower tail",
    "n_compared": 11,
    "rule": "log-and-quantile",
    "max_rel_error": 1.9591120019128954e-16,
@@ -4458,8 +4459,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=10, prob=0.5)",
-   "quantity": "sf",
+   "name": "Binomial (size = 10, prob = 0.5)",
+   "quantity": "Upper tail",
    "n_compared": 11,
    "rule": "probability",
    "max_rel_error": 5.075305255429287e-16,
@@ -4470,8 +4471,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=10, prob=0.5)",
-   "quantity": "logsf",
+   "name": "Binomial (size = 10, prob = 0.5)",
+   "quantity": "Log upper tail",
    "n_compared": 11,
    "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
@@ -4482,8 +4483,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=10, prob=0.5)",
-   "quantity": "quantile",
+   "name": "Binomial (size = 10, prob = 0.5)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4494,8 +4495,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1, prob=0.3)",
-   "quantity": "pmf",
+   "name": "Binomial (size = 1, prob = 0.3)",
+   "quantity": "Probability mass",
    "n_compared": 9,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4506,8 +4507,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1, prob=0.3)",
-   "quantity": "logpmf",
+   "name": "Binomial (size = 1, prob = 0.3)",
+   "quantity": "Log probability mass",
    "n_compared": 9,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
@@ -4518,8 +4519,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1, prob=0.3)",
-   "quantity": "cdf",
+   "name": "Binomial (size = 1, prob = 0.3)",
+   "quantity": "Lower tail",
    "n_compared": 9,
    "rule": "probability",
    "max_rel_error": 1.586032892321652e-16,
@@ -4530,8 +4531,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1, prob=0.3)",
-   "quantity": "logcdf",
+   "name": "Binomial (size = 1, prob = 0.3)",
+   "quantity": "Log lower tail",
    "n_compared": 9,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4542,8 +4543,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1, prob=0.3)",
-   "quantity": "sf",
+   "name": "Binomial (size = 1, prob = 0.3)",
+   "quantity": "Upper tail",
    "n_compared": 9,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4554,8 +4555,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1, prob=0.3)",
-   "quantity": "logsf",
+   "name": "Binomial (size = 1, prob = 0.3)",
+   "quantity": "Log upper tail",
    "n_compared": 9,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4566,8 +4567,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1, prob=0.3)",
-   "quantity": "quantile",
+   "name": "Binomial (size = 1, prob = 0.3)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4578,8 +4579,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=100, prob=0.01)",
-   "quantity": "pmf",
+   "name": "Binomial (size = 100, prob = 0.01)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 3.2779441374412937e-14,
@@ -4590,8 +4591,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=100, prob=0.01)",
-   "quantity": "logpmf",
+   "name": "Binomial (size = 100, prob = 0.01)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 1.7332721943882903e-16,
@@ -4602,8 +4603,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=100, prob=0.01)",
-   "quantity": "cdf",
+   "name": "Binomial (size = 100, prob = 0.01)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 1.508943186015611e-16,
@@ -4614,8 +4615,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=100, prob=0.01)",
-   "quantity": "logcdf",
+   "name": "Binomial (size = 100, prob = 0.01)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
@@ -4626,8 +4627,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=100, prob=0.01)",
-   "quantity": "sf",
+   "name": "Binomial (size = 100, prob = 0.01)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 2.2651851704918994e-14,
@@ -4638,8 +4639,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=100, prob=0.01)",
-   "quantity": "logsf",
+   "name": "Binomial (size = 100, prob = 0.01)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 3.3367461552447537e-16,
@@ -4650,8 +4651,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=100, prob=0.01)",
-   "quantity": "quantile",
+   "name": "Binomial (size = 100, prob = 0.01)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4662,8 +4663,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000, prob=0.999)",
-   "quantity": "pmf",
+   "name": "Binomial (size = 1000, prob = 0.999)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 1.5081949990150043e-16,
@@ -4674,8 +4675,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000, prob=0.999)",
-   "quantity": "logpmf",
+   "name": "Binomial (size = 1000, prob = 0.999)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
@@ -4686,8 +4687,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000, prob=0.999)",
-   "quantity": "cdf",
+   "name": "Binomial (size = 1000, prob = 0.999)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4698,8 +4699,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000, prob=0.999)",
-   "quantity": "logcdf",
+   "name": "Binomial (size = 1000, prob = 0.999)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 1.6447096360183542e-16,
@@ -4710,8 +4711,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000, prob=0.999)",
-   "quantity": "sf",
+   "name": "Binomial (size = 1000, prob = 0.999)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4722,8 +4723,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000, prob=0.999)",
-   "quantity": "logsf",
+   "name": "Binomial (size = 1000, prob = 0.999)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4734,8 +4735,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000, prob=0.999)",
-   "quantity": "quantile",
+   "name": "Binomial (size = 1000, prob = 0.999)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4746,8 +4747,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000000, prob=0.3)",
-   "quantity": "pmf",
+   "name": "Binomial (size = 1000000, prob = 0.3)",
+   "quantity": "Probability mass",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 3.7362097168170987e-16,
@@ -4758,8 +4759,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000000, prob=0.3)",
-   "quantity": "logpmf",
+   "name": "Binomial (size = 1000000, prob = 0.3)",
+   "quantity": "Log probability mass",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 5.007321555794743e-16,
@@ -4770,8 +4771,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000000, prob=0.3)",
-   "quantity": "cdf",
+   "name": "Binomial (size = 1000000, prob = 0.3)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 6.654772295635248e-16,
@@ -4782,8 +4783,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000000, prob=0.3)",
-   "quantity": "logcdf",
+   "name": "Binomial (size = 1000000, prob = 0.3)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 7.771561172376096e-16,
@@ -4794,8 +4795,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000000, prob=0.3)",
-   "quantity": "sf",
+   "name": "Binomial (size = 1000000, prob = 0.3)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 7.779236463719615e-16,
@@ -4806,8 +4807,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000000, prob=0.3)",
-   "quantity": "logsf",
+   "name": "Binomial (size = 1000000, prob = 0.3)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 7.771561172376096e-16,
@@ -4818,8 +4819,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=1000000, prob=0.3)",
-   "quantity": "quantile",
+   "name": "Binomial (size = 1000000, prob = 0.3)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4830,8 +4831,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=0)",
-   "quantity": "pmf",
+   "name": "Binomial (size = 50, prob = 0)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4842,8 +4843,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=0)",
-   "quantity": "logpmf",
+   "name": "Binomial (size = 50, prob = 0)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4854,8 +4855,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=0)",
-   "quantity": "cdf",
+   "name": "Binomial (size = 50, prob = 0)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4866,8 +4867,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=0)",
-   "quantity": "logcdf",
+   "name": "Binomial (size = 50, prob = 0)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4878,8 +4879,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=0)",
-   "quantity": "sf",
+   "name": "Binomial (size = 50, prob = 0)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4890,8 +4891,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=0)",
-   "quantity": "logsf",
+   "name": "Binomial (size = 50, prob = 0)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4902,8 +4903,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=0)",
-   "quantity": "quantile",
+   "name": "Binomial (size = 50, prob = 0)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4914,8 +4915,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=1)",
-   "quantity": "pmf",
+   "name": "Binomial (size = 50, prob = 1)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4926,8 +4927,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=1)",
-   "quantity": "logpmf",
+   "name": "Binomial (size = 50, prob = 1)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4938,8 +4939,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=1)",
-   "quantity": "cdf",
+   "name": "Binomial (size = 50, prob = 1)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4950,8 +4951,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=1)",
-   "quantity": "logcdf",
+   "name": "Binomial (size = 50, prob = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4962,8 +4963,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=1)",
-   "quantity": "sf",
+   "name": "Binomial (size = 50, prob = 1)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -4974,8 +4975,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=1)",
-   "quantity": "logsf",
+   "name": "Binomial (size = 50, prob = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4986,8 +4987,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=50, prob=1)",
-   "quantity": "quantile",
+   "name": "Binomial (size = 50, prob = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -4998,8 +4999,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=0, prob=0.4)",
-   "quantity": "pmf",
+   "name": "Binomial (size = 0, prob = 0.4)",
+   "quantity": "Probability mass",
    "n_compared": 8,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -5010,8 +5011,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=0, prob=0.4)",
-   "quantity": "logpmf",
+   "name": "Binomial (size = 0, prob = 0.4)",
+   "quantity": "Log probability mass",
    "n_compared": 8,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5022,8 +5023,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=0, prob=0.4)",
-   "quantity": "cdf",
+   "name": "Binomial (size = 0, prob = 0.4)",
+   "quantity": "Lower tail",
    "n_compared": 8,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -5034,8 +5035,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=0, prob=0.4)",
-   "quantity": "logcdf",
+   "name": "Binomial (size = 0, prob = 0.4)",
+   "quantity": "Log lower tail",
    "n_compared": 8,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5046,8 +5047,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=0, prob=0.4)",
-   "quantity": "sf",
+   "name": "Binomial (size = 0, prob = 0.4)",
+   "quantity": "Upper tail",
    "n_compared": 8,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -5058,8 +5059,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=0, prob=0.4)",
-   "quantity": "logsf",
+   "name": "Binomial (size = 0, prob = 0.4)",
+   "quantity": "Log upper tail",
    "n_compared": 8,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5070,8 +5071,8 @@
    "status": "pass"
   },
   {
-   "name": "binomial(size=0, prob=0.4)",
-   "quantity": "quantile",
+   "name": "Binomial (size = 0, prob = 0.4)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5082,8 +5083,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=3.2)",
-   "quantity": "pmf",
+   "name": "Poisson (lambda = 3.2)",
+   "quantity": "Probability mass",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.1025772346556616e-14,
@@ -5094,8 +5095,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=3.2)",
-   "quantity": "logpmf",
+   "name": "Poisson (lambda = 3.2)",
+   "quantity": "Log probability mass",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 4.0897131465494507e-16,
@@ -5106,8 +5107,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=3.2)",
-   "quantity": "cdf",
+   "name": "Poisson (lambda = 3.2)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.8426334934022233e-16,
@@ -5118,8 +5119,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=3.2)",
-   "quantity": "logcdf",
+   "name": "Poisson (lambda = 3.2)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
@@ -5130,8 +5131,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=3.2)",
-   "quantity": "sf",
+   "name": "Poisson (lambda = 3.2)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 3.253341363712436e-15,
@@ -5142,8 +5143,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=3.2)",
-   "quantity": "logsf",
+   "name": "Poisson (lambda = 3.2)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 3.94760746987552e-16,
@@ -5154,8 +5155,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=3.2)",
-   "quantity": "quantile",
+   "name": "Poisson (lambda = 3.2)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5166,8 +5167,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1e-10)",
-   "quantity": "pmf",
+   "name": "Poisson (lambda = 1e-10)",
+   "quantity": "Probability mass",
    "n_compared": 10,
    "rule": "probability",
    "max_rel_error": 4.630779163516337e-14,
@@ -5178,8 +5179,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1e-10)",
-   "quantity": "logpmf",
+   "name": "Poisson (lambda = 1e-10)",
+   "quantity": "Log probability mass",
    "n_compared": 10,
    "rule": "log-and-quantile",
    "max_rel_error": 1.7055214256568494e-16,
@@ -5190,8 +5191,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1e-10)",
-   "quantity": "cdf",
+   "name": "Poisson (lambda = 1e-10)",
+   "quantity": "Lower tail",
    "n_compared": 10,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -5202,8 +5203,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1e-10)",
-   "quantity": "logcdf",
+   "name": "Poisson (lambda = 1e-10)",
+   "quantity": "Log lower tail",
    "n_compared": 10,
    "rule": "log-and-quantile",
    "max_rel_error": 1.2924697071141057e-25,
@@ -5214,8 +5215,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1e-10)",
-   "quantity": "sf",
+   "name": "Poisson (lambda = 1e-10)",
+   "quantity": "Upper tail",
    "n_compared": 10,
    "rule": "probability",
    "max_rel_error": 1.6905299948046395e-14,
@@ -5226,8 +5227,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1e-10)",
-   "quantity": "logsf",
+   "name": "Poisson (lambda = 1e-10)",
+   "quantity": "Log upper tail",
    "n_compared": 10,
    "rule": "log-and-quantile",
    "max_rel_error": 1.6880222148917274e-16,
@@ -5238,8 +5239,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1e-10)",
-   "quantity": "quantile",
+   "name": "Poisson (lambda = 1e-10)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5250,8 +5251,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0.5)",
-   "quantity": "pmf",
+   "name": "Poisson (lambda = 0.5)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 1.461627852897005e-14,
@@ -5262,8 +5263,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0.5)",
-   "quantity": "logpmf",
+   "name": "Poisson (lambda = 0.5)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.0293735194889784e-16,
@@ -5274,8 +5275,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0.5)",
-   "quantity": "cdf",
+   "name": "Poisson (lambda = 0.5)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 1.1102387510874785e-16,
@@ -5286,8 +5287,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0.5)",
-   "quantity": "logcdf",
+   "name": "Poisson (lambda = 0.5)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
@@ -5298,8 +5299,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0.5)",
-   "quantity": "sf",
+   "name": "Poisson (lambda = 0.5)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 5.177935489803764e-14,
@@ -5310,8 +5311,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0.5)",
-   "quantity": "logsf",
+   "name": "Poisson (lambda = 0.5)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.0776825580413936e-16,
@@ -5322,8 +5323,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0.5)",
-   "quantity": "quantile",
+   "name": "Poisson (lambda = 0.5)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5334,8 +5335,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=12)",
-   "quantity": "pmf",
+   "name": "Poisson (lambda = 12)",
+   "quantity": "Probability mass",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 5.1512323298153764e-14,
@@ -5346,8 +5347,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=12)",
-   "quantity": "logpmf",
+   "name": "Poisson (lambda = 12)",
+   "quantity": "Log probability mass",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 2.3269388761097634e-16,
@@ -5358,8 +5359,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=12)",
-   "quantity": "cdf",
+   "name": "Poisson (lambda = 12)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 2.5058628720889107e-15,
@@ -5370,8 +5371,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=12)",
-   "quantity": "logcdf",
+   "name": "Poisson (lambda = 12)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 2.55351295663786e-15,
@@ -5382,8 +5383,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=12)",
-   "quantity": "sf",
+   "name": "Poisson (lambda = 12)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 3.731781841277152e-14,
@@ -5394,8 +5395,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=12)",
-   "quantity": "logsf",
+   "name": "Poisson (lambda = 12)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 3.4416913763379853e-15,
@@ -5406,8 +5407,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=12)",
-   "quantity": "quantile",
+   "name": "Poisson (lambda = 12)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5418,8 +5419,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=85)",
-   "quantity": "pmf",
+   "name": "Poisson (lambda = 85)",
+   "quantity": "Probability mass",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 1.905632896529471e-14,
@@ -5430,8 +5431,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=85)",
-   "quantity": "logpmf",
+   "name": "Poisson (lambda = 85)",
+   "quantity": "Log probability mass",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.9850889830795905e-16,
@@ -5442,8 +5443,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=85)",
-   "quantity": "cdf",
+   "name": "Poisson (lambda = 85)",
+   "quantity": "Lower tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 5.494544548570887e-15,
@@ -5454,8 +5455,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=85)",
-   "quantity": "logcdf",
+   "name": "Poisson (lambda = 85)",
+   "quantity": "Log lower tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 1.8507496320131375e-16,
@@ -5466,8 +5467,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=85)",
-   "quantity": "sf",
+   "name": "Poisson (lambda = 85)",
+   "quantity": "Upper tail",
    "n_compared": 13,
    "rule": "probability",
    "max_rel_error": 3.7219359680297804e-14,
@@ -5478,8 +5479,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=85)",
-   "quantity": "logsf",
+   "name": "Poisson (lambda = 85)",
+   "quantity": "Log upper tail",
    "n_compared": 13,
    "rule": "log-and-quantile",
    "max_rel_error": 3.4295778035678873e-16,
@@ -5490,8 +5491,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=85)",
-   "quantity": "quantile",
+   "name": "Poisson (lambda = 85)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5502,8 +5503,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=10000)",
-   "quantity": "pmf",
+   "name": "Poisson (lambda = 10000)",
+   "quantity": "Probability mass",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 3.4785150696543914e-15,
@@ -5514,8 +5515,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=10000)",
-   "quantity": "logpmf",
+   "name": "Poisson (lambda = 10000)",
+   "quantity": "Log probability mass",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 2.2219846264011316e-15,
@@ -5526,8 +5527,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=10000)",
-   "quantity": "cdf",
+   "name": "Poisson (lambda = 10000)",
+   "quantity": "Lower tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 5.247232488555214e-14,
@@ -5538,8 +5539,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=10000)",
-   "quantity": "logcdf",
+   "name": "Poisson (lambda = 10000)",
+   "quantity": "Log lower tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 1.2212453270876722e-15,
@@ -5550,8 +5551,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=10000)",
-   "quantity": "sf",
+   "name": "Poisson (lambda = 10000)",
+   "quantity": "Upper tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 3.16030889331053e-14,
@@ -5562,8 +5563,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=10000)",
-   "quantity": "logsf",
+   "name": "Poisson (lambda = 10000)",
+   "quantity": "Log upper tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 3.1624339404696584e-14,
@@ -5574,8 +5575,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=10000)",
-   "quantity": "quantile",
+   "name": "Poisson (lambda = 10000)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5586,8 +5587,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1000000)",
-   "quantity": "pmf",
+   "name": "Poisson (lambda = 1000000)",
+   "quantity": "Probability mass",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 2.79444369774728e-15,
@@ -5598,8 +5599,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1000000)",
-   "quantity": "logpmf",
+   "name": "Poisson (lambda = 1000000)",
+   "quantity": "Log probability mass",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 2.0280616977256527e-16,
@@ -5610,8 +5611,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1000000)",
-   "quantity": "cdf",
+   "name": "Poisson (lambda = 1000000)",
+   "quantity": "Lower tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 8.812455341727993e-14,
@@ -5622,8 +5623,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1000000)",
-   "quantity": "logcdf",
+   "name": "Poisson (lambda = 1000000)",
+   "quantity": "Log lower tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 3.985700658404312e-14,
@@ -5634,8 +5635,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1000000)",
-   "quantity": "sf",
+   "name": "Poisson (lambda = 1000000)",
+   "quantity": "Upper tail",
    "n_compared": 14,
    "rule": "probability",
    "max_rel_error": 3.1082421355182517e-13,
@@ -5646,8 +5647,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1000000)",
-   "quantity": "logsf",
+   "name": "Poisson (lambda = 1000000)",
+   "quantity": "Log upper tail",
    "n_compared": 14,
    "rule": "log-and-quantile",
    "max_rel_error": 3.714789455977021e-13,
@@ -5658,8 +5659,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=1000000)",
-   "quantity": "quantile",
+   "name": "Poisson (lambda = 1000000)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5670,8 +5671,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0)",
-   "quantity": "pmf",
+   "name": "Poisson (lambda = 0)",
+   "quantity": "Probability mass",
    "n_compared": 10,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -5682,8 +5683,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0)",
-   "quantity": "logpmf",
+   "name": "Poisson (lambda = 0)",
+   "quantity": "Log probability mass",
    "n_compared": 10,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5694,8 +5695,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0)",
-   "quantity": "cdf",
+   "name": "Poisson (lambda = 0)",
+   "quantity": "Lower tail",
    "n_compared": 10,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -5706,8 +5707,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0)",
-   "quantity": "logcdf",
+   "name": "Poisson (lambda = 0)",
+   "quantity": "Log lower tail",
    "n_compared": 10,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5718,8 +5719,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0)",
-   "quantity": "sf",
+   "name": "Poisson (lambda = 0)",
+   "quantity": "Upper tail",
    "n_compared": 10,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -5730,8 +5731,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0)",
-   "quantity": "logsf",
+   "name": "Poisson (lambda = 0)",
+   "quantity": "Log upper tail",
    "n_compared": 10,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5742,8 +5743,8 @@
    "status": "pass"
   },
   {
-   "name": "poisson(lambda=0)",
-   "quantity": "quantile",
+   "name": "Poisson (lambda = 0)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5754,8 +5755,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=3, prob=0.4)",
-   "quantity": "pmf",
+   "name": "Negative binomial (size = 3, prob = 0.4)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 6.838062285201664e-14,
@@ -5766,8 +5767,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=3, prob=0.4)",
-   "quantity": "logpmf",
+   "name": "Negative binomial (size = 3, prob = 0.4)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.3067732065556764e-16,
@@ -5778,8 +5779,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=3, prob=0.4)",
-   "quantity": "cdf",
+   "name": "Negative binomial (size = 3, prob = 0.4)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 3.497426362856465e-16,
@@ -5790,8 +5791,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=3, prob=0.4)",
-   "quantity": "logcdf",
+   "name": "Negative binomial (size = 3, prob = 0.4)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 3.870171611198221e-16,
@@ -5802,8 +5803,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=3, prob=0.4)",
-   "quantity": "sf",
+   "name": "Negative binomial (size = 3, prob = 0.4)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 2.4600293354349962e-14,
@@ -5814,8 +5815,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=3, prob=0.4)",
-   "quantity": "logsf",
+   "name": "Negative binomial (size = 3, prob = 0.4)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.220446049250313e-16,
@@ -5826,8 +5827,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=3, prob=0.4)",
-   "quantity": "quantile",
+   "name": "Negative binomial (size = 3, prob = 0.4)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5838,8 +5839,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=0.5, prob=0.1)",
-   "quantity": "pmf",
+   "name": "Negative binomial (size = 0.5, prob = 0.1)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 1.7416238558408624e-15,
@@ -5850,8 +5851,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=0.5, prob=0.1)",
-   "quantity": "logpmf",
+   "name": "Negative binomial (size = 0.5, prob = 0.1)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.1451682476420594e-16,
@@ -5862,8 +5863,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=0.5, prob=0.1)",
-   "quantity": "cdf",
+   "name": "Negative binomial (size = 0.5, prob = 0.1)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 2.0019007661164368e-16,
@@ -5874,8 +5875,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=0.5, prob=0.1)",
-   "quantity": "logcdf",
+   "name": "Negative binomial (size = 0.5, prob = 0.1)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 1.9286549331065744e-16,
@@ -5886,8 +5887,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=0.5, prob=0.1)",
-   "quantity": "sf",
+   "name": "Negative binomial (size = 0.5, prob = 0.1)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 2.4218106333736004e-15,
@@ -5898,8 +5899,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=0.5, prob=0.1)",
-   "quantity": "logsf",
+   "name": "Negative binomial (size = 0.5, prob = 0.1)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 3.89782297179169e-16,
@@ -5910,8 +5911,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=0.5, prob=0.1)",
-   "quantity": "quantile",
+   "name": "Negative binomial (size = 0.5, prob = 0.1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -5922,8 +5923,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100, prob=0.99)",
-   "quantity": "pmf",
+   "name": "Negative binomial (size = 100, prob = 0.99)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 5.626366309906667e-15,
@@ -5934,8 +5935,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100, prob=0.99)",
-   "quantity": "logpmf",
+   "name": "Negative binomial (size = 100, prob = 0.99)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.0708782263673122e-16,
@@ -5946,8 +5947,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100, prob=0.99)",
-   "quantity": "cdf",
+   "name": "Negative binomial (size = 100, prob = 0.99)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 4.549692333592527e-16,
@@ -5958,8 +5959,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100, prob=0.99)",
-   "quantity": "logcdf",
+   "name": "Negative binomial (size = 100, prob = 0.99)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 5.551115123125783e-16,
@@ -5970,8 +5971,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100, prob=0.99)",
-   "quantity": "sf",
+   "name": "Negative binomial (size = 100, prob = 0.99)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 2.1186373797930053e-14,
@@ -5982,8 +5983,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100, prob=0.99)",
-   "quantity": "logsf",
+   "name": "Negative binomial (size = 100, prob = 0.99)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1801828472655354e-15,
@@ -5994,8 +5995,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100, prob=0.99)",
-   "quantity": "quantile",
+   "name": "Negative binomial (size = 100, prob = 0.99)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6006,8 +6007,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100000, prob=0.5)",
-   "quantity": "pmf",
+   "name": "Negative binomial (size = 100000, prob = 0.5)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 9.72312199962419e-16,
@@ -6018,8 +6019,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100000, prob=0.5)",
-   "quantity": "logpmf",
+   "name": "Negative binomial (size = 100000, prob = 0.5)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.1113540130280628e-16,
@@ -6030,8 +6031,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100000, prob=0.5)",
-   "quantity": "cdf",
+   "name": "Negative binomial (size = 100000, prob = 0.5)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 2.2164915581512831e-16,
@@ -6042,8 +6043,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100000, prob=0.5)",
-   "quantity": "logcdf",
+   "name": "Negative binomial (size = 100000, prob = 0.5)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.1022210084024564e-16,
@@ -6054,8 +6055,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100000, prob=0.5)",
-   "quantity": "sf",
+   "name": "Negative binomial (size = 100000, prob = 0.5)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -6066,8 +6067,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100000, prob=0.5)",
-   "quantity": "logsf",
+   "name": "Negative binomial (size = 100000, prob = 0.5)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 1.722191120154925e-16,
@@ -6078,8 +6079,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=100000, prob=0.5)",
-   "quantity": "quantile",
+   "name": "Negative binomial (size = 100000, prob = 0.5)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6090,8 +6091,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=2, prob=1)",
-   "quantity": "pmf",
+   "name": "Negative binomial (size = 2, prob = 1)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -6102,8 +6103,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=2, prob=1)",
-   "quantity": "logpmf",
+   "name": "Negative binomial (size = 2, prob = 1)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6114,8 +6115,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=2, prob=1)",
-   "quantity": "cdf",
+   "name": "Negative binomial (size = 2, prob = 1)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -6126,8 +6127,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=2, prob=1)",
-   "quantity": "logcdf",
+   "name": "Negative binomial (size = 2, prob = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6138,8 +6139,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=2, prob=1)",
-   "quantity": "sf",
+   "name": "Negative binomial (size = 2, prob = 1)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -6150,8 +6151,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=2, prob=1)",
-   "quantity": "logsf",
+   "name": "Negative binomial (size = 2, prob = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6162,8 +6163,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom(size=2, prob=1)",
-   "quantity": "quantile",
+   "name": "Negative binomial (size = 2, prob = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6174,8 +6175,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=4.5, size=2)",
-   "quantity": "pmf",
+   "name": "Negative binomial (mu = 4.5, size = 2)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 6.446059107046654e-15,
@@ -6186,8 +6187,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=4.5, size=2)",
-   "quantity": "logpmf",
+   "name": "Negative binomial (mu = 4.5, size = 2)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 3.958269896055165e-16,
@@ -6198,8 +6199,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=4.5, size=2)",
-   "quantity": "cdf",
+   "name": "Negative binomial (mu = 4.5, size = 2)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 2.45883063014261e-16,
@@ -6210,8 +6211,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=4.5, size=2)",
-   "quantity": "logcdf",
+   "name": "Negative binomial (mu = 4.5, size = 2)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.1845985267517495e-16,
@@ -6222,8 +6223,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=4.5, size=2)",
-   "quantity": "sf",
+   "name": "Negative binomial (mu = 4.5, size = 2)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 4.1589799598317424e-14,
@@ -6234,8 +6235,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=4.5, size=2)",
-   "quantity": "logsf",
+   "name": "Negative binomial (mu = 4.5, size = 2)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 3.9583572135201226e-16,
@@ -6246,8 +6247,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=4.5, size=2)",
-   "quantity": "quantile",
+   "name": "Negative binomial (mu = 4.5, size = 2)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6258,8 +6259,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=10, size=0.5)",
-   "quantity": "pmf",
+   "name": "Negative binomial (mu = 10, size = 0.5)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 1.1286339861986026e-14,
@@ -6270,8 +6271,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=10, size=0.5)",
-   "quantity": "logpmf",
+   "name": "Negative binomial (mu = 10, size = 0.5)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.982000771090898e-16,
@@ -6282,8 +6283,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=10, size=0.5)",
-   "quantity": "cdf",
+   "name": "Negative binomial (mu = 10, size = 0.5)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 2.2012838922651274e-16,
@@ -6294,8 +6295,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=10, size=0.5)",
-   "quantity": "logcdf",
+   "name": "Negative binomial (mu = 10, size = 0.5)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1102230246251565e-16,
@@ -6306,8 +6307,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=10, size=0.5)",
-   "quantity": "sf",
+   "name": "Negative binomial (mu = 10, size = 0.5)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 5.0956367647235744e-14,
@@ -6318,8 +6319,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=10, size=0.5)",
-   "quantity": "logsf",
+   "name": "Negative binomial (mu = 10, size = 0.5)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.669051526978574e-16,
@@ -6330,8 +6331,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=10, size=0.5)",
-   "quantity": "quantile",
+   "name": "Negative binomial (mu = 10, size = 0.5)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6342,8 +6343,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=3, size=1000000)",
-   "quantity": "pmf",
+   "name": "Negative binomial (mu = 3, size = 1000000)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 1.1510296956320338e-14,
@@ -6354,8 +6355,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=3, size=1000000)",
-   "quantity": "logpmf",
+   "name": "Negative binomial (mu = 3, size = 1000000)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.495489483904295e-16,
@@ -6366,8 +6367,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=3, size=1000000)",
-   "quantity": "cdf",
+   "name": "Negative binomial (mu = 3, size = 1000000)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 4.493931424667773e-15,
@@ -6378,8 +6379,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=3, size=1000000)",
-   "quantity": "logcdf",
+   "name": "Negative binomial (mu = 3, size = 1000000)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 4.524158825347513e-15,
@@ -6390,8 +6391,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=3, size=1000000)",
-   "quantity": "sf",
+   "name": "Negative binomial (mu = 3, size = 1000000)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 1.9982415036292465e-14,
@@ -6402,8 +6403,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=3, size=1000000)",
-   "quantity": "logsf",
+   "name": "Negative binomial (mu = 3, size = 1000000)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 1.1833108460075389e-14,
@@ -6414,8 +6415,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=3, size=1000000)",
-   "quantity": "quantile",
+   "name": "Negative binomial (mu = 3, size = 1000000)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6426,8 +6427,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0.001, size=10)",
-   "quantity": "pmf",
+   "name": "Negative binomial (mu = 0.001, size = 10)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 1.5365142350247842e-14,
@@ -6438,8 +6439,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0.001, size=10)",
-   "quantity": "logpmf",
+   "name": "Negative binomial (mu = 0.001, size = 10)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 2.5281484216935854e-16,
@@ -6450,8 +6451,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0.001, size=10)",
-   "quantity": "cdf",
+   "name": "Negative binomial (mu = 0.001, size = 10)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -6462,8 +6463,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0.001, size=10)",
-   "quantity": "logcdf",
+   "name": "Negative binomial (mu = 0.001, size = 10)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 8.673617379884035e-19,
@@ -6474,8 +6475,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0.001, size=10)",
-   "quantity": "sf",
+   "name": "Negative binomial (mu = 0.001, size = 10)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 2.1992739747528347e-14,
@@ -6486,8 +6487,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0.001, size=10)",
-   "quantity": "logsf",
+   "name": "Negative binomial (mu = 0.001, size = 10)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 3.1832858777318923e-16,
@@ -6498,8 +6499,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0.001, size=10)",
-   "quantity": "quantile",
+   "name": "Negative binomial (mu = 0.001, size = 10)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6510,8 +6511,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=100000, size=1)",
-   "quantity": "pmf",
+   "name": "Negative binomial (mu = 100000, size = 1)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 2.391261691040977e-15,
@@ -6522,8 +6523,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=100000, size=1)",
-   "quantity": "logpmf",
+   "name": "Negative binomial (mu = 100000, size = 1)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 1.816906695066161e-16,
@@ -6534,8 +6535,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=100000, size=1)",
-   "quantity": "cdf",
+   "name": "Negative binomial (mu = 100000, size = 1)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 1.0842346987675184e-15,
@@ -6546,8 +6547,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=100000, size=1)",
-   "quantity": "logcdf",
+   "name": "Negative binomial (mu = 100000, size = 1)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 1.8880716711485392e-16,
@@ -6558,8 +6559,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=100000, size=1)",
-   "quantity": "sf",
+   "name": "Negative binomial (mu = 100000, size = 1)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 1.194009342354754e-15,
@@ -6570,8 +6571,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=100000, size=1)",
-   "quantity": "logsf",
+   "name": "Negative binomial (mu = 100000, size = 1)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 5.456995489976152e-16,
@@ -6582,8 +6583,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=100000, size=1)",
-   "quantity": "quantile",
+   "name": "Negative binomial (mu = 100000, size = 1)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6594,8 +6595,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0, size=3)",
-   "quantity": "pmf",
+   "name": "Negative binomial (mu = 0, size = 3)",
+   "quantity": "Probability mass",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -6606,8 +6607,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0, size=3)",
-   "quantity": "logpmf",
+   "name": "Negative binomial (mu = 0, size = 3)",
+   "quantity": "Log probability mass",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6618,8 +6619,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0, size=3)",
-   "quantity": "cdf",
+   "name": "Negative binomial (mu = 0, size = 3)",
+   "quantity": "Lower tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -6630,8 +6631,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0, size=3)",
-   "quantity": "logcdf",
+   "name": "Negative binomial (mu = 0, size = 3)",
+   "quantity": "Log lower tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6642,8 +6643,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0, size=3)",
-   "quantity": "sf",
+   "name": "Negative binomial (mu = 0, size = 3)",
+   "quantity": "Upper tail",
    "n_compared": 12,
    "rule": "probability",
    "max_rel_error": 0.0,
@@ -6654,8 +6655,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0, size=3)",
-   "quantity": "logsf",
+   "name": "Negative binomial (mu = 0, size = 3)",
+   "quantity": "Log upper tail",
    "n_compared": 12,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6666,8 +6667,8 @@
    "status": "pass"
   },
   {
-   "name": "nbinom_mu(mu=0, size=3)",
-   "quantity": "quantile",
+   "name": "Negative binomial (mu = 0, size = 3)",
+   "quantity": "Quantile",
    "n_compared": 15,
    "rule": "log-and-quantile",
    "max_rel_error": 0.0,
@@ -6680,7 +6681,7 @@
  ],
  "exclusions": [
   "Points where mpmath has no reference are counted per case and not compared.",
-  "Documented boundary conventions are asserted separately in tests/distributions.php."
+  "Documented boundary conventions are asserted separately, in the test-suite record."
  ],
  "known_differences": [
   "For a point mass, the discrete quantile at p = 1 is the mass location; R and SciPy may return the upper support bound.",

@@ -3,7 +3,7 @@
  "label": "Binomial mixed model",
  "kind": "reference",
  "checked": "Coefficients, inference, fitted values, random effects, variance components, and likelihoods of a binomial logit model with one random intercept, at the Laplace approximation and 9, 25, and 61 adaptive quadrature points. Log likelihood also against an independent SciPy evaluation of the same approximation.",
- "description": "docs/verifications/compare_logistic_mixed.py fits each case with lme4 glmer() and fit_mixed_logistic_matrix(), compares every quantity with lme4, and evaluates the same approximation independently with SciPy root finding and Gauss\u2013Hermite quadrature. Case status is recomputed from the saved values.",
+ "description": "Each case is fitted by lme4 and phit, and every quantity is compared with lme4. The same approximation is also evaluated independently with SciPy root finding and Gauss\u2013Hermite quadrature. Each case's status is recomputed from the saved values.",
  "reference": "R lme4 glmer(family = binomial), bobyqa, tolPwrss 1e-12",
  "versions": {
   "R": "4.6.1",
@@ -14,7 +14,7 @@
   "scipy": "1.18.1",
   "statsmodels": "0.15.0"
  },
- "inputs": "Seven data sets (tests/fixtures/logistic-mixed-r.json), including lme4's cbpp, rare events, grouped outcomes with offsets, large group variation, and a zero-variance boundary.",
+ "inputs": "Seven data sets, including lme4's cbpp, rare events, grouped outcomes with offsets, large group variation, and a zero-variance boundary.",
  "comparison": [
   {
    "id": "estimates",
@@ -46,31 +46,31 @@
  ],
  "cases": [
   {
-   "name": "binary_1",
-   "quantity": "coefficients",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 3.475685441678422e-07
   },
   {
-   "name": "binary_1",
-   "quantity": "covariance",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 9,
    "max_abs_error": 3.3079025698601328e-06
   },
   {
-   "name": "binary_1",
-   "quantity": "std errors",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 3.017077517708522e-06
   },
   {
-   "name": "binary_1",
+   "name": "Binary outcomes, Laplace",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -78,72 +78,72 @@
    "max_abs_error": 2.12559144001645e-05
   },
   {
-   "name": "binary_1",
-   "quantity": "p values",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 1.1744509875732945e-07
   },
   {
-   "name": "binary_1",
-   "quantity": "conf int",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 6,
    "max_abs_error": 6.260931817880788e-06
   },
   {
-   "name": "binary_1",
-   "quantity": "fixed fitted",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 7.054777159676284e-08
   },
   {
-   "name": "binary_1",
-   "quantity": "fitted",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 7.270621893429308e-08
   },
   {
-   "name": "binary_1",
-   "quantity": "linear predictor",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 5.885149687578917e-07
   },
   {
-   "name": "binary_1",
-   "quantity": "residuals",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 7.270621893429308e-08
   },
   {
-   "name": "binary_1",
-   "quantity": "random effects",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 3.5770030626380844e-07
   },
   {
-   "name": "binary_1",
-   "quantity": "random effects cond var",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 1.2697372214764968e-07
   },
   {
-   "name": "binary_1",
-   "quantity": "random intercept sd",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -152,8 +152,8 @@
    "expected": 1.0249529603907193
   },
   {
-   "name": "binary_1",
-   "quantity": "random intercept variance",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -162,8 +162,8 @@
    "expected": 1.0505285710136993
   },
   {
-   "name": "binary_1",
-   "quantity": "log likelihood",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -172,8 +172,8 @@
    "expected": -106.51608227560456
   },
   {
-   "name": "binary_1",
-   "quantity": "neg2 log likelihood",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -182,8 +182,8 @@
    "expected": 213.03216455120912
   },
   {
-   "name": "binary_1",
-   "quantity": "aic",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -192,8 +192,8 @@
    "expected": 221.03216455120912
   },
   {
-   "name": "binary_1",
-   "quantity": "bic",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -202,8 +202,8 @@
    "expected": 233.9135878515224
   },
   {
-   "name": "binary_1",
-   "quantity": "n parameters",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -212,8 +212,8 @@
    "expected": 4
   },
   {
-   "name": "binary_1",
-   "quantity": "df residual",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -222,8 +222,8 @@
    "expected": 181
   },
   {
-   "name": "binary_1",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Binary outcomes, Laplace",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -106.51608226533448,
@@ -232,31 +232,31 @@
    "n_compared": 1
   },
   {
-   "name": "binary_9",
-   "quantity": "coefficients",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 4.9403206414666556e-08
   },
   {
-   "name": "binary_9",
-   "quantity": "covariance",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 9,
    "max_abs_error": 6.341497771900073e-07
   },
   {
-   "name": "binary_9",
-   "quantity": "std errors",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 5.765110955291419e-07
   },
   {
-   "name": "binary_9",
+   "name": "Binary outcomes, 9 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -264,72 +264,72 @@
    "max_abs_error": 4.242916599839219e-06
   },
   {
-   "name": "binary_9",
-   "quantity": "p values",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 3.5843721102324366e-08
   },
   {
-   "name": "binary_9",
-   "quantity": "conf int",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 6,
    "max_abs_error": 1.1793441905272317e-06
   },
   {
-   "name": "binary_9",
-   "quantity": "fixed fitted",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.4924497859780672e-08
   },
   {
-   "name": "binary_9",
-   "quantity": "fitted",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.6081494025321774e-08
   },
   {
-   "name": "binary_9",
-   "quantity": "linear predictor",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.1965773483169073e-07
   },
   {
-   "name": "binary_9",
-   "quantity": "residuals",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.6081494025321774e-08
   },
   {
-   "name": "binary_9",
-   "quantity": "random effects",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 6.011926023674619e-08
   },
   {
-   "name": "binary_9",
-   "quantity": "random effects cond var",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 2.0831247171670952e-08
   },
   {
-   "name": "binary_9",
-   "quantity": "random intercept sd",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -338,8 +338,8 @@
    "expected": 1.0361722337777874
   },
   {
-   "name": "binary_9",
-   "quantity": "random intercept variance",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -348,8 +348,8 @@
    "expected": 1.0736528980520499
   },
   {
-   "name": "binary_9",
-   "quantity": "log likelihood",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -358,8 +358,8 @@
    "expected": -106.42373049039459
   },
   {
-   "name": "binary_9",
-   "quantity": "neg2 log likelihood",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -368,8 +368,8 @@
    "expected": 212.84746098078918
   },
   {
-   "name": "binary_9",
-   "quantity": "aic",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -378,8 +378,8 @@
    "expected": 220.84746098078918
   },
   {
-   "name": "binary_9",
-   "quantity": "bic",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -388,8 +388,8 @@
    "expected": 233.72888428110247
   },
   {
-   "name": "binary_9",
-   "quantity": "n parameters",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -398,8 +398,8 @@
    "expected": 4
   },
   {
-   "name": "binary_9",
-   "quantity": "df residual",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -408,8 +408,8 @@
    "expected": 181
   },
   {
-   "name": "binary_9",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Binary outcomes, 9 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -106.42373049039438,
@@ -418,31 +418,31 @@
    "n_compared": 1
   },
   {
-   "name": "binary_25",
-   "quantity": "coefficients",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 1.6638913180599957e-07
   },
   {
-   "name": "binary_25",
-   "quantity": "covariance",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 9,
    "max_abs_error": 3.8406090657749914e-07
   },
   {
-   "name": "binary_25",
-   "quantity": "std errors",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 3.491528911547803e-07
   },
   {
-   "name": "binary_25",
+   "name": "Binary outcomes, 25 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -450,72 +450,72 @@
    "max_abs_error": 2.2127050933740122e-06
   },
   {
-   "name": "binary_25",
-   "quantity": "p values",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 1.3745830418354643e-07
   },
   {
-   "name": "binary_25",
-   "quantity": "conf int",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 6,
    "max_abs_error": 8.507162236881527e-07
   },
   {
-   "name": "binary_25",
-   "quantity": "fixed fitted",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 3.793115188610585e-08
   },
   {
-   "name": "binary_25",
-   "quantity": "fitted",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 4.2977696068646765e-08
   },
   {
-   "name": "binary_25",
-   "quantity": "linear predictor",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.821462511930605e-07
   },
   {
-   "name": "binary_25",
-   "quantity": "residuals",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 4.2977696068646765e-08
   },
   {
-   "name": "binary_25",
-   "quantity": "random effects",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 1.0800478000838609e-07
   },
   {
-   "name": "binary_25",
-   "quantity": "random effects cond var",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 1.7402148777545534e-08
   },
   {
-   "name": "binary_25",
-   "quantity": "random intercept sd",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -524,8 +524,8 @@
    "expected": 1.0361736144958047
   },
   {
-   "name": "binary_25",
-   "quantity": "random intercept variance",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -534,8 +534,8 @@
    "expected": 1.0736557593773004
   },
   {
-   "name": "binary_25",
-   "quantity": "log likelihood",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -544,8 +544,8 @@
    "expected": -106.42372852556416
   },
   {
-   "name": "binary_25",
-   "quantity": "neg2 log likelihood",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -554,8 +554,8 @@
    "expected": 212.84745705112832
   },
   {
-   "name": "binary_25",
-   "quantity": "aic",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -564,8 +564,8 @@
    "expected": 220.84745705112832
   },
   {
-   "name": "binary_25",
-   "quantity": "bic",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -574,8 +574,8 @@
    "expected": 233.7288803514416
   },
   {
-   "name": "binary_25",
-   "quantity": "n parameters",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -584,8 +584,8 @@
    "expected": 4
   },
   {
-   "name": "binary_25",
-   "quantity": "df residual",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -594,8 +594,8 @@
    "expected": 181
   },
   {
-   "name": "binary_25",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Binary outcomes, 25 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -106.4237285255641,
@@ -604,31 +604,31 @@
    "n_compared": 1
   },
   {
-   "name": "binary_61",
-   "quantity": "coefficients",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 5.054155094441626e-08
   },
   {
-   "name": "binary_61",
-   "quantity": "covariance",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 9,
    "max_abs_error": 4.066117965106919e-07
   },
   {
-   "name": "binary_61",
-   "quantity": "std errors",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 3.6965384897502673e-07
   },
   {
-   "name": "binary_61",
+   "name": "Binary outcomes, 61 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -636,72 +636,72 @@
    "max_abs_error": 2.571023097530656e-06
   },
   {
-   "name": "binary_61",
-   "quantity": "p values",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 1.3335703397121534e-07
   },
   {
-   "name": "binary_61",
-   "quantity": "conf int",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 6,
    "max_abs_error": 7.750497812430979e-07
   },
   {
-   "name": "binary_61",
-   "quantity": "fixed fitted",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 2.5775688028417676e-08
   },
   {
-   "name": "binary_61",
-   "quantity": "fitted",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.9328656952755097e-08
   },
   {
-   "name": "binary_61",
-   "quantity": "linear predictor",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.1720664661041269e-07
   },
   {
-   "name": "binary_61",
-   "quantity": "residuals",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.9328656952755097e-08
   },
   {
-   "name": "binary_61",
-   "quantity": "random effects",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 1.578413399982992e-08
   },
   {
-   "name": "binary_61",
-   "quantity": "random effects cond var",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 4.041831591639067e-09
   },
   {
-   "name": "binary_61",
-   "quantity": "random intercept sd",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -710,8 +710,8 @@
    "expected": 1.0361735505536724
   },
   {
-   "name": "binary_61",
-   "quantity": "random intercept variance",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -720,8 +720,8 @@
    "expected": 1.0736556268670039
   },
   {
-   "name": "binary_61",
-   "quantity": "log likelihood",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -730,8 +730,8 @@
    "expected": -106.42372852556402
   },
   {
-   "name": "binary_61",
-   "quantity": "neg2 log likelihood",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -740,8 +740,8 @@
    "expected": 212.84745705112803
   },
   {
-   "name": "binary_61",
-   "quantity": "aic",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -750,8 +750,8 @@
    "expected": 220.84745705112803
   },
   {
-   "name": "binary_61",
-   "quantity": "bic",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -760,8 +760,8 @@
    "expected": 233.72888035144132
   },
   {
-   "name": "binary_61",
-   "quantity": "n parameters",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -770,8 +770,8 @@
    "expected": 4
   },
   {
-   "name": "binary_61",
-   "quantity": "df residual",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -780,8 +780,8 @@
    "expected": 181
   },
   {
-   "name": "binary_61",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Binary outcomes, 61 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -106.423728525564,
@@ -790,31 +790,31 @@
    "n_compared": 1
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "coefficients",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 2.957112771317938e-08
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "covariance",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 3.9686859920791406e-08
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "std errors",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 2.3134643192812554e-07
   },
   {
-   "name": "no_intercept_1",
+   "name": "No fixed intercept, Laplace",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -822,72 +822,72 @@
    "max_abs_error": 4.107281057708079e-06
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "p values",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 8.391910469029984e-07
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "conf int",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 4.830018023316285e-07
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "fixed fitted",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 5.06650087439553e-08
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "fitted",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 5.3897754204168535e-08
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "linear predictor",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 3.724696213680545e-07
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "residuals",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 5.3897754204168535e-08
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "random effects",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 4.1282036766787655e-07
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "random effects cond var",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 9.18557211404547e-08
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "random intercept sd",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -896,8 +896,8 @@
    "expected": 1.822756234396952
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "random intercept variance",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -906,8 +906,8 @@
    "expected": 3.3224402900329557
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "log likelihood",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -916,8 +916,8 @@
    "expected": -113.82207298274378
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "neg2 log likelihood",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -926,8 +926,8 @@
    "expected": 227.64414596548755
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "aic",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -936,8 +936,8 @@
    "expected": 233.64414596548755
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "bic",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -946,8 +946,8 @@
    "expected": 243.30521344072253
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "n parameters",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -956,8 +956,8 @@
    "expected": 3
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "df residual",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -966,8 +966,8 @@
    "expected": 182
   },
   {
-   "name": "no_intercept_1",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "No fixed intercept, Laplace",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -113.82207297440826,
@@ -976,31 +976,31 @@
    "n_compared": 1
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "coefficients",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 8.684913704870567e-09
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "covariance",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 4.854038312789022e-09
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "std errors",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 2.8351048925179256e-08
   },
   {
-   "name": "no_intercept_9",
+   "name": "No fixed intercept, 9 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -1008,72 +1008,72 @@
    "max_abs_error": 4.515048832587354e-07
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "p values",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 8.93863614237489e-08
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "conf int",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 6.425194853942884e-08
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "fixed fitted",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.2779702407428317e-08
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "fitted",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.0798285488000658e-08
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "linear predictor",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 9.493026942308802e-08
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "residuals",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.0798285488000658e-08
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "random effects",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 1.0313145049067884e-07
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "random effects cond var",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 3.263628578498157e-08
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "random intercept sd",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1082,8 +1082,8 @@
    "expected": 1.8432661788671634
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "random intercept variance",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1092,8 +1092,8 @@
    "expected": 3.3976302061555534
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "log likelihood",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1102,8 +1102,8 @@
    "expected": -113.63306063064302
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "neg2 log likelihood",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1112,8 +1112,8 @@
    "expected": 227.26612126128603
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "aic",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1122,8 +1122,8 @@
    "expected": 233.26612126128603
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "bic",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1132,8 +1132,8 @@
    "expected": 242.927188736521
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "n parameters",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1142,8 +1142,8 @@
    "expected": 3
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "df residual",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1152,8 +1152,8 @@
    "expected": 182
   },
   {
-   "name": "no_intercept_9",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "No fixed intercept, 9 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -113.63306063063571,
@@ -1162,31 +1162,31 @@
    "n_compared": 1
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "coefficients",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 2.6616900544729205e-08
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "covariance",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 3.7559239659396004e-10
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "std errors",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 2.1936816807510695e-09
   },
   {
-   "name": "no_intercept_25",
+   "name": "No fixed intercept, 25 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -1194,72 +1194,72 @@
    "max_abs_error": 3.5370225415221057e-07
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "p values",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 7.001294770325739e-08
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "conf int",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 3.091643757668905e-08
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "fixed fitted",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 3.9933172879536016e-08
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "fitted",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 2.94944820788956e-08
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "linear predictor",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 2.5260677682936716e-07
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "residuals",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 2.94944820788956e-08
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "random effects",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 2.8471809043750795e-07
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "random effects cond var",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 6.773927163639115e-08
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "random intercept sd",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1268,8 +1268,8 @@
    "expected": 1.8433426048202088
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "random intercept variance",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1278,8 +1278,8 @@
    "expected": 3.3979119587453526
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "log likelihood",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1288,8 +1288,8 @@
    "expected": -113.63296667469011
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "neg2 log likelihood",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1298,8 +1298,8 @@
    "expected": 227.26593334938022
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "aic",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1308,8 +1308,8 @@
    "expected": 233.26593334938022
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "bic",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1318,8 +1318,8 @@
    "expected": 242.9270008246152
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "n parameters",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1328,8 +1328,8 @@
    "expected": 3
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "df residual",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1338,8 +1338,8 @@
    "expected": 182
   },
   {
-   "name": "no_intercept_25",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "No fixed intercept, 25 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -113.63296667469004,
@@ -1348,31 +1348,31 @@
    "n_compared": 1
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "coefficients",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 1.8147438135551752e-08
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "covariance",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 3.170521345463584e-09
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "std errors",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 1.8517721675492815e-08
   },
   {
-   "name": "no_intercept_61",
+   "name": "No fixed intercept, 61 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -1380,72 +1380,72 @@
    "max_abs_error": 1.4918460955470891e-07
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "p values",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 2.9535747042563898e-08
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "conf int",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 5.4441505692448544e-08
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "fixed fitted",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 2.7447923822698783e-08
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "fitted",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 2.191678044605183e-08
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "linear predictor",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.7493695159132017e-07
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "residuals",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 2.191678044605183e-08
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "random effects",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 1.9884113466872577e-07
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "random effects cond var",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 4.7061505470402665e-08
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "random intercept sd",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1454,8 +1454,8 @@
    "expected": 1.8433426589375168
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "random intercept variance",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1464,8 +1464,8 @@
    "expected": 3.3979121582588343
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "log likelihood",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1474,8 +1474,8 @@
    "expected": -113.6329666729709
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "neg2 log likelihood",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1484,8 +1484,8 @@
    "expected": 227.2659333459418
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "aic",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1494,8 +1494,8 @@
    "expected": 233.2659333459418
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "bic",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1504,8 +1504,8 @@
    "expected": 242.92700082117676
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "n parameters",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1514,8 +1514,8 @@
    "expected": 3
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "df residual",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1524,8 +1524,8 @@
    "expected": 182
   },
   {
-   "name": "no_intercept_61",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "No fixed intercept, 61 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -113.63296667297082,
@@ -1534,31 +1534,31 @@
    "n_compared": 1
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "coefficients",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 1.5979946841326864e-06
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "covariance",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 9,
    "max_abs_error": 2.2872665982887064e-06
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "std errors",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 2.6711616761265766e-06
   },
   {
-   "name": "grouped_offset_1",
+   "name": "Grouped outcomes with offsets, Laplace",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -1566,72 +1566,72 @@
    "max_abs_error": 3.488302194476489e-05
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "p values",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 1.9963429374880715e-08
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "conf int",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 6,
    "max_abs_error": 6.833375366444017e-06
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "fixed fitted",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 3.875706092726361e-07
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "fitted",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 3.271829496220846e-08
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "linear predictor",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 3.6666059433088094e-07
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "residuals",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 3.271829496220846e-08
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "random effects",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 1.573431243517831e-06
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "random effects cond var",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 4.571897463390151e-08
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "random intercept sd",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1640,8 +1640,8 @@
    "expected": 1.4281182877913223
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "random intercept variance",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1650,8 +1650,8 @@
    "expected": 2.0395218439240184
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "log likelihood",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1660,8 +1660,8 @@
    "expected": -350.4316056335382
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "neg2 log likelihood",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1670,8 +1670,8 @@
    "expected": 700.8632112670764
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "aic",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1680,8 +1680,8 @@
    "expected": 708.8632112670764
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "bic",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1690,8 +1690,8 @@
    "expected": 721.7446345673897
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "n parameters",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1700,8 +1700,8 @@
    "expected": 4
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "df residual",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1710,8 +1710,8 @@
    "expected": 181
   },
   {
-   "name": "grouped_offset_1",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Grouped outcomes with offsets, Laplace",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -350.43160563351773,
@@ -1720,31 +1720,31 @@
    "n_compared": 1
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "coefficients",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 1.181231713776043e-06
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "covariance",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 9,
    "max_abs_error": 9.960887215054726e-08
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "std errors",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 1.1628680324227147e-07
   },
   {
-   "name": "grouped_offset_9",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -1752,72 +1752,72 @@
    "max_abs_error": 4.113228049718032e-06
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "p values",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 2.2918831693585773e-09
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "conf int",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 6,
    "max_abs_error": 1.4091496602919307e-06
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "fixed fitted",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 2.805137033767835e-07
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "fitted",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.1851386427785826e-08
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "linear predictor",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.5795328067724768e-07
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "residuals",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.1851386427785826e-08
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "random effects",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 1.1332676268516195e-06
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "random effects cond var",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 1.2771531499033983e-08
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "random intercept sd",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1826,8 +1826,8 @@
    "expected": 1.4286420376722098
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "random intercept variance",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1836,8 +1836,8 @@
    "expected": 2.0410180718042037
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "log likelihood",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1846,8 +1846,8 @@
    "expected": -350.4100063140644
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "neg2 log likelihood",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1856,8 +1856,8 @@
    "expected": 700.8200126281288
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "aic",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1866,8 +1866,8 @@
    "expected": 708.8200126281288
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "bic",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -1876,8 +1876,8 @@
    "expected": 721.701435928442
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "n parameters",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1886,8 +1886,8 @@
    "expected": 4
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "df residual",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -1896,8 +1896,8 @@
    "expected": 181
   },
   {
-   "name": "grouped_offset_9",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Grouped outcomes with offsets, 9 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -350.41000631406337,
@@ -1906,31 +1906,31 @@
    "n_compared": 1
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "coefficients",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 6.920719335390402e-07
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "covariance",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 9,
    "max_abs_error": 3.8012654224317544e-07
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "std errors",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 4.437725955597216e-07
   },
   {
-   "name": "grouped_offset_25",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -1938,72 +1938,72 @@
    "max_abs_error": 3.555829243495623e-06
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "p values",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 1.941628379603655e-08
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "conf int",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 6,
    "max_abs_error": 1.561850238473994e-06
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "fixed fitted",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.7293137621887666e-07
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "fitted",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.1469063726510242e-08
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "linear predictor",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.2419500450278065e-07
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "residuals",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 1.1469063726510242e-08
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "random effects",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 6.890705601669822e-07
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "random effects cond var",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 1.5017973226116865e-08
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "random intercept sd",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2012,8 +2012,8 @@
    "expected": 1.4286427044501437
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "random intercept variance",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2022,8 +2022,8 @@
    "expected": 2.0410199769786206
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "log likelihood",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2032,8 +2032,8 @@
    "expected": -350.4100013020028
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "neg2 log likelihood",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2042,8 +2042,8 @@
    "expected": 700.8200026040056
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "aic",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2052,8 +2052,8 @@
    "expected": 708.8200026040056
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "bic",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2062,8 +2062,8 @@
    "expected": 721.7014259043189
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "n parameters",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2072,8 +2072,8 @@
    "expected": 4
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "df residual",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2082,8 +2082,8 @@
    "expected": 181
   },
   {
-   "name": "grouped_offset_25",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Grouped outcomes with offsets, 25 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -350.410001302001,
@@ -2092,31 +2092,31 @@
    "n_compared": 1
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "coefficients",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 1.72595855829627e-07
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "covariance",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 9,
    "max_abs_error": 9.332402872708201e-08
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "std errors",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 1.0894959601159826e-07
   },
   {
-   "name": "grouped_offset_61",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -2124,72 +2124,72 @@
    "max_abs_error": 8.667096134118424e-07
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "p values",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 3,
    "max_abs_error": 1.6879145713077914e-08
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "conf int",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 6,
    "max_abs_error": 3.861331405730084e-07
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "fixed fitted",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 4.1247514404041397e-08
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "fitted",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 4.156452126924393e-09
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "linear predictor",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 3.24218634162321e-08
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "residuals",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 185,
    "max_abs_error": 4.156452126924393e-09
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "random effects",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 1.6347928677440393e-07
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "random effects cond var",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 1.5283085075257219e-09
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "random intercept sd",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2198,8 +2198,8 @@
    "expected": 1.4286428387835572
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "random intercept variance",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2208,8 +2208,8 @@
    "expected": 2.0410203608075412
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "log likelihood",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2218,8 +2218,8 @@
    "expected": -350.4100013019811
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "neg2 log likelihood",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2228,8 +2228,8 @@
    "expected": 700.8200026039622
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "aic",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2238,8 +2238,8 @@
    "expected": 708.8200026039622
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "bic",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2248,8 +2248,8 @@
    "expected": 721.7014259042754
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "n parameters",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2258,8 +2258,8 @@
    "expected": 4
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "df residual",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2268,8 +2268,8 @@
    "expected": 181
   },
   {
-   "name": "grouped_offset_61",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Grouped outcomes with offsets, 61 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -350.41000130198097,
@@ -2278,31 +2278,31 @@
    "n_compared": 1
   },
   {
-   "name": "rare_events_1",
-   "quantity": "coefficients",
+   "name": "Rare events, Laplace",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 1.2090648304763363e-06
   },
   {
-   "name": "rare_events_1",
-   "quantity": "covariance",
+   "name": "Rare events, Laplace",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 0.0002925826783037877
   },
   {
-   "name": "rare_events_1",
-   "quantity": "std errors",
+   "name": "Rare events, Laplace",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 3.723724841098175e-05
   },
   {
-   "name": "rare_events_1",
+   "name": "Rare events, Laplace",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -2310,72 +2310,72 @@
    "max_abs_error": 2.6997967112585286e-05
   },
   {
-   "name": "rare_events_1",
-   "quantity": "p values",
+   "name": "Rare events, Laplace",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 4.3413702970063195e-07
   },
   {
-   "name": "rare_events_1",
-   "quantity": "conf int",
+   "name": "Rare events, Laplace",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 7.419273060094156e-05
   },
   {
-   "name": "rare_events_1",
-   "quantity": "fixed fitted",
+   "name": "Rare events, Laplace",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 2.2520025093862583e-09
   },
   {
-   "name": "rare_events_1",
-   "quantity": "fitted",
+   "name": "Rare events, Laplace",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 3.6225316080162884e-08
   },
   {
-   "name": "rare_events_1",
-   "quantity": "linear predictor",
+   "name": "Rare events, Laplace",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 1.7106436978053807e-06
   },
   {
-   "name": "rare_events_1",
-   "quantity": "residuals",
+   "name": "Rare events, Laplace",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 3.6225316080162884e-08
   },
   {
-   "name": "rare_events_1",
-   "quantity": "random effects",
+   "name": "Rare events, Laplace",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 16,
    "max_abs_error": 1.1529084265049505e-06
   },
   {
-   "name": "rare_events_1",
-   "quantity": "random effects cond var",
+   "name": "Rare events, Laplace",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 16,
    "max_abs_error": 1.9918573777033544e-05
   },
   {
-   "name": "rare_events_1",
-   "quantity": "random intercept sd",
+   "name": "Rare events, Laplace",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2384,8 +2384,8 @@
    "expected": 7.298561663894198
   },
   {
-   "name": "rare_events_1",
-   "quantity": "random intercept variance",
+   "name": "Rare events, Laplace",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2394,8 +2394,8 @@
    "expected": 53.26900236166604
   },
   {
-   "name": "rare_events_1",
-   "quantity": "log likelihood",
+   "name": "Rare events, Laplace",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2404,8 +2404,8 @@
    "expected": -14.30921541130555
   },
   {
-   "name": "rare_events_1",
-   "quantity": "neg2 log likelihood",
+   "name": "Rare events, Laplace",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2414,8 +2414,8 @@
    "expected": 28.6184308226111
   },
   {
-   "name": "rare_events_1",
-   "quantity": "aic",
+   "name": "Rare events, Laplace",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2424,8 +2424,8 @@
    "expected": 34.6184308226111
   },
   {
-   "name": "rare_events_1",
-   "quantity": "bic",
+   "name": "Rare events, Laplace",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2434,8 +2434,8 @@
    "expected": 42.311475397014604
   },
   {
-   "name": "rare_events_1",
-   "quantity": "n parameters",
+   "name": "Rare events, Laplace",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2444,8 +2444,8 @@
    "expected": 3
   },
   {
-   "name": "rare_events_1",
-   "quantity": "df residual",
+   "name": "Rare events, Laplace",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2454,8 +2454,8 @@
    "expected": 93
   },
   {
-   "name": "rare_events_1",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Rare events, Laplace",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -14.309215406442668,
@@ -2464,31 +2464,31 @@
    "n_compared": 1
   },
   {
-   "name": "rare_events_9",
-   "quantity": "coefficients",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 1.272382741390743e-07
   },
   {
-   "name": "rare_events_9",
-   "quantity": "covariance",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 7.069234670709079e-05
   },
   {
-   "name": "rare_events_9",
-   "quantity": "std errors",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 1.1162123897179299e-05
   },
   {
-   "name": "rare_events_9",
+   "name": "Rare events, 9 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -2496,72 +2496,72 @@
    "max_abs_error": 8.482685319943783e-06
   },
   {
-   "name": "rare_events_9",
-   "quantity": "p values",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 3.8443903540089086e-07
   },
   {
-   "name": "rare_events_9",
-   "quantity": "conf int",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 2.200459910461916e-05
   },
   {
-   "name": "rare_events_9",
-   "quantity": "fixed fitted",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 4.0954776896195977e-10
   },
   {
-   "name": "rare_events_9",
-   "quantity": "fitted",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 7.403292257013305e-09
   },
   {
-   "name": "rare_events_9",
-   "quantity": "linear predictor",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 2.5647109858084605e-07
   },
   {
-   "name": "rare_events_9",
-   "quantity": "residuals",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 7.403292257013305e-09
   },
   {
-   "name": "rare_events_9",
-   "quantity": "random effects",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 16,
    "max_abs_error": 8.815513297122379e-08
   },
   {
-   "name": "rare_events_9",
-   "quantity": "random effects cond var",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 16,
    "max_abs_error": 1.0224885826914942e-07
   },
   {
-   "name": "rare_events_9",
-   "quantity": "random intercept sd",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2570,8 +2570,8 @@
    "expected": 3.4991074153252555
   },
   {
-   "name": "rare_events_9",
-   "quantity": "random intercept variance",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2580,8 +2580,8 @@
    "expected": 12.24375270398419
   },
   {
-   "name": "rare_events_9",
-   "quantity": "log likelihood",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2590,8 +2590,8 @@
    "expected": -15.663747861360044
   },
   {
-   "name": "rare_events_9",
-   "quantity": "neg2 log likelihood",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2600,8 +2600,8 @@
    "expected": 31.327495722720087
   },
   {
-   "name": "rare_events_9",
-   "quantity": "aic",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2610,8 +2610,8 @@
    "expected": 37.32749572272009
   },
   {
-   "name": "rare_events_9",
-   "quantity": "bic",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2620,8 +2620,8 @@
    "expected": 45.020540297123596
   },
   {
-   "name": "rare_events_9",
-   "quantity": "n parameters",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2630,8 +2630,8 @@
    "expected": 3
   },
   {
-   "name": "rare_events_9",
-   "quantity": "df residual",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2640,8 +2640,8 @@
    "expected": 93
   },
   {
-   "name": "rare_events_9",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Rare events, 9 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -15.663747861361715,
@@ -2650,31 +2650,31 @@
    "n_compared": 1
   },
   {
-   "name": "rare_events_25",
-   "quantity": "coefficients",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 2.9311360449923995e-08
   },
   {
-   "name": "rare_events_25",
-   "quantity": "covariance",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 2.0229946876781923e-05
   },
   {
-   "name": "rare_events_25",
-   "quantity": "std errors",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 3.3108893604527623e-06
   },
   {
-   "name": "rare_events_25",
+   "name": "Rare events, 25 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -2682,72 +2682,72 @@
    "max_abs_error": 2.634325222850009e-06
   },
   {
-   "name": "rare_events_25",
-   "quantity": "p values",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 1.1191541001397132e-07
   },
   {
-   "name": "rare_events_25",
-   "quantity": "conf int",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 6.518535261790248e-06
   },
   {
-   "name": "rare_events_25",
-   "quantity": "fixed fitted",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 8.311726099052841e-10
   },
   {
-   "name": "rare_events_25",
-   "quantity": "fitted",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 1.5876053249819222e-09
   },
   {
-   "name": "rare_events_25",
-   "quantity": "linear predictor",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 3.8909970356826307e-08
   },
   {
-   "name": "rare_events_25",
-   "quantity": "residuals",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 1.5876053249819222e-09
   },
   {
-   "name": "rare_events_25",
-   "quantity": "random effects",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 16,
    "max_abs_error": 2.2262949705975643e-08
   },
   {
-   "name": "rare_events_25",
-   "quantity": "random effects cond var",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 16,
    "max_abs_error": 2.2049654546663078e-08
   },
   {
-   "name": "rare_events_25",
-   "quantity": "random intercept sd",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2756,8 +2756,8 @@
    "expected": 3.356056649530387
   },
   {
-   "name": "rare_events_25",
-   "quantity": "random intercept variance",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2766,8 +2766,8 @@
    "expected": 11.263116234857126
   },
   {
-   "name": "rare_events_25",
-   "quantity": "log likelihood",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2776,8 +2776,8 @@
    "expected": -15.707614492515496
   },
   {
-   "name": "rare_events_25",
-   "quantity": "neg2 log likelihood",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2786,8 +2786,8 @@
    "expected": 31.415228985030993
   },
   {
-   "name": "rare_events_25",
-   "quantity": "aic",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2796,8 +2796,8 @@
    "expected": 37.41522898503099
   },
   {
-   "name": "rare_events_25",
-   "quantity": "bic",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2806,8 +2806,8 @@
    "expected": 45.1082735594345
   },
   {
-   "name": "rare_events_25",
-   "quantity": "n parameters",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2816,8 +2816,8 @@
    "expected": 3
   },
   {
-   "name": "rare_events_25",
-   "quantity": "df residual",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2826,8 +2826,8 @@
    "expected": 93
   },
   {
-   "name": "rare_events_25",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Rare events, 25 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -15.70761449251552,
@@ -2836,31 +2836,31 @@
    "n_compared": 1
   },
   {
-   "name": "rare_events_61",
-   "quantity": "coefficients",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 1.0418941176482122e-07
   },
   {
-   "name": "rare_events_61",
-   "quantity": "covariance",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 1.455737460176465e-05
   },
   {
-   "name": "rare_events_61",
-   "quantity": "std errors",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 2.3741402199739525e-06
   },
   {
-   "name": "rare_events_61",
+   "name": "Rare events, 61 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -2868,72 +2868,72 @@
    "max_abs_error": 1.9028957933819868e-06
   },
   {
-   "name": "rare_events_61",
-   "quantity": "p values",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 8.252371215891618e-08
   },
   {
-   "name": "rare_events_61",
-   "quantity": "conf int",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 4.7574187389543e-06
   },
   {
-   "name": "rare_events_61",
-   "quantity": "fixed fitted",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 1.7664710943998685e-09
   },
   {
-   "name": "rare_events_61",
-   "quantity": "fitted",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 5.810144809714757e-09
   },
   {
-   "name": "rare_events_61",
-   "quantity": "linear predictor",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 1.7135901231313255e-07
   },
   {
-   "name": "rare_events_61",
-   "quantity": "residuals",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 96,
    "max_abs_error": 5.810144809714757e-09
   },
   {
-   "name": "rare_events_61",
-   "quantity": "random effects",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 16,
    "max_abs_error": 9.610175144558752e-08
   },
   {
-   "name": "rare_events_61",
-   "quantity": "random effects cond var",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 16,
    "max_abs_error": 4.2331185134969473e-07
   },
   {
-   "name": "rare_events_61",
-   "quantity": "random intercept sd",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2942,8 +2942,8 @@
    "expected": 3.3562870174573183
   },
   {
-   "name": "rare_events_61",
-   "quantity": "random intercept variance",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -2952,8 +2952,8 @@
    "expected": 11.264662543552541
   },
   {
-   "name": "rare_events_61",
-   "quantity": "log likelihood",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2962,8 +2962,8 @@
    "expected": -15.707906364448215
   },
   {
-   "name": "rare_events_61",
-   "quantity": "neg2 log likelihood",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2972,8 +2972,8 @@
    "expected": 31.41581272889643
   },
   {
-   "name": "rare_events_61",
-   "quantity": "aic",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2982,8 +2982,8 @@
    "expected": 37.41581272889643
   },
   {
-   "name": "rare_events_61",
-   "quantity": "bic",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -2992,8 +2992,8 @@
    "expected": 45.10885730329994
   },
   {
-   "name": "rare_events_61",
-   "quantity": "n parameters",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3002,8 +3002,8 @@
    "expected": 3
   },
   {
-   "name": "rare_events_61",
-   "quantity": "df residual",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3012,8 +3012,8 @@
    "expected": 93
   },
   {
-   "name": "rare_events_61",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Rare events, 61 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -15.707906364448199,
@@ -3022,31 +3022,31 @@
    "n_compared": 1
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "coefficients",
+   "name": "Large group variation, Laplace",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 1.5336179221003832e-06
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "covariance",
+   "name": "Large group variation, Laplace",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 9.182145109004614e-06
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "std errors",
+   "name": "Large group variation, Laplace",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 1.007344848186209e-05
   },
   {
-   "name": "large_group_variation_1",
+   "name": "Large group variation, Laplace",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -3054,72 +3054,72 @@
    "max_abs_error": 4.077441421745931e-05
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "p values",
+   "name": "Large group variation, Laplace",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 4.429129988096914e-06
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "conf int",
+   "name": "Large group variation, Laplace",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 2.127721414679762e-05
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "fixed fitted",
+   "name": "Large group variation, Laplace",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 3.285411999121024e-07
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "fitted",
+   "name": "Large group variation, Laplace",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 2.9599943152103236e-07
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "linear predictor",
+   "name": "Large group variation, Laplace",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 1.7479883172022426e-06
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "residuals",
+   "name": "Large group variation, Laplace",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 2.9599943152103236e-07
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "random effects",
+   "name": "Large group variation, Laplace",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 14,
    "max_abs_error": 7.399557799825374e-07
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "random effects cond var",
+   "name": "Large group variation, Laplace",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 14,
    "max_abs_error": 7.835085211738146e-07
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "random intercept sd",
+   "name": "Large group variation, Laplace",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3128,8 +3128,8 @@
    "expected": 1.7710338814223956
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "random intercept variance",
+   "name": "Large group variation, Laplace",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3138,8 +3138,8 @@
    "expected": 3.136561009146076
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "log likelihood",
+   "name": "Large group variation, Laplace",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3148,8 +3148,8 @@
    "expected": -60.96051304320481
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "neg2 log likelihood",
+   "name": "Large group variation, Laplace",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3158,8 +3158,8 @@
    "expected": 121.92102608640963
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "aic",
+   "name": "Large group variation, Laplace",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3168,8 +3168,8 @@
    "expected": 127.92102608640963
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "bic",
+   "name": "Large group variation, Laplace",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3178,8 +3178,8 @@
    "expected": 136.0765227002949
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "n parameters",
+   "name": "Large group variation, Laplace",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3188,8 +3188,8 @@
    "expected": 3
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "df residual",
+   "name": "Large group variation, Laplace",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3198,8 +3198,8 @@
    "expected": 109
   },
   {
-   "name": "large_group_variation_1",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Large group variation, Laplace",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -60.96051285238716,
@@ -3208,31 +3208,31 @@
    "n_compared": 1
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "coefficients",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 5.421603410660225e-08
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "covariance",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 3.4296086703911044e-07
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "std errors",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 3.051910389961776e-07
   },
   {
-   "name": "large_group_variation_9",
+   "name": "Large group variation, 9 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -3240,72 +3240,72 @@
    "max_abs_error": 4.703151031959507e-07
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "p values",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 2.942237284919713e-07
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "conf int",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 6.495450108889855e-07
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "fixed fitted",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 2.473675825287458e-08
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "fitted",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 1.3424173661569228e-08
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "linear predictor",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 6.523495299504134e-08
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "residuals",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 1.3424173661569228e-08
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "random effects",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 14,
    "max_abs_error": 4.6091478855814216e-08
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "random effects cond var",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 14,
    "max_abs_error": 5.094892041590526e-07
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "random intercept sd",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3314,8 +3314,8 @@
    "expected": 1.8305701911929548
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "random intercept variance",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3324,8 +3324,8 @@
    "expected": 3.350987224884211
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "log likelihood",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3334,8 +3334,8 @@
    "expected": -60.65815085498482
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "neg2 log likelihood",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3344,8 +3344,8 @@
    "expected": 121.31630170996964
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "aic",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3354,8 +3354,8 @@
    "expected": 127.31630170996964
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "bic",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3364,8 +3364,8 @@
    "expected": 135.47179832385493
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "n parameters",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3374,8 +3374,8 @@
    "expected": 3
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "df residual",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3384,8 +3384,8 @@
    "expected": 109
   },
   {
-   "name": "large_group_variation_9",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Large group variation, 9 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -60.65815085416169,
@@ -3394,31 +3394,31 @@
    "n_compared": 1
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "coefficients",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 1.4704646833507695e-08
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "covariance",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 2.567424761679149e-07
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "std errors",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 2.284801732255204e-07
   },
   {
-   "name": "large_group_variation_25",
+   "name": "Large group variation, 25 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -3426,72 +3426,72 @@
    "max_abs_error": 3.4882618038523105e-07
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "p values",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 1.6912007783087546e-07
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "conf int",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 4.5529156778023605e-07
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "fixed fitted",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 3.7231857596964346e-09
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "fitted",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 3.174758345103612e-09
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "linear predictor",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 4.029846278896798e-08
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "residuals",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 3.174758345103612e-09
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "random effects",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 14,
    "max_abs_error": 3.309810647778022e-08
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "random effects cond var",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 14,
    "max_abs_error": 5.547519652537858e-07
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "random intercept sd",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3500,8 +3500,8 @@
    "expected": 1.8305238941037643
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "random intercept variance",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3510,8 +3510,8 @@
    "expected": 3.350817726884809
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "log likelihood",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3520,8 +3520,8 @@
    "expected": -60.65818087001512
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "neg2 log likelihood",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3530,8 +3530,8 @@
    "expected": 121.31636174003025
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "aic",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3540,8 +3540,8 @@
    "expected": 127.31636174003025
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "bic",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3550,8 +3550,8 @@
    "expected": 135.47185835391554
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "n parameters",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3560,8 +3560,8 @@
    "expected": 3
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "df residual",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3570,8 +3570,8 @@
    "expected": 109
   },
   {
-   "name": "large_group_variation_25",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Large group variation, 25 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -60.658180870015016,
@@ -3580,31 +3580,31 @@
    "n_compared": 1
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "coefficients",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 3.2627663681950025e-08
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "covariance",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 3.4722293179578756e-07
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "std errors",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 3.0900053038518394e-07
   },
   {
-   "name": "large_group_variation_61",
+   "name": "Large group variation, 61 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -3612,72 +3612,72 @@
    "max_abs_error": 8.867992222771903e-07
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "p values",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 2.5619044780045286e-07
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "conf int",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 6.201858611110111e-07
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "fixed fitted",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 1.1048884362985234e-08
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "fitted",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 7.601823615033254e-09
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "linear predictor",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 3.94065038378244e-08
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "residuals",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 112,
    "max_abs_error": 7.601823615033254e-09
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "random effects",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 14,
    "max_abs_error": 2.2425749701682207e-08
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "random effects cond var",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 14,
    "max_abs_error": 5.073800888322211e-07
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "random intercept sd",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3686,8 +3686,8 @@
    "expected": 1.8305239277828291
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "random intercept variance",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3696,8 +3696,8 @@
    "expected": 3.3508178501854764
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "log likelihood",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3706,8 +3706,8 @@
    "expected": -60.65818087653061
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "neg2 log likelihood",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3716,8 +3716,8 @@
    "expected": 121.31636175306122
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "aic",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3726,8 +3726,8 @@
    "expected": 127.31636175306122
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "bic",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3736,8 +3736,8 @@
    "expected": 135.4718583669465
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "n parameters",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3746,8 +3746,8 @@
    "expected": 3
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "df residual",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3756,8 +3756,8 @@
    "expected": 109
   },
   {
-   "name": "large_group_variation_61",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Large group variation, 61 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -60.65818087653061,
@@ -3766,31 +3766,31 @@
    "n_compared": 1
   },
   {
-   "name": "boundary_1",
-   "quantity": "coefficients",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 8.247377961557697e-09
   },
   {
-   "name": "boundary_1",
-   "quantity": "covariance",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 1.3877787807814457e-17
   },
   {
-   "name": "boundary_1",
-   "quantity": "std errors",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 0
   },
   {
-   "name": "boundary_1",
+   "name": "Zero group variance (boundary), Laplace",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -3798,72 +3798,72 @@
    "max_abs_error": 2.8569755317283532e-08
   },
   {
-   "name": "boundary_1",
-   "quantity": "p values",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 2.279536670535265e-08
   },
   {
-   "name": "boundary_1",
-   "quantity": "conf int",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 8.247378113779291e-09
   },
   {
-   "name": "boundary_1",
-   "quantity": "fixed fitted",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 2.0618444729336716e-09
   },
   {
-   "name": "boundary_1",
-   "quantity": "fitted",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 2.0618444729336716e-09
   },
   {
-   "name": "boundary_1",
-   "quantity": "linear predictor",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 8.247377961557697e-09
   },
   {
-   "name": "boundary_1",
-   "quantity": "residuals",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 2.0618444729336716e-09
   },
   {
-   "name": "boundary_1",
-   "quantity": "random effects",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 0
   },
   {
-   "name": "boundary_1",
-   "quantity": "random effects cond var",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 0
   },
   {
-   "name": "boundary_1",
-   "quantity": "random intercept sd",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3872,8 +3872,8 @@
    "expected": 0
   },
   {
-   "name": "boundary_1",
-   "quantity": "random intercept variance",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3882,8 +3882,8 @@
    "expected": 0
   },
   {
-   "name": "boundary_1",
-   "quantity": "log likelihood",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3892,8 +3892,8 @@
    "expected": -33.271064666877365
   },
   {
-   "name": "boundary_1",
-   "quantity": "neg2 log likelihood",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3902,8 +3902,8 @@
    "expected": 66.54212933375473
   },
   {
-   "name": "boundary_1",
-   "quantity": "aic",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3912,8 +3912,8 @@
    "expected": 70.54212933375473
   },
   {
-   "name": "boundary_1",
-   "quantity": "bic",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -3922,8 +3922,8 @@
    "expected": 74.28453135557051
   },
   {
-   "name": "boundary_1",
-   "quantity": "n parameters",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3932,8 +3932,8 @@
    "expected": 2
   },
   {
-   "name": "boundary_1",
-   "quantity": "df residual",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -3942,8 +3942,8 @@
    "expected": 46
   },
   {
-   "name": "boundary_1",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Zero group variance (boundary), Laplace",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -33.27106466687737,
@@ -3952,31 +3952,31 @@
    "n_compared": 1
   },
   {
-   "name": "boundary_9",
-   "quantity": "coefficients",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 4.832884528451808e-09
   },
   {
-   "name": "boundary_9",
-   "quantity": "covariance",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 1.3877787807814457e-17
   },
   {
-   "name": "boundary_9",
-   "quantity": "std errors",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 0
   },
   {
-   "name": "boundary_9",
+   "name": "Zero group variance (boundary), 9 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -3984,72 +3984,72 @@
    "max_abs_error": 1.6741603100784173e-08
   },
   {
-   "name": "boundary_9",
-   "quantity": "p values",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 1.3357866590624212e-08
   },
   {
-   "name": "boundary_9",
-   "quantity": "conf int",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 4.832884648031666e-09
   },
   {
-   "name": "boundary_9",
-   "quantity": "fixed fitted",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 1.208221189763492e-09
   },
   {
-   "name": "boundary_9",
-   "quantity": "fitted",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 1.208221189763492e-09
   },
   {
-   "name": "boundary_9",
-   "quantity": "linear predictor",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 4.832884528451808e-09
   },
   {
-   "name": "boundary_9",
-   "quantity": "residuals",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 1.208221189763492e-09
   },
   {
-   "name": "boundary_9",
-   "quantity": "random effects",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 0
   },
   {
-   "name": "boundary_9",
-   "quantity": "random effects cond var",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 0
   },
   {
-   "name": "boundary_9",
-   "quantity": "random intercept sd",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4058,8 +4058,8 @@
    "expected": 0
   },
   {
-   "name": "boundary_9",
-   "quantity": "random intercept variance",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4068,8 +4068,8 @@
    "expected": 0
   },
   {
-   "name": "boundary_9",
-   "quantity": "log likelihood",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4078,8 +4078,8 @@
    "expected": -33.27106466687737
   },
   {
-   "name": "boundary_9",
-   "quantity": "neg2 log likelihood",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4088,8 +4088,8 @@
    "expected": 66.54212933375474
   },
   {
-   "name": "boundary_9",
-   "quantity": "aic",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4098,8 +4098,8 @@
    "expected": 70.54212933375474
   },
   {
-   "name": "boundary_9",
-   "quantity": "bic",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4108,8 +4108,8 @@
    "expected": 74.28453135557052
   },
   {
-   "name": "boundary_9",
-   "quantity": "n parameters",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4118,8 +4118,8 @@
    "expected": 2
   },
   {
-   "name": "boundary_9",
-   "quantity": "df residual",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4128,8 +4128,8 @@
    "expected": 46
   },
   {
-   "name": "boundary_9",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Zero group variance (boundary), 9 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -33.27106466687737,
@@ -4138,31 +4138,31 @@
    "n_compared": 1
   },
   {
-   "name": "boundary_25",
-   "quantity": "coefficients",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 4.836543457161901e-09
   },
   {
-   "name": "boundary_25",
-   "quantity": "covariance",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 1.3877787807814457e-17
   },
   {
-   "name": "boundary_25",
-   "quantity": "std errors",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 5.551115123125783e-17
   },
   {
-   "name": "boundary_25",
+   "name": "Zero group variance (boundary), 25 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -4170,72 +4170,72 @@
    "max_abs_error": 1.675427800163848e-08
   },
   {
-   "name": "boundary_25",
-   "quantity": "p values",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 1.3367979723177825e-08
   },
   {
-   "name": "boundary_25",
-   "quantity": "conf int",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 4.836543721076225e-09
   },
   {
-   "name": "boundary_25",
-   "quantity": "fixed fitted",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 1.2091359025134807e-09
   },
   {
-   "name": "boundary_25",
-   "quantity": "fitted",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 1.2091359025134807e-09
   },
   {
-   "name": "boundary_25",
-   "quantity": "linear predictor",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 4.836543457161901e-09
   },
   {
-   "name": "boundary_25",
-   "quantity": "residuals",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 1.2091359025134807e-09
   },
   {
-   "name": "boundary_25",
-   "quantity": "random effects",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 0
   },
   {
-   "name": "boundary_25",
-   "quantity": "random effects cond var",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 0
   },
   {
-   "name": "boundary_25",
-   "quantity": "random intercept sd",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4244,8 +4244,8 @@
    "expected": 0
   },
   {
-   "name": "boundary_25",
-   "quantity": "random intercept variance",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4254,8 +4254,8 @@
    "expected": 0
   },
   {
-   "name": "boundary_25",
-   "quantity": "log likelihood",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4264,8 +4264,8 @@
    "expected": -33.27106466687737
   },
   {
-   "name": "boundary_25",
-   "quantity": "neg2 log likelihood",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4274,8 +4274,8 @@
    "expected": 66.54212933375474
   },
   {
-   "name": "boundary_25",
-   "quantity": "aic",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4284,8 +4284,8 @@
    "expected": 70.54212933375474
   },
   {
-   "name": "boundary_25",
-   "quantity": "bic",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4294,8 +4294,8 @@
    "expected": 74.28453135557052
   },
   {
-   "name": "boundary_25",
-   "quantity": "n parameters",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4304,8 +4304,8 @@
    "expected": 2
   },
   {
-   "name": "boundary_25",
-   "quantity": "df residual",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4314,8 +4314,8 @@
    "expected": 46
   },
   {
-   "name": "boundary_25",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Zero group variance (boundary), 25 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -33.27106466687737,
@@ -4324,31 +4324,31 @@
    "n_compared": 1
   },
   {
-   "name": "boundary_61",
-   "quantity": "coefficients",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 4.842138162981714e-09
   },
   {
-   "name": "boundary_61",
-   "quantity": "covariance",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 1.3877787807814457e-17
   },
   {
-   "name": "boundary_61",
-   "quantity": "std errors",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 5.551115123125783e-17
   },
   {
-   "name": "boundary_61",
+   "name": "Zero group variance (boundary), 61 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -4356,72 +4356,72 @@
    "max_abs_error": 1.6773658631105117e-08
   },
   {
-   "name": "boundary_61",
-   "quantity": "p values",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 1,
    "max_abs_error": 1.3383443242531712e-08
   },
   {
-   "name": "boundary_61",
-   "quantity": "conf int",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 2,
    "max_abs_error": 4.842138467964219e-09
   },
   {
-   "name": "boundary_61",
-   "quantity": "fixed fitted",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 1.2105345614799035e-09
   },
   {
-   "name": "boundary_61",
-   "quantity": "fitted",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 1.2105345614799035e-09
   },
   {
-   "name": "boundary_61",
-   "quantity": "linear predictor",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 4.842138162981714e-09
   },
   {
-   "name": "boundary_61",
-   "quantity": "residuals",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 48,
    "max_abs_error": 1.2105345614799035e-09
   },
   {
-   "name": "boundary_61",
-   "quantity": "random effects",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 0
   },
   {
-   "name": "boundary_61",
-   "quantity": "random effects cond var",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 12,
    "max_abs_error": 0
   },
   {
-   "name": "boundary_61",
-   "quantity": "random intercept sd",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4430,8 +4430,8 @@
    "expected": 0
   },
   {
-   "name": "boundary_61",
-   "quantity": "random intercept variance",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4440,8 +4440,8 @@
    "expected": 0
   },
   {
-   "name": "boundary_61",
-   "quantity": "log likelihood",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4450,8 +4450,8 @@
    "expected": -33.27106466687737
   },
   {
-   "name": "boundary_61",
-   "quantity": "neg2 log likelihood",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4460,8 +4460,8 @@
    "expected": 66.54212933375474
   },
   {
-   "name": "boundary_61",
-   "quantity": "aic",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4470,8 +4470,8 @@
    "expected": 70.54212933375474
   },
   {
-   "name": "boundary_61",
-   "quantity": "bic",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4480,8 +4480,8 @@
    "expected": 74.28453135557052
   },
   {
-   "name": "boundary_61",
-   "quantity": "n parameters",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4490,8 +4490,8 @@
    "expected": 2
   },
   {
-   "name": "boundary_61",
-   "quantity": "df residual",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4500,8 +4500,8 @@
    "expected": 46
   },
   {
-   "name": "boundary_61",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "Zero group variance (boundary), 61 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -33.27106466687737,
@@ -4510,31 +4510,31 @@
    "n_compared": 1
   },
   {
-   "name": "cbpp_1",
-   "quantity": "coefficients",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 4.7151640147902185e-08
   },
   {
-   "name": "cbpp_1",
-   "quantity": "covariance",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 16,
    "max_abs_error": 5.526236098729598e-07
   },
   {
-   "name": "cbpp_1",
-   "quantity": "std errors",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 6.464397830363566e-07
   },
   {
-   "name": "cbpp_1",
+   "name": "cbpp (lme4), Laplace",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -4542,72 +4542,72 @@
    "max_abs_error": 5.588367247622017e-06
   },
   {
-   "name": "cbpp_1",
-   "quantity": "p values",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 1.571049674793483e-08
   },
   {
-   "name": "cbpp_1",
-   "quantity": "conf int",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 8,
    "max_abs_error": 1.2683397714319256e-06
   },
   {
-   "name": "cbpp_1",
-   "quantity": "fixed fitted",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 3.0151932894906253e-09
   },
   {
-   "name": "cbpp_1",
-   "quantity": "fitted",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 1.0575061049067358e-08
   },
   {
-   "name": "cbpp_1",
-   "quantity": "linear predictor",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 7.550662362021399e-08
   },
   {
-   "name": "cbpp_1",
-   "quantity": "residuals",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 1.0575061049067358e-08
   },
   {
-   "name": "cbpp_1",
-   "quantity": "random effects",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 15,
    "max_abs_error": 4.1130638450681545e-08
   },
   {
-   "name": "cbpp_1",
-   "quantity": "random effects cond var",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 15,
    "max_abs_error": 1.703090571347765e-08
   },
   {
-   "name": "cbpp_1",
-   "quantity": "random intercept sd",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4616,8 +4616,8 @@
    "expected": 0.6422614173274507
   },
   {
-   "name": "cbpp_1",
-   "quantity": "random intercept variance",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4626,8 +4626,8 @@
    "expected": 0.4124997281874658
   },
   {
-   "name": "cbpp_1",
-   "quantity": "log likelihood",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4636,8 +4636,8 @@
    "expected": -92.02628187149719
   },
   {
-   "name": "cbpp_1",
-   "quantity": "neg2 log likelihood",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4646,8 +4646,8 @@
    "expected": 184.05256374299438
   },
   {
-   "name": "cbpp_1",
-   "quantity": "aic",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4656,8 +4656,8 @@
    "expected": 194.05256374299438
   },
   {
-   "name": "cbpp_1",
-   "quantity": "bic",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4666,8 +4666,8 @@
    "expected": 204.1793221966701
   },
   {
-   "name": "cbpp_1",
-   "quantity": "n parameters",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4676,8 +4676,8 @@
    "expected": 5
   },
   {
-   "name": "cbpp_1",
-   "quantity": "df residual",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4686,8 +4686,8 @@
    "expected": 51
   },
   {
-   "name": "cbpp_1",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "cbpp (lme4), Laplace",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -92.02628186475832,
@@ -4696,31 +4696,31 @@
    "n_compared": 1
   },
   {
-   "name": "cbpp_9",
-   "quantity": "coefficients",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 7.600768836546479e-08
   },
   {
-   "name": "cbpp_9",
-   "quantity": "covariance",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 16,
    "max_abs_error": 8.58179968754591e-08
   },
   {
-   "name": "cbpp_9",
-   "quantity": "std errors",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 1.0034976077877289e-07
   },
   {
-   "name": "cbpp_9",
+   "name": "cbpp (lme4), 9 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -4728,72 +4728,72 @@
    "max_abs_error": 1.0446463778457371e-06
   },
   {
-   "name": "cbpp_9",
-   "quantity": "p values",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 2.675031532221872e-09
   },
   {
-   "name": "cbpp_9",
-   "quantity": "conf int",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 8,
    "max_abs_error": 2.726896055627037e-07
   },
   {
-   "name": "cbpp_9",
-   "quantity": "fixed fitted",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 3.128840374289066e-09
   },
   {
-   "name": "cbpp_9",
-   "quantity": "fitted",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 8.646539650936091e-09
   },
   {
-   "name": "cbpp_9",
-   "quantity": "linear predictor",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 8.252741556802334e-08
   },
   {
-   "name": "cbpp_9",
-   "quantity": "residuals",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 8.646539650936091e-09
   },
   {
-   "name": "cbpp_9",
-   "quantity": "random effects",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 15,
    "max_abs_error": 1.4590523789159704e-08
   },
   {
-   "name": "cbpp_9",
-   "quantity": "random effects cond var",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 15,
    "max_abs_error": 5.169358857637363e-09
   },
   {
-   "name": "cbpp_9",
-   "quantity": "random intercept sd",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4802,8 +4802,8 @@
    "expected": 0.6475177086423126
   },
   {
-   "name": "cbpp_9",
-   "quantity": "random intercept variance",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4812,8 +4812,8 @@
    "expected": 0.41927918300539085
   },
   {
-   "name": "cbpp_9",
-   "quantity": "log likelihood",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4822,8 +4822,8 @@
    "expected": -91.98337179633465
   },
   {
-   "name": "cbpp_9",
-   "quantity": "neg2 log likelihood",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4832,8 +4832,8 @@
    "expected": 183.9667435926693
   },
   {
-   "name": "cbpp_9",
-   "quantity": "aic",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4842,8 +4842,8 @@
    "expected": 193.9667435926693
   },
   {
-   "name": "cbpp_9",
-   "quantity": "bic",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -4852,8 +4852,8 @@
    "expected": 204.09350204634507
   },
   {
-   "name": "cbpp_9",
-   "quantity": "n parameters",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4862,8 +4862,8 @@
    "expected": 5
   },
   {
-   "name": "cbpp_9",
-   "quantity": "df residual",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4872,8 +4872,8 @@
    "expected": 51
   },
   {
-   "name": "cbpp_9",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "cbpp (lme4), 9 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -91.98337179633378,
@@ -4882,31 +4882,31 @@
    "n_compared": 1
   },
   {
-   "name": "cbpp_25",
-   "quantity": "coefficients",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 6.064641533409798e-08
   },
   {
-   "name": "cbpp_25",
-   "quantity": "covariance",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 16,
    "max_abs_error": 1.1943762823207749e-07
   },
   {
-   "name": "cbpp_25",
-   "quantity": "std errors",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 1.3966228257222824e-07
   },
   {
-   "name": "cbpp_25",
+   "name": "cbpp (lme4), 25 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -4914,72 +4914,72 @@
    "max_abs_error": 1.1807971680433127e-06
   },
   {
-   "name": "cbpp_25",
-   "quantity": "p values",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 2.351979346091465e-09
   },
   {
-   "name": "cbpp_25",
-   "quantity": "conf int",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 8,
    "max_abs_error": 2.847226232560729e-07
   },
   {
-   "name": "cbpp_25",
-   "quantity": "fixed fitted",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 5.109404524472616e-09
   },
   {
-   "name": "cbpp_25",
-   "quantity": "fitted",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 9.37434510572821e-09
   },
   {
-   "name": "cbpp_25",
-   "quantity": "linear predictor",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 7.615158326146343e-08
   },
   {
-   "name": "cbpp_25",
-   "quantity": "residuals",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 9.37434510572821e-09
   },
   {
-   "name": "cbpp_25",
-   "quantity": "random effects",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 15,
    "max_abs_error": 2.3503376800348974e-08
   },
   {
-   "name": "cbpp_25",
-   "quantity": "random effects cond var",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 15,
    "max_abs_error": 7.93735413506802e-09
   },
   {
-   "name": "cbpp_25",
-   "quantity": "random intercept sd",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4988,8 +4988,8 @@
    "expected": 0.647518477806405
   },
   {
-   "name": "cbpp_25",
-   "quantity": "random intercept variance",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -4998,8 +4998,8 @@
    "expected": 0.41928017910072385
   },
   {
-   "name": "cbpp_25",
-   "quantity": "log likelihood",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -5008,8 +5008,8 @@
    "expected": -91.98336903731057
   },
   {
-   "name": "cbpp_25",
-   "quantity": "neg2 log likelihood",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -5018,8 +5018,8 @@
    "expected": 183.96673807462113
   },
   {
-   "name": "cbpp_25",
-   "quantity": "aic",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -5028,8 +5028,8 @@
    "expected": 193.96673807462113
   },
   {
-   "name": "cbpp_25",
-   "quantity": "bic",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -5038,8 +5038,8 @@
    "expected": 204.0934965282969
   },
   {
-   "name": "cbpp_25",
-   "quantity": "n parameters",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -5048,8 +5048,8 @@
    "expected": 5
   },
   {
-   "name": "cbpp_25",
-   "quantity": "df residual",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -5058,8 +5058,8 @@
    "expected": 51
   },
   {
-   "name": "cbpp_25",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "cbpp (lme4), 25 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -91.98336903730988,
@@ -5068,31 +5068,31 @@
    "n_compared": 1
   },
   {
-   "name": "cbpp_61",
-   "quantity": "coefficients",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Coefficients",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 5.577975148440828e-08
   },
   {
-   "name": "cbpp_61",
-   "quantity": "covariance",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Covariance matrix",
    "rule": "inference",
    "status": "pass",
    "n_compared": 16,
    "max_abs_error": 5.7599031350052954e-08
   },
   {
-   "name": "cbpp_61",
-   "quantity": "std errors",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Standard errors",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 8.686480712505329e-08
   },
   {
-   "name": "cbpp_61",
+   "name": "cbpp (lme4), 61 quadrature points",
    "quantity": "z statistics",
    "rule": "inference",
    "status": "pass",
@@ -5100,72 +5100,72 @@
    "max_abs_error": 8.5885701084365e-07
   },
   {
-   "name": "cbpp_61",
-   "quantity": "p values",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "p-values",
    "rule": "inference",
    "status": "pass",
    "n_compared": 4,
    "max_abs_error": 3.697539858061455e-09
   },
   {
-   "name": "cbpp_61",
-   "quantity": "conf int",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Confidence intervals",
    "rule": "inference",
    "status": "pass",
    "n_compared": 8,
    "max_abs_error": 1.8778803978491965e-07
   },
   {
-   "name": "cbpp_61",
-   "quantity": "fixed fitted",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 7.097091914154419e-09
   },
   {
-   "name": "cbpp_61",
-   "quantity": "fitted",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Fitted values",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 7.930975293168885e-09
   },
   {
-   "name": "cbpp_61",
-   "quantity": "linear predictor",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Linear predictor",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 5.915808376499854e-08
   },
   {
-   "name": "cbpp_61",
-   "quantity": "residuals",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Residuals",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 56,
    "max_abs_error": 7.930975293168885e-09
   },
   {
-   "name": "cbpp_61",
-   "quantity": "random effects",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 15,
    "max_abs_error": 3.476890642062358e-08
   },
   {
-   "name": "cbpp_61",
-   "quantity": "random effects cond var",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Conditional variances of the random effects",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 15,
    "max_abs_error": 4.628711858245538e-10
   },
   {
-   "name": "cbpp_61",
-   "quantity": "random intercept sd",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Random-intercept standard deviation",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -5174,8 +5174,8 @@
    "expected": 0.6475184731534236
   },
   {
-   "name": "cbpp_61",
-   "quantity": "random intercept variance",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Random-intercept variance",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -5184,8 +5184,8 @@
    "expected": 0.4192801730749409
   },
   {
-   "name": "cbpp_61",
-   "quantity": "log likelihood",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -5194,8 +5194,8 @@
    "expected": -91.98336903731058
   },
   {
-   "name": "cbpp_61",
-   "quantity": "neg2 log likelihood",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "\u22122 log likelihood",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -5204,8 +5204,8 @@
    "expected": 183.96673807462116
   },
   {
-   "name": "cbpp_61",
-   "quantity": "aic",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "AIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -5214,8 +5214,8 @@
    "expected": 193.96673807462116
   },
   {
-   "name": "cbpp_61",
-   "quantity": "bic",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "BIC",
    "rule": "likelihood",
    "status": "pass",
    "n_compared": 1,
@@ -5224,8 +5224,8 @@
    "expected": 204.0934965282969
   },
   {
-   "name": "cbpp_61",
-   "quantity": "n parameters",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Number of parameters",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -5234,8 +5234,8 @@
    "expected": 5
   },
   {
-   "name": "cbpp_61",
-   "quantity": "df residual",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Residual degrees of freedom",
    "rule": "estimates",
    "status": "pass",
    "n_compared": 1,
@@ -5244,8 +5244,8 @@
    "expected": 51
   },
   {
-   "name": "cbpp_61",
-   "quantity": "log likelihood vs independent SciPy evaluation",
+   "name": "cbpp (lme4), 61 quadrature points",
+   "quantity": "Log likelihood vs independent SciPy evaluation",
    "rule": "independent",
    "status": "pass",
    "actual": -91.98336903730979,

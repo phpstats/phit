@@ -3,7 +3,7 @@
  "label": "Linear mixed model, published data",
  "kind": "reference",
  "checked": "The quantities of the linear mixed model record on sleepstudy, Orthodont, Machines, and Hsb82, fitted by ML, with nlme as a second reference.",
- "description": "docs/verifications/compare_lmm.py --public fits each case with lme4, statsmodels, nlme, and fit_mixed_gaussian_intercept_matrix(), and compares every quantity with lme4 under the case's stored tolerance. Case status is recomputed from the saved values.",
+ "description": "Each case is fitted by lme4, statsmodels, nlme, and phit, and every quantity is compared with lme4 under the case's stored tolerance. Each case's status is recomputed from the saved values.",
  "reference": "R lme4 lmer(REML = FALSE, bobyqa rhoend = 1e-10) and nlme lme()",
  "versions": {
   "R": "4.6.1",
@@ -13,25 +13,25 @@
   "Python": "3.14.7",
   "nlme": "3.1.169"
  },
- "inputs": "Four published data sets, with provenance and licenses in docs/data/lmm (tests/fixtures/lmm-public-r.json).",
+ "inputs": "Four published data sets: sleepstudy, Orthodont, Machines, and Hsb82. Their provenance and licenses are listed with the data.",
  "comparison": [
   {
    "id": "atol 1e-07, rtol 1e-06",
-   "applies_to": "Coefficients, covariance, std errors, z statistics, p values, conf int, random effects, residual variance, random intercept variance, sigma, icc, df residual",
+   "applies_to": "All other reported quantities",
    "kind": "tolerance",
    "atol": 1e-07,
    "rtol": 1e-06
   },
   {
    "id": "atol 1e-06, rtol 1e-06",
-   "applies_to": "Fixed fitted, fitted, residuals, marginal residuals",
+   "applies_to": "Fitted values (fixed effects only), fitted values, residuals, residuals (fixed effects only)",
    "kind": "tolerance",
    "atol": 1e-06,
    "rtol": 1e-06
   },
   {
    "id": "atol 1e-07, rtol 1e-10",
-   "applies_to": "Log likelihood, aic",
+   "applies_to": "Log likelihood, AIC",
    "kind": "tolerance",
    "atol": 1e-07,
    "rtol": 1e-10
@@ -40,7 +40,7 @@
  "cases": [
   {
    "name": "sleepstudy",
-   "quantity": "coefficients",
+   "quantity": "Coefficients",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 2,
@@ -52,7 +52,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "covariance",
+   "quantity": "Covariance matrix",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 4,
@@ -64,7 +64,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "std errors",
+   "quantity": "Standard errors",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 2,
@@ -88,7 +88,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "p values",
+   "quantity": "p-values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 2,
@@ -100,7 +100,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "conf int",
+   "quantity": "Confidence intervals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 4,
@@ -112,7 +112,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "fixed fitted",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 180,
@@ -124,7 +124,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "fitted",
+   "quantity": "Fitted values",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 180,
@@ -136,7 +136,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "residuals",
+   "quantity": "Residuals",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 180,
@@ -148,7 +148,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "marginal residuals",
+   "quantity": "Residuals (fixed effects only)",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 180,
@@ -160,7 +160,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "random effects",
+   "quantity": "Random effects",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 18,
@@ -172,7 +172,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "residual variance",
+   "quantity": "Residual variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -186,7 +186,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "random intercept variance",
+   "quantity": "Random-intercept variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -200,7 +200,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "sigma",
+   "quantity": "Residual standard deviation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -214,7 +214,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "icc",
+   "quantity": "Intraclass correlation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -228,7 +228,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "log likelihood",
+   "quantity": "Log likelihood",
    "rule": "atol 1e-07, rtol 1e-10",
    "status": "pass",
    "n_compared": 1,
@@ -242,7 +242,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "aic",
+   "quantity": "AIC",
    "rule": "atol 1e-07, rtol 1e-10",
    "status": "pass",
    "n_compared": 1,
@@ -256,7 +256,7 @@
   },
   {
    "name": "sleepstudy",
-   "quantity": "df residual",
+   "quantity": "Residual degrees of freedom",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -270,7 +270,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "coefficients",
+   "quantity": "Coefficients",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 4,
@@ -282,7 +282,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "covariance",
+   "quantity": "Covariance matrix",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 16,
@@ -294,7 +294,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "std errors",
+   "quantity": "Standard errors",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 4,
@@ -318,7 +318,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "p values",
+   "quantity": "p-values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 4,
@@ -330,7 +330,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "conf int",
+   "quantity": "Confidence intervals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 8,
@@ -342,7 +342,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "fixed fitted",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 108,
@@ -354,7 +354,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "fitted",
+   "quantity": "Fitted values",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 108,
@@ -366,7 +366,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "residuals",
+   "quantity": "Residuals",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 108,
@@ -378,7 +378,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "marginal residuals",
+   "quantity": "Residuals (fixed effects only)",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 108,
@@ -390,7 +390,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "random effects",
+   "quantity": "Random effects",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 27,
@@ -402,7 +402,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "residual variance",
+   "quantity": "Residual variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -416,7 +416,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "random intercept variance",
+   "quantity": "Random-intercept variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -430,7 +430,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "sigma",
+   "quantity": "Residual standard deviation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -444,7 +444,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "icc",
+   "quantity": "Intraclass correlation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -458,7 +458,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "log likelihood",
+   "quantity": "Log likelihood",
    "rule": "atol 1e-07, rtol 1e-10",
    "status": "pass",
    "n_compared": 1,
@@ -472,7 +472,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "aic",
+   "quantity": "AIC",
    "rule": "atol 1e-07, rtol 1e-10",
    "status": "pass",
    "n_compared": 1,
@@ -486,7 +486,7 @@
   },
   {
    "name": "Orthodont",
-   "quantity": "df residual",
+   "quantity": "Residual degrees of freedom",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -500,7 +500,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "coefficients",
+   "quantity": "Coefficients",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 3,
@@ -512,7 +512,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "covariance",
+   "quantity": "Covariance matrix",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 9,
@@ -524,7 +524,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "std errors",
+   "quantity": "Standard errors",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 3,
@@ -548,7 +548,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "p values",
+   "quantity": "p-values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 3,
@@ -560,7 +560,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "conf int",
+   "quantity": "Confidence intervals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 6,
@@ -572,7 +572,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "fixed fitted",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 54,
@@ -584,7 +584,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "fitted",
+   "quantity": "Fitted values",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 54,
@@ -596,7 +596,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "residuals",
+   "quantity": "Residuals",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 54,
@@ -608,7 +608,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "marginal residuals",
+   "quantity": "Residuals (fixed effects only)",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 54,
@@ -620,7 +620,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "random effects",
+   "quantity": "Random effects",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 6,
@@ -632,7 +632,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "residual variance",
+   "quantity": "Residual variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -646,7 +646,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "random intercept variance",
+   "quantity": "Random-intercept variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -660,7 +660,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "sigma",
+   "quantity": "Residual standard deviation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -674,7 +674,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "icc",
+   "quantity": "Intraclass correlation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -688,7 +688,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "log likelihood",
+   "quantity": "Log likelihood",
    "rule": "atol 1e-07, rtol 1e-10",
    "status": "pass",
    "n_compared": 1,
@@ -702,7 +702,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "aic",
+   "quantity": "AIC",
    "rule": "atol 1e-07, rtol 1e-10",
    "status": "pass",
    "n_compared": 1,
@@ -716,7 +716,7 @@
   },
   {
    "name": "Machines",
-   "quantity": "df residual",
+   "quantity": "Residual degrees of freedom",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -730,7 +730,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "coefficients",
+   "quantity": "Coefficients",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 4,
@@ -742,7 +742,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "covariance",
+   "quantity": "Covariance matrix",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 16,
@@ -754,7 +754,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "std errors",
+   "quantity": "Standard errors",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 4,
@@ -778,7 +778,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "p values",
+   "quantity": "p-values",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 4,
@@ -790,7 +790,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "conf int",
+   "quantity": "Confidence intervals",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 8,
@@ -802,7 +802,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "fixed fitted",
+   "quantity": "Fitted values (fixed effects only)",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 7185,
@@ -814,7 +814,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "fitted",
+   "quantity": "Fitted values",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 7185,
@@ -826,7 +826,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "residuals",
+   "quantity": "Residuals",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 7185,
@@ -838,7 +838,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "marginal residuals",
+   "quantity": "Residuals (fixed effects only)",
    "rule": "atol 1e-06, rtol 1e-06",
    "status": "pass",
    "n_compared": 7185,
@@ -850,7 +850,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "random effects",
+   "quantity": "Random effects",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 160,
@@ -862,7 +862,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "residual variance",
+   "quantity": "Residual variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -876,7 +876,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "random intercept variance",
+   "quantity": "Random-intercept variance",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -890,7 +890,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "sigma",
+   "quantity": "Residual standard deviation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -904,7 +904,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "icc",
+   "quantity": "Intraclass correlation",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,
@@ -918,7 +918,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "log likelihood",
+   "quantity": "Log likelihood",
    "rule": "atol 1e-07, rtol 1e-10",
    "status": "pass",
    "n_compared": 1,
@@ -932,7 +932,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "aic",
+   "quantity": "AIC",
    "rule": "atol 1e-07, rtol 1e-10",
    "status": "pass",
    "n_compared": 1,
@@ -946,7 +946,7 @@
   },
   {
    "name": "Hsb82",
-   "quantity": "df residual",
+   "quantity": "Residual degrees of freedom",
    "rule": "atol 1e-07, rtol 1e-06",
    "status": "pass",
    "n_compared": 1,

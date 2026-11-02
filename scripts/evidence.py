@@ -108,6 +108,105 @@ def split_versions(versions):
 
 # Verification ---------------------------------------------------------------------------------------------------
 
+QUANTITY = {
+    'coefficients': 'Coefficients', 'covariance': 'Covariance matrix', 'std_errors': 'Standard errors',
+    't_statistics': 't statistics', 'z_statistics': 'z statistics', 'p_values': 'p-values',
+    'conf_int': 'Confidence intervals', 'fitted': 'Fitted values', 'residuals': 'Residuals',
+    'rss': 'Residual sum of squares', 'residual_variance': 'Residual variance', 'sigma': 'Residual standard deviation',
+    'r_squared': 'R²', 'adj_r_squared': 'Adjusted R²', 'log_likelihood': 'Log likelihood',
+    'df_residual': 'Residual degrees of freedom', 'deviance': 'Deviance', 'null_deviance': 'Null deviance',
+    'aic': 'AIC', 'bic': 'BIC', 'fixed_fitted': 'Fitted values (fixed effects only)',
+    'marginal_residuals': 'Residuals (fixed effects only)', 'random_effects': 'Random effects',
+    'random_effects_cond_var': 'Conditional variances of the random effects',
+    'random_intercept_sd': 'Random-intercept standard deviation', 'random_intercept_variance': 'Random-intercept variance',
+    'icc': 'Intraclass correlation', 'linear_predictor': 'Linear predictor', 'neg2_log_likelihood': '−2 log likelihood',
+    'n_parameters': 'Number of parameters', 'terms': 'Random-term covariances and effects',
+    'pdf': 'Density', 'logpdf': 'Log density', 'pmf': 'Probability mass', 'logpmf': 'Log probability mass',
+    'cdf': 'Lower tail', 'logcdf': 'Log lower tail', 'sf': 'Upper tail', 'logsf': 'Log upper tail',
+    'quantile': 'Quantile',
+}
+CASES = {
+    'simulated_housing': 'Simulated housing, one predictor', 'simulated_housing_multiple': 'Simulated housing, two predictors',
+    'simulated_learning': 'Simulated learning sample', 'simulated_clinic': 'Simulated clinic sample',
+    'simulated_schools': 'Simulated schools', 'simple': 'One predictor', 'multiple': 'Two predictors',
+    'no_intercept': 'No intercept', 'intercept_only': 'Intercept only', 'correlated': 'Correlated predictors',
+    'imbalanced': 'Imbalanced outcomes', 'sparse': 'Sparse counts', 'singleton_groups': 'Singleton groups',
+    'boundary': 'Zero group variance (boundary)', 'listwise_missing': 'Listwise deletion of missing values',
+    'binary': 'Binary outcomes', 'grouped_offset': 'Grouped outcomes with offsets', 'rare_events': 'Rare events',
+    'large_group_variation': 'Large group variation', 'cbpp': 'cbpp (lme4)',
+    'random_slopes_ml': 'Random slopes', 'random_slopes_reml': 'Random slopes', 'independent_slopes': 'Independent slopes (x || g)',
+    'crossed': 'Crossed groups', 'nested': 'Nested groups', 'weighted_offset': 'Weights and offsets',
+    'random_slope_only': 'Random slope without intercept', 'sleepstudy_ml': 'sleepstudy', 'sleepstudy_reml': 'sleepstudy',
+    'nested_3_grouping_levels_ml': 'Three nested grouping levels', 'nested_4_grouping_levels_ml': 'Four nested grouping levels',
+    'nested_3_grouping_levels_reml': 'Three nested grouping levels', 'nested_4_grouping_levels_reml': 'Four nested grouping levels',
+}
+FAMILY = {'normal': 'Normal', 't': "Student's t", 'chisquare': 'Chi-square', 'f': 'F', 'beta': 'Beta',
+          'gamma': 'Gamma', 'exponential': 'Exponential', 'lognormal': 'Log-normal', 'logistic': 'Logistic',
+          'binomial': 'Binomial', 'poisson': 'Poisson', 'nbinom': 'Negative binomial', 'nbinom_mu': 'Negative binomial'}
+MODEL = {'ols': 'Linear model', 'logistic': 'Logistic regression', 'probit': 'Probit regression', 'poisson': 'Poisson regression'}
+
+
+def quantity_text(name):
+    return QUANTITY.get(name.replace(' ', '_'), name[:1].upper() + name[1:])
+
+
+def case_text(name, slug):
+    if slug == 'distributions':
+        family, params = re.match(r'(\w+)\((.*)\)$', name).groups()
+        return f"{FAMILY.get(family, family)} ({params.replace('=', ' = ')})"
+    if slug == 'lmm' and name == 'no_intercept':
+        return 'No fixed intercept'
+    if slug == 'logistic-mixed':
+        base, points = name.rsplit('_', 1)
+        label = 'No fixed intercept' if base == 'no_intercept' else CASES.get(base, base)
+        return f"{label}, {'Laplace' if points == '1' else points + ' quadrature points'}"
+    if slug == 'r-compatibility':
+        stem, method = re.match(r'(\w+) \((\w+)\)$', name).groups()
+        fixed = re.match(r'(ols|logistic|probit|poisson)_(intercept|no_intercept)_(individual|grouped)$', stem)
+        if fixed:
+            model, intercept, rows = fixed.groups()
+            return (f"{MODEL[model]}, {'intercept' if intercept == 'intercept' else 'no intercept'}, "
+                    f"{'grouped trials' if rows == 'grouped' else 'one row per observation'}")
+        label = 'No fixed intercept' if stem == 'no_intercept' else CASES.get(stem, stem)
+        return f'{label}, {method}'
+    return CASES.get(name, name)
+
+
+def readable(record, slug):
+    """Plain labels for a verification record's cases, quantities, and tolerance rows; values are unchanged."""
+    for case in record['cases']:
+        case['name'] = case_text(case['name'], slug)
+        quantity = case.get('quantity', '')
+        pair = re.match(r'phit (.+?) vs lme4 (.+?): (.+)$', quantity)
+        if pair:
+            phit = {'bobyqa': 'BOBYQA', 'nelder mead': 'Nelder–Mead'}[pair[1]]
+            case['implementation'] = f"phit {phit}, lme4 {pair[2].replace(' ', '_')}"
+            quantity = pair[3]
+        if slug != 'test-suites':
+            case['quantity'] = quantity_text(quantity)
+    for rule in record.get('comparison', []):
+        if isinstance(rule.get('applies_to'), list):
+            rule['applies_to'] = [quantity_text(n) for n in rule['applies_to']]
+    lists = [r for r in record.get('comparison', []) if isinstance(r.get('applies_to'), list)]
+    if lists:
+        widest = max(lists, key=lambda r: len(r['applies_to']))
+        for rule in lists:
+            names = rule['applies_to']
+            if len(lists) == 1:
+                rule['applies_to'] = 'All reported quantities'
+            elif rule is widest:
+                rule['applies_to'] = 'All other reported quantities'
+            else:
+                # Lowercase a term after the first unless it starts with an abbreviation, such as AIC or R².
+                text = ', '.join(n if i == 0 or n[1:2].isupper() or n[1:2] == '²' else n[:1].lower() + n[1:]
+                                 for i, n in enumerate(names))
+                rule['applies_to'] = text
+    for key in ('inputs', 'checked', 'description'):
+        if isinstance(record.get(key), str):
+            record[key] = re.sub(r' \((?:tests|docs)/[^)]*\)', '', record[key])
+    return record
+
+
 GLM_DIFFERENCES = [
     'R intervals come from confint.default() (Wald), not profile-likelihood confint().',
     'phit reports the covariance at the converged coefficients; R glm() evaluates it at the last IRLS iterate. With '
@@ -136,8 +235,8 @@ FIXED = {
                             '(docs/data/learning.csv), one predictor, no intercept, intercept only, correlated columns, '
                             'and imbalanced outcomes, plus a listwise-deletion case with two dropped rows.',
                      data='docs/data/learning.csv',
-                     exclusions=['Separated and quasi-separated designs are rejected and tested separately in '
-                                 'tests/logistic.php, not compared with R.'],
+                     exclusions=['Separated and quasi-separated designs are rejected; their tests are in the test-suite '
+                                 'record, not compared with R.'],
                      known=GLM_DIFFERENCES + ['Without an intercept, the null deviance uses probability 0.5.']),
     'probit': dict(title='Probit regression', peers='statsmodels', function='fit_probit_matrix',
                    reference='R glm(family = binomial(link = "probit"))',
@@ -148,8 +247,8 @@ FIXED = {
                           'predictor, no intercept, intercept only, correlated columns, and imbalanced outcomes, plus a '
                           'listwise-deletion case with two dropped rows.',
                    data='docs/data/learning.csv',
-                   exclusions=['Separated and quasi-separated designs are rejected and tested separately in '
-                               'tests/probit.php, not compared with R.'],
+                   exclusions=['Separated and quasi-separated designs are rejected; their tests are in the test-suite '
+                               'record, not compared with R.'],
                    known=GLM_DIFFERENCES + ['The covariance is the inverse expected information, as in glm(); a '
                                             'discrete-model probit fit with observed-Hessian covariance can differ.']),
     'poisson': dict(title='Poisson regression', peers='statsmodels', function='fit_poisson_matrix',
@@ -162,7 +261,7 @@ FIXED = {
                            'and sparse counts, plus a listwise-deletion case with two dropped rows.',
                     data='docs/data/clinic.csv',
                     exclusions=['These cases have no offset; offset and exposure fits are covered by the test-suite '
-                                'record (tests/intercept.php and tests/r-compatibility.php).'],
+                                'and R compatibility records.'],
                     known=GLM_DIFFERENCES + ['Without an intercept, the null deviance uses a mean of one.']),
 }
 
@@ -185,8 +284,8 @@ def fixed_verification(slug):
         'label': spec['title'],
         'kind': 'reference',
         'checked': spec['scope'],
-        'description': f"docs/verifications/compare_{slug}.py fits each design with R, {spec['peers']}, and "
-                       f"{spec['function']}(intercept: false), and compares every quantity with R. Case status is "
+        'description': f"Each design is fitted by R, {spec['peers']}, and phit's matrix function, with the "
+                       f"intercept supplied as a column. Every quantity is compared with R, and each case's status is "
                        f"recomputed from the saved values.",
         'reference': spec['reference'],
         'versions': split_versions(results[0]['versions']),
@@ -223,7 +322,7 @@ def mixed_verification(slug):
             peers = {('statsmodels' if k == 'Python' else k): v for k, v in errors.items() if k != 'phit'}
             cases.append(case_row(record['name'], quantity, result, rule, record['phit'][quantity],
                                   record['R'][quantity], peers))
-    comparison = [{'id': rule, 'applies_to': ', '.join(dict.fromkeys(covered[rule])).capitalize(), 'kind': 'tolerance',
+    comparison = [{'id': rule, 'applies_to': list(dict.fromkeys(covered[rule])), 'kind': 'tolerance',
                    'atol': atol, 'rtol': rtol} for rule, (atol, rtol) in rules.items()]
     command = '.context/notebooks-venv/bin/python docs/verifications/compare_lmm.py' + (' --public' if public else '')
     known = ['statsmodels estimates are combined with plug-in GLS covariance to match lme4; statsmodels\' own '
@@ -242,14 +341,13 @@ def mixed_verification(slug):
                     'conditional and marginal fitted values and residuals, random effects, variance components, log '
                     'likelihood, and AIC of one Gaussian random intercept fitted by ML. Identical design matrices, '
                     'groups, and missing-data exclusions across implementations.'),
-        'description': ('docs/verifications/compare_lmm.py' + (' --public' if public else '') + ' fits each case with '
-                        'lme4, statsmodels' + (', nlme,' if public else '') + ' and '
-                        'fit_mixed_gaussian_intercept_matrix(), and compares every quantity with lme4 under the '
-                        "case's stored tolerance. Case status is recomputed from the saved values."),
+        'description': ('Each case is fitted by lme4, statsmodels, ' + ('nlme, ' if public else '') + 'and phit, and '
+                        "every quantity is compared with lme4 under the case's stored tolerance. Each case's status "
+                        'is recomputed from the saved values.'),
         'reference': 'R lme4 lmer(REML = FALSE, bobyqa rhoend = 1e-10)' + (' and nlme lme()' if public else ''),
         'versions': split_versions(results[0]['versions']),
-        'inputs': ('Four published data sets, with provenance and licenses in docs/data/lmm '
-                   '(tests/fixtures/lmm-public-r.json).' if public else
+        'inputs': ('Four published data sets: sleepstudy, Orthodont, Machines, and Hsb82. Their provenance and '
+                   'licenses are listed with the data.' if public else
                    'Saved lme4 fixtures (tests/fixtures/lmm-r.json): simulated schools with correlated predictors '
                    '(docs/data/schools.csv), one predictor, no fixed intercept, intercept only, a singleton group, '
                    'and a zero group-variance boundary, plus missing values in predictors, outcomes, and group IDs.'),
@@ -295,10 +393,9 @@ def logistic_mixed_verification():
                    'binomial logit model with one random intercept, at the Laplace approximation and 9, 25, and 61 '
                    'adaptive quadrature points. Log likelihood also against an independent SciPy evaluation of the '
                    'same approximation.',
-        'description': 'docs/verifications/compare_logistic_mixed.py fits each case with lme4 glmer() and '
-                       'fit_mixed_logistic_matrix(), compares every quantity with lme4, and evaluates the same '
-                       'approximation independently with SciPy root finding and Gauss–Hermite quadrature. Case status '
-                       'is recomputed from the saved values.',
+        'description': 'Each case is fitted by lme4 and phit, and every quantity is compared with lme4. The same '
+                       'approximation is also evaluated independently with SciPy root finding and Gauss–Hermite '
+                       "quadrature. Each case's status is recomputed from the saved values.",
         'reference': 'R lme4 glmer(family = binomial), bobyqa, tolPwrss 1e-12',
         'versions': split_versions(data['versions']),
         'inputs': 'Seven data sets (tests/fixtures/logistic-mixed-r.json), including lme4\'s cbpp, rare events, '
@@ -352,15 +449,15 @@ def r_compatibility_verification():
         'kind': 'reference',
         'checked': 'Every reported quantity of weighted and offset GLMs, and of Gaussian mixed models fitted by REML '
                    'and ML with random slopes, several terms, and nesting, for each pair of phit and lme4 optimizers.',
-        'description': 'docs/verifications/compare_r_compatibility.py fits the saved fixtures with fit_*_matrix() and '
-                       'fit_mixed_gaussian_matrix() under bobyqa and Nelder–Mead, and compares them with the saved R '
-                       'and lme4 results for bobyqa, Nelder_Mead, nlminbwrap, and nloptwrap. Case status is recomputed '
-                       'from the saved values.',
+        'description': "phit fits each saved case with its BOBYQA and Nelder–Mead optimizers. The fits are compared "
+                       "with saved R results and with lme4's results for its bobyqa, Nelder_Mead, nlminbwrap, and "
+                       "nloptwrap optimizers. Each case's status is recomputed from the saved values.",
         'reference': 'R glm(), lm(); lme4 lmer() with bobyqa, Nelder_Mead, nlminbwrap, and nloptwrap',
         'versions': {k: (re.match(r'R version (\S+)', v)[1] if k == 'R' and v.startswith('R version') else str(v).strip())
                      for k, v in data['versions'].items()},
-        'inputs': 'tests/fixtures/r-compatibility.json (fixed models) and tests/fixtures/lmm-expanded-r.json '
-                  '(mixed models, including sleepstudy).',
+        'inputs': 'Saved R results for weighted and offset GLMs, and saved lme4 results for mixed models, '
+                  'including sleepstudy.',
+        'data': 'tests/fixtures/lmm-expanded-r.json',
         'comparison': comparison, 'cases': cases,
         'exclusions': ['(x || g) terms compare only the conditional-variance diagonals, as lme4 reports them.'],
         'known_differences': ['Independent optimizers stop at slightly different points on flat likelihoods; '
@@ -393,21 +490,22 @@ def distributions_verification():
         'title': 'Distributions', 'label': 'Distributions', 'kind': 'reference',
         'checked': 'Densities, masses, CDFs, survival functions, their logarithms, and quantiles of every family at '
                    'saved points.',
-        'description': 'docs/verifications/compare_distributions.py evaluates every case with phit, R, and SciPy and '
-                       'compares each with mpmath references at 60 digits, rounded once to double. Case status is the '
-                       "largest relative error against the case's rule.",
+        'description': 'Each case is evaluated by phit, R, and SciPy and compared with mpmath references computed '
+                       "at 60 digits and rounded once to double. A case passes when its largest relative error meets "
+                       "the case's rule.",
         'reference': f"mpmath {data.get('mpmath')} at {data.get('mpmath_digits', 60)} digits, each value rounded once",
         'versions': {'mpmath': data.get('mpmath'), 'R': data.get('r'), 'SciPy': data.get('scipy'),
                      'NumPy': data.get('numpy'), 'PHP': data.get('php')},
-        'inputs': 'tests/fixtures/distributions-r.json: the cases and points; references in '
-                  'tests/fixtures/distributions-mpmath.json.',
+        'inputs': 'Saved cases and evaluation points for every family and operation, with R values and 60-digit '
+                  'mpmath references.',
+        'data': 'tests/fixtures/distributions-mpmath.json',
         'comparison': [{'id': 'probability', 'kind': 'tolerance', 'rtol': 1e-12, 'rel_floor': 1e-300,
                         'applies_to': 'Probabilities; densities, masses, CDFs, survival functions'},
                        {'id': 'log-and-quantile', 'kind': 'tolerance', 'rtol': 1e-12, 'rel_floor': 1,
                         'applies_to': 'Logarithms and quantiles'}],
         'cases': cases,
         'exclusions': ['Points where mpmath has no reference are counted per case and not compared.',
-                       'Documented boundary conventions are asserted separately in tests/distributions.php.'],
+                       'Documented boundary conventions are asserted separately, in the test-suite record.'],
         'known_differences': [
             'For a point mass, the discrete quantile at p = 1 is the mass location; R and SciPy may return the upper '
             'support bound.',
@@ -480,7 +578,7 @@ def test_suites_verification():
         'relative': ('Descriptive statistics and smoothing; zeros, ECDF counts, and type-7 identities exact', None, 1e-12),
         'rng': ('Sampling; ChaCha uniforms and discrete samples exact', 1e-15, 1e-12),
         'draws': ('Posterior-draw kernels; moments, covariance maps, affine draws, log determinants', 1e-11, 1e-11),
-        'stress': ('Extreme inputs; per-case tolerances in tests/fixtures/stress-r.json', None, None),
+        'stress': ('Extreme inputs; per-case tolerances stored with the fixture', None, None),
     }
     comparison = [{'id': 'exact', 'kind': 'exact',
                    'applies_to': 'Exact results; results, row accounting, parsed values, types, errors'}]
@@ -493,11 +591,11 @@ def test_suites_verification():
         comparison.append(rule)
     return {
         'title': 'Test suites', 'label': 'Test suites', 'kind': 'reference',
-        'checked': 'Every PHP test suite run by scripts/check: saved references from R, lme4, mpmath, Python, and '
+        'checked': 'Every PHP test suite in the release check: saved references from R, lme4, mpmath, Python, and '
                    "phibble, and phit's own contracts.",
-        'description': 'docs/verifications/run_test_suites.py runs each suite against the release extension and '
-                       "records its exit status and its own summary line. Each row is one suite.",
-        'reference': 'Saved fixtures under tests/fixtures; each lists its generator and versions',
+        'description': 'Each suite runs against the release build of the extension. Its exit status and its own '
+                       'summary line are recorded; each row is one suite.',
+        'reference': 'Saved reference fixtures; the reference manifest lists each one\'s generator, versions, and hash',
         'inputs': [{'name': 'Fixture provenance', 'detail': 'generators, versions, hashes, and tolerance policies',
                     'url': GITHUB + 'docs/verifications/reference-manifest.json'}],
         'comparison': comparison, 'cases': cases,

@@ -140,13 +140,13 @@ def build():
                    for w in ['ols', 'mixed', 'logistic', 'probit', 'mixed-logistic', 'distributions']
                    if (SITE / 'benchmarks' / f'{w}-workload.json').is_file()]
     for slug in evidence.FIXED:
-        files[f'verifications/{slug}.json'] = evidence.fixed_verification(slug)
+        files[f'verifications/{slug}.json'] = evidence.readable(evidence.fixed_verification(slug), slug)
     for slug in ['lmm', 'lmm-public']:
-        files[f'verifications/{slug}.json'] = evidence.mixed_verification(slug)
-    files['verifications/logistic-mixed.json'] = evidence.logistic_mixed_verification()
-    files['verifications/r-compatibility.json'] = evidence.r_compatibility_verification()
-    files['verifications/distributions.json'] = evidence.distributions_verification()
-    files['verifications/test-suites.json'] = evidence.test_suites_verification()
+        files[f'verifications/{slug}.json'] = evidence.readable(evidence.mixed_verification(slug), slug)
+    files['verifications/logistic-mixed.json'] = evidence.readable(evidence.logistic_mixed_verification(), 'logistic-mixed')
+    files['verifications/r-compatibility.json'] = evidence.readable(evidence.r_compatibility_verification(), 'r-compatibility')
+    files['verifications/distributions.json'] = evidence.readable(evidence.distributions_verification(), 'distributions')
+    files['verifications/test-suites.json'] = evidence.readable(evidence.test_suites_verification(), 'test-suites')
     verifications += [f'site/verifications/{slug}.json' for slug in
                       [*evidence.FIXED, 'lmm', 'lmm-public', 'logistic-mixed', 'r-compatibility', 'distributions',
                        'test-suites']]
