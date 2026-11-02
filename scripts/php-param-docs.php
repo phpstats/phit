@@ -115,6 +115,6 @@ return [
     // Model printing.
     'summary:fit' => 'Result of a model function, such as fit_ols() or fit_mixed_gaussian()',
     'tidy:fit' => 'Result of a model function, such as fit_ols() or fit_mixed_gaussian()',
-    'tidy:conf_int' => 'Add conf_low and conf_high columns',
+    'tidy:confInt' => 'Add conf_low and conf_high columns',
     'tidy:level' => 'Confidence level of the intervals, in (0, 1)',
 ];

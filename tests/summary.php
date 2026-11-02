@@ -37,7 +37,7 @@ foreach ($fixture['cases'] as $case) {
     $fit = ('Phit\\'.$case['function'])(...$args);
     $text = Phit\summary($fit);
     scheck($text === $case['summary'], "{$case['name']}: summary text differs:\n$text");
-    scheck(Phit\tidy($fit, conf_int: true) == $case['tidy'], "{$case['name']}: tidy differs");
+    scheck(Phit\tidy($fit, confInt: true) == $case['tidy'], "{$case['name']}: tidy differs");
 
     // The printed coefficient rows: every number R prints must print the same here.
     $lines = explode("\n", $text);
@@ -53,7 +53,29 @@ foreach ($fixture['cases'] as $case) {
     }
 }
 
-foreach ([[[], 'not a fit'], [['coefficients' => [1.0]], 'missing a key']] as [$bad, $label]) {
+// Every model function's result has a printer: each one appears in a case above.
+$covered = array_unique(array_column($fixture['cases'], 'function'));
+foreach (get_extension_funcs('phit') as $function) {
+    if (str_starts_with($function, 'Phit\\fit_')) {
+        scheck(in_array(substr($function, 5), $covered, true), "no summary case for $function");
+    }
+}
+
+$mixed = Phit\fit_mixed_gaussian(
+    'Reaction ~ Days + (Days | Subject)', $fixture['data']['sleepstudy'],
+);
+$short = $mixed;
+$short['random'][0]['covariance'] = [[1.0]];
+$ragged = $mixed;
+$ragged['random'][0]['covariance'][1] = [1.0];
+
+foreach ([
+    [$short, 'a covariance smaller than its columns'],
+    [$ragged, 'a ragged covariance'],
+    [[], 'not a fit'],
+    [['model' => 'linear', 'coefficients' => [1.0]], 'missing a key'],
+    [['model' => 'quantile', 'coefficients' => [1.0]], 'an unknown model'],
+] as [$bad, $label]) {
     try {
         Phit\summary($bad);
         scheck(false, "summary accepted $label");
@@ -62,7 +84,7 @@ foreach ([[[], 'not a fit'], [['coefficients' => [1.0]], 'missing a key']] as [$
     }
 }
 try {
-    Phit\tidy($fit, conf_int: true, level: 1.0);
+    Phit\tidy($fit, confInt: true, level: 1.0);
     scheck(false, 'tidy accepted level 1');
 } catch (Exception $e) {
     scheck($e->getCode() === 1001 && $e->getMessage() === 'level must be in (0, 1)', 'tidy level error');

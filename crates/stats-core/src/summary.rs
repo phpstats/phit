@@ -313,47 +313,344 @@ pub struct RandomTerm {
     pub n_groups: usize,
 }
 
-/// The model-specific part of a summary.
-pub enum Model {
-    Linear {
-        sigma: f64,
-        df_residual: i64,
-        r_squared: f64,
-        adj_r_squared: f64,
-        /// Numerator degrees of freedom of the overall F test, when the intercept is known.
-        f_df: Option<i64>,
-    },
-    Generalized {
-        family: Option<String>,
-        dispersion: f64,
-        null_deviance: f64,
-        deviance: f64,
-        df_null: Option<i64>,
-        df_residual: i64,
-        aic: f64,
-    },
-    Mixed {
-        reml: bool,
-        /// None for a Gaussian model; the integration method for a binomial one.
-        integration: Option<String>,
-        log_likelihood: f64,
-        aic: Option<f64>,
-        bic: Option<f64>,
-        df_residual: i64,
-        n_observations: i64,
-        terms: Vec<RandomTerm>,
-        /// The residual variance of a Gaussian model.
-        residual_variance: Option<f64>,
-        singular: bool,
-    },
+/// How one kind of fitted model prints, in the layout of R's `print(summary(fit))`. Each model kind implements it,
+/// and [`render`] lays the parts out the same way for all of them, with the shared formatting above.
+pub trait Printer {
+    /// The heading: the fitting method, then the family and the formula when known. Each line ends in a newline.
+    fn heading(&self) -> String;
+    /// Fit statistics printed before the coefficient table, each line ending in a newline. Mixed models print
+    /// their criteria and random effects here.
+    fn before_coefficients(&self) -> String {
+        String::new()
+    }
+    /// The coefficient table's title.
+    fn coefficients_title(&self) -> &'static str {
+        "Coefficients"
+    }
+    /// The coefficient estimates, standard errors, tests, and p-values.
+    fn coefficients(&self) -> &Coefficients;
+    /// Fit statistics printed after the coefficient table, each line ending in a newline.
+    fn after_coefficients(&self) -> String {
+        String::new()
+    }
+    /// Degrees of freedom for t confidence intervals, or `None` for normal intervals.
+    fn interval_df(&self) -> Option<f64>;
 }
 
-/// Everything a summary prints.
-pub struct Summary {
+/// The text of `print(summary(fit))` for any printer, ending with one newline.
+pub fn render(p: &dyn Printer) -> String {
+    let mut out = p.heading();
+    out += &p.before_coefficients();
+    out += &format!("\n{}:\n", p.coefficients_title());
+    out += &coefficient_table(p.coefficients());
+    out += &p.after_coefficients();
+    out
+}
+
+fn heading(title: &str, family: Option<(&str, &str)>, formula: Option<&str>) -> String {
+    let mut out = format!("{title}\n");
+    if let Some((family, link)) = family {
+        out += &format!("Family: {family} ({link})\n");
+    }
+    if let Some(formula) = formula {
+        out += &format!("Formula: {formula}\n");
+    }
+    out
+}
+
+/// A linear model fitted by least squares, as R's `summary.lm`.
+pub struct Linear {
+    pub formula: Option<String>,
+    pub coefficients: Coefficients,
+    pub sigma: f64,
+    pub df_residual: i64,
+    pub r_squared: f64,
+    pub adj_r_squared: f64,
+    /// Numerator degrees of freedom of the overall F test, when the intercept is known.
+    pub f_df: Option<i64>,
+}
+
+impl Printer for Linear {
+    fn heading(&self) -> String {
+        heading(
+            "Linear model fit by least squares",
+            None,
+            self.formula.as_deref(),
+        )
+    }
+
+    fn coefficients(&self) -> &Coefficients {
+        &self.coefficients
+    }
+
+    fn after_coefficients(&self) -> String {
+        let df = self.df_residual;
+        let mut out = format!(
+            "\nResidual standard error: {} on {df} degrees of freedom\n",
+            format_real(&[self.sigma], DIGITS)[0]
+        );
+        out += &format!(
+            "Multiple R-squared: {}, Adjusted R-squared: {}\n",
+            format_g(self.r_squared, DIGITS),
+            format_g(self.adj_r_squared, DIGITS)
+        );
+        if let Some(numerator) = self.f_df.filter(|d| *d > 0) {
+            let r2 = self.r_squared;
+            let f = (r2 / numerator as f64) / ((1.0 - r2) / df as f64);
+            let p = FisherF::new(numerator as f64, df as f64)
+                .map(|d| d.sf(f))
+                .unwrap_or(f64::NAN);
+            out += &format!(
+                "F-statistic: {} on {numerator} and {df} DF, p-value: {}\n",
+                format_g(f, DIGITS),
+                format_pval(&[p], DIGITS)[0]
+            );
+        }
+        out
+    }
+
+    fn interval_df(&self) -> Option<f64> {
+        Some(self.df_residual as f64)
+    }
+}
+
+/// A generalized linear model fitted by maximum likelihood, as R's `summary.glm`, for any family and link.
+pub struct GeneralizedLinear {
+    /// The family and link, when the fit reports them.
     pub family: Option<(String, String)>,
     pub formula: Option<String>,
-    pub model: Model,
     pub coefficients: Coefficients,
+    pub dispersion: f64,
+    pub null_deviance: f64,
+    pub deviance: f64,
+    pub df_null: Option<i64>,
+    pub df_residual: i64,
+    pub aic: f64,
+}
+
+impl Printer for GeneralizedLinear {
+    fn heading(&self) -> String {
+        heading(
+            "Generalized linear model fit by maximum likelihood",
+            self.family.as_ref().map(|(f, l)| (f.as_str(), l.as_str())),
+            self.formula.as_deref(),
+        )
+    }
+
+    fn coefficients(&self) -> &Coefficients {
+        &self.coefficients
+    }
+
+    fn after_coefficients(&self) -> String {
+        let family = self
+            .family
+            .as_ref()
+            .map(|(f, _)| format!(" for {f} family"))
+            .unwrap_or_default();
+        let mut out = format!(
+            "\n(Dispersion parameter{family} taken to be {})\n\n",
+            format_real(&[self.dispersion], 7)[0]
+        );
+        let deviances = format_real(&[self.null_deviance, self.deviance], DIGITS + 1);
+        match self.df_null {
+            Some(df_null) => {
+                let dfs = format_real(&[df_null as f64, self.df_residual as f64], 15);
+                out += &format!(
+                    "    Null deviance: {} on {} degrees of freedom\n",
+                    deviances[0], dfs[0]
+                );
+                out += &format!(
+                    "Residual deviance: {} on {} degrees of freedom\n",
+                    deviances[1], dfs[1]
+                );
+            }
+            None => {
+                out += &format!("    Null deviance: {}\n", deviances[0]);
+                out += &format!(
+                    "Residual deviance: {} on {} degrees of freedom\n",
+                    deviances[1], self.df_residual
+                );
+            }
+        }
+        out + &format!("AIC: {}\n", format_real(&[self.aic], DIGITS + 1)[0])
+    }
+
+    fn interval_df(&self) -> Option<f64> {
+        (self.coefficients.statistic == 't').then_some(self.df_residual as f64)
+    }
+}
+
+/// What every mixed model prints before its fixed effects.
+pub struct MixedFit {
+    pub log_likelihood: f64,
+    pub aic: Option<f64>,
+    pub bic: Option<f64>,
+    pub df_residual: i64,
+    pub n_observations: i64,
+    pub terms: Vec<RandomTerm>,
+    pub singular: bool,
+}
+
+impl MixedFit {
+    /// The ML criteria table, as lme4 prints it: one decimal each.
+    fn criteria(&self) -> String {
+        let mut names = vec![];
+        let mut values = vec![];
+        if let Some(a) = self.aic {
+            names.push("AIC");
+            values.push(a);
+        }
+        if let Some(b) = self.bic {
+            names.push("BIC");
+            values.push(b);
+        }
+        names.extend(["logLik", "deviance"]);
+        values.extend([self.log_likelihood, -2.0 * self.log_likelihood]);
+        let mut texts: Vec<String> = values.iter().map(|v| format!("{v:.1}")).collect();
+        names.push("df.resid");
+        texts.push(self.df_residual.to_string());
+        let widths: Vec<usize> = names
+            .iter()
+            .zip(&texts)
+            .map(|(n, t)| n.len().max(t.len()))
+            .collect();
+        let header: Vec<String> = names
+            .iter()
+            .zip(&widths)
+            .map(|(n, w)| format!("{n:>w$}"))
+            .collect();
+        let row: Vec<String> = texts
+            .iter()
+            .zip(&widths)
+            .map(|(t, w)| format!("{t:>w$}"))
+            .collect();
+        format!("\n{}\n{}\n", header.join(" "), row.join(" "))
+    }
+
+    /// The random-effects table and the observation and group counts.
+    fn random(&self, residual: Option<f64>) -> String {
+        let groups: Vec<String> = self
+            .terms
+            .iter()
+            .fold(Vec::<(String, usize)>::new(), |mut seen, t| {
+                if !seen.iter().any(|(g, _)| g == &t.group) {
+                    seen.push((t.group.clone(), t.n_groups));
+                }
+                seen
+            })
+            .into_iter()
+            .map(|(g, n)| format!("{g}, {n}"))
+            .collect();
+        format!(
+            "\nRandom effects:\n{}Number of obs: {}, groups: {}\n",
+            random_effects(&self.terms, residual),
+            self.n_observations,
+            groups.join("; ")
+        )
+    }
+
+    fn singular_note(&self) -> String {
+        if self.singular {
+            "\nThe fit is singular: a random-effect variance or correlation is at its boundary.\n"
+                .into()
+        } else {
+            String::new()
+        }
+    }
+}
+
+/// A Gaussian linear mixed model, as lme4's `summary.merMod` for `lmer()`.
+pub struct MixedGaussian {
+    pub formula: Option<String>,
+    pub reml: bool,
+    pub fit: MixedFit,
+    pub residual_variance: f64,
+    pub coefficients: Coefficients,
+}
+
+impl Printer for MixedGaussian {
+    fn heading(&self) -> String {
+        let method = if self.reml {
+            "REML"
+        } else {
+            "maximum likelihood"
+        };
+        heading(
+            &format!("Linear mixed model fit by {method}"),
+            None,
+            self.formula.as_deref(),
+        )
+    }
+
+    fn before_coefficients(&self) -> String {
+        let criteria = if self.reml {
+            format!(
+                "\nREML criterion at convergence: {}\n",
+                format_real(&[-2.0 * self.fit.log_likelihood], DIGITS + 1)[0]
+            )
+        } else {
+            self.fit.criteria()
+        };
+        criteria + &self.fit.random(Some(self.residual_variance))
+    }
+
+    fn coefficients_title(&self) -> &'static str {
+        "Fixed effects"
+    }
+
+    fn coefficients(&self) -> &Coefficients {
+        &self.coefficients
+    }
+
+    fn after_coefficients(&self) -> String {
+        self.fit.singular_note()
+    }
+
+    fn interval_df(&self) -> Option<f64> {
+        None
+    }
+}
+
+/// A binomial logit mixed model, as lme4's `summary.merMod` for `glmer()`.
+pub struct MixedLogistic {
+    pub formula: Option<String>,
+    /// The integration method, such as "Laplace approximation".
+    pub integration: String,
+    pub fit: MixedFit,
+    pub coefficients: Coefficients,
+}
+
+impl Printer for MixedLogistic {
+    fn heading(&self) -> String {
+        heading(
+            &format!(
+                "Generalized linear mixed model fit by maximum likelihood ({})",
+                self.integration
+            ),
+            Some(("binomial", "logit")),
+            self.formula.as_deref(),
+        )
+    }
+
+    fn before_coefficients(&self) -> String {
+        self.fit.criteria() + &self.fit.random(None)
+    }
+
+    fn coefficients_title(&self) -> &'static str {
+        "Fixed effects"
+    }
+
+    fn coefficients(&self) -> &Coefficients {
+        &self.coefficients
+    }
+
+    fn after_coefficients(&self) -> String {
+        self.fit.singular_note()
+    }
+
+    fn interval_df(&self) -> Option<f64> {
+        None
+    }
 }
 
 fn random_effects(terms: &[RandomTerm], residual: Option<f64>) -> String {
@@ -406,190 +703,6 @@ fn random_effects(terms: &[RandomTerm], residual: Option<f64>) -> String {
         header[4] = "Corr";
     }
     table(&header, &rows, &[1])
-}
-
-/// The text of `print(summary(fit))`, ending with one newline.
-pub fn render(s: &Summary) -> String {
-    let mut out = String::new();
-    let heading = match &s.model {
-        Model::Linear { .. } => "Linear model fit by least squares".to_string(),
-        Model::Generalized { .. } => {
-            "Generalized linear model fit by maximum likelihood".to_string()
-        }
-        Model::Mixed {
-            integration: None,
-            reml,
-            ..
-        } => {
-            format!(
-                "Linear mixed model fit by {}",
-                if *reml { "REML" } else { "maximum likelihood" }
-            )
-        }
-        Model::Mixed {
-            integration: Some(method),
-            ..
-        } => {
-            format!("Generalized linear mixed model fit by maximum likelihood ({method})")
-        }
-    };
-    out += &heading;
-    out += "\n";
-    if let Some((family, link)) = &s.family {
-        out += &format!("Family: {family} ({link})\n");
-    }
-    if let Some(formula) = &s.formula {
-        out += &format!("Formula: {formula}\n");
-    }
-    match &s.model {
-        Model::Linear {
-            sigma,
-            df_residual,
-            r_squared,
-            adj_r_squared,
-            f_df,
-        } => {
-            out += "\nCoefficients:\n";
-            out += &coefficient_table(&s.coefficients);
-            out += &format!(
-                "\nResidual standard error: {} on {df_residual} degrees of freedom\n",
-                format_real(&[*sigma], DIGITS)[0]
-            );
-            out += &format!(
-                "Multiple R-squared: {}, Adjusted R-squared: {}\n",
-                format_g(*r_squared, DIGITS),
-                format_g(*adj_r_squared, DIGITS)
-            );
-            if let Some(numerator) = f_df.filter(|d| *d > 0) {
-                let f = (r_squared / numerator as f64) / ((1.0 - r_squared) / *df_residual as f64);
-                let p = FisherF::new(numerator as f64, *df_residual as f64)
-                    .map(|d| d.sf(f))
-                    .unwrap_or(f64::NAN);
-                out += &format!(
-                    "F-statistic: {} on {numerator} and {df_residual} DF, p-value: {}\n",
-                    format_g(f, DIGITS),
-                    format_pval(&[p], DIGITS)[0]
-                );
-            }
-        }
-        Model::Generalized {
-            family,
-            dispersion,
-            null_deviance,
-            deviance,
-            df_null,
-            df_residual,
-            aic,
-        } => {
-            out += "\nCoefficients:\n";
-            out += &coefficient_table(&s.coefficients);
-            let family = family
-                .as_ref()
-                .map(|f| format!(" for {f} family"))
-                .unwrap_or_default();
-            out += &format!(
-                "\n(Dispersion parameter{family} taken to be {})\n\n",
-                format_real(&[*dispersion], 7)[0]
-            );
-            let deviances = format_real(&[*null_deviance, *deviance], DIGITS + 1);
-            match df_null {
-                Some(df_null) => {
-                    let dfs = format_real(&[*df_null as f64, *df_residual as f64], 15);
-                    out += &format!(
-                        "    Null deviance: {} on {} degrees of freedom\n",
-                        deviances[0], dfs[0]
-                    );
-                    out += &format!(
-                        "Residual deviance: {} on {} degrees of freedom\n",
-                        deviances[1], dfs[1]
-                    );
-                }
-                None => {
-                    out += &format!("    Null deviance: {}\n", deviances[0]);
-                    out += &format!(
-                        "Residual deviance: {} on {df_residual} degrees of freedom\n",
-                        deviances[1]
-                    );
-                }
-            }
-            out += &format!("AIC: {}\n", format_real(&[*aic], DIGITS + 1)[0]);
-        }
-        Model::Mixed {
-            reml,
-            log_likelihood,
-            aic,
-            bic,
-            df_residual,
-            n_observations,
-            terms,
-            residual_variance,
-            singular,
-            ..
-        } => {
-            if *reml {
-                out += &format!(
-                    "\nREML criterion at convergence: {}\n",
-                    format_real(&[-2.0 * log_likelihood], DIGITS + 1)[0]
-                );
-            } else {
-                let mut names = vec![];
-                let mut values = vec![];
-                if let Some(a) = aic {
-                    names.push("AIC");
-                    values.push(*a);
-                }
-                if let Some(b) = bic {
-                    names.push("BIC");
-                    values.push(*b);
-                }
-                names.extend(["logLik", "deviance"]);
-                values.extend([*log_likelihood, -2.0 * log_likelihood]);
-                // One decimal each, as lme4 prints this table.
-                let mut texts: Vec<String> = values.iter().map(|v| format!("{v:.1}")).collect();
-                names.push("df.resid");
-                texts.push(df_residual.to_string());
-                let widths: Vec<usize> = names
-                    .iter()
-                    .zip(&texts)
-                    .map(|(n, t)| n.len().max(t.len()))
-                    .collect();
-                let header: Vec<String> = names
-                    .iter()
-                    .zip(&widths)
-                    .map(|(n, w)| format!("{n:>w$}"))
-                    .collect();
-                let row: Vec<String> = texts
-                    .iter()
-                    .zip(&widths)
-                    .map(|(t, w)| format!("{t:>w$}"))
-                    .collect();
-                out += &format!("\n{}\n{}\n", header.join(" "), row.join(" "));
-            }
-            out += "\nRandom effects:\n";
-            out += &random_effects(terms, *residual_variance);
-            let groups: Vec<String> = terms
-                .iter()
-                .fold(Vec::<(String, usize)>::new(), |mut seen, t| {
-                    if !seen.iter().any(|(g, _)| g == &t.group) {
-                        seen.push((t.group.clone(), t.n_groups));
-                    }
-                    seen
-                })
-                .into_iter()
-                .map(|(g, n)| format!("{g}, {n}"))
-                .collect();
-            out += &format!(
-                "Number of obs: {n_observations}, groups: {}\n",
-                groups.join("; ")
-            );
-            out += "\nFixed effects:\n";
-            out += &coefficient_table(&s.coefficients);
-            if *singular {
-                out += "\nThe fit is singular: a random-effect variance or correlation is at its boundary.\n";
-            }
-        }
-    }
-    out
 }
 
 /// Wald confidence intervals: t with `df` degrees of freedom when given, else the standard normal.

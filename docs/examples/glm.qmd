@@ -26,7 +26,7 @@ $logit = fit_generalized_linear(
 );
 echo summary($logit), "\n";
 
-$t = tidy($logit, conf_int: true);
+$t = tidy($logit, confInt: true);
 echo DataFrame::fromColumns([
     'term' => $t['term'],
     'odds_ratio' => array_map('exp', $t['estimate']),

@@ -1,8 +1,12 @@
 //! PHP bindings for model summaries: Phit\summary() prints a fit in the layout of R's print(summary(fit)), and
-//! Phit\tidy() returns its coefficient table as columns, as broom's tidy() does.
+//! Phit\tidy() returns its coefficient table as columns, as broom's tidy() does. Both pick the fit's printer from
+//! its `model` key through PRINTERS; the layouts are the stats_core::summary::Printer implementations.
 use crate::stats_exception;
 use ext_php_rs::{boxed::ZBox, prelude::*, types::ZendHashTable, types::Zval};
-use stats_core::summary::{self, Coefficients, Model, RandomTerm, Summary};
+use stats_core::summary::{
+    self, Coefficients, GeneralizedLinear, Linear, MixedFit, MixedGaussian, MixedLogistic, Printer,
+    RandomTerm,
+};
 use stats_core::{ErrorKind, StatsError};
 
 fn invalid(message: &str) -> PhpException {
@@ -124,8 +128,17 @@ fn random_terms(fit: &ZendHashTable) -> PhpResult<Vec<RandomTerm>> {
             return one_intercept(group);
         }
         let covariance = matrix(term.get("covariance"), "covariance")?;
+        let k = covariance.len();
+        if k == 0 || covariance.iter().any(|row| row.len() != k) {
+            return Err(not_a_fit("a random term's covariance must be square"));
+        }
         let columns = strings(term.get("columns"))
             .unwrap_or_else(|| (1..=covariance.len()).map(|j| format!("z{j}")).collect());
+        if columns.len() != k {
+            return Err(not_a_fit(
+                "a random term's columns and covariance differ in size",
+            ));
+        }
         let n_groups = term
             .get("group_labels")
             .and_then(Zval::array)
@@ -143,89 +156,132 @@ fn random_terms(fit: &ZendHashTable) -> PhpResult<Vec<RandomTerm>> {
     Ok(terms)
 }
 
-fn summary_of(fit: &ZendHashTable) -> PhpResult<Summary> {
+/// A fit's printer, built from the fit's keys. Each model kind has one.
+type Build = fn(&ZendHashTable) -> PhpResult<Box<dyn Printer>>;
+
+/// One printer per value of a fit's `model` key, which every model function sets. A new model kind adds one entry
+/// here and one `Printer` in stats_core::summary; `summary()` and `tidy()` both dispatch through this table.
+const PRINTERS: [(&str, Build); 4] = [
+    ("linear", linear),
+    ("generalized_linear", generalized_linear),
+    ("mixed_gaussian", mixed_gaussian),
+    ("mixed_logistic", mixed_logistic),
+];
+
+fn printer(fit: &ZendHashTable) -> PhpResult<Box<dyn Printer>> {
+    let kind = text(fit, "model").ok_or_else(|| not_a_fit("missing model"))?;
+    let (_, build) = PRINTERS
+        .iter()
+        .find(|(k, _)| *k == kind)
+        .ok_or_else(|| not_a_fit(&format!("unknown model '{kind}'")))?;
+    build(fit)
+}
+
+fn df_residual(fit: &ZendHashTable) -> PhpResult<i64> {
+    long(fit, "df_residual").ok_or_else(|| not_a_fit("missing df_residual"))
+}
+
+fn n_observations(fit: &ZendHashTable) -> PhpResult<i64> {
+    long(fit, "n_observations").ok_or_else(|| not_a_fit("missing n_observations"))
+}
+
+fn intercept(fit: &ZendHashTable) -> Option<bool> {
+    fit.get("intercept").and_then(Zval::bool)
+}
+
+fn linear(fit: &ZendHashTable) -> PhpResult<Box<dyn Printer>> {
     let coefficients = coefficients(fit)?;
-    let formula = text(fit, "formula");
-    let family = text(fit, "family").zip(text(fit, "link"));
-    let df_residual = long(fit, "df_residual").ok_or_else(|| not_a_fit("missing df_residual"))?;
-    let intercept = fit.get("intercept").and_then(Zval::bool);
-    let n = long(fit, "n_observations").ok_or_else(|| not_a_fit("missing n_observations"))?;
-    let model = if fit.get("random").is_some() || fit.get("random_intercept_variance").is_some() {
-        let integration = text(fit, "integration").map(|method| match method.as_str() {
-            "laplace" => "Laplace approximation".to_string(),
-            _ => format!(
-                "adaptive Gauss-Hermite quadrature, {} points",
-                long(fit, "quadrature_points").unwrap_or(0)
-            ),
-        });
-        Model::Mixed {
-            reml: text(fit, "method").as_deref() == Some("REML"),
-            residual_variance: if integration.is_none() {
-                Some(required_float(fit, "residual_variance")?)
-            } else {
-                None
-            },
-            integration,
-            log_likelihood: required_float(fit, "log_likelihood")?,
-            aic: float(fit, "aic"),
-            bic: float(fit, "bic"),
-            df_residual,
-            n_observations: n,
-            terms: random_terms(fit)?,
-            singular: fit
-                .get("singular")
-                .or_else(|| fit.get("boundary"))
-                .and_then(Zval::bool)
-                .unwrap_or(false),
-        }
-    } else if fit.get("deviance").is_some() {
-        Model::Generalized {
-            family: family.as_ref().map(|(f, _)| f.clone()),
-            dispersion: if coefficients.statistic == 't' {
-                required_float(fit, "residual_variance")?
-            } else {
-                1.0
-            },
-            null_deviance: required_float(fit, "null_deviance")?,
-            deviance: required_float(fit, "deviance")?,
-            df_null: intercept.map(|i| n - i64::from(i)),
-            df_residual,
-            aic: required_float(fit, "aic")?,
-        }
-    } else if fit.get("r_squared").is_some() {
-        Model::Linear {
-            sigma: required_float(fit, "sigma")?,
-            df_residual,
-            r_squared: required_float(fit, "r_squared")?,
-            adj_r_squared: required_float(fit, "adj_r_squared")?,
-            f_df: intercept.map(|i| coefficients.estimates.len() as i64 - i64::from(i)),
-        }
-    } else {
-        return Err(not_a_fit(
-            "not a linear, generalized linear, or mixed model result",
-        ));
-    };
-    Ok(Summary {
-        family,
-        formula,
-        model,
+    let f_df = intercept(fit).map(|i| coefficients.estimates.len() as i64 - i64::from(i));
+    Ok(Box::new(Linear {
+        formula: text(fit, "formula"),
+        sigma: required_float(fit, "sigma")?,
+        df_residual: df_residual(fit)?,
+        r_squared: required_float(fit, "r_squared")?,
+        adj_r_squared: required_float(fit, "adj_r_squared")?,
+        f_df,
         coefficients,
+    }))
+}
+
+fn generalized_linear(fit: &ZendHashTable) -> PhpResult<Box<dyn Printer>> {
+    let coefficients = coefficients(fit)?;
+    let n = n_observations(fit)?;
+    Ok(Box::new(GeneralizedLinear {
+        family: text(fit, "family").zip(text(fit, "link")),
+        formula: text(fit, "formula"),
+        // A Gaussian GLM estimates its dispersion and reports t statistics; the others fix it at one.
+        dispersion: if coefficients.statistic == 't' {
+            required_float(fit, "residual_variance")?
+        } else {
+            1.0
+        },
+        null_deviance: required_float(fit, "null_deviance")?,
+        deviance: required_float(fit, "deviance")?,
+        df_null: intercept(fit).map(|i| n - i64::from(i)),
+        df_residual: df_residual(fit)?,
+        aic: required_float(fit, "aic")?,
+        coefficients,
+    }))
+}
+
+fn mixed_fit(fit: &ZendHashTable) -> PhpResult<MixedFit> {
+    Ok(MixedFit {
+        log_likelihood: required_float(fit, "log_likelihood")?,
+        aic: float(fit, "aic"),
+        bic: float(fit, "bic"),
+        df_residual: df_residual(fit)?,
+        n_observations: n_observations(fit)?,
+        terms: random_terms(fit)?,
+        singular: fit
+            .get("singular")
+            .or_else(|| fit.get("boundary"))
+            .and_then(Zval::bool)
+            .unwrap_or(false),
     })
+}
+
+fn mixed_gaussian(fit: &ZendHashTable) -> PhpResult<Box<dyn Printer>> {
+    Ok(Box::new(MixedGaussian {
+        formula: text(fit, "formula"),
+        reml: text(fit, "method").as_deref() == Some("REML"),
+        fit: mixed_fit(fit)?,
+        residual_variance: required_float(fit, "residual_variance")?,
+        coefficients: coefficients(fit)?,
+    }))
+}
+
+fn mixed_logistic(fit: &ZendHashTable) -> PhpResult<Box<dyn Printer>> {
+    let integration = match text(fit, "integration").as_deref() {
+        Some("laplace") => "Laplace approximation".to_string(),
+        Some(_) => format!(
+            "adaptive Gauss-Hermite quadrature, {} points",
+            long(fit, "quadrature_points").unwrap_or(0)
+        ),
+        None => return Err(not_a_fit("missing integration")),
+    };
+    Ok(Box::new(MixedLogistic {
+        formula: text(fit, "formula"),
+        integration,
+        fit: mixed_fit(fit)?,
+        coefficients: coefficients(fit)?,
+    }))
 }
 
 #[php_function]
 #[php(name = "Phit\\summary")]
 pub fn summary(fit: &ZendHashTable) -> PhpResult<String> {
-    Ok(summary::render(&summary_of(fit)?))
+    Ok(summary::render(printer(fit)?.as_ref()))
 }
 
 #[php_function]
-#[php(name = "Phit\\tidy", defaults(conf_int = false, level = 0.95))]
-pub fn tidy(fit: &ZendHashTable, conf_int: bool, level: f64) -> PhpResult<ZBox<ZendHashTable>> {
+#[php(name = "Phit\\tidy", defaults(confInt = false, level = 0.95))]
+#[allow(non_snake_case)] // PHP parameter names are camelCase.
+pub fn tidy(fit: &ZendHashTable, confInt: bool, level: f64) -> PhpResult<ZBox<ZendHashTable>> {
     if !(level > 0.0 && level < 1.0) {
         return Err(invalid("level must be in (0, 1)"));
     }
-    let c = coefficients(fit)?;
+    let printer = printer(fit)?;
+    let c = printer.coefficients();
     let mut out = ZendHashTable::new();
     let mut term = ZendHashTable::new();
     for name in &c.names {
@@ -244,13 +300,13 @@ pub fn tidy(fit: &ZendHashTable, conf_int: bool, level: f64) -> PhpResult<ZBox<Z
         }
         out.insert(key, column)?;
     }
-    if conf_int {
-        let df = if c.statistic == 't' {
-            Some(long(fit, "df_residual").ok_or_else(|| not_a_fit("missing df_residual"))? as f64)
-        } else {
-            None
-        };
-        let intervals = summary::confidence_intervals(&c.estimates, &c.std_errors, df, level);
+    if confInt {
+        let intervals = summary::confidence_intervals(
+            &c.estimates,
+            &c.std_errors,
+            printer.interval_df(),
+            level,
+        );
         let (mut low, mut high) = (ZendHashTable::new(), ZendHashTable::new());
         for (l, h) in intervals {
             low.push(l)?;

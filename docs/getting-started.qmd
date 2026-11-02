@@ -61,7 +61,7 @@ F-statistic: 44.17 on 2 and 29 DF, p-value: 1.579e-09
 `tidy()` returns the coefficient table as columns, which a `DataFrame` can hold.
 
 ```php
-$coefficients = DataFrame::fromColumns(tidy($fit, conf_int: true));
+$coefficients = DataFrame::fromColumns(tidy($fit, confInt: true));
 echo $coefficients, "\n";
 ```
 

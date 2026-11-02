@@ -50,9 +50,38 @@ $cases = [
         'y' => $data['sleepstudy']['Reaction'],
         'groups' => $data['sleepstudy']['Subject'],
     ]],
+    ['probit_matrix_mroz', 'fit_probit_matrix', [
+        'x' => array_map(null, $data['mroz']['k5'], $data['mroz']['age']),
+        'y' => array_map(fn ($v) => $v === 'yes' ? 1 : 0, $data['mroz']['lfp']),
+    ]],
+    ['poisson_matrix_insurance', 'fit_poisson_matrix', [
+        'x' => array_map(fn ($d) => [(int) ($d == 2), (int) ($d == 3), (int) ($d == 4)], $data['insurance']['District']),
+        'y' => $data['insurance']['Claims'],
+        'offset' => array_map('log', $data['insurance']['Holders']),
+    ]],
+    ['mixed_gaussian_matrix_sleepstudy', 'fit_mixed_gaussian_matrix', [
+        'x' => array_map(fn ($d) => [$d], $data['sleepstudy']['Days']),
+        'y' => $data['sleepstudy']['Reaction'],
+        'random' => [[
+            'z' => array_map(fn ($d) => [1, $d], $data['sleepstudy']['Days']),
+            'groups' => $data['sleepstudy']['Subject'],
+        ]],
+        'reml' => true,
+    ]],
+    ['mixed_logistic_matrix_cbpp', 'fit_mixed_logistic_matrix', [
+        'x' => array_map(fn ($p) => [(int) ($p === '2'), (int) ($p === '3'), (int) ($p === '4')], $data['cbpp']['period']),
+        'y' => array_map(fn ($k, $n) => $k / $n, $data['cbpp']['incidence'], $data['cbpp']['size']),
+        'groups' => $data['cbpp']['herd'],
+        'weights' => $data['cbpp']['size'],
+    ]],
 ];
-// R has no matrix random-intercept call; its ML lmer fit has the same fixed effects.
-$rName = ['mixed_intercept_matrix_sleepstudy' => 'lmer_sleepstudy_ml'];
+// R has no matrix calls; these match the formula fits that have the same fixed effects.
+$rName = [
+    'mixed_intercept_matrix_sleepstudy' => 'lmer_sleepstudy_ml',
+    'poisson_matrix_insurance' => 'poisson_insurance',
+    'mixed_gaussian_matrix_sleepstudy' => 'lmer_sleepstudy_reml',
+    'mixed_logistic_matrix_cbpp' => 'glmer_cbpp_laplace',
+];
 $r = json_decode(file_get_contents("$dir/summary-r.json"), true, flags: JSON_THROW_ON_ERROR);
 
 $out = ['R' => $r['R'], 'lme4' => $r['lme4'], 'data' => $data, 'cases' => []];
@@ -67,7 +96,7 @@ foreach ($cases as [$name, $function, $args]) {
         'function' => $function,
         'args' => $args,
         'summary' => Phit\summary($fit),
-        'tidy' => Phit\tidy($fit, conf_int: true),
+        'tidy' => Phit\tidy($fit, confInt: true),
         'r_rows' => $r['rows'][$rName[$name] ?? $name],
     ];
     echo "$name\n";

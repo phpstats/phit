@@ -188,14 +188,14 @@ AIC: 548.85
 - The coefficient table follows R's `printCoefmat(digits = 4)`, without significance stars.
 - A linear model adds the residual standard error, R-squared, and the F statistic. A GLM adds the dispersion, the deviances, and AIC. A mixed model adds its fit criteria and random-effect variances, as lme4 prints them.
 
-`tidy()` returns the same coefficient table as columns: `term`, `estimate`, `std_error`, `statistic`, and `p_value`. `conf_int: true` adds `conf_low` and `conf_high` at `level` (default 0.95):
+`tidy()` returns the same coefficient table as columns: `term`, `estimate`, `std_error`, `statistic`, and `p_value`. `confInt: true` adds `conf_low` and `conf_high` at `level` (default 0.95):
 
 - The intervals are Wald intervals. They use t with `df_residual` degrees of freedom for fits that report t statistics, and the normal distribution otherwise.
 - For mixed fits, `tidy()` gives the fixed effects only.
 
 ```php
 echo DataFrame::fromColumns(
-    tidy($poisson, conf_int: true, level: 0.9),
+    tidy($poisson, confInt: true, level: 0.9),
 ), "\n";
 ```
 

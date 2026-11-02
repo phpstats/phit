@@ -313,6 +313,22 @@ fn fixed_design(mut rows: Vec<Vec<f64>>, intercept: bool) -> Vec<Vec<f64>> {
     rows
 }
 
+/// The `model` key of each model function's result: the kind of model, which picks its printer.
+fn model_kind(function: &str) -> &'static str {
+    match function {
+        "Phit\\fit_ols" | "Phit\\fit_ols_matrix" => "linear",
+        "Phit\\fit_generalized_linear"
+        | "Phit\\fit_logistic_matrix"
+        | "Phit\\fit_probit_matrix"
+        | "Phit\\fit_poisson_matrix" => "generalized_linear",
+        "Phit\\fit_mixed_gaussian"
+        | "Phit\\fit_mixed_gaussian_matrix"
+        | "Phit\\fit_mixed_gaussian_intercept_matrix" => "mixed_gaussian",
+        "Phit\\fit_mixed_logistic" | "Phit\\fit_mixed_logistic_matrix" => "mixed_logistic",
+        _ => unreachable!("{function} is not a model function"),
+    }
+}
+
 fn finish_result(
     mut output: ZBox<ZendHashTable>,
     n: usize,
@@ -320,6 +336,7 @@ fn finish_result(
     dropped_rows: Vec<i64>,
     function: &str,
 ) -> PhpResult<ZBox<ZendHashTable>> {
+    output.insert("model", model_kind(function))?;
     // Additive diagnostics: keep all historical top-level model-specific keys.
     let mut diagnostics = ZendHashTable::new();
     diagnostics.insert("converged", true)?;

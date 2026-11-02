@@ -28,7 +28,8 @@ fits <- list(
   glmer_cbpp_agq10 = glmer(cbind(incidence, size - incidence) ~ period + (1 | herd), cbpp, binomial, nAGQ = 10,
                            control = tight),
   ols_matrix_mtcars = lm(mpg ~ wt, mtcars),
-  logistic_matrix_mroz = glm(lfp ~ k5 + age, data = mroz, family = binomial)
+  logistic_matrix_mroz = glm(lfp ~ k5 + age, data = mroz, family = binomial),
+  probit_matrix_mroz = glm(lfp ~ k5 + age, data = mroz, family = binomial(link = "probit"))
 )
 rows <- lapply(fits, function(fit) {
   printed <- capture.output(printCoefmat(coef(summary(fit)), digits = 4, signif.stars = FALSE))

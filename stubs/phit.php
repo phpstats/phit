@@ -2151,6 +2151,7 @@ function draws_moments(array $draws, ?array $weights = NULL, string $normalizati
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @return array{
+ *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2204,6 +2205,7 @@ function fit_generalized_linear(string $formula, mixed $data, string $family = '
  * @param ?array $weights Positive integer trial counts aligned with the rows; null is one trial per row
  * @param ?array $offset Known part of the linear predictor, aligned with the rows; null is zero
  * @return array{
+ *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2248,6 +2250,7 @@ function fit_logistic_matrix(array $x, array $y, string $missing = 'drop', ?arra
  * @param string $optimizer 'bobyqa' or 'nelder_mead'
  * @param float $objectiveTolerance Nelder–Mead stopping tolerance: the standard deviation of the simplex objective values
  * @return array{
+ *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2303,6 +2306,7 @@ function fit_mixed_gaussian(string $formula, mixed $data, bool $reml = true, str
  * @param array<int|string|null> $groups Group label per row, an integer or a string; integer 1 and string "1" are different groups
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @return array{
+ *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2359,6 +2363,7 @@ function fit_mixed_gaussian_intercept_matrix(array $x, array $y, array $groups, 
  * @param string $optimizer 'bobyqa' or 'nelder_mead'
  * @param float $objectiveTolerance Nelder–Mead stopping tolerance: the standard deviation of the simplex objective values
  * @return array{
+ *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2410,6 +2415,7 @@ function fit_mixed_gaussian_matrix(array $x, array $y, array $random, string $mi
  * @param int $maxEvaluations Largest number of optimizer evaluations
  * @param float $tolerance BOBYQA final trust-region radius, in (0, 0.1]
  * @return array{
+ *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2480,6 +2486,7 @@ function fit_mixed_logistic(string $formula, mixed $data, string $missing = 'dro
  * @param int $maxEvaluations Largest number of optimizer evaluations
  * @param float $tolerance BOBYQA final trust-region radius, in (0, 0.1]
  * @return array{
+ *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2537,6 +2544,7 @@ function fit_mixed_logistic_matrix(array $x, array $y, array $groups, string $mi
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @return array{
+ *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2583,6 +2591,7 @@ function fit_ols(string $formula, mixed $data, string $missing = 'drop', mixed $
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @param ?array $offset Known part of the linear predictor, aligned with the rows; null is zero
  * @return array{
+ *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2620,6 +2629,7 @@ function fit_ols_matrix(array $x, array $y, string $missing = 'drop', ?array $we
  * @param ?array $weights Positive prior weights aligned with the rows
  * @param ?array $offset Known part of the linear predictor, aligned with the rows; null is zero
  * @return array{
+ *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2657,6 +2667,7 @@ function fit_poisson_matrix(array $x, array $y, string $missing = 'drop', ?array
  * @param ?array $weights Positive integer trial counts aligned with the rows; null is one trial per row
  * @param ?array $offset Known part of the linear predictor, aligned with the rows; null is zero
  * @return array{
+ *   model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2991,16 +3002,16 @@ function summary(array $fit): string {}
 
 /**
  * Returns a fit's coefficient table as columns, like broom's `tidy()`.
- * - The columns are `term`, `estimate`, `std_error`, `statistic`, and `p_value`. `conf_int: true` adds `conf_low` and `conf_high` at `level`.
+ * - The columns are `term`, `estimate`, `std_error`, `statistic`, and `p_value`. `confInt: true` adds `conf_low` and `conf_high` at `level`.
  * - Intervals are Wald intervals: t with `df_residual` degrees of freedom when the fit reports t statistics, and the normal distribution otherwise.
  * - Mixed fits give the fixed effects only; `summary()` prints the variance components.
  * @param array<string,mixed> $fit Result of a model function, such as fit_ols() or fit_mixed_gaussian()
- * @param bool $conf_int Add conf_low and conf_high columns
+ * @param bool $confInt Add conf_low and conf_high columns
  * @param float $level Confidence level of the intervals, in (0, 1)
  * @return array{term: list<string>, estimate: list<float>, std_error: list<float>, statistic: list<float>, p_value: list<float>, conf_low?: list<float>, conf_high?: list<float>}
  * @throws \Exception Code 1001 when `fit` is not the result of a model function or `level` is outside (0, 1).
  */
-function tidy(array $fit, bool $conf_int = false, float $level = 0.95): array {}
+function tidy(array $fit, bool $confInt = false, float $level = 0.95): array {}
 
 /**
  * Finds a root of `f` in [`lower`, `upper`], like R's `uniroot()`.

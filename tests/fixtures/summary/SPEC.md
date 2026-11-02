@@ -9,7 +9,7 @@ every case in `summary.json`.
 
 ```php
 function summary(array $fit): string {}
-function tidy(array $fit, bool $conf_int = false, float $level = 0.95): array {}
+function tidy(array $fit, bool $confInt = false, float $level = 0.95): array {}
 ```
 
 ## Rounding primitive
@@ -119,14 +119,38 @@ Every table works the same way.
 - Cells are joined by one space. Trailing spaces are removed from every line.
   Each line ends in `\n`.
 
-## Kind and keys
+## Printers
 
-The kind is decided by the first rule that matches:
+`summary()` and `tidy()` choose a printer from the fit's `model` key, which
+every model function sets. They never infer the kind from the other keys. A
+missing `model` key, an unknown value, or a missing key that the printer
+needs throws.
 
-1. A mixed model has a `random` key or a `random_intercept_variance` key.
-2. A GLM has a `deviance` key.
-3. A linear model has an `r_squared` key.
-4. Anything else throws.
+| `model` | Set by | Printer |
+| --- | --- | --- |
+| `linear` | `fit_ols`, `fit_ols_matrix` | `Linear` |
+| `generalized_linear` | `fit_generalized_linear`, `fit_logistic_matrix`, `fit_probit_matrix`, `fit_poisson_matrix` | `GeneralizedLinear` |
+| `mixed_gaussian` | `fit_mixed_gaussian`, `fit_mixed_gaussian_matrix`, `fit_mixed_gaussian_intercept_matrix` | `MixedGaussian` |
+| `mixed_logistic` | `fit_mixed_logistic`, `fit_mixed_logistic_matrix` | `MixedLogistic` |
+
+Each printer implements one contract (`Printer` in
+`crates/stats-core/src/summary.rs`):
+
+- `heading()`: the method line, then `Family:` and `Formula:` when known.
+- `before_coefficients()`: fit statistics printed before the table. This is
+  empty except for mixed models.
+- `coefficients_title()`: `Coefficients` or `Fixed effects`.
+- `coefficients()`: the table's data. `tidy()` reads the same data.
+- `after_coefficients()`: fit statistics printed after the table.
+- `interval_df()`: the t degrees of freedom for `tidy()` intervals, or none
+  for normal intervals.
+
+`render()` composes the output as `heading`, then `before_coefficients`, then
+`\n{title}:\n`, then the coefficient table, then `after_coefficients`. The
+registry is `PRINTERS` in `crates/php-extension/src/printer.rs`.
+
+A new model kind needs one printer, one registry entry, and a fixture case.
+`tests/summary.php` fails when any `Phit\fit_*` function has no case.
 
 The following keys are read for every kind:
 
@@ -134,7 +158,7 @@ The following keys are read for every kind:
   `z_statistics` (the statistic is z). A null element reads as NaN.
 - `columns` gives the term names. Without it, the names are `x1`, `x2`, and so on.
 - `df_residual` and `n_observations` are integers. Integral floats are accepted.
-- `formula`, plus `family` and `link`, are optional. The `Family:` line appears only when both are strings.
+- `formula` is optional.
 - `intercept` (bool) is optional.
 
 Each kind also reads its own keys:
@@ -146,10 +170,13 @@ Each kind also reads its own keys:
 - **GLM:** `null_deviance`, `deviance`, and `aic`. The dispersion is
   `residual_variance` when the statistic is t, and 1 otherwise. The null df is
   `n_observations - intercept`, and it is printed only when `intercept` exists.
-- **Mixed:** `log_likelihood`, plus `aic` and `bic` (each optional), `method`
-  (REML when it equals `"REML"`), `integration` (present only for binomial
-  models), `quadrature_points`, `residual_variance` (Gaussian only), and
-  `singular` or else `boundary` (false when both are absent).
+- **Mixed Gaussian and mixed logistic:** `log_likelihood`, plus `aic` and
+  `bic` (each optional), and `singular` or else `boundary` (false when both
+  are absent).
+  - Mixed Gaussian also reads `method` (REML when it equals `"REML"`) and
+    `residual_variance`.
+  - Mixed logistic also reads `integration` (required) and
+    `quadrature_points`.
   - Random terms come from `random`, a list of arrays. Each term has `group`
     (default `g{i}`, 1-based), `columns` (default `z{j}`), `covariance`, and
     `correlated` (default true). The group count is the size of `group_labels`.
@@ -167,7 +194,9 @@ Every line ends in `\n`, so the text ends with exactly one newline. In the
 examples below, `{}` marks a substitution.
 
 The heading comes first, followed by `Family: {family} ({link})` and
-`Formula: {formula}` when they are present.
+`Formula: {formula}` when they are present. A GLM prints the family line when
+the fit has both `family` and `link`. Mixed logistic always prints
+`Family: binomial (logit)`.
 
 - Linear: `Linear model fit by least squares`.
 - GLM: `Generalized linear model fit by maximum likelihood`.
@@ -257,11 +286,13 @@ Every error is an `\Exception` with code 1001.
 
 - `fit must be a result of a Phit model function: {detail}`, where `{detail}`
   is one of the following:
-  - `not a linear, generalized linear, or mixed model result`
+  - `unknown model '{model}'`
   - `missing {key}`
   - `{key} must be numbers`
   - `coefficient lists differ in length`
   - `random terms must be arrays`
+  - `a random term's covariance must be square`
+  - `a random term's columns and covariance differ in size`
 - `level must be in (0, 1)`.
 
 ## Fixtures
@@ -276,7 +307,7 @@ Every error is an `\Exception` with code 1001.
   - `function`, a phit function name without the namespace.
   - `args`, the named arguments. When `data` is a string, it names the dataset.
   - `summary`, the exact expected text.
-  - `tidy`, the expected `tidy($fit, conf_int: true)`.
+  - `tidy`, the expected `tidy($fit, confInt: true)`.
   - `r_rows`, R's printed coefficient rows.
 
 `tests/summary.php` checks the summary text byte for byte and the tidy output

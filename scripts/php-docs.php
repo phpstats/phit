@@ -225,7 +225,7 @@ $descriptions = [
     ],
     'tidy' => [
         "Returns a fit's coefficient table as columns, like broom's `tidy()`.",
-        '- The columns are `term`, `estimate`, `std_error`, `statistic`, and `p_value`. `conf_int: true` adds `conf_low` and `conf_high` at `level`.',
+        '- The columns are `term`, `estimate`, `std_error`, `statistic`, and `p_value`. `confInt: true` adds `conf_low` and `conf_high` at `level`.',
         '- Intervals are Wald intervals: t with `df_residual` degrees of freedom when the fit reports t statistics, and the normal distribution otherwise.',
         '- Mixed fits give the fixed effects only; `summary()` prints the variance components.',
     ],

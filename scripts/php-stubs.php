@@ -3,7 +3,7 @@
 declare(strict_types=1);
 if (!extension_loaded('phit')) throw new RuntimeException('Load the phit extension before generating stubs');
 $functions = get_extension_funcs('phit'); sort($functions);
-$common = ['coefficients'=>'list<float>','covariance'=>'list<list<float>>','std_errors'=>'list<float>',
+$common = ['model'=>"'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic'",'coefficients'=>'list<float>','covariance'=>'list<list<float>>','std_errors'=>'list<float>',
  'p_values'=>'list<float>','conf_int'=>'list<array{float,float}>','fitted'=>'list<float>','residuals'=>'list<float>',
  'log_likelihood'=>'float','df_residual'=>'int','diagnostics'=>'array{converged:bool,solver:string,warnings:list<string>,iterations?:int,evaluations?:int,gradient_max?:float,boundary?:bool,singular?:bool}',
  'n_input'=>'int','n_observations'=>'int','n_dropped'=>'int','retained_rows'=>'list<int>','dropped_rows'=>'list<int>'];

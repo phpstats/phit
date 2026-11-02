@@ -11,9 +11,13 @@ The coefficient table follows `printCoefmat(digits = 4)` without significance
 stars. A linear model adds the residual standard error, R-squared, and the F
 statistic. A GLM adds the dispersion, the deviances, and AIC. A mixed model adds
 its fit criteria, the random-effect variances, and the group counts, as lme4
-prints them. `tidy(conf_int: true)` adds Wald intervals, which use t with the
+prints them. `tidy(confInt: true)` adds Wald intervals, which use t with the
 residual degrees of freedom when the fit reports t statistics and the normal
 distribution otherwise. For mixed fits, `tidy()` gives the fixed effects only.
+
+Every model result has a new `model` key: `linear`, `generalized_linear`,
+`mixed_gaussian`, or `mixed_logistic`. `summary()` and `tidy()` choose the
+printer for a fit from this key.
 
 The fixtures in `tests/fixtures/summary` compare every printed coefficient row
 with R 4.6.1 and lme4 2.0.6 on mtcars, mroz, MASS Insurance, sleepstudy, and
