@@ -3503,6 +3503,30 @@ function stat_weighted_mean(array $values, array $weights, string $missing = 'ra
 function stat_weighted_var(array $values, array $weights, string $type = 'frequency', string $missing = 'raise'): float {}
 
 /**
+ * Prints a model fit in the layout of R's `print(summary(fit))`, as text ending in a newline.
+ * - Takes the result of any model function: OLS and GLM fits, formula or matrix, and Gaussian and logistic mixed fits.
+ * - The coefficient table follows R's `printCoefmat(digits = 4)` without significance stars. A linear model adds the residual standard error, R-squared, and the F statistic; a GLM adds the dispersion, deviances, and AIC; a mixed model adds its fit criteria and the random-effect variances, as lme4 prints them.
+ * - Matrix fits name their coefficients x1, x2, and so on, and leave out the lines that need a formula.
+ * @param array<string,mixed> $fit Result of a model function, such as fit_ols() or fit_mixed_gaussian()
+ * @return string
+ * @throws \Exception Code 1001 when `fit` is not the result of a model function.
+ */
+function summary(array $fit): string {}
+
+/**
+ * Returns a fit's coefficient table as columns, like broom's `tidy()`.
+ * - The columns are `term`, `estimate`, `std_error`, `statistic`, and `p_value`. `conf_int: true` adds `conf_low` and `conf_high` at `level`.
+ * - Intervals are Wald intervals: t with `df_residual` degrees of freedom when the fit reports t statistics, and the normal distribution otherwise.
+ * - Mixed fits give the fixed effects only; `summary()` prints the variance components.
+ * @param array<string,mixed> $fit Result of a model function, such as fit_ols() or fit_mixed_gaussian()
+ * @param bool $conf_int Add conf_low and conf_high columns
+ * @param float $level Confidence level of the intervals, in (0, 1)
+ * @return array{term: list<string>, estimate: list<float>, std_error: list<float>, statistic: list<float>, p_value: list<float>, conf_low?: list<float>, conf_high?: list<float>}
+ * @throws \Exception Code 1001 when `fit` is not the result of a model function or `level` is outside (0, 1).
+ */
+function tidy(array $fit, bool $conf_int = false, float $level = 0.95): array {}
+
+/**
  * Finds a root of `f` in [`lower`, `upper`], like R's `uniroot()`.
  * - Uses Brent's method, step for step as R does. `f(lower)` and `f(upper)` must not have the same sign.
  * - Returns `root`, `f_root`, `iter`, and `estim_prec`. When it runs out of iterations it warns, sets `iter` to `maxiter`, and returns its last estimate.

@@ -6192,6 +6192,38 @@
         ],
         "return_type": "float"
     },
+    "Phit\\summary": {
+        "parameters": [
+            {
+                "name": "fit",
+                "type": "array",
+                "optional": false
+            }
+        ],
+        "return_type": "string"
+    },
+    "Phit\\tidy": {
+        "parameters": [
+            {
+                "name": "fit",
+                "type": "array",
+                "optional": false
+            },
+            {
+                "name": "conf_int",
+                "type": "bool",
+                "optional": true,
+                "default": false
+            },
+            {
+                "name": "level",
+                "type": "float",
+                "optional": true,
+                "default": 0.95
+            }
+        ],
+        "return_type": "array"
+    },
     "Phit\\uniroot": {
         "parameters": [
             {

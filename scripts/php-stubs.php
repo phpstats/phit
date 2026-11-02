@@ -153,6 +153,10 @@ foreach ($functions as $name) {
   $text.=" * @return array{\n";
   foreach($predict['result'] as $key=>$type)$text.=" *   $key: $type,\n";
   $text.=" * }\n * @throws \\Exception Input error (1001), malformed fit, new levels, or unsupported options (1007).\n */\n";
+ } elseif ($name==='Phit\summary') {
+  $text.="/**\n * Summary.\n * @param array<string,mixed> \$fit\n * @return string\n * @throws \\Exception\n */\n";
+ } elseif ($name==='Phit\tidy') {
+  $text.="/**\n * Tidy.\n * @param array<string,mixed> \$fit\n * @return array{term: list<string>, estimate: list<float>, std_error: list<float>, statistic: list<float>, p_value: list<float>, conf_low?: list<float>, conf_high?: list<float>}\n * @throws \\Exception\n */\n";
  } elseif (isset($optimizers[$name])) {
   $text.="/**\n * {$optimizers[$name]}\n * f receives one float and returns an int or float; an exception from f propagates. Nonfinite values during the search\n * are replaced by +/-PHP_FLOAT_MAX, as R does, with one E_WARNING.\n";
   $text.=" * @param callable(float): (int|float) \$f\n * @param float|null \$tol Default PHP_FLOAT_EPSILON ** 0.25, as R\n";

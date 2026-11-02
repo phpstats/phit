@@ -8,6 +8,7 @@ pub mod logistic;
 pub mod ols;
 pub mod optimize;
 pub mod smoothing;
+pub mod summary;
 pub use logistic::{LogisticResult, fit_logistic};
 pub use ols::{OlsResult, fit_ols};
 mod error;

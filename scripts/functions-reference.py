@@ -64,6 +64,8 @@ PURPOSE = {
     'dist_categorical_rows_rng': 'One seeded category index per row of probabilities.',
     'permutation_rng': 'A seeded random permutation or sample without replacement.',
     'read_csv': 'Read a delimited text file into typed columns.',
+    'summary': "Print a model fit as R's print(summary(fit)) does.",
+    'tidy': "Return a fit's coefficient table as columns, like broom's tidy().",
 }
 
 # Pages: (file, title, intro, sections of (heading, functions)).
@@ -72,7 +74,8 @@ PAGES = [
      'Linear and generalized linear models from a formula or a numeric design. Result keys, inference, and algorithms '
      'are detailed in [Model contracts](../reference-models.qmd); formula syntax in [Model formulas](../formulas.qmd).',
      [('Formula models', ['fit_ols', 'fit_generalized_linear', 'model_matrix', 'predict']),
-      ('Matrix models', ['fit_ols_matrix', 'fit_logistic_matrix', 'fit_probit_matrix', 'fit_poisson_matrix'])]),
+      ('Matrix models', ['fit_ols_matrix', 'fit_logistic_matrix', 'fit_probit_matrix', 'fit_poisson_matrix']),
+      ('Printing results', ['summary', 'tidy'])]),
     ('mixed-models', 'Mixed-model functions',
      'Gaussian and binomial mixed models. See [Mixed models](../mixed-models.qmd) for the supported structures and '
      '[Model contracts](../reference-models.qmd) for result keys and algorithms.',
@@ -124,6 +127,8 @@ GUIDES = {
     'dist_categorical_rows_rng': ('../rng.qmd#uniform-categorical-and-permutation-sampling', None),
     'permutation_rng': ('../rng.qmd#uniform-categorical-and-permutation-sampling', None),
     'read_csv': ('../io.qmd', None),
+    'summary': ('../models.qmd#printing-a-fit', '../examples/linear-model.qmd'),
+    'tidy': ('../models.qmd#printing-a-fit', '../examples/glm.qmd'),
 }
 for name in ['stat_mean', 'stat_median', 'stat_var', 'stat_sd', 'stat_quantile', 'stat_quantile_array',
              'stat_weighted_mean', 'stat_weighted_var', 'stat_cov', 'stat_cor']:

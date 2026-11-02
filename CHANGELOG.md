@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.5.0
+
+`summary()` prints a model fit in the layout of R's `print(summary(fit))`, and
+`tidy()` returns its coefficient table as columns, as broom's `tidy()` does.
+Both take the result of any model function: OLS and generalized linear fits,
+from a formula or a matrix, and Gaussian and logistic mixed fits.
+
+The coefficient table follows `printCoefmat(digits = 4)` without significance
+stars. A linear model adds the residual standard error, R-squared, and the F
+statistic. A GLM adds the dispersion, the deviances, and AIC. A mixed model adds
+its fit criteria, the random-effect variances, and the group counts, as lme4
+prints them. `tidy(conf_int: true)` adds Wald intervals, which use t with the
+residual degrees of freedom when the fit reports t statistics and the normal
+distribution otherwise. For mixed fits, `tidy()` gives the fixed effects only.
+
+The fixtures in `tests/fixtures/summary` compare every printed coefficient row
+with R 4.6.1 and lme4 2.0.6 on mtcars, mroz, MASS Insurance, sleepstudy, and
+cbpp.
+
 ## 0.4.4
 
 The listwise-deletion warning names the function once. PHP already prefixes

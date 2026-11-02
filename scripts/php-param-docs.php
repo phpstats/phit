@@ -112,4 +112,9 @@ return [
     'other:upper' => 'Upper end of the search interval',
     'other:maximum' => 'Maximize instead of minimize',
     'other:maxiter' => 'Largest number of iterations',
+    // Model printing.
+    'summary:fit' => 'Result of a model function, such as fit_ols() or fit_mixed_gaussian()',
+    'tidy:fit' => 'Result of a model function, such as fit_ols() or fit_mixed_gaussian()',
+    'tidy:conf_int' => 'Add conf_low and conf_high columns',
+    'tidy:level' => 'Confidence level of the intervals, in (0, 1)',
 ];

@@ -11,6 +11,7 @@ mod descriptive;
 mod distributions;
 mod draws;
 mod optimize;
+mod printer;
 mod smoothing;
 fn stats_exception(e: stats_core::StatsError) -> PhpException {
     PhpException::new(
@@ -1111,5 +1112,5 @@ pub fn get_module(module: ModuleBuilder) -> ModuleBuilder {
     let module = aliases::register(formula::register(module));
     let module = distributions::register(module);
     let module = smoothing::register(descriptive::register(module));
-    csv::register(draws::register(optimize::register(module)))
+    printer::register(csv::register(draws::register(optimize::register(module))))
 }
