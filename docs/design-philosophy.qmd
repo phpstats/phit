@@ -2,11 +2,11 @@
 title: "Design philosophy"
 ---
 
-phit provides statistical models and numerical routines through PHP functions with explicit inputs and array results. Numerical behavior is checked against reference implementations on shared inputs.
+phit provides statistical models and numerical routines through PHP functions with explicit inputs and documented result types. Numerical behavior is checked against reference implementations on shared inputs.
 
 ## Principles
 
-- **Plain inputs and outputs.** Functions take PHP arrays, or a table object with `toModelData()` or `toColumns()`, Model functions return fit objects that print their summary and read like the result array; everything else returns arrays or numbers. There are no services.
+- **Plain inputs and outputs.** Functions take PHP arrays or a table object with `toModelData()` or `toColumns()`. Model functions return fit objects that print their summary and read like arrays. Other functions return arrays, scalar values, or tables.
 - **Two levels of input.** The formula functions build a design from named columns as R does. The `*_matrix` functions take a literal design for code that builds its own. Both call the same estimators.
 - **Documented defaults.** OLS inference is homoskedastic with 95% t intervals. Logistic, probit, and Poisson fits use maximum likelihood with 95% normal Wald intervals. Rank-deficient designs are rejected, and undefined statistics are `NAN` or `INF`.
 - **Visible missing-data handling.** Incomplete rows are dropped with a warning and reported in every result, or rejected with `missing: 'raise'`. See [Missing values](missing-data.qmd).
@@ -18,7 +18,7 @@ phit provides statistical models and numerical routines through PHP functions wi
 | Component | Responsibility |
 | --- | --- |
 | `stats-core` | Estimation, inference, and numerical validation. It takes Rust vectors and returns a dedicated result struct or a `StatsError`, with no PHP types. |
-| `php-extension` | PHP value inspection, formula parsing and design construction, numeric conversion, missing-row filtering with warnings and accounting, exceptions, result arrays, and the CSV reader. |
+| `php-extension` | PHP value inspection, formula parsing and design construction, numeric conversion, missing-row filtering with warnings and accounting, exceptions, fit objects and result conversion, and the CSV reader. |
 | Rust crates | Matrix decompositions, special functions, and optimizers. phit's own code expresses the statistical formulas. |
 
 phit uses Rust-native numerical crates. An external BLAS or LAPACK backend needs a demonstrated numerical, performance, or deployment benefit and must preserve the contract and reference agreement.

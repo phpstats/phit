@@ -10,20 +10,20 @@ phit has two implementations of the `Phit\` functions. Code written against one 
 | Implementation | Compiled Rust, installed into PHP | Plain PHP, installed with Composer |
 | Install | PIE or a prebuilt binary ([Installation](installation.qmd)) | `composer require phpstats/phit-polyfill` |
 | Functions | All | All except `read_csv()` and `CsvReader` |
-| PHP | 8.3, 8.4, 8.5 (NTS) on Linux and macOS | `^8.3`; CI on Linux and macOS, Windows untested |
+| PHP | 8.3, 8.4, 8.5 (NTS) on Linux and macOS | `>=8.3 <8.6`; CI on Linux and macOS, Windows untested |
 | OPcache JIT | Runs under any setting | Refuses to run while the JIT compiles the process |
 | Speed | Faster | Slower; the gap grows with model size |
 
 ## Versions
 
-Each polyfill release reproduces one phit release. Polyfill 0.6.0 reproduces phit v0.6.0 and provides 234 of its 235 functions.
+Each polyfill release reproduces one phit release. Polyfill 0.6.2 targets phit v0.6.2 and provides 234 of its 235 functions. There is no polyfill 0.6.1 release. The [polyfill's version table](https://github.com/phpstats/phit-polyfill#versions) lists the corresponding releases.
 
 ## Coexistence {#how-they-coexist}
 
 - Composer loads the polyfill's `bootstrap.php` through its `files` autoload. If `extension_loaded('phit')` is true, the bootstrap defines nothing, so every `Phit\` function is the extension's. Installing both is safe.
 - The polyfill does not fill gaps in an older extension. If the loaded extension is older than the polyfill's phit release, functions added since then stay undefined.
 - The polyfill's composer.json declares `"provide": {"ext-phit": "*"}`, so it satisfies a package that requires `ext-phit`, including one that uses the CSV reader.
-- Without the extension, `function_exists('Phit\read_csv')` and `class_exists('Phit\CsvReader')` return false, as does `Phit\Polyfill::supports('Phit\read_csv')`. phibble's `DataFrame::fromCsv()` then uses its own PHP reader.
+- Without the extension, `function_exists('Phit\read_csv')` and `class_exists('Phit\CsvReader')` return false, as does `Phit\Polyfill\Polyfill::supports('Phit\read_csv')`. phibble's `DataFrame::fromCsv()` then uses its own PHP reader.
 
 ## Coverage
 

@@ -118,7 +118,7 @@ The renderer reads saved reports and small point snapshots exported by the noteb
 
 ## Publishing
 
-phpstats.org imports the rendered HTML committed under `docs/`, and GitHub Pages serves the same directory at <https://phpstats.github.io/phit/>. Neither runs Quarto.
+phpstats.org imports the rendered HTML committed under `docs/` and serves it at <https://phit.phpstats.org/docs>. The GitHub Pages workflow publishes redirects from the former documentation URLs to the corresponding pages on phpstats.org. Neither publishing step runs Quarto.
 
 - Every page in the `docs/_quarto.yml` sidebar needs its rendered HTML committed.
 - After editing sources or refreshing frozen results, run `./scripts/render-docs` and commit the HTML and assets with their sources.

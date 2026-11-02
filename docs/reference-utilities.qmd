@@ -151,7 +151,7 @@ Phit\uniroot(
 | `optimize` | `optimize()` | `['minimum' => x, 'objective' => f(x)]`, or `['maximum' => x, 'objective' => f(x)]` with `maximum: true` |
 | `uniroot` | `uniroot()` | `['root', 'f_root', 'iter', 'estim_prec']` |
 
-- Both follow R's C code (`Brent_fmin` and `R_zeroin2`) step by step, so they evaluate `f` at the same points and return the same doubles.
+- Both implement Brent's methods from his published algorithms and the public-domain Netlib `fmin.f` and `zeroin.f` routines, with the defaults and boundary behavior specified in phit's [clean-room specification](https://github.com/phpstats/phit/blob/main/specs/cleanroom/brent.md).
 - The default `tol` is R's `.Machine$double.eps^0.25`.
 - `f` is any PHP callable that takes one float and returns an int or float. Any other return value raises 1001. An exception thrown by `f` propagates unchanged.
 - As in R, a nonfinite value during the search is replaced by the largest finite value, keeping the sign of `-INF` in `uniroot`. One `E_WARNING` reports the replacement.

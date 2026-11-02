@@ -667,7 +667,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="publishing" class="level2">
 <h2 class="anchored" data-anchor-id="publishing">Publishing</h2>
-<p>phpstats.org imports the rendered HTML committed under <code>docs/</code>, and GitHub Pages serves the same directory at <a href="https://phpstats.github.io/phit/" class="uri">https://phpstats.github.io/phit/</a>. Neither runs Quarto.</p>
+<p>phpstats.org imports the rendered HTML committed under <code>docs/</code> and serves it at <a href="https://phit.phpstats.org/docs" class="uri">https://phit.phpstats.org/docs</a>. The GitHub Pages workflow publishes redirects from the former documentation URLs to the corresponding pages on phpstats.org. Neither publishing step runs Quarto.</p>
 <ul>
 <li>Every page in the <code>docs/_quarto.yml</code> sidebar needs its rendered HTML committed.</li>
 <li>After editing sources or refreshing frozen results, run <code>./scripts/render-docs</code> and commit the HTML and assets with their sources.</li>

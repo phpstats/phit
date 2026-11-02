@@ -857,7 +857,7 @@ window.Quarto = {
 </tbody>
 </table>
 <ul>
-<li>Both follow R’s C code (<code>Brent_fmin</code> and <code>R_zeroin2</code>) step by step, so they evaluate <code>f</code> at the same points and return the same doubles.</li>
+<li>Both implement Brent’s methods from his published algorithms and the public-domain Netlib <code>fmin.f</code> and <code>zeroin.f</code> routines, with the defaults and boundary behavior specified in phit’s <a href="https://github.com/phpstats/phit/blob/main/specs/cleanroom/brent.md">clean-room specification</a>.</li>
 <li>The default <code>tol</code> is R’s <code>.Machine$double.eps^0.25</code>.</li>
 <li><code>f</code> is any PHP callable that takes one float and returns an int or float. Any other return value raises 1001. An exception thrown by <code>f</code> propagates unchanged.</li>
 <li>As in R, a nonfinite value during the search is replaced by the largest finite value, keeping the sign of <code>-INF</code> in <code>uniroot</code>. One <code>E_WARNING</code> reports the replacement.</li>
