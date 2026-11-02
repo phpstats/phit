@@ -27,6 +27,28 @@ function sameToken(string $a, string $b): bool
     return strlen($ma[1]) === strlen($mb[1]) && abs((float) $a - (float) $b) <= 1.000001 * 10 ** -strlen($ma[1]);
 }
 
+// The same tidy columns: terms exactly, numbers to 1e-8 relative. The fixtures come from one platform, and the
+// iterative fits can differ in the last bits elsewhere (the printed summary must still match byte for byte).
+function sameTidy(array $ours, array $expected): bool
+{
+    if (array_keys($ours) !== array_keys($expected) || $ours['term'] !== $expected['term']) {
+        return false;
+    }
+    foreach ($expected as $column => $values) {
+        if ($column === 'term') {
+            continue;
+        }
+        foreach ($values as $i => $v) {
+            $a = $ours[$column][$i];
+            if (! (is_nan($v) ? is_nan($a) : abs($a - $v) <= 1e-8 * max(abs($v), 1e-300))) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 $fixture = json_decode(file_get_contents(__DIR__.'/fixtures/summary/summary.json'), true, flags: JSON_THROW_ON_ERROR);
 $rowsChecked = 0;
 foreach ($fixture['cases'] as $case) {
@@ -37,7 +59,7 @@ foreach ($fixture['cases'] as $case) {
     $fit = ('Phit\\'.$case['function'])(...$args);
     $text = Phit\summary($fit);
     scheck($text === $case['summary'], "{$case['name']}: summary text differs:\n$text");
-    scheck(Phit\tidy($fit, confInt: true) == $case['tidy'], "{$case['name']}: tidy differs");
+    scheck(sameTidy(Phit\tidy($fit, confInt: true), $case['tidy']), "{$case['name']}: tidy differs");
 
     // The printed coefficient rows: every number R prints must print the same here.
     $lines = explode("\n", $text);

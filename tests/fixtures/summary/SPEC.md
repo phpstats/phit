@@ -310,8 +310,9 @@ Every error is an `\Exception` with code 1001.
   - `tidy`, the expected `tidy($fit, confInt: true)`.
   - `r_rows`, R's printed coefficient rows.
 
-`tests/summary.php` checks the summary text byte for byte and the tidy output
-with `==`. It also checks that each number in each coefficient row matches
+`tests/summary.php` checks the summary text byte for byte. It checks the tidy
+terms exactly and the tidy numbers to a relative difference of 1e-8, because
+the iterative fits can differ in the last bits between platforms. It also checks that each number in each coefficient row matches
 R's row, allowing one unit in the last printed place. Random-effect variances
 are not compared with R, because lme4's optimizer stops at a slightly
 different point.
