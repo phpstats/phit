@@ -16,7 +16,7 @@ phit has two implementations of the `Phit\` functions. Code written against one 
 
 ## Versions
 
-Each polyfill release reproduces one phit release. Polyfill 0.4.2 reproduces phit v0.4.4 and provides 242 of its 243 functions, including the deprecated aliases.
+Each polyfill release reproduces one phit release. Polyfill 0.5.0 reproduces phit v0.5.0 and provides 234 of its 235 functions.
 
 ## How they coexist
 

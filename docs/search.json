@@ -697,7 +697,7 @@
     "href": "installation.html#prebuilt-linux-binaries",
     "title": "Installation",
     "section": "Prebuilt Linux binaries",
-    "text": "Prebuilt Linux binaries\nEach GitHub release has the binaries PIE uses. They are built on Debian Bookworm for NTS, non-debug PHP, and can be installed by hand. The names follow this pattern, shown for v0.4.4:\n\n\n\n\n\n\n\n\nPHP\nx86_64\narm64\n\n\n\n\n8.3\nphp_phit-v0.4.4_php8.3-x86_64-linux-glibc-nts.zip\nphp_phit-v0.4.4_php8.3-arm64-linux-glibc-nts.zip\n\n\n8.4\nphp_phit-v0.4.4_php8.4-x86_64-linux-glibc-nts.zip\nphp_phit-v0.4.4_php8.4-arm64-linux-glibc-nts.zip\n\n\n8.5\nphp_phit-v0.4.4_php8.5-x86_64-linux-glibc-nts.zip\nphp_phit-v0.4.4_php8.5-arm64-linux-glibc-nts.zip\n\n\n\nEach archive holds phit.so, INSTALL.txt, a manifest.json with the build environment and minimum glibc, the license, and the third-party notices. A .sha256 file sits beside each archive.\nf=php_phit-v0.4.4_php8.4-x86_64-linux-glibc-nts\nsha256sum -c \"$f.sha256\"\nunzip \"$f.zip\" -d phit\nsudo cp phit/phit.so \"$(php-config --extension-dir)/\"\nThen add extension=phit.so to the PHP configuration of each runtime that needs it, and restart PHP-FPM.",
+    "text": "Prebuilt Linux binaries\nEach GitHub release has the binaries PIE uses. They are built on Debian Bookworm for NTS, non-debug PHP, and can be installed by hand. The names follow this pattern, shown for v0.5.0:\n\n\n\n\n\n\n\n\nPHP\nx86_64\narm64\n\n\n\n\n8.3\nphp_phit-v0.5.0_php8.3-x86_64-linux-glibc-nts.zip\nphp_phit-v0.5.0_php8.3-arm64-linux-glibc-nts.zip\n\n\n8.4\nphp_phit-v0.5.0_php8.4-x86_64-linux-glibc-nts.zip\nphp_phit-v0.5.0_php8.4-arm64-linux-glibc-nts.zip\n\n\n8.5\nphp_phit-v0.5.0_php8.5-x86_64-linux-glibc-nts.zip\nphp_phit-v0.5.0_php8.5-arm64-linux-glibc-nts.zip\n\n\n\nEach archive holds phit.so, INSTALL.txt, a manifest.json with the build environment and minimum glibc, the license, and the third-party notices. A .sha256 file sits beside each archive.\nf=php_phit-v0.5.0_php8.4-x86_64-linux-glibc-nts\nsha256sum -c \"$f.sha256\"\nunzip \"$f.zip\" -d phit\nsudo cp phit/phit.so \"$(php-config --extension-dir)/\"\nThen add extension=phit.so to the PHP configuration of each runtime that needs it, and restart PHP-FPM.",
     "crumbs": [
       "Getting started",
       "Installation"
@@ -708,7 +708,7 @@
     "href": "installation.html#verify",
     "title": "Installation",
     "section": "Verify",
-    "text": "Verify\nphp -r 'echo phpversion(\"phit\"), PHP_EOL;'\nThe command prints the installed version, such as 0.4.4.\nThe command line and PHP-FPM often read different configuration files. Check the web runtime separately, for example with extension_loaded('phit') in a request. Restart PHP-FPM workers after installing or upgrading. Deploying to servers covers containers and FPM.",
+    "text": "Verify\nphp -r 'echo phpversion(\"phit\"), PHP_EOL;'\nThe command prints the installed version, such as 0.5.0.\nThe command line and PHP-FPM often read different configuration files. Check the web runtime separately, for example with extension_loaded('phit') in a request. Restart PHP-FPM workers after installing or upgrading. Deploying to servers covers containers and FPM.",
     "crumbs": [
       "Getting started",
       "Installation"
@@ -939,7 +939,7 @@
     "href": "extension-or-polyfill.html#versions",
     "title": "Extension or polyfill",
     "section": "Versions",
-    "text": "Versions\nEach polyfill release reproduces one phit release. Polyfill 0.4.2 reproduces phit v0.4.4 and provides 242 of its 243 functions, including the deprecated aliases.",
+    "text": "Versions\nEach polyfill release reproduces one phit release. Polyfill 0.4.2 reproduces phit v0.5.0 and provides 242 of its 243 functions, including the deprecated aliases.",
     "crumbs": [
       "Getting started",
       "Extension or polyfill"
