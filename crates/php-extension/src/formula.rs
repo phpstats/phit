@@ -785,8 +785,10 @@ pub fn model_matrix(formula: &str, data: &Zval, missing: &str) -> PhpResult<ZBox
     Ok(out)
 }
 
-/// Linear model from a formula: the OLS core plus coefficient names. Phit\\fit_ols dispatches here.
-pub fn ols_formula(
+/// Linear model from a formula: the OLS core plus coefficient names.
+#[php_function]
+#[php(name = "Phit\\fit_ols", defaults(missing = "\"drop\""))]
+pub fn fit_ols(
     formula: &str,
     data: &Zval,
     missing: &str,
@@ -1162,6 +1164,7 @@ pub fn fit_mixed_logistic(
 
 pub fn register(module: ModuleBuilder) -> ModuleBuilder {
     module
+        .function(wrap_function!(fit_ols))
         .function(wrap_function!(model_matrix))
         .function(wrap_function!(fit_generalized_linear))
         .function(wrap_function!(fit_mixed_gaussian))

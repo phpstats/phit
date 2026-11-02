@@ -4542,15 +4542,13 @@
         "parameters": [
             {
                 "name": "formula",
-                "type": "mixed",
-                "optional": true,
-                "default": null
+                "type": "string",
+                "optional": false
             },
             {
                 "name": "data",
                 "type": "mixed",
-                "optional": true,
-                "default": null
+                "optional": false
             },
             {
                 "name": "missing",
@@ -4561,30 +4559,6 @@
             {
                 "name": "weights",
                 "type": "mixed",
-                "optional": true,
-                "default": null
-            },
-            {
-                "name": "offset",
-                "type": "?array",
-                "optional": true,
-                "default": null
-            },
-            {
-                "name": "intercept",
-                "type": "bool",
-                "optional": true,
-                "default": true
-            },
-            {
-                "name": "x",
-                "type": "?array",
-                "optional": true,
-                "default": null
-            },
-            {
-                "name": "y",
-                "type": "?array",
                 "optional": true,
                 "default": null
             }

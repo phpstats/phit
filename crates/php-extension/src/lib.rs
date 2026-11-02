@@ -462,7 +462,6 @@ macro_rules! glm_output {
     }};
 }
 
-mod aliases;
 mod formula;
 
 #[php_function]
@@ -1109,7 +1108,7 @@ pub fn get_module(module: ModuleBuilder) -> ModuleBuilder {
         .function(wrap_function!(fit_mixed_gaussian_intercept_matrix))
         .function(wrap_function!(fit_mixed_gaussian_matrix))
         .function(wrap_function!(fit_mixed_logistic_matrix));
-    let module = aliases::register(formula::register(module));
+    let module = formula::register(module);
     let module = distributions::register(module);
     let module = smoothing::register(descriptive::register(module));
     printer::register(csv::register(draws::register(optimize::register(module))))

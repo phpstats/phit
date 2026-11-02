@@ -198,11 +198,10 @@ def signature(fn):
     return f"Phit\\{fn['name']}(\n" + '\n'.join(lines) + f"\n): {fn['return_type']}"
 
 
-# Types a caller passes, where reflection shows the deprecated overload or a broad mixed.
+# Types a caller passes, where reflection shows a broad mixed.
 DOCUMENTED_TYPES = {'formula': 'string', 'data': 'array|object', 'newdata': 'array|object',
                     'weights': 'array|string|null', 'bw': 'string|float'}
-# Parameters of the deprecated matrix form of fit_ols(), left out of its documented signature.
-HIDDEN = {'fit_ols': {'offset', 'intercept', 'x', 'y'}}
+HIDDEN = {}
 
 
 def shown_params(fn):

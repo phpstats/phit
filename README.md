@@ -58,9 +58,6 @@ extensions cannot be installed.
 | Optimization | `optimize`, `uniroot` |
 | CSV input | `read_csv`, `CsvReader` |
 
-phit 0.4 renamed the model functions. The 0.3 names still work as deprecated
-aliases until 0.5; [CHANGELOG.md](CHANGELOG.md) has the migration table.
-
 All functions are in the `Phit` namespace. [stubs/phit.php](stubs/phit.php)
 declares them for IDEs and static analysis; do not load it at runtime.
 

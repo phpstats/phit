@@ -2532,14 +2532,9 @@ function fit_mixed_logistic_matrix(array $x, array $y, array $groups, string $mi
  * - Factor levels left unused after missing rows are dropped are removed, as `lm()` does.
  * - A rank-deficient design throws instead of returning R's `NA` coefficients.
  * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
- * - An array as the first argument is deprecated; use `fit_ols_matrix()`.
- * @param string|array<array<int|float|null>> $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'; an array here is the deprecated matrix form
- * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object|array<int|float|null> $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
+ * @param string $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'
+ * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
- * @param array<int|float|null>|null $offset Deprecated matrix form; in a formula, write offset()
- * @param bool $intercept Deprecated matrix form; in a formula, write - 1
- * @param array<array<int|float|null>>|null $x Deprecated: use Phit\fit_ols_matrix()
- * @param array<int|float|null>|null $y Deprecated: use Phit\fit_ols_matrix()
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @return array{
  *   coefficients: list<float>,
@@ -2574,7 +2569,7 @@ function fit_mixed_logistic_matrix(array $x, array $y, array $groups, string $mi
  * }
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  */
-function fit_ols(mixed $formula = NULL, mixed $data = NULL, string $missing = 'drop', mixed $weights = NULL, ?array $offset = NULL, bool $intercept = true, ?array $x = NULL, ?array $y = NULL): array {}
+function fit_ols(string $formula, mixed $data, string $missing = 'drop', mixed $weights = NULL): array {}
 
 /**
  * Fits a linear model by least squares on a numeric design, like R's `lm.fit()` with the full summary.

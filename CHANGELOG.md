@@ -36,8 +36,9 @@ same arguments.
 - `fit_mixed()`: use `fit_mixed_gaussian_matrix()`.
 - `fit_logistic_mixed()`: use `fit_mixed_logistic_matrix()`.
 
-`fit_ols()` with a matrix remains deprecated and still forwards to
-`fit_ols_matrix()`.
+`fit_ols()` takes only a formula. Its matrix form, `fit_ols($x, $y)`,
+deprecated since 0.4.0, is removed: call `fit_ols_matrix()`. The `offset`,
+`intercept`, `x`, and `y` parameters are gone from `fit_ols()`.
 
 ## 0.4.4
 

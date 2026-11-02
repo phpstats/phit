@@ -48,7 +48,6 @@ $descriptions = [
         '- Factor levels left unused after missing rows are dropped are removed, as `lm()` does.',
         "- A rank-deficient design throws instead of returning R's `NA` coefficients.",
         $missingFormula,
-        '- An array as the first argument is deprecated; use `fit_ols_matrix()`.',
     ],
     'fit_generalized_linear' => [
         "Fits a generalized linear model from a formula, like R's `glm()`.",

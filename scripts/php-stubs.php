@@ -80,7 +80,7 @@ $formulas=[
  'Phit\model_matrix'=>['summary'=>"R-compatible model.matrix() for a formula over named columns: treatment contrasts (first level is the reference),\n * contr.poly for ordered factors, R column names/term order, inline transforms, offset() and random-effect bars.\n * Unused factor levels are kept, as in model.matrix(); x includes the \"(Intercept)\" column when present.",
   'result'=>['y'=>'list<float>|list<array{float,float}>|null','response_levels?'=>'list<string>','x'=>'list<list<float>>','columns'=>'list<string>','intercept'=>'bool','terms'=>'list<string>','assign'=>'list<int>',
    'formula'=>'string','response'=>'string|null','offset'=>'list<float>|null','random'=>$randomShape,'n_input'=>'int','n_observations'=>'int','n_dropped'=>'int','retained_rows'=>'list<int>','dropped_rows'=>'list<int>']],
- 'Phit\fit_ols'=>['summary'=>"Linear model from a formula, like R's lm(): builds the model matrix and fits by least squares, weighted least squares\n * when weights are given (as lm(weights = )), with offset() terms. Until phit 0.5, an array first argument (or named x:/y:) runs the deprecated\n * matrix fit, Phit\\fit_ols_matrix(), with one E_USER_DEPRECATED; its result has no formula keys.\n * Factor levels unused after deletion are dropped, as lm() does. Rank deficiency raises 1004 instead of R's NA coefficients.",
+ 'Phit\fit_ols'=>['summary'=>"Linear model from a formula, like R's lm(): builds the model matrix and fits by least squares, weighted least squares\n * when weights are given (as lm(weights = )), with offset() terms.\n * Factor levels unused after deletion are dropped, as lm() does. Rank deficiency raises 1004 instead of R's NA coefficients.",
   'result'=>$common+$olsKeys+$naming],
  'Phit\fit_generalized_linear'=>['summary'=>"Generalized linear model from a formula, like R's glm(): gaussian/identity (the OLS core), binomial/logit, binomial/probit\n * and poisson/log (the matrix GLM cores). Binomial responses: 0/1, logical, factor/string (first level = failure),\n * proportions with trial weights, or cbind(successes, failures). The empty link selects the canonical link.",
   'result'=>$common+$glm+['family'=>'string','link'=>'string']+$naming+['t_statistics?'=>'list<float>','rss?'=>'float','residual_variance?'=>'float','sigma?'=>'float','r_squared?'=>'float','adj_r_squared?'=>'float']],
@@ -133,12 +133,10 @@ foreach ($functions as $name) {
   $contract=$formulas[$name];
   $api[$alias]['result_keys']=array_map(fn($k)=>rtrim($k,'?'),array_keys($contract['result']));sort($api[$alias]['result_keys']);
   $text.="/**\n * {$contract['summary']}\n * Formula syntax and R differences: docs/formulas.qmd. Rows with null/NAN in any variable the formula uses are\n * dropped with one E_WARNING (missing 'raise' rejects them); retained_rows/dropped_rows are original positions.\n";
-  $matrix=$alias==='Phit\fit_ols'?'; an array here is the deprecated matrix form':'';
-  $text.=" * @param string".($matrix?'|array<array<int|float|null>>':'')." \$formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'$matrix\n";
-  $text.=" * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object".($matrix?'|array<int|float|null>':'')." \$data Named columns or factor descriptors; objects use toModelData(), else toColumns()".($matrix?'':'')."\n";
+  $text.=" * @param string \$formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'\n";
+  $text.=" * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object \$data Named columns or factor descriptors; objects use toModelData(), else toColumns()\n";
   if($name==='Phit\fit_generalized_linear'||$alias==='Phit\fit_glmer')$text.=" * @param string \$family 'gaussian', 'binomial', or 'poisson'\n * @param string \$link '' (canonical), 'identity', 'logit', 'probit', or 'log'\n";
   if($name!=='Phit\model_matrix')$text.=" * @param array<int|float|null>|string|null \$weights Positive prior weights aligned with the original rows, or a column name\n";
-  if($matrix)$text.=" * @param array<int|float|null>|null \$offset Deprecated matrix form; in a formula, write offset()\n * @param bool \$intercept Deprecated matrix form; in a formula, write - 1\n * @param array<array<int|float|null>>|null \$x Deprecated: use Phit\\fit_ols_matrix()\n * @param array<int|float|null>|null \$y Deprecated: use Phit\\fit_ols_matrix()\n";
   $text.=" * @return array{\n";
   foreach($contract['result'] as $key=>$type)$text.=" *   $key: $type,\n";
   $text.=" * }\n * @throws \\Exception Statistical or input error (codes 1001–1008); unsupported functions/families/random terms raise 1007.\n */\n";

@@ -17,7 +17,6 @@ Fits a linear model from a formula, like R's `lm()`.
 - Factor levels left unused after missing rows are dropped are removed, as `lm()` does.
 - A rank-deficient design throws instead of returning R's `NA` coefficients.
 - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
-- An array as the first argument is deprecated; use `fit_ols_matrix()`.
 
 ```php
 Phit\fit_ols(
@@ -30,7 +29,7 @@ Phit\fit_ols(
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `$formula` | `string` | required | R formula, such as `'y ~ log(x) + f * z + offset(log(t))'`; an array here is the deprecated matrix form |
+| `$formula` | `string` | required | R formula, such as `'y ~ log(x) + f * z + offset(log(t))'` |
 | `$data` | `array\|object` | required | Named columns or factor descriptors; objects use `toModelData()`, else `toColumns()` |
 | `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
 | `$weights` | `array\|string\|null` | `NULL` | Positive prior weights aligned with the original rows, or a column name |
