@@ -298,7 +298,10 @@ whose printer has no random terms (linear or GLM) throws
   in the order of `group_labels`. lme4's `as.data.frame(ranef(fit))` uses the
   same order.
 - `group` is the term's group name, `term` is the column name, and `level` is
-  the group label as a string. Integers print as decimal integers.
+  the group label as a string. Integers print as decimal integers. Floats print in Rust's
+  `f64` Display form: the shortest digits that read back as the same double,
+  never with an exponent (1e20 prints as `100000000000000000000`, and 1.5e-7
+  as `0.00000015`). This form differs from PHP's `(string)` cast.
 - `estimate` is the conditional mode. `std_error` is the square root of the
   diagonal of the conditional covariance.
 - The values are read from the keys below, using the same defaults for the
