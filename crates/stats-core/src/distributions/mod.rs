@@ -16,6 +16,7 @@ mod continuous;
 mod discrete;
 mod quantile;
 mod rng;
+mod saddle;
 mod special;
 
 pub use continuous::{

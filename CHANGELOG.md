@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.1
+
+### Changed
+
+- Routines that followed R's source (one-dimensional optimization and root
+  finding, printed number formatting, linear binning and interpolation, the
+  normal density, the type-7 quantile, Stirling and deviance terms, the
+  saddle-point Poisson and binomial log probabilities, and the incomplete gamma
+  series and incomplete gamma and beta continued fractions) are reimplemented
+  from published algorithms and public-domain sources. Results are unchanged
+  within the tested tolerances.
+
 ## 0.6.0
 
 Every model function returns a fit object instead of an array. `echo $fit`

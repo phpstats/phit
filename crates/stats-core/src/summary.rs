@@ -1,207 +1,11 @@
 //! Text summaries of model results in the layout of R's `print(summary(fit))`, and the number formatting they use.
 //!
-//! The formatting follows R's `formatReal()` (via `format()`), `format.pval()`, and C's `%g` (via `formatC()`),
-//! built on correctly rounded decimal conversion, so the output can be reproduced exactly elsewhere.
+//! The number formatting is in `crate::rformat`, written from the clean-room specification
+//! specs/cleanroom/format.md. This module lays out the printed summaries and tables.
 
 use crate::distributions::{FisherF, Normal, StudentT};
 
-/// Significant digits for coefficient tables, as R's `max(3, getOption("digits") - 3)`.
-pub const DIGITS: usize = 4;
-
-/// Decimal digits of |x| rounded to `digits` significant digits: (mantissa digits, decimal exponent).
-fn sig_digits(x: f64, digits: usize) -> (Vec<u8>, i32) {
-    let s = format!("{:.*e}", digits - 1, x.abs());
-    let (mantissa, exponent) = s.split_once('e').expect("exponent");
-    (
-        mantissa
-            .bytes()
-            .filter(u8::is_ascii_digit)
-            .map(|b| b - b'0')
-            .collect(),
-        exponent.parse().expect("exponent"),
-    )
-}
-
-/// R's `scientific()`: sign, decimal exponent, significant digits needed, and whether rounding adds a digit.
-fn scientific(x: f64, digits: usize) -> (bool, i32, usize, bool) {
-    if x == 0.0 {
-        return (false, 0, 1, false);
-    }
-    let (mantissa, kpower) = sig_digits(x, digits);
-    let mut nsig = digits;
-    while nsig > 1 && mantissa[nsig - 1] == 0 {
-        nsig -= 1;
-    }
-    // Fixed notation needs one digit fewer when |x|, shown with the decimals it would get there, stays below
-    // 10^kpower (99996 at 4 digits prints as 99996, where 99999.6 rounds to 100000 and prints as 1e+05).
-    let decimals = (digits as i32 - 1 - kpower).max(0) as usize;
-    let shown: f64 = format!("{:.*}", decimals, x.abs())
-        .parse()
-        .expect("decimal");
-    let widens = kpower > 0 && kpower <= 22 && shown < 10f64.powi(kpower);
-    (x < 0.0, kpower, nsig, widens)
-}
-
-/// Exponent in R's style: a sign and at least two digits.
-fn exponent(e: i32) -> String {
-    format!("e{}{:02}", if e < 0 { '-' } else { '+' }, e.abs())
-}
-
-fn scientific_text(x: f64, decimals: usize) -> String {
-    let s = format!("{:.*e}", decimals, x);
-    let (mantissa, e) = s.split_once('e').expect("exponent");
-    format!("{mantissa}{}", exponent(e.parse().expect("exponent")))
-}
-
-fn special(x: f64) -> Option<&'static str> {
-    if x.is_nan() {
-        Some("NaN")
-    } else if x == f64::INFINITY {
-        Some("Inf")
-    } else if x == f64::NEG_INFINITY {
-        Some("-Inf")
-    } else {
-        None
-    }
-}
-
-/// R's `format(x, digits = digits)` for a vector: one common layout, fixed or scientific, padded to one width.
-pub fn format_real(xs: &[f64], digits: usize) -> Vec<String> {
-    let (mut neg, mut mxsl, mut rgt, mut mxns, mut mxe, mut mne) =
-        (false, 1i32, 0i32, 0usize, i32::MIN, i32::MAX);
-    let mut finite = false;
-    for &x in xs.iter().filter(|x| x.is_finite()) {
-        finite = true;
-        let (negative, kpower, nsig, widens) = scientific(x, digits);
-        let left = kpower + 1 - i32::from(widens);
-        let sleft = i32::from(negative) + if left <= 0 { 1 } else { left };
-        rgt = rgt.max(nsig as i32 - left);
-        neg |= negative;
-        mxsl = mxsl.max(sleft);
-        mxns = mxns.max(nsig);
-        mxe = mxe.max(kpower);
-        mne = mne.min(kpower);
-    }
-    let rgt = rgt.max(0) as usize;
-    let fixed_width = (mxsl as usize).max(1) + rgt + usize::from(rgt > 0);
-    let mut scientific_layout = None;
-    if finite {
-        let e = if mxe >= 100 || mne <= -99 { 2 } else { 1 };
-        let decimals = mxns - 1;
-        let width = usize::from(neg) + usize::from(decimals > 0) + decimals + 4 + e;
-        if fixed_width > width {
-            scientific_layout = Some(decimals);
-        }
-    }
-    let texts: Vec<String> = xs
-        .iter()
-        .map(|&x| match special(x) {
-            Some(s) => s.to_string(),
-            None => {
-                let x = if x == 0.0 { 0.0 } else { x };
-                match scientific_layout {
-                    Some(decimals) => scientific_text(x, decimals),
-                    None => format!("{:.*}", rgt, x),
-                }
-            }
-        })
-        .collect();
-    let width = texts.iter().map(|s| s.chars().count()).max().unwrap_or(0);
-    texts.into_iter().map(|s| format!("{s:>width$}")).collect()
-}
-
-/// R's `round(x, decimals)`, as the correctly rounded decimal.
-pub fn round(x: f64, decimals: usize) -> f64 {
-    if !x.is_finite() {
-        return x;
-    }
-    format!("{:.*}", decimals, x).parse().expect("decimal")
-}
-
-/// C's `%.{digits}g`, as R's `formatC(x, digits = digits)`.
-pub fn format_g(x: f64, digits: usize) -> String {
-    if let Some(s) = special(x) {
-        return s.to_string();
-    }
-    if x == 0.0 {
-        return "0".into();
-    }
-    let (_, e) = sig_digits(x, digits);
-    let trim = |s: String| {
-        if s.contains('.') {
-            s.trim_end_matches('0').trim_end_matches('.').to_string()
-        } else {
-            s
-        }
-    };
-    if e < -4 || e >= digits as i32 {
-        let s = format!("{:.*e}", digits - 1, x);
-        let (mantissa, _) = s.split_once('e').expect("exponent");
-        format!("{}{}", trim(mantissa.to_string()), exponent(e))
-    } else {
-        trim(format!("{:.*}", (digits as i32 - 1 - e).max(0) as usize, x))
-    }
-}
-
-/// R's `format.pval(pv, digits = digits)` with `eps` = machine epsilon.
-pub fn format_pval(pvalues: &[f64], digits: usize) -> Vec<String> {
-    let eps = f64::EPSILON;
-    let mut out = vec![String::new(); pvalues.len()];
-    let normal: Vec<usize> = (0..pvalues.len())
-        .filter(|&i| !pvalues[i].is_nan() && pvalues[i] >= eps)
-        .collect();
-    let fixed: Vec<usize> = normal
-        .iter()
-        .copied()
-        .filter(|&i| {
-            let expo = pvalues[i].log10().floor();
-            expo >= -3.0 || (expo == -4.0 && digits > 1)
-        })
-        .collect();
-    let other: Vec<usize> = normal
-        .iter()
-        .copied()
-        .filter(|i| !fixed.contains(i))
-        .collect();
-    for group in [&fixed, &other] {
-        let texts = format_real(
-            &group.iter().map(|&i| pvalues[i]).collect::<Vec<_>>(),
-            digits,
-        );
-        for (&i, text) in group.iter().zip(texts) {
-            out[i] = text;
-        }
-    }
-    let tiny: Vec<usize> = (0..pvalues.len())
-        .filter(|&i| !pvalues[i].is_nan() && pvalues[i] < eps)
-        .collect();
-    if !tiny.is_empty() {
-        let mut eps_digits = digits.saturating_sub(2).max(1);
-        let sep = if normal.is_empty() {
-            if eps_digits == 1 { "" } else { " " }
-        } else {
-            let nc = normal
-                .iter()
-                .map(|&i| out[i].chars().count())
-                .max()
-                .unwrap_or(0);
-            if eps_digits > 1 && eps_digits + 6 > nc {
-                eps_digits = nc.saturating_sub(7).max(1);
-            }
-            if eps_digits == 1 && nc <= 6 { "" } else { " " }
-        };
-        let text = format!("<{sep}{}", format_real(&[eps], eps_digits)[0]);
-        for i in tiny {
-            out[i] = text.clone();
-        }
-    }
-    for (i, p) in pvalues.iter().enumerate() {
-        if p.is_nan() {
-            out[i] = "NA".into();
-        }
-    }
-    out
-}
+pub use crate::rformat::{DIGITS, format_g, format_pval, format_real, round};
 
 /// A text table: the first column left-aligned, the rest right-aligned unless listed in `left`, one space apart.
 fn table(header: &[&str], rows: &[Vec<String>], left: &[usize]) -> String {
@@ -250,49 +54,16 @@ pub struct Coefficients {
 
 /// R's `printCoefmat(digits = 4)` without significance stars.
 pub fn coefficient_table(c: &Coefficients) -> String {
-    let digits = DIGITS;
-    let test_digits = digits - 1;
-    let both: Vec<f64> = c.estimates.iter().chain(&c.std_errors).copied().collect();
-    let sizes: Vec<f64> = both
-        .iter()
-        .map(|x| x.abs())
-        .filter(|x| x.is_finite() && *x != 0.0)
-        .collect();
-    let digmin = sizes.iter().copied().fold(f64::INFINITY, f64::min);
-    let digmin = if sizes.is_empty() {
-        1
-    } else {
-        1 + digmin.log10().floor() as i32
-    };
-    let decimals = (digits as i32 - digmin).max(1) as usize;
-    let estimate_text = format_real(
-        &both.iter().map(|&x| round(x, decimals)).collect::<Vec<_>>(),
-        digits,
-    );
-    let (estimates, errors) = estimate_text.split_at(c.estimates.len());
-    let statistics = format_real(
-        &c.statistics
-            .iter()
-            .map(|&x| round(x, test_digits))
-            .collect::<Vec<_>>(),
-        digits,
-    );
-    let p_values = format_pval(&c.p_values, test_digits);
-    let na = |s: &String, x: f64| {
-        if x.is_nan() {
-            "NA".to_string()
-        } else {
-            s.trim().to_string()
-        }
-    };
+    let cells =
+        crate::rformat::coefficient_cells(&c.estimates, &c.std_errors, &c.statistics, &c.p_values);
     let rows: Vec<Vec<String>> = (0..c.names.len())
         .map(|i| {
             vec![
                 c.names[i].clone(),
-                na(&estimates[i], c.estimates[i]),
-                na(&errors[i], c.std_errors[i]),
-                na(&statistics[i], c.statistics[i]),
-                p_values[i].trim().to_string(),
+                cells.estimates[i].clone(),
+                cells.std_errors[i].clone(),
+                cells.statistics[i].clone(),
+                cells.p_values[i].clone(),
             ]
         })
         .collect();

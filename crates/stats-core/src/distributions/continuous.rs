@@ -11,8 +11,6 @@ use crate::StatsError;
 use cdflib::special::internal::algdiv;
 use cdflib::special::{beta_log, cumnor, dinvnr, dt1, gamma_log};
 
-const INV_SQRT_2PI: f64 = 0.398_942_280_401_432_7;
-
 /// Replace a probability below TINY by exp(ln p) from a log-scale tail, which
 /// stays accurate where a transformed argument has underflowed.
 fn refine(value: f64, ln_value: impl FnOnce() -> f64) -> f64 {
@@ -27,19 +25,6 @@ fn refine(value: f64, ln_value: impl FnOnce() -> f64) -> f64 {
     }
 }
 
-// Standard normal pieces shared by Normal and LogNormal.
-fn std_pdf(z: f64) -> f64 {
-    if z.is_infinite() {
-        return 0.0;
-    }
-    if z.abs() <= 5.0 {
-        return INV_SQRT_2PI * (-0.5 * z * z).exp();
-    }
-    // Split z so that z² is formed exactly in its leading part (as R's dnorm).
-    let z1 = (z * 65536.0).round() / 65536.0;
-    let z2 = z - z1;
-    INV_SQRT_2PI * (-0.5 * z1 * z1).exp() * ((-0.5 * z2 - z1) * z2).exp()
-}
 fn std_logpdf(z: f64) -> f64 {
     -0.5 * z * z - LN_SQRT_2PI
 }
@@ -91,7 +76,7 @@ impl Normal {
     }
     pub fn pdf(&self, x: f64) -> f64 {
         if self.sd == 1.0 {
-            std_pdf(self.z(x))
+            crate::numeric::standard_normal_density(self.z(x))
         } else {
             // Apply scale on the log scale before exponentiating, so a tiny
             // standard density is not lost before division by a tiny SD.

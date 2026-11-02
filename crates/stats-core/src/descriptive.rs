@@ -153,20 +153,6 @@ fn check_probability(p: f64) -> Result<(), StatsError> {
     Ok(())
 }
 
-// R's type 7 on sorted data: index = 1 + (n - 1)p, linear interpolation.
-fn type7(sorted: &[f64], p: f64) -> f64 {
-    let index = 1.0 + (sorted.len() - 1) as f64 * p;
-    let lo = index.floor();
-    let h = index - lo;
-    let lo = lo as usize - 1;
-    let low = sorted[lo];
-    if h > 0.0 && sorted[lo + 1] != low {
-        (1.0 - h) * low + h * sorted[lo + 1]
-    } else {
-        low
-    }
-}
-
 /// Sample quantile by R's default definition (type 7, linear interpolation).
 pub fn quantile(values: &[f64], p: f64) -> Result<f64, StatsError> {
     Ok(quantiles(values, &[p])?[0])
@@ -180,7 +166,10 @@ pub fn quantiles(values: &[f64], probabilities: &[f64]) -> Result<Vec<f64>, Stat
     }
     let mut sorted = values.to_vec();
     sorted.sort_unstable_by(f64::total_cmp);
-    Ok(probabilities.iter().map(|&p| type7(&sorted, p)).collect())
+    Ok(probabilities
+        .iter()
+        .map(|&p| crate::numeric::quantile_type7(&sorted, p))
+        .collect())
 }
 
 /// Median: the type 7 quantile at 0.5 (the usual midpoint rule).

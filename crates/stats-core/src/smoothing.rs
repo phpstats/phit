@@ -1,9 +1,9 @@
 //! Kernel density estimation, interpolation and the empirical CDF, following
 //! R's stats::density, stats::approx and stats::ecdf.
 //!
-//! [`density`] reproduces R's algorithm step for step: linear binning onto a
-//! grid of n points (R's C BinDist), circular convolution with the kernel by
-//! FFT, then linear interpolation onto the output grid. Grids use R's seq.int
+//! [`density`] follows R's documented algorithm: linear binning onto a grid
+//! of n points, circular convolution with the kernel by FFT, then linear
+//! interpolation onto the output grid. Grids use R's seq.int
 //! fill, so grid points agree exactly. Inputs must be finite; dropping or
 //! rejecting missing values is the caller's policy.
 use crate::descriptive;
@@ -117,7 +117,7 @@ impl Kernel {
         let ax = x.abs();
         let inside = |a: f64, value: f64| if ax < a { value } else { 0.0 };
         match self {
-            Self::Gaussian => dnorm(x, bw),
+            Self::Gaussian => crate::numeric::standard_normal_density(x / bw) / bw,
             Self::Rectangular => {
                 let a = bw * 3f64.sqrt();
                 inside(a, 0.5 / a)
@@ -144,30 +144,6 @@ impl Kernel {
             }
         }
     }
-}
-
-const FRAC_1_SQRT_2PI: f64 = 0.398_942_280_401_432_677_939_946_059_934;
-
-/// R's dnorm(x, 0, sigma), including its split evaluation of exp(-x²/2) in the
-/// tail, so kernel heights agree with R to the last bit.
-fn dnorm(x: f64, sigma: f64) -> f64 {
-    let x = (x / sigma).abs();
-    if !x.is_finite() || x >= 2.0 * f64::MAX.sqrt() {
-        return 0.0;
-    }
-    if x < 5.0 {
-        return FRAC_1_SQRT_2PI * (-0.5 * x * x).exp() / sigma;
-    }
-    // sqrt(-2 ln 2 (DBL_MIN_EXP + 1 - DBL_MANT_DIG))
-    let underflow =
-        (-2.0 * std::f64::consts::LN_2 * (f64::MIN_EXP + 1 - f64::MANTISSA_DIGITS as i32) as f64)
-            .sqrt();
-    if x > underflow {
-        return 0.0;
-    }
-    let x1 = (x * 65536.0).round_ties_even() / 65536.0;
-    let x2 = x - x1;
-    FRAC_1_SQRT_2PI / sigma * ((-0.5 * x1 * x1).exp() * ((-0.5 * x2 - x1) * x2).exp())
 }
 
 /// The bandwidth argument of [`density`].
@@ -216,29 +192,6 @@ pub struct Density {
     pub bw: f64,
     /// The number of observations.
     pub n: usize,
-}
-
-/// R's C BinDist: linear binning of weighted points onto n grid points from
-/// lo to hi, returned zero-padded to length 2n.
-fn bin_dist(x: &[f64], w: &[f64], lo: f64, hi: f64, n: usize) -> Vec<f64> {
-    let mut y = vec![0.0; 2 * n];
-    let ixmax = n as i64 - 2;
-    let delta = (hi - lo) / (n - 1) as f64;
-    for (&xi, &wi) in x.iter().zip(w) {
-        let pos = (xi - lo) / delta;
-        let ix = pos.floor() as i64;
-        let fx = pos - ix as f64;
-        if (0..=ixmax).contains(&ix) {
-            let i = ix as usize;
-            y[i] += wi * (1.0 - fx);
-            y[i + 1] += wi * fx;
-        } else if ix == -1 {
-            y[0] += wi * fx;
-        } else if ix == ixmax + 1 {
-            y[ix as usize] += wi * (1.0 - fx);
-        }
-    }
-    y
 }
 
 /// In-place iterative radix-2 FFT; `inverse` uses the positive exponent and
@@ -349,7 +302,7 @@ pub fn density(x: &[f64], options: &DensityOptions) -> Result<Density, StatsErro
     }
     let (lo, up) = (from - 4.0 * bw, to + 4.0 * bw);
 
-    let mut y_re = bin_dist(x, &weights, lo, up, n);
+    let mut y_re = crate::numeric::linear_binning(x, &weights, lo, up, n);
     let mut kords = seq(0.0, (2 * n - 1) as f64 / (n - 1) as f64 * (up - lo), 2 * n);
     for j in n + 1..2 * n {
         kords[j] = -kords[2 * n - j];
@@ -371,7 +324,9 @@ pub fn density(x: &[f64], options: &DensityOptions) -> Result<Density, StatsErro
     let out_x = seq(from, to, n_user);
     let out_y = out_x
         .iter()
-        .map(|&v| interpolate(&grid, &heights, v, Method::Linear, f64::NAN, f64::NAN))
+        .map(|&v| {
+            crate::numeric::interpolate(&grid, &heights, v, &Method::Linear, f64::NAN, f64::NAN)
+        })
         .collect();
     Ok(Density {
         x: out_x,
@@ -404,41 +359,6 @@ pub enum Rule {
     Missing,
     /// The value at the closest data extreme, R's rule = 2.
     Nearest,
-}
-
-// R's C approx1, for sorted unique x.
-fn interpolate(x: &[f64], y: &[f64], v: f64, method: Method, low: f64, high: f64) -> f64 {
-    if v.is_nan() {
-        return f64::NAN;
-    }
-    let (mut i, mut j) = (0, x.len() - 1);
-    if v < x[i] {
-        return low;
-    }
-    if v > x[j] {
-        return high;
-    }
-    while i + 1 < j {
-        let ij = (i + j) / 2;
-        if v < x[ij] {
-            j = ij;
-        } else {
-            i = ij;
-        }
-    }
-    if v == x[j] {
-        return y[j];
-    }
-    if v == x[i] {
-        return y[i];
-    }
-    match method {
-        Method::Linear => y[i] + (y[j] - y[i]) * ((v - x[i]) / (x[j] - x[i])),
-        Method::Constant(f) => {
-            let (f1, f2) = (1.0 - f, f);
-            (if f1 != 0.0 { y[i] * f1 } else { 0.0 }) + (if f2 != 0.0 { y[j] * f2 } else { 0.0 })
-        }
-    }
 }
 
 /// R's approx(x, y, xout): sorts by x, collapses ties, then interpolates.
@@ -497,7 +417,7 @@ pub fn approx(
     };
     Ok(xout
         .iter()
-        .map(|&v| interpolate(&ux, &uy, v, method, low, high))
+        .map(|&v| crate::numeric::interpolate(&ux, &uy, v, &method, low, high))
         .collect())
 }
 
