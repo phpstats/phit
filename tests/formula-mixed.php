@@ -90,8 +90,6 @@ foreach ([
     ['no random term', fn() => Phit\fit_mixed_gaussian('score ~ study_hours', $schools), 1001, 'random-effect term'],
     ['glmer slopes', fn() => Phit\fit_mixed_logistic('yb ~ x + (x | subject)', $panel), 1007, 'exactly one random intercept'],
     ['glmer two terms', fn() => Phit\fit_mixed_logistic('yb ~ x + (1 | subject) + (1 | item)', $panel), 1007, 'exactly one random intercept'],
-    ['glmer family (deprecated alias)', fn() => Phit\fit_glmer('yb ~ x + (1 | subject)', $panel, 'poisson'), 1007, 'binomial'],
-    ['glmer link (deprecated alias)', fn() => Phit\fit_glmer('yb ~ x + (1 | subject)', $panel, link: 'probit'), 1007, 'logit'],
     ['lmer optimizer', fn() => Phit\fit_mixed_gaussian('y ~ x + (1 | subject)', $panel, optimizer: 'nloptwrap'), 1007, 'optimizer'],
     ['lmer raise', fn() => Phit\fit_mixed_gaussian('y ~ x + (1 | subject)', $panel, missing: 'raise'), 1001, "missing='raise'"],
 ] as [$label, $call, $code, $fragment]) {

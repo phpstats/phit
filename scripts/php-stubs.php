@@ -19,10 +19,8 @@ $matrixPurpose=['Phit\fit_ols_matrix'=>'Least-squares fit of a numeric design, l
  'Phit\fit_mixed_gaussian_matrix'=>'Gaussian mixed model on a numeric design and explicit random terms, like lme4::lmer().',
  'Phit\fit_mixed_logistic_matrix'=>'Binomial logit model with one random intercept on a numeric design, like lme4::glmer(family = binomial).'];
 $models=['Phit\fit_ols_matrix','Phit\fit_logistic_matrix','Phit\fit_probit_matrix','Phit\fit_poisson_matrix','Phit\fit_mixed_gaussian_intercept_matrix','Phit\fit_mixed_gaussian_matrix','Phit\fit_mixed_logistic_matrix'];
-// The 0.3 names: deprecated aliases in 0.4, removed in 0.5. Each is documented as its replacement plus @deprecated.
-$aliases=['Phit\fit_lm'=>'Phit\fit_ols','Phit\fit_glm'=>'Phit\fit_generalized_linear','Phit\fit_lmer'=>'Phit\fit_mixed_gaussian','Phit\fit_glmer'=>'Phit\fit_mixed_logistic',
- 'Phit\fit_logistic'=>'Phit\fit_logistic_matrix','Phit\fit_probit'=>'Phit\fit_probit_matrix','Phit\fit_poisson'=>'Phit\fit_poisson_matrix',
- 'Phit\fit_mixed_intercept'=>'Phit\fit_mixed_gaussian_intercept_matrix','Phit\fit_mixed'=>'Phit\fit_mixed_gaussian_matrix','Phit\fit_logistic_mixed'=>'Phit\fit_mixed_logistic_matrix'];
+// Deprecated aliases, each documented as its replacement plus @deprecated. The 0.3 names were removed in 0.5.0.
+$aliases=[];
 $families=['normal'=>'Normal(mean, sd)','t'=>"Student's t with df degrees of freedom",'chisquare'=>'Chi-square with df degrees of freedom',
  'f'=>'F with numerator df1 and denominator df2 degrees of freedom','beta'=>'Beta(alpha, beta) on [0, 1]',
  'gamma'=>'Gamma with shape and scale (mean shape*scale)','exponential'=>'Exponential with rate (mean 1/rate)',

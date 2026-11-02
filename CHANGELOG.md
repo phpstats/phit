@@ -19,6 +19,26 @@ The fixtures in `tests/fixtures/summary` compare every printed coefficient row
 with R 4.6.1 and lme4 2.0.6 on mtcars, mroz, MASS Insurance, sleepstudy, and
 cbpp.
 
+### Removed
+
+The 0.3 names, deprecated since 0.4.0, are removed. Each replacement takes the
+same arguments.
+
+- `fit_lm()`: use `fit_ols()`.
+- `fit_glm()`: use `fit_generalized_linear()`.
+- `fit_lmer()`: use `fit_mixed_gaussian()`.
+- `fit_glmer()`: use `fit_mixed_logistic()`, which has no `family` or `link`
+  argument.
+- `fit_logistic()`: use `fit_logistic_matrix()`.
+- `fit_probit()`: use `fit_probit_matrix()`.
+- `fit_poisson()`: use `fit_poisson_matrix()`.
+- `fit_mixed_intercept()`: use `fit_mixed_gaussian_intercept_matrix()`.
+- `fit_mixed()`: use `fit_mixed_gaussian_matrix()`.
+- `fit_logistic_mixed()`: use `fit_mixed_logistic_matrix()`.
+
+`fit_ols()` with a matrix remains deprecated and still forwards to
+`fit_ols_matrix()`.
+
 ## 0.4.4
 
 The listwise-deletion warning names the function once. PHP already prefixes

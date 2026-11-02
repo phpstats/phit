@@ -1,6 +1,6 @@
 <?php
-// phit 0.4 transition: every 0.3 name is a deprecated alias that returns exactly what its replacement returns,
-// with one E_USER_DEPRECATED per call, and fit_ols dispatches on its first argument without changing any call's meaning.
+// The 0.3 names are gone (removed in 0.5.0), and fit_ols dispatches on its first argument: a formula is the formula
+// fit, and a matrix is the deprecated matrix fit with one E_USER_DEPRECATED per call.
 declare(strict_types=1);
 
 function alias_check(bool $ok, string $label): void
@@ -29,54 +29,24 @@ function deprecations(callable $call): array
     return [$result, $messages];
 }
 
-function load(string $path, array $options = []): array
+function load(string $path): array
 {
-    $csv = Phit\read_csv(__DIR__ . '/../docs/data/' . $path, $options);
+    $csv = Phit\read_csv(__DIR__ . '/../docs/data/' . $path);
     return array_combine($csv['names'], array_column($csv['columns'], 'values'));
 }
 
 $schools = load('schools.csv');
-$herds = load('cbpp.csv', ['types' => ['c', 'i', 'i', 'c']]);
-$herds['healthy'] = array_map(fn ($n, $k) => $n - $k, $herds['size'], $herds['incidence']);
 
 $x = array_map(fn ($h, $p) => [$h, $p], $schools['study_hours'], $schools['prior_score']);
 $y = $schools['score'];
-$pass = array_map(fn ($s) => $s >= 70.0 ? 1 : 0, $y);
-$count = array_map(fn ($s) => (int) floor($s / 10), $y);
-$schools['pass'] = $pass;
-$groups = $schools['school'];
 $weights = array_map(fn ($i) => 1.0 + ($i % 3) / 2, array_keys($y));
-$random = [['z' => array_fill(0, count($y), [1.0]), 'groups' => $groups]];
-$hx = array_map(fn ($p) => [$p === '2' ? 1.0 : 0.0, $p === '3' ? 1.0 : 0.0, $p === '4' ? 1.0 : 0.0], $herds['period']);
-$hy = array_map(fn ($k, $n) => $k / $n, $herds['incidence'], $herds['size']);
 
-// [old name, new name, arguments]: the alias must return exactly the replacement's result.
-$cases = [
-    ['fit_lm', 'fit_ols', ['score ~ study_hours + prior_score', $schools], ['weights' => $weights]],
-    ['fit_glm', 'fit_generalized_linear', ['pass ~ study_hours + prior_score', $schools], ['family' => 'binomial', 'link' => 'probit']],
-    ['fit_lmer', 'fit_mixed_gaussian', ['score ~ study_hours + (1 | school)', $schools], ['reml' => false]],
-    ['fit_glmer', 'fit_mixed_logistic', ['cbind(incidence, healthy) ~ period + (1 | herd)', $herds], ['quadraturePoints' => 5]],
-    ['fit_logistic', 'fit_logistic_matrix', [$x, $pass], ['offset' => array_fill(0, count($pass), 0.1)]],
-    ['fit_probit', 'fit_probit_matrix', [$x, $pass], []],
-    ['fit_poisson', 'fit_poisson_matrix', [$x, $count], ['intercept' => true]],
-    ['fit_mixed_intercept', 'fit_mixed_gaussian_intercept_matrix', [$x, $y, $groups], []],
-    ['fit_mixed', 'fit_mixed_gaussian_matrix', [$x, $y, $random], ['reml' => true]],
-    ['fit_logistic_mixed', 'fit_mixed_logistic_matrix', [$hx, $hy, $herds['herd']], ['weights' => $herds['size']]],
-];
-foreach ($cases as [$old, $new, $positional, $named]) {
-    [$expected, $none] = deprecations(fn () => ("Phit\\$new")(...$positional, ...$named));
-    alias_check($none === [], "$new raises no deprecation");
-    [$actual, $messages] = deprecations(fn () => ("Phit\\$old")(...$positional, ...$named));
-    alias_check($actual === $expected, "$old returns exactly $new's result");
-    alias_check(
-        $messages === ["Phit\\$old(): Deprecated since phit 0.4.0; use Phit\\$new() instead"],
-        "$old raises one deprecation naming $new: " . json_encode($messages)
-    );
+// The 0.3 names were deprecated in 0.4.0 and removed in 0.5.0.
+$removed = ['fit_lm', 'fit_glm', 'fit_lmer', 'fit_glmer', 'fit_logistic', 'fit_probit', 'fit_poisson',
+    'fit_mixed_intercept', 'fit_mixed', 'fit_logistic_mixed'];
+foreach ($removed as $old) {
+    alias_check(!function_exists("Phit\\$old"), "$old is removed");
 }
-
-// fit_glmer keeps its family and link arguments; fit_mixed_logistic has neither.
-[$glmer] = deprecations(fn () => Phit\fit_glmer('cbind(incidence, healthy) ~ period + (1 | herd)', $herds, 'binomial', 'logit'));
-alias_check($glmer === Phit\fit_mixed_logistic('cbind(incidence, healthy) ~ period + (1 | herd)', $herds), 'fit_glmer binomial/logit');
 $parameters = array_map(fn ($p) => $p->getName(), (new ReflectionFunction('Phit\fit_mixed_logistic'))->getParameters());
 alias_check(!in_array('family', $parameters, true) && !in_array('link', $parameters, true), 'fit_mixed_logistic has no family or link');
 
@@ -140,4 +110,4 @@ foreach ([
     alias_check($messages === [], "fit_ols $label raises no deprecation");
 }
 
-echo 'PHP 0.4 names: ' . count($cases) . " deprecated aliases and fit_ols dispatch passed\n";
+echo 'PHP names: ' . count($removed) . " removed aliases and fit_ols dispatch passed\n";

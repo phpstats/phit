@@ -366,7 +366,6 @@ def csv_page(functions, classes):
 def index_page(functions, classes):
     out = ['---', 'title: "Functions and methods"', '---', '', GENERATED,
            f'phit provides {len(functions)} functions in the `Phit` namespace and one class, `CsvReader`. '
-           f"{sum(1 for f in functions.values() if f['deprecated'])} of the functions are deprecated aliases. "
            'Each name links to its reference entry. Import functions with `use function Phit\\{...};`.', '']
     groups = [('Models', 'models', [n for _, _, _, secs in [PAGES[0]] for _, ns in secs for n in ns]),
               ('Mixed models', 'mixed-models', [n for _, ns in PAGES[1][3] for n in ns]),
@@ -395,14 +394,6 @@ def index_page(functions, classes):
         header = FAMILY_NAMES[family]
         out.append(f"| [{header}](distributions.qmd#{family}) | " + ' | '.join(cells) + ' |')
     out += ['']
-    deprecated = sorted(n for n, f in functions.items() if f['deprecated'])
-    out += ['## Deprecated aliases', '', 'These names call the function in the second column and raise '
-            '`E_USER_DEPRECATED`. See [Deprecated aliases](../contracts.qmd#deprecated-aliases).', '',
-            '| Alias | Function |', '| --- | --- |']
-    for n in deprecated:
-        target = re.search(r'Phit\\\\?(\w+)\(\)', functions[n]['deprecated'])[1]
-        page = next(file for _, file, names in groups if target in names)
-        out.append(f"| `{n}()` | [`{target}()`]({page}.qmd#{target}) |")
     return 'index', '\n'.join(out).rstrip() + '\n'
 
 

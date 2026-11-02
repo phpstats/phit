@@ -26,9 +26,24 @@ use function Phit\{fit_ols, predict, dist_normal_quantile};
 `stubs/phit.php` in the repository declares every signature with PHPDoc array
 shapes for IDEs and static analysis. Do not load it at runtime.
 
-## Deprecated aliases {#deprecated-aliases}
+## Removed and deprecated names {#deprecated-aliases}
 
-`fit_lm`, `fit_glm`, `fit_lmer`, `fit_glmer`, `fit_logistic`, `fit_probit`, `fit_poisson`, `fit_mixed`, `fit_mixed_intercept`, and `fit_logistic_mixed`, and `fit_ols` called with a matrix, still exist as deprecated aliases: each call raises `E_USER_DEPRECATED` that names the current function and returns its result.
+phit 0.5.0 removed the 0.3 names, which 0.4 had kept as deprecated aliases. Calling one is an undefined-function error. Each has a replacement that takes the same arguments.
+
+| Removed | Replacement |
+| --- | --- |
+| `fit_lm()` | `fit_ols()` |
+| `fit_glm()` | `fit_generalized_linear()` |
+| `fit_lmer()` | `fit_mixed_gaussian()` |
+| `fit_glmer()` | `fit_mixed_logistic()`, which has no `family` or `link` argument |
+| `fit_logistic()` | `fit_logistic_matrix()` |
+| `fit_probit()` | `fit_probit_matrix()` |
+| `fit_poisson()` | `fit_poisson_matrix()` |
+| `fit_mixed_intercept()` | `fit_mixed_gaussian_intercept_matrix()` |
+| `fit_mixed()` | `fit_mixed_gaussian_matrix()` |
+| `fit_logistic_mixed()` | `fit_mixed_logistic_matrix()` |
+
+`fit_ols()` called with a matrix is still deprecated. Each call raises `E_USER_DEPRECATED` naming `fit_ols_matrix()` and returns its result.
 
 ## Signatures
 
