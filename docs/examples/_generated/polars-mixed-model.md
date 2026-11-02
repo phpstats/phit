@@ -3,7 +3,7 @@
 ```php
 use Phiz\Plot;
 
-use function Phit\fit_mixed_gaussian;
+use function Phit\{fit_mixed_gaussian, summary};
 use function Phpolars\scan_csv;
 
 $data = scan_csv(
@@ -20,19 +20,7 @@ $fit = fit_mixed_gaussian(
 );
 $data['fitted'] = $fit['fitted'];
 
-foreach ($fit['columns'] as $i => $name) {
-    printf(
-        "%-12s %7.2f (se %.2f)\n",
-        $name,
-        $fit['coefficients'][$i],
-        $fit['std_errors'][$i],
-    );
-}
-printf(
-    "subject SD %.2f, residual SD %.2f\n",
-    sqrt($fit['random'][0]['covariance'][0][0]),
-    $fit['sigma'],
-);
+echo summary($fit);
 
 // Each subject's days as points, and one fitted line per subject.
 $chart = Plot::of($data)
@@ -55,9 +43,21 @@ file_put_contents(
 ## Output
 
 ```
-(Intercept)   251.41 (se 9.75)
-Days           10.47 (se 0.80)
-subject SD 37.12, residual SD 30.99
+Linear mixed model fit by REML
+Formula: Reaction ~ Days + (1 | Subject)
+
+REML criterion at convergence: 1786.5
+
+Random effects:
+Groups   Name        Variance Std.Dev.
+Subject  (Intercept)   1378.2    37.12
+Residual                960.5    30.99
+Number of obs: 180, groups: Subject, 18
+
+Fixed effects:
+            Estimate Std. Error z value Pr(>|z|)
+(Intercept) 251.4051     9.7467   25.79   <2e-16
+Days         10.4673     0.8042   13.02   <2e-16
 ```
 
 ```{=html}

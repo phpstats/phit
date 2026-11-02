@@ -6,20 +6,21 @@ phit fits each model to complete rows. A row with a missing value in any variabl
 
 ## Example
 
-Two of these six flats have a missing value: row 2 has no rent, and row 3 has no area. The `note` column is not in the formula, so its missing values do not matter.
+The example reads [mtcars](https://github.com/phpstats/datasets#mtcars) by URL with phibble and blanks two values: the second car's `mpg` becomes `null` and the third car's `wt` becomes `NAN`. The `hp` value of the fourth car is also set to `null`, but `hp` is not in the formula, so that row is kept.
 
 ```php
+use Phibble\DataFrame;
+
 use function Phit\fit_ols;
 
-$flats = [
-    'rent' => [
-        1879.25, 1805.03, null, 1267.85, 1509.24, 2240.1,
-    ],
-    'area' => [74.4, 57.4, 66.4, NAN, 45.7, 92.4],
-    'note' => [null, 'corner', null, null, 'garden', null],
-];
+$cars = DataFrame::fromCsv(
+    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv',
+)->toColumns();
+$cars['mpg'][1] = null;
+$cars['wt'][2] = NAN;
+$cars['hp'][3] = null;
 
-$fit = fit_ols('rent ~ area', $flats);
+$fit = fit_ols('mpg ~ wt', $cars);
 
 printf(
     "%d of %d rows used, %d dropped\n",
@@ -28,24 +29,22 @@ printf(
     $fit['n_dropped'],
 );
 printf(
-    "retained: %s\ndropped:  %s\n%d residuals\n",
-    implode(', ', $fit['retained_rows']),
+    "dropped: %s\n%d residuals\n",
     implode(', ', $fit['dropped_rows']),
     count($fit['residuals']),
 );
 ```
 
 ```
-4 of 6 rows used, 2 dropped
-retained: 0, 1, 4, 5
-dropped:  2, 3
-4 residuals
+30 of 32 rows used, 2 dropped
+dropped: 1, 2
+30 residuals
 ```
 
 The call also raises one PHP warning with this message:
 
 ```
-Phit\fit_ols(): dropped 2 of 6 observations with missing values (listwise deletion)
+Phit\fit_ols(): dropped 2 of 32 observations with missing values (listwise deletion)
 ```
 
 ## Behavior

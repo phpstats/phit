@@ -13,7 +13,7 @@ The data are [mroz](https://github.com/phpstats/datasets#mroz): 753 married wome
 ```php
 use Phibble\DataFrame;
 
-use function Phit\{fit_generalized_linear, predict};
+use function Phit\{fit_generalized_linear, predict, summary, tidy};
 
 $mroz = DataFrame::fromCsv(
     'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mroz.csv',
@@ -24,19 +24,15 @@ $logit = fit_generalized_linear(
     $mroz,
     family: 'binomial',
 );
+echo summary($logit), "\n";
 
-echo "            log odds   odds ratio, 95% CI\n";
-foreach ($logit['columns'] as $i => $name) {
-    $b = $logit['coefficients'][$i];
-    $ci = array_map('exp', $logit['conf_int'][$i]);
-    printf(
-        "%-11s %8.3f   %6.3f [%.3f, %.3f]\n",
-        $name,
-        $b,
-        exp($b),
-        ...$ci,
-    );
-}
+$t = tidy($logit, conf_int: true);
+echo DataFrame::fromColumns([
+    'term' => $t['term'],
+    'odds_ratio' => array_map('exp', $t['estimate']),
+    'conf_low' => array_map('exp', $t['conf_low']),
+    'conf_high' => array_map('exp', $t['conf_high']),
+]), "\n\n";
 
 $women = [
     'k5' => [0, 1],
@@ -52,12 +48,33 @@ printf(
 ```
 
 ```
-            log odds   odds ratio, 95% CI
-(Intercept)    3.386   29.558 [10.498, 83.223]
-k5            -1.430    0.239 [0.165, 0.348]
-age           -0.057    0.945 [0.924, 0.966]
-wcyes          1.082    2.950 [2.001, 4.350]
-inc           -0.031    0.969 [0.955, 0.984]
+Generalized linear model fit by maximum likelihood
+Family: binomial (logit)
+Formula: lfp ~ k5 + age + wc + inc
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)
+(Intercept)  3.38634    0.52816   6.412 1.44e-10
+k5          -1.42976    0.19123  -7.477 7.62e-14
+age         -0.05672    0.01128  -5.030 4.90e-07
+wcyes        1.08181    0.19811   5.461 4.74e-08
+inc         -0.03141    0.00765  -4.105 4.04e-05
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 1029.75 on 752 degrees of freedom
+Residual deviance:  924.31 on 748 degrees of freedom
+AIC: 934.31
+
+# A tibble: 5 × 4
+  term        odds_ratio conf_low conf_high
+  <chr>            <dbl>    <dbl>     <dbl>
+1 (Intercept)     29.6     10.5      83.2  
+2 k5               0.239    0.165     0.348
+3 age              0.945    0.924     0.966
+4 wcyes            2.95     2.00      4.35 
+5 inc              0.969    0.955     0.984
+
 P(in labor force), age 35: 0.684 with no young child, 0.341 with one
 ```
 
@@ -73,7 +90,7 @@ The data are [insurance](https://github.com/phpstats/datasets#insurance): car in
 ```php
 use Phibble\DataFrame;
 
-use function Phit\fit_generalized_linear;
+use function Phit\{fit_generalized_linear, summary};
 
 $insurance = DataFrame::fromCsv(
     'https://raw.githubusercontent.com/phpstats/datasets/main/csv/insurance.csv',
@@ -84,33 +101,26 @@ $poisson = fit_generalized_linear(
     $insurance,
     family: 'poisson',
 );
-
-echo "                  log rate   exp, 95% CI\n";
-foreach ($poisson['columns'] as $i => $name) {
-    $b = $poisson['coefficients'][$i];
-    $ci = array_map('exp', $poisson['conf_int'][$i]);
-    printf(
-        "%-16s %8.3f   %.3f [%.3f, %.3f]\n",
-        $name,
-        $b,
-        exp($b),
-        ...$ci,
-    );
-}
-printf(
-    "residual deviance %.1f on %d df\n",
-    $poisson['deviance'],
-    $poisson['df_residual'],
-);
+echo summary($poisson);
 ```
 
 ```
-                  log rate   exp, 95% CI
-(Intercept)        -2.033   0.131 [0.124, 0.138]
-factor(District)2    0.022   1.023 [0.940, 1.112]
-factor(District)3    0.013   1.013 [0.918, 1.118]
-factor(District)4    0.222   1.248 [1.106, 1.409]
-residual deviance 223.5 on 60 df
+Generalized linear model fit by maximum likelihood
+Family: poisson (log)
+Formula: Claims ~ factor(District) + offset(log(Holders))
+
+Coefficients:
+                  Estimate Std. Error z value Pr(>|z|)
+(Intercept)       -2.03284    0.02691 -75.544  < 2e-16
+factor(District)2  0.02237    0.04297   0.520 0.602729
+factor(District)3  0.01325    0.05032   0.263 0.792316
+factor(District)4  0.22184    0.06158   3.603 0.000315
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 236.26 on 63 degrees of freedom
+Residual deviance: 223.53 on 60 degrees of freedom
+AIC: 548.85
 ```
 
 - `offset(log(Holders))` puts the model on claims per policyholder, so groups of different sizes are comparable.

@@ -52,29 +52,20 @@ PHP reflection reports `$data` and `$weights` as `mixed`. The stubs in `stubs/ph
 ## Example
 
 ```php
+use Phibble\DataFrame;
+
 use function Phit\fit_ols;
 
-$data = [
-    'rent' => [
-        1879.25, 1805.03, 2022.29, 1267.85,
-        1509.24, 2240.10, 959.51, 2386.54,
-    ],
-    'area' => [
-        74.4, 57.4, 66.4, 49.1,
-        45.7, 92.4, 37.0, 93.9,
-    ],
-    'district' => [
-        'north', 'south', 'north', 'east',
-        'south', 'north', 'east', 'south',
-    ],
-];
+$cars = DataFrame::fromCsv(
+    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv',
+);
 
-$fit = fit_ols('log(rent) ~ log(area) + district', $data);
+$fit = fit_ols('log(mpg) ~ log(wt) + factor(cyl)', $cars);
 echo implode(', ', $fit['columns']), "\n";
 ```
 
 ```
-(Intercept), log(area), districtnorth, districtsouth
+(Intercept), log(wt), factor(cyl)6, factor(cyl)8
 ```
 
 `columns` names the coefficients in order. `named` maps each name to its coefficient, and every list key, such as `p_values`, follows `columns`.

@@ -103,11 +103,30 @@ Sums use Neumaier compensation, and variances and covariances use corrected two-
 Five functions follow R's `density()`, `bw.nrd0()`, `bw.nrd()`, `approx()`, and `ecdf()`, with R's argument names.
 
 ```php
-$draws = Phit\dist_normal_rng(4000, 7, 0.3, 0.05);
-$d = Phit\stat_density($draws);
-$at = [0.25, 0.3, 0.35];
-$heights = Phit\stat_approx($d['x'], $d['y'], $at);
-$below = Phit\stat_ecdf($draws, [0.0]); // Share at or below 0.
+use Phibble\DataFrame;
+
+use function Phit\{stat_approx, stat_density, stat_ecdf};
+
+// Fuel economy of the 32 mtcars cars, in miles per US gallon.
+$mpg = DataFrame::fromCsv(
+    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv',
+)->toColumns()['mpg'];
+
+$d = stat_density($mpg);
+printf("bandwidth %.3f\n", $d['bw']);
+$at = [15.0, 20.0, 25.0];
+echo implode(', ', array_map(
+    fn ($h) => sprintf('%.4f', $h),
+    stat_approx($d['x'], $d['y'], $at),
+)), "\n";
+// Share of cars at or below 20 mpg.
+echo stat_ecdf($mpg, [20.0])[0], "\n";
+```
+
+```
+bandwidth 2.477
+0.0589, 0.0647, 0.0303
+0.5625
 ```
 
 ```php

@@ -44,54 +44,45 @@ slopes, several random terms, the Poisson and probit families, and REML are
 not available in `fit_mixed_logistic()`. Random-effect terms in `fit_ols()` or
 `fit_generalized_linear()` also throw code 1007.
 
-## A random-intercept model
+## A random intercept and slope
 
-The example uses [`docs/data/schools.csv`](https://github.com/phpstats/phit/blob/main/docs/data/schools.csv): 250 simulated students in 12 schools, with study hours, a prior score, and a test score. `read_csv()` needs the extension; with the polyfill, read the file another way.
+The example uses [sleepstudy](https://github.com/phpstats/datasets#sleepstudy) from lme4: average reaction times, in milliseconds, of 18 subjects over ten days of sleep deprivation. It reads the file by URL with phibble.
 
 ```php
-use function Phit\{fit_mixed_gaussian, read_csv};
+use Phibble\DataFrame;
 
-$csv = read_csv('docs/data/schools.csv');
-$schools = array_combine(
-    $csv['names'],
-    array_column($csv['columns'], 'values'),
+use function Phit\{fit_mixed_gaussian, fit_mixed_logistic, summary};
+
+$sleep = DataFrame::fromCsv(
+    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/sleepstudy.csv',
 );
 
-$fit = fit_mixed_gaussian(
-    'score ~ study_hours + prior_score + (1 | school)',
-    $schools,
-);
-foreach ($fit['columns'] as $i => $name) {
-    printf(
-        "%-12s %8.4f %8.4f\n",
-        $name,
-        $fit['coefficients'][$i],
-        $fit['std_errors'][$i],
-    );
-}
-$school = $fit['random'][0];
-printf(
-    "%s: school SD %.4f, residual SD %.4f\n",
-    $fit['method'],
-    sqrt($school['covariance'][0][0]),
-    $fit['sigma'],
-);
-printf(
-    "%s %+.4f\n",
-    $school['group_labels'][0],
-    $school['effects'][0][0],
-);
+$fit = fit_mixed_gaussian('Reaction ~ Days + (Days | Subject)', $sleep);
+echo summary($fit);
 ```
 
 ```
-(Intercept)   46.6627   2.2438
-study_hours    1.6141   0.1609
-prior_score    0.2453   0.0419
-REML: school SD 4.4579, residual SD 5.0566
-school-01 +0.1353
+Linear mixed model fit by REML
+Formula: Reaction ~ Days + (Days | Subject)
+
+REML criterion at convergence: 1743.6
+
+Random effects:
+Groups   Name        Variance Std.Dev. Corr
+Subject  (Intercept)   612.09   24.740
+         Days           35.07    5.922 0.07
+Residual               654.94   25.592
+Number of obs: 180, groups: Subject, 18
+
+Fixed effects:
+            Estimate Std. Error z value Pr(>|z|)
+(Intercept)  251.405      6.825  36.838  < 2e-16
+Days          10.467      1.546   6.771 1.27e-11
 ```
 
-A school's effect is its predicted intercept relative to the average school, shrunk toward zero.
+- `(Days | Subject)` gives each subject its own intercept and slope, with a correlation between them. The fit uses REML, as `lme4::lmer()` does by default.
+- The random-effects table gives each term's variance and standard deviation. `Corr` is the estimated correlation between a subject's intercept and slope.
+- A subject's effects are its predicted intercept and slope relative to the average, shrunk toward zero. They are in `$fit['random'][0]['effects']`, one row per subject.
 
 ## Reading a fit_mixed_gaussian result
 
@@ -124,53 +115,47 @@ Each `random` entry has these keys:
 A random-effect variance estimated at or near zero, or a correlation at ±1,
 makes the covariance singular. The fit returns with `singular` true and the
 warning `random-effect covariance is singular or near singular` in
-`diagnostics.warnings`. With these data, `score ~ study_hours + (1 + study_hours | school)` is singular because the estimated slope variance is near zero. A singular fit usually means the random-effect structure is more complex than the data support.
+`diagnostics.warnings`. A singular fit usually means the random-effect structure is more complex than the data support.
 
 ## A binomial random-intercept model
 
-`docs/data/cbpp.csv` holds lme4's `cbpp` data: cases of contagious bovine
-pleuropneumonia in 15 herds over four periods.
+[cbpp](https://github.com/phpstats/datasets#cbpp) is lme4's data on contagious bovine pleuropneumonia: the number of new cases (`incidence`) among the cattle in each of 15 herds (`size`) over four periods.
 
 ```php
-use function Phit\{fit_mixed_logistic, read_csv};
-
-$csv = read_csv(
-    'docs/data/cbpp.csv',
-    ['types' => ['c', 'i', 'i', 'c']],
-);
-$herds = array_combine(
-    $csv['names'],
-    array_column($csv['columns'], 'values'),
-);
-$herds['healthy'] = array_map(
-    fn ($n, $k) => $n - $k,
-    $herds['size'],
-    $herds['incidence'],
+$herds = DataFrame::fromCsv(
+    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/cbpp.csv',
 );
 
 $fit = fit_mixed_logistic(
-    'cbind(incidence, healthy) ~ period + (1 | herd)',
+    'cbind(incidence, size - incidence) ~ factor(period) + (1 | herd)',
     $herds,
     quadraturePoints: 10,
 );
-foreach ($fit['named'] as $name => $b) {
-    printf("%-12s %8.4f\n", $name, $b);
-}
-printf(
-    "herd SD %.4f, %s\n",
-    $fit['random_intercept_sd'],
-    $fit['integration'],
-);
+echo summary($fit);
 ```
 
 ```
-(Intercept)   -1.3992
-period2       -0.9914
-period3       -1.1278
-period4       -1.5795
-herd SD 0.6475, adaptive_gauss_hermite
+Generalized linear mixed model fit by maximum likelihood (adaptive Gauss-Hermite quadrature, 10 points)
+Family: binomial (logit)
+Formula: cbind(incidence, size - incidence) ~ factor(period) + (1 | herd)
+
+  AIC   BIC logLik deviance df.resid
+194.0 204.1  -92.0    184.0       51
+
+Random effects:
+Groups Name        Variance Std.Dev.
+herd   (Intercept)   0.4193   0.6475
+Number of obs: 56, groups: herd, 15
+
+Fixed effects:
+                Estimate Std. Error z value Pr(>|z|)
+(Intercept)      -1.3992     0.2335  -5.992 2.07e-09
+factor(period)2  -0.9914     0.3068  -3.232 0.001230
+factor(period)3  -1.1278     0.3268  -3.451 0.000558
+factor(period)4  -1.5795     0.4276  -3.694 0.000221
 ```
 
+- `cbind(incidence, size - incidence)` gives the successes and failures for each row, as in `glm()`.
 - `quadraturePoints` is lme4's `nAGQ`. The Laplace default (1) is fastest.
 - More points approximate the likelihood more closely, which matters most for small groups and rare events.
 - No number of points guarantees accuracy for every data set. Compare a few values when the estimates matter.

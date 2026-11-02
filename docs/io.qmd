@@ -5,9 +5,10 @@ title: "Reading CSV files"
 Read a delimited text file into typed columns with `read_csv()`, or a chunk of rows at a time with `CsvReader`. The parsing rules follow readr 2 (`readr::read_delim()`) as phibble's PHP reader implements them. These are the native readers behind phibble's `DataFrame::fromCsv()`, `csvChunks()`, and `fromCsvChunked()`.
 
 ```php
-$data = Phit\read_csv('housing.csv');
-$data['names'];   // ['area_m2', 'bedrooms', 'monthly_rent']
-$data['columns']; // Typed float, int, and float.
+// mtcars.csv from https://github.com/phpstats/datasets
+$data = Phit\read_csv('mtcars.csv');
+$data['names'];   // ['rownames', 'mpg', 'cyl', 'disp', 'hp', ...]
+$data['columns']; // Typed string, float, int, float, int, ...
 ```
 
 The CSV readers need the extension. The [polyfill](extension-or-polyfill.qmd) does not provide them.

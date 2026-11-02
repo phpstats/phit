@@ -4,27 +4,38 @@ title: "phit"
 
 Fit statistical models, compute probability distributions, and summarize data in PHP. Model functions accept formulas or explicit designs and return PHP arrays.
 
-Formulas follow R: `rent ~ area + district` models rent from floor area and district. phit builds the numeric design from named columns, including factors, interactions, and transformations such as `log(area)`.
+Formulas follow R: `mpg ~ wt + factor(cyl)` models fuel economy from weight and the number of cylinders. phit builds the numeric design from named columns, including factors, interactions, and transformations such as `log(wt)`. `summary()` prints the fit as R does.
 
 ```php
-use function Phit\{fit_ols, predict};
+use Phibble\DataFrame;
 
-$fit = fit_ols('rent ~ area + district', $flats);
-// ['(Intercept)' => 352.64, 'area' => 19.18, ...]
-$fit['named'];
-$fit['p_values'];  // One per coefficient, in the same order
-$fit['r_squared']; // 0.927
+use function Phit\{fit_ols, summary};
 
-$p = predict(
-    $fit,
-    ['area' => [55.0], 'district' => ['east']],
-    interval: 'prediction',
+$cars = DataFrame::fromCsv(
+    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv',
 );
-// [1407.55], with $p['lower'] and $p['upper']
-$p['fit'];
+
+$fit = fit_ols('mpg ~ wt + factor(cyl)', $cars);
+echo summary($fit);
 ```
 
-[A first model](getting-started.qmd) runs this example with its data.
+```
+Linear model fit by least squares
+Formula: mpg ~ wt + factor(cyl)
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)
+(Intercept)   33.9908     1.8878  18.006  < 2e-16
+wt            -3.2056     0.7539  -4.252 0.000213
+factor(cyl)6  -4.2556     1.3861  -3.070 0.004718
+factor(cyl)8  -6.0709     1.6523  -3.674 0.000999
+
+Residual standard error: 2.557 on 28 degrees of freedom
+Multiple R-squared: 0.8374, Adjusted R-squared: 0.82
+F-statistic: 48.08 on 3 and 28 DF, p-value: 3.594e-11
+```
+
+[A first model](getting-started.qmd) walks through a fit, its result, and prediction on the same data.
 
 ## Capabilities
 

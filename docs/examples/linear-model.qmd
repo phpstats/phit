@@ -11,61 +11,56 @@ The data are [mtcars](https://github.com/phpstats/datasets#mtcars): fuel consump
 ```php
 use Phibble\DataFrame;
 
-use function Phit\{fit_ols, predict};
+use function Phit\{fit_ols, predict, summary};
 
 $cars = DataFrame::fromCsv(
     'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mtcars.csv',
 );
 
 $fit = fit_ols('mpg ~ wt + factor(cyl)', $cars);
-
-foreach ($fit['columns'] as $i => $name) {
-    printf(
-        "%-14s %7.2f  95%% CI [%6.2f, %6.2f]\n",
-        $name,
-        $fit['coefficients'][$i],
-        ...$fit['conf_int'][$i],
-    );
-}
-printf(
-    "R-squared %.3f, residual SD %.2f\n\n",
-    $fit['r_squared'],
-    $fit['sigma'],
-);
+echo summary($fit), "\n";
 
 $new = ['wt' => [2.5, 3.5], 'cyl' => [4, 8]];
 $p = predict($fit, $new, interval: 'prediction');
 
-foreach ($p['fit'] as $i => $mpg) {
-    printf(
-        "%5.0f lb, %d cyl %6.2f  95%% PI [%5.2f, %5.2f]\n",
-        1000 * $new['wt'][$i],
-        $new['cyl'][$i],
-        $mpg,
-        $p['lower'][$i],
-        $p['upper'][$i],
-    );
-}
+echo DataFrame::fromColumns([
+    'wt' => $new['wt'],
+    'cyl' => $new['cyl'],
+    'mpg' => $p['fit'],
+    'lower' => $p['lower'],
+    'upper' => $p['upper'],
+]), "\n";
 ```
 
 ## Output
 
 ```
-(Intercept)      33.99  95% CI [ 30.12,  37.86]
-wt               -3.21  95% CI [ -4.75,  -1.66]
-factor(cyl)6     -4.26  95% CI [ -7.09,  -1.42]
-factor(cyl)8     -6.07  95% CI [ -9.46,  -2.69]
-R-squared 0.837, residual SD 2.56
+Linear model fit by least squares
+Formula: mpg ~ wt + factor(cyl)
 
- 2500 lb, 4 cyl  25.98  95% PI [20.50, 31.46]
- 3500 lb, 8 cyl  16.70  95% PI [11.22, 22.18]
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)
+(Intercept)   33.9908     1.8878  18.006  < 2e-16
+wt            -3.2056     0.7539  -4.252 0.000213
+factor(cyl)6  -4.2556     1.3861  -3.070 0.004718
+factor(cyl)8  -6.0709     1.6523  -3.674 0.000999
+
+Residual standard error: 2.557 on 28 degrees of freedom
+Multiple R-squared: 0.8374, Adjusted R-squared: 0.82
+F-statistic: 48.08 on 3 and 28 DF, p-value: 3.594e-11
+
+# A tibble: 2 × 5
+     wt   cyl   mpg lower upper
+  <dbl> <int> <dbl> <dbl> <dbl>
+1   2.5     4  26.0  20.5  31.5
+2   3.5     8  16.7  11.2  22.2
 ```
 
 ## Interpretation
 
 - `factor(cyl)` treats the number of cylinders as categories. Four cylinders is the reference, and `factor(cyl)6` and `factor(cyl)8` compare six and eight cylinders with four for cars of the same weight.
 - The `wt` coefficient is the difference in miles per gallon associated with 1,000 lb more weight among cars with the same number of cylinders. It describes these 32 cars, not the effect of adding weight to a car.
-- With 32 cars and correlated predictors, the intervals are wide.
+- With 32 cars and correlated predictors, the standard errors are large relative to the estimates.
 - A prediction interval covers one new car's mileage. A confidence interval (`interval: 'confidence'`) covers the mean mileage of such cars and is narrower.
 
 **See also:** [A first model](../getting-started.qmd) · [Linear and generalized linear models](../models.qmd) · [Model formulas](../formulas.qmd)

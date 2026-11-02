@@ -3,7 +3,7 @@ require 'vendor/autoload.php';
 
 use Phiz\Plot;
 
-use function Phit\fit_mixed_gaussian;
+use function Phit\{fit_mixed_gaussian, summary};
 use function Phpolars\scan_csv;
 
 $data = scan_csv(
@@ -20,19 +20,7 @@ $fit = fit_mixed_gaussian(
 );
 $data['fitted'] = $fit['fitted'];
 
-foreach ($fit['columns'] as $i => $name) {
-    printf(
-        "%-12s %7.2f (se %.2f)\n",
-        $name,
-        $fit['coefficients'][$i],
-        $fit['std_errors'][$i],
-    );
-}
-printf(
-    "subject SD %.2f, residual SD %.2f\n",
-    sqrt($fit['random'][0]['covariance'][0][0]),
-    $fit['sigma'],
-);
+echo summary($fit);
 
 // Each subject's days as points, and one fitted line per subject.
 $chart = Plot::of($data)
