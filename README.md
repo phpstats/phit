@@ -100,3 +100,5 @@ PHP_CONFIG=/path/to/php-config ./scripts/check
 
 [MIT](LICENSE). Bundled reference datasets and third-party code keep their
 original licenses; see [licensing](https://phit.phpstats.org/docs/licensing).
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) lists the third-party software
+and its licenses.

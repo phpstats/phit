@@ -84,6 +84,9 @@ with tempfile.TemporaryDirectory() as temporary:
     shutil.copyfile(artifact, payload/'phit.so')
     shutil.copyfile(ROOT/'LICENSE', payload/'LICENSE')
     (payload/'THIRD_PARTY_NOTICES.txt').write_text(''.join(notices))
+    # The repository's notices, including PRIMA's BSD-3 license for the bobyqa crate, with their license texts.
+    shutil.copyfile(ROOT/'THIRD_PARTY_NOTICES.md', payload/'THIRD_PARTY_NOTICES.md')
+    shutil.copytree(ROOT/'LICENSES', payload/'LICENSES')
     report = dict(schema_version=1, artifact=name, **platform, rust=output('rustc', '--version'),
                   target=target, php_api=re.search(r'^#define\s+PHP_API_VERSION\s+(\d+)',
                       (Path(output(php_config, '--include-dir'))/'main/php.h').read_text(), re.MULTILINE).group(1),
@@ -99,11 +102,11 @@ with tempfile.TemporaryDirectory() as temporary:
         'To install by hand, copy phit.so to php-config --extension-dir.\n'
         'Add extension=phit.so to the CLI and FPM configuration; restart FPM.\n'
         'Verify extension_loaded("phit") and native model calls in both runtimes.\n'
-        'Keep LICENSE and THIRD_PARTY_NOTICES.txt when redistributing.\n')
+        'Keep LICENSE, THIRD_PARTY_NOTICES.md, THIRD_PARTY_NOTICES.txt, and LICENSES/ when redistributing.\n')
     archive = out/f'{name}.zip'
     with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-        for path in sorted(payload.iterdir()):
-            info = zipfile.ZipInfo(path.name, date_time=(1980, 1, 1, 0, 0, 0))
+        for path in sorted(p for p in payload.rglob('*') if p.is_file()):
+            info = zipfile.ZipInfo(path.relative_to(payload).as_posix(), date_time=(1980, 1, 1, 0, 0, 0))
             info.external_attr = 0o644 << 16
             info.compress_type = zipfile.ZIP_DEFLATED
             zip_file.writestr(info, path.read_bytes())

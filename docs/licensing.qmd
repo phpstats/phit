@@ -7,6 +7,10 @@ released under the **MIT license**. The text is in the repository's root
 [LICENSE](https://github.com/phpstats/phit/blob/main/LICENSE), and both Rust
 crate manifests declare the SPDX identifier `MIT`.
 
+[THIRD_PARTY_NOTICES.md](https://github.com/phpstats/phit/blob/main/THIRD_PARTY_NOTICES.md)
+lists the compiled dependencies, the code whose behavior phit follows, and their
+licenses, with the license texts in `LICENSES/`. Release archives include both.
+
 This does not relicense third-party material:
 
 - Bundled published datasets retain their original provenance and licenses. See
