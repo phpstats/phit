@@ -35,3 +35,6 @@ separation is the reason for this process.
 | [format.md](format.md) | R's printed number format, p-values, and coefficient tables | `format.json`, `format_g.json`, `format_pval.json`, `round.json`, `coefmat.json` |
 | [smoothing.md](smoothing.md) | Linear binning, interpolation, the normal density, and the type-7 quantile | `approx.json`, `dnorm.json`, `quantile7.json` |
 | [special.md](special.md) | Stirling error, deviance term, Poisson and binomial log probabilities, and incomplete gamma and beta | `special.json` |
+
+Gaussian ridge and CV follow [ridge.md](ridge.md), including conventions observed
+through public glmnet APIs. Existing MIT integration code may be read.

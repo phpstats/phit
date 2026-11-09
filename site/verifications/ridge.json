@@ -1,0 +1,363 @@
+{
+ "title": "Gaussian ridge and cross-validation",
+ "label": "Ridge",
+ "kind": "reference",
+ "checked": "Coefficients, local-face effective df, conditional covariance, fitted values, weighted CV MSE and SE, and lambda selection.",
+ "description": "Public glmnet output and independently computed conditional uncertainty, checked in the extension and polyfill.",
+ "reference": "glmnet, MASS, lmridge, and independent matrix calculations",
+ "versions": {
+  "R": "R version 4.6.1 (2026-06-24)",
+  "glmnet": "5.1",
+  "MASS": "7.3.65",
+  "lmridge": "1.2.2"
+ },
+ "inputs": "Twelve fits and six CV cases including weighted day folds over hourly heating rows.",
+ "comparison": [
+  {
+   "id": "model",
+   "applies_to": "Numerical results",
+   "kind": "tolerance",
+   "atol": 1e-07,
+   "rtol": 2e-06
+  }
+ ],
+ "cases": [
+  {
+   "name": "standardized",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 332,
+   "max_abs_error": 6.30961949354969e-11
+  },
+  {
+   "name": "raw",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 331,
+   "max_abs_error": 4.547473508864641e-13
+  },
+  {
+   "name": "weighted",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 331,
+   "max_abs_error": 2.7330315788276494e-10
+  },
+  {
+   "name": "no_intercept",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 319,
+   "max_abs_error": 7.585185812786222e-10
+  },
+  {
+   "name": "no_intercept_raw",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 319,
+   "max_abs_error": 2.382876118645072e-10
+  },
+  {
+   "name": "unpenalized",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 331,
+   "max_abs_error": 5.5706550483591855e-12
+  },
+  {
+   "name": "bounded",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 313,
+   "max_abs_error": 1.1368683772161603e-13
+  },
+  {
+   "name": "bounded_zero_lambda",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 321,
+   "max_abs_error": 1.1368683772161603e-13
+  },
+  {
+   "name": "factors_interactions",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 345,
+   "max_abs_error": 7.545395419583656e-10
+  },
+  {
+   "name": "weighted_bounded",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 321,
+   "max_abs_error": 1.0754774848464876e-10
+  },
+  {
+   "name": "missing",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 325,
+   "max_abs_error": 3.219042810087558e-10
+  },
+  {
+   "name": "heating",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2125,
+   "max_abs_error": 6.854483114437926e-08
+  },
+  {
+   "name": "cv/small_folds_ungrouped",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 34,
+   "max_abs_error": 4.639632322778198e-08
+  },
+  {
+   "name": "cv/unequal_folds_and_weights",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 34,
+   "max_abs_error": 1.6928680679484387e-12
+  },
+  {
+   "name": "cv/bounded_weighted",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 34,
+   "max_abs_error": 2.7000623958883807e-12
+  },
+  {
+   "name": "cv/no_intercept",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 34,
+   "max_abs_error": 3.8767211663071066e-11
+  },
+  {
+   "name": "cv/missing_original_rows",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 34,
+   "max_abs_error": 3.61843888185831e-12
+  },
+  {
+   "name": "cv/day_folds_with_age_weights",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 29,
+   "max_abs_error": 5.10339748238664e-09
+  },
+  {
+   "name": "standardized",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 332,
+   "max_abs_error": 6.30961949354969e-11
+  },
+  {
+   "name": "raw",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 331,
+   "max_abs_error": 4.547473508864641e-13
+  },
+  {
+   "name": "weighted",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 331,
+   "max_abs_error": 2.7330315788276494e-10
+  },
+  {
+   "name": "no_intercept",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 319,
+   "max_abs_error": 7.585185812786222e-10
+  },
+  {
+   "name": "no_intercept_raw",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 319,
+   "max_abs_error": 2.3737811716273427e-10
+  },
+  {
+   "name": "unpenalized",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 331,
+   "max_abs_error": 5.5706550483591855e-12
+  },
+  {
+   "name": "bounded",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 313,
+   "max_abs_error": 1.2434497875801753e-14
+  },
+  {
+   "name": "bounded_zero_lambda",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 321,
+   "max_abs_error": 1.1368683772161603e-13
+  },
+  {
+   "name": "factors_interactions",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 345,
+   "max_abs_error": 7.546532287960872e-10
+  },
+  {
+   "name": "weighted_bounded",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 321,
+   "max_abs_error": 1.0732037480920553e-10
+  },
+  {
+   "name": "missing",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 325,
+   "max_abs_error": 3.219042810087558e-10
+  },
+  {
+   "name": "heating",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 2125,
+   "max_abs_error": 6.854484801976923e-08
+  },
+  {
+   "name": "cv/small_folds_ungrouped",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 34,
+   "max_abs_error": 4.6396326780495656e-08
+  },
+  {
+   "name": "cv/unequal_folds_and_weights",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 34,
+   "max_abs_error": 1.6928680679484387e-12
+  },
+  {
+   "name": "cv/bounded_weighted",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 34,
+   "max_abs_error": 2.7000623958883807e-12
+  },
+  {
+   "name": "cv/no_intercept",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 34,
+   "max_abs_error": 3.8760106235713465e-11
+  },
+  {
+   "name": "cv/missing_original_rows",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 34,
+   "max_abs_error": 3.6193270602780103e-12
+  },
+  {
+   "name": "cv/day_folds_with_age_weights",
+   "quantity": "Ridge estimates and CV error",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 29,
+   "max_abs_error": 5.10339748238664e-09
+  }
+ ],
+ "exclusions": [],
+ "known_differences": [
+  "Explicit Gaussian lambda is divided by the weighted response scale to match glmnet output.",
+  "Conditional covariance uses RSS/(n-df); lmridge uses a different residual-variance denominator, so covariance per sigma squared is compared separately.",
+  "Default lambda paths are phit policy; explicit paths are used for glmnet comparisons."
+ ],
+ "reproduce": [
+  "Rscript docs/verifications/ridge.R",
+  "python3 docs/verifications/compare_ridge.py"
+ ],
+ "source": "docs/verifications/ridge-results.json",
+ "data": "tests/fixtures/ridge-r.json",
+ "group": "Models"
+}

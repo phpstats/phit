@@ -292,3 +292,77 @@ aligned with the original rows. All formula parts and weights share one
 missing-row mask. `missing: 'raise'` rejects missing values. Under-identification
 and rank deficiency raise 1004. Random effects and offsets raise 1007.
 Only `vcov: 'iid'` is available in this release.
+
+
+## Ridge regression
+
+`fit_ridge()` fits Gaussian ridge with glmnet's alpha=0 scaling and optional
+original-scale coefficient bounds. `cv_ridge()` chooses lambda using weighted
+mean squared prediction error.
+
+```php
+$fit = Phit\fit_ridge('y ~ outdoor + hp_kwh + floor_call_lag0 + floor_call_lag1 + factor(hour)', $data,
+    lambda: 0.1,
+    penaltyFactor: ['factor(hour)*' => 0],
+    bounds: ['floor_call_lag*' => [0, null]],
+    weights: 'age_weight');
+
+$cv = Phit\cv_ridge('y ~ outdoor + hp_kwh + floor_call_lag0 + floor_call_lag1 + factor(hour)', $data,
+    lambda: [1.0, 0.3, 0.1, 0.03, 0.01],
+    foldid: $dayFolds,
+    penaltyFactor: ['factor(hour)*' => 0],
+    bounds: ['floor_call_lag*' => [0, null]],
+    weights: 'age_weight');
+$best = $cv['fit']; // RidgeFit at lambda_min, refitted on all retained rows
+```
+
+A `Phit\RidgeFit` implements `Phit\Fit`, including `summary()`, `tidy()`, and
+`predict()`. It adds `lambda`, `lambda_effective`, `response_scale`, normalized
+`penalty_factor`, `standardize`, resolved `bounds`, `at_bound`, effective `df`,
+and `lambda_lm_ridge`. Column names and row bookkeeping follow `fit_ols()`.
+Patterns use `*` and `?`; unmatched patterns raise 1001. Overlapping patterns
+apply in insertion order. The intercept is unpenalized and cannot be bounded.
+
+Gaussian glmnet rescales the response internally. For an explicit lambda, the
+quadratic penalty in original response units is **lambda/response_scale**.
+The response scale is weighted SD with an intercept and weighted RMS without
+one. With `standardize: true`, predictors use weighted centered SD even without
+an intercept; only intercept fits center their predictors. The returned
+coefficients and bounds use original units. Weights are normalized to sum to n;
+penalty factors sum to the number of predictor columns, including zero factors.
+
+`df` is the trace of the hat matrix on the free coefficient face. `sigma` is
+`sqrt(rss/(n-df))`. Standard errors, covariance, and confidence intervals are
+reported by default, conditional on lambda and the active bounds. Ridge estimates
+are biased; these intervals ignore shrinkage bias and lambda selection and are
+**not coverage-valid**. At-bound coefficients have null SEs, intervals, and
+covariance rows/columns. Free-coordinate uncertainty holds bound coordinates
+fixed. Prediction supports `seFit` and confidence intervals; uncertainty is null
+for a row using an at-bound coefficient. Prediction intervals raise 1007.
+
+For unweighted, standardized, unbounded fits with an intercept and uniform
+penalties, `MASS::lm.ridge` uses `lambda_lm_ridge = n*lambda/response_scale`.
+The key is null for other configurations. `lmridge` uses a different residual
+variance denominator; verification compares its conditional covariance per
+sigma squared and checks phit's stated variance calculation independently.
+
+For CV, `foldid` has one integer per **input row**, and follows joint missing-row
+deletion. It overrides `nfolds` and `seed`. Supply day labels for hourly data to
+keep each day in a fold. At least three nonempty folds are required. Each fold
+refit recomputes scaling. CV means weight fold MSE by held-out total weight;
+CV SE is the weighted fold-error variance divided by K-1, then square-rooted.
+As in glmnet, fewer than three observations per fold on average triggers
+individual-error aggregation with denominator n-1.
+
+Explicit lambda paths must be nonnegative and strictly decreasing. Indices are
+zero-based. `lambda_min` minimizes `cvm`; `lambda_1se` is the largest lambda
+within one `cvsd` of that minimum. The result also includes `cvup` and `cvlo`.
+With `lambda: null`, phit uses 100 log-spaced values from 100 times the full-data
+response scale to .01 times that scale. This is phit's default policy; explicit
+paths match glmnet. Generated folds use a balanced seeded permutation.
+
+Validation includes glmnet fits and weighted CV, MASS lambda conversion,
+lmridge conditional covariance, and a heating-shaped design with hourly factors,
+correlated nonnegative lags, day folds, and age-decaying weights. See the
+[ridge verification record](verifications/ridge-results.json) and
+[benchmark record](../bench/ridge-results.json).

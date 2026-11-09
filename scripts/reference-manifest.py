@@ -3,7 +3,7 @@
 import hashlib,json,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-GENERATORS={'iv-r':'tests/generate-iv-fixtures.R','ols-r':'tests/generate-fixtures.R','logistic-r':'tests/generate-logistic-fixtures.R',
+GENERATORS={'ridge-r':'tests/generate-ridge-fixtures.R','iv-r':'tests/generate-iv-fixtures.R','ols-r':'tests/generate-fixtures.R','logistic-r':'tests/generate-logistic-fixtures.R',
  'probit-r':'tests/generate-probit-poisson-fixtures.R','poisson-r':'tests/generate-probit-poisson-fixtures.R',
  'r-compatibility':'tests/generate-r-compatibility-fixtures.R','lmm-r':'tests/generate-lmm-fixtures.R',
  'lmm-public-r':'tests/generate-lmm-public-fixtures.py','lmm-expanded-r':'tests/generate-lmm-expanded-fixtures.R',
@@ -19,7 +19,7 @@ GENERATORS={'iv-r':'tests/generate-iv-fixtures.R','ols-r':'tests/generate-fixtur
  'predict-r':'tests/generate-predict-fixtures.R',
  'smoothing-r':'tests/generate-smoothing-fixtures.R',
  'optimize-r':'tests/generate-optimize-fixtures.R'}
-POLICY={'iv-r':'1e-9 + 1e-7*abs(reference); SW independently computed from the paper; no-intercept Sargan uses uncentered auxiliary R2','ols-r':'1e-9 + 1e-7*abs(reference); zero/perfect fit conventions tested separately',
+POLICY={'ridge-r':'1e-7 + 2e-6*abs(reference); explicit lambda; glmnet thresh=1e-18; independent n-df conditional covariance','iv-r':'1e-9 + 1e-7*abs(reference); SW independently computed from the paper; no-intercept Sargan uses uncentered auxiliary R2','ols-r':'1e-9 + 1e-7*abs(reference); zero/perfect fit conventions tested separately',
  'logistic-r':'1e-9 + 1e-7*abs(reference)','probit-r':'1e-9 + 1e-7*abs(reference)','poisson-r':'1e-9 + 1e-7*abs(reference)',
  'r-compatibility':'1e-7 + 1e-6*abs(reference)',
  'lmm-r':'1e-7 + 1e-6*abs(reference)','lmm-public-r':'per-case/per-quantity policy stored in fixture',
@@ -43,6 +43,8 @@ report={'schema_version':1,'purpose':'Reference provenance index; test sources a
 for stem,generator in GENERATORS.items():
  path=ROOT/'tests/fixtures'/f'{stem}.json';data=json.loads(path.read_text());cases=[]
  source_cases=data.get('cases',[])
+ if stem=='ridge-r':
+  source_cases=[*data['fits'], *[{**c,'name':'cv/'+c['cv_name'],'expected':c['expected_cv']} for c in data['cv']]]
  if stem=='descriptive-r':
   source_cases=[{**c,'section':section,'expected':{k:v for k,v in c.items() if k not in ['name','values','x','y','weights','quantile_probabilities']}}
     for section in ['descriptive','pairs','weighted'] for c in data[section]]
@@ -64,7 +66,10 @@ for stem,generator in GENERATORS.items():
   if isinstance(c.get('reference'),dict):metadata['reference']=compact_ref(c['reference'])
   if references:metadata['references']={k:compact_ref(v) for k,v in references.items()}
   if 'nlme_reference' in c:metadata['nlme_reference']=compact_ref(c['nlme_reference'])
-  if stem=='optimize-r':
+  if stem=='ridge-r':
+   inputs={k:c[k] for k in ['formula','data','weights','lambda','penaltyFactor','standardize','bounds','foldid'] if k in c}
+   n=len(c['data']['y']);p=len(c['expected']['columns']) if 'columns' in c['expected'] else 0;quantities=list(expected)
+  elif stem=='optimize-r':
    inputs={**c['inputs'],'section':c['section']};n=1;p=1;quantities=list(expected)
   elif stem=='smoothing-r':
    inputs={**c['inputs'],'section':c['section']};n=len(c['inputs']['x']);p=1
@@ -87,7 +92,7 @@ for stem,generator in GENERATORS.items():
   cases.append({**metadata,'inputs_sha256':hashlib.sha256(json.dumps(inputs,sort_keys=True,separators=(',',':')).encode()).hexdigest(),
     'n':n,'p':p,'compared_quantities':quantities})
  report['fixtures'].append({'path':str(path.relative_to(ROOT)),'sha256':sha(path),'generator':generator,'generator_sha256':sha(ROOT/generator),
-  'software_recorded_in_fixture':{k:v for k,v in data.items() if k not in ['cases','descriptive','pairs','weighted','datasets','newdata','density','bandwidth','approx','ecdf','optimize','uniroot']},'tolerance_policy':POLICY[stem],
+  'software_recorded_in_fixture':{k:v for k,v in data.items() if k not in ['cases','fits','cv','descriptive','pairs','weighted','datasets','newdata','density','bandwidth','approx','ecdf','optimize','uniroot']},'tolerance_policy':POLICY[stem],
   'model_specification':('Literal draw/covariance matrices and options; 80-digit independent Decimal formulas and decompositions.' if stem=='draws-python' else
     'Explicit saved matrices/vectors/options in fixture; generator records reference formula, family, seed and controls.'),
   'cases':cases})

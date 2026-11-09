@@ -1,0 +1,235 @@
+{
+ "title": "Gaussian ridge and CV workloads",
+ "label": "Ridge",
+ "measure": "Elapsed time",
+ "unit": "ms",
+ "statistic": "median",
+ "environment": {
+  "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "cpu": "arm",
+  "threads": "One thread; JIT and CLI OPcache disabled",
+  "repeats": 7,
+  "date": "2026-11-09",
+  "php": "8.4.26",
+  "reference": {
+   "R": "R version 4.6.1 (2026-06-24)",
+   "glmnet": "5.1",
+   "MASS": "7.3.65",
+   "lmridge": "1.2.2"
+  }
+ },
+ "code_sha256": {
+  "bench/ridge.php": "67d43bb2db18fbce00de27f26b94f3a8a988a6267632db17ede5e8d6d1b204f1",
+  "bench/ridge.R": "6aeefd1b9acb90d0af2f7c533ff452a223fff69e881bd78db94d23cf9de5084f",
+  "bench/run-ridge.py": "02de2bb54210de0297f4ab051f7d85a13100178d6d5f5dfb948daa5d812ebba8",
+  "crates/stats-core/src/ridge.rs": "00d557446ce4654b29f758f18e32f5165646ddb398142c54cc2d7b29092c2066",
+  "phit-polyfill/src/Ridge.php": "52bc75d681361348e35e5e10df512ea6fd097c404be017838d729123bb33e776"
+ },
+ "rows": [
+  {
+   "case": "standardized",
+   "implementation": "phit",
+   "value": 0.13475,
+   "reps": [
+    0.125833,
+    0.140875,
+    0.137375,
+    0.144375,
+    0.1295,
+    0.13475,
+    0.126458
+   ],
+   "n": 96,
+   "k": 4
+  },
+  {
+   "case": "standardized",
+   "implementation": "phit-polyfill",
+   "value": 3.251833,
+   "reps": [
+    3.160125,
+    3.191,
+    3.557875,
+    3.296125,
+    3.288167,
+    3.251833,
+    3.059292
+   ],
+   "n": 96,
+   "k": 4
+  },
+  {
+   "case": "standardized",
+   "implementation": "R glmnet",
+   "value": 8.000000000000007,
+   "reps": [
+    8.000000000000007,
+    9.000000000000007,
+    9.000000000000007,
+    8.000000000000007,
+    8.000000000000007,
+    8.000000000000007,
+    9.000000000000007
+   ],
+   "n": 96,
+   "k": 4
+  },
+  {
+   "case": "heating",
+   "implementation": "phit",
+   "value": 0.591375,
+   "reps": [
+    0.603875,
+    0.591375,
+    0.590708,
+    0.5605,
+    0.604,
+    0.565834,
+    0.592958
+   ],
+   "n": 288,
+   "k": 33
+  },
+  {
+   "case": "heating",
+   "implementation": "phit-polyfill",
+   "value": 33.785834,
+   "reps": [
+    33.731042,
+    33.580084,
+    32.98075,
+    33.785834,
+    33.952959,
+    34.630167,
+    35.09475
+   ],
+   "n": 288,
+   "k": 33
+  },
+  {
+   "case": "heating",
+   "implementation": "R glmnet",
+   "value": 10.000000000000009,
+   "reps": [
+    9.000000000000007,
+    9.000000000000007,
+    10.000000000000009,
+    10.000000000000009,
+    11.00000000000001,
+    9.000000000000007,
+    10.000000000000009
+   ],
+   "n": 288,
+   "k": 33
+  },
+  {
+   "case": "heating_1152",
+   "implementation": "phit",
+   "value": 1.50075,
+   "reps": [
+    1.581709,
+    1.588916,
+    1.46725,
+    1.50075,
+    1.4005,
+    1.413209,
+    1.524625
+   ],
+   "n": 1152,
+   "k": 33
+  },
+  {
+   "case": "heating_1152",
+   "implementation": "phit-polyfill",
+   "value": 70.980875,
+   "reps": [
+    71.738292,
+    70.980875,
+    73.758417,
+    71.933625,
+    70.910667,
+    70.512833,
+    69.791542
+   ],
+   "n": 1152,
+   "k": 33
+  },
+  {
+   "case": "heating_1152",
+   "implementation": "R glmnet",
+   "value": 9.000000000000007,
+   "reps": [
+    9.000000000000007,
+    8.000000000000007,
+    12.00000000000001,
+    10.000000000000009,
+    9.000000000000007,
+    9.000000000000007,
+    10.000000000000009
+   ],
+   "n": 1152,
+   "k": 33
+  },
+  {
+   "case": "cv_heating",
+   "implementation": "phit",
+   "value": 29.299625,
+   "reps": [
+    29.503875,
+    29.618291,
+    29.297959,
+    29.296584,
+    29.330084,
+    29.299625,
+    29.230958
+   ],
+   "n": 288,
+   "k": 33
+  },
+  {
+   "case": "cv_heating",
+   "implementation": "phit-polyfill",
+   "value": 1454.783917,
+   "reps": [
+    1458.601292,
+    1453.696,
+    1463.474667,
+    1449.822375,
+    1460.509417,
+    1454.783917,
+    1454.319125
+   ],
+   "n": 288,
+   "k": 33
+  },
+  {
+   "case": "cv_heating",
+   "implementation": "R glmnet",
+   "value": 24.00000000000002,
+   "reps": [
+    24.00000000000002,
+    23.00000000000002,
+    24.00000000000002,
+    24.00000000000002,
+    24.00000000000002,
+    24.00000000000002,
+    23.00000000000002
+   ],
+   "n": 288,
+   "k": 33
+  }
+ ],
+ "check": {
+  "max_abs_coefficient_or_cv_difference": 6.909814065370057e-08
+ },
+ "notes": [
+  "Fresh process per run; one excluded warm-up per implementation and workload; rotated execution order.",
+  "Data parsing and process/package startup excluded. Formula construction, estimation, covariance (phit), and fold refits (CV) included.",
+  "phit and polyfill compute conditional covariance and effective df for every fit. R glmnet does not compute covariance and performs less work.",
+  "The 1152-row heating case repeats the 288-row saved input four times. Only ridge workloads are run. CV uses five lambdas and day folds with age-decaying weights."
+ ],
+ "reproduce": [
+  "python3 bench/run-ridge.py"
+ ],
+ "source": "bench/ridge-results.json"
+}

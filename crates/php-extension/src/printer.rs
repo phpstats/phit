@@ -246,9 +246,10 @@ type Build = fn(&ZendHashTable) -> PhpResult<Box<dyn Printer>>;
 
 /// One printer per value of a fit's `model` key, which every model function sets. A new model kind adds one entry
 /// here and one `Printer` in stats_core::summary; `summary()` and `tidy()` both dispatch through this table.
-const PRINTERS: [(&str, Build); 5] = [
+const PRINTERS: [(&str, Build); 6] = [
     ("linear", linear),
     ("iv", iv),
+    ("ridge", ridge),
     ("generalized_linear", generalized_linear),
     ("mixed_gaussian", mixed_gaussian),
     ("mixed_logistic", mixed_logistic),
@@ -286,6 +287,50 @@ fn linear(fit: &ZendHashTable) -> PhpResult<Box<dyn Printer>> {
         adj_r_squared: required_float(fit, "adj_r_squared")?,
         f_df,
         coefficients,
+    }))
+}
+
+struct RidgePrinter {
+    formula: String,
+    lambda: f64,
+    df: f64,
+    df_residual: f64,
+    sigma: f64,
+    r_squared: f64,
+    coefficients: Coefficients,
+}
+impl Printer for RidgePrinter {
+    fn heading(&self) -> String {
+        format!(
+            "Gaussian ridge regression\nFormula: {}\nLambda: {}\n",
+            self.formula,
+            summary::format_g(self.lambda, 4)
+        )
+    }
+    fn coefficients(&self) -> &Coefficients {
+        &self.coefficients
+    }
+    fn after_coefficients(&self) -> String {
+        format!(
+            "\nEffective degrees of freedom: {}\nResidual standard error: {}\nR-squared: {}\nConditional SEs and intervals hold lambda fixed. Estimates are biased; intervals are not coverage-valid.\nAt-bound coefficients have unavailable uncertainty.\n",
+            summary::format_g(self.df, 4),
+            summary::format_g(self.sigma, 4),
+            summary::format_g(self.r_squared, 4)
+        )
+    }
+    fn interval_df(&self) -> Option<f64> {
+        Some(self.df_residual)
+    }
+}
+fn ridge(fit: &ZendHashTable) -> PhpResult<Box<dyn Printer>> {
+    Ok(Box::new(RidgePrinter {
+        formula: text(fit, "formula").unwrap_or_default(),
+        lambda: required_float(fit, "lambda")?,
+        df: required_float(fit, "df")?,
+        df_residual: required_float(fit, "df_residual")?,
+        sigma: required_float(fit, "sigma")?,
+        r_squared: required_float(fit, "r_squared")?,
+        coefficients: coefficients(fit)?,
     }))
 }
 
@@ -586,7 +631,19 @@ pub fn tidy_columns(
     }
     let printer = printer(fit)?;
     if effects == "fixed" {
-        tidy_fixed(printer.as_ref(), confInt, level)
+        let mut out = tidy_fixed(printer.as_ref(), confInt, level)?;
+        if text(fit, "model").as_deref() == Some("ridge") {
+            for key in ["std_error", "statistic", "p_value", "conf_low", "conf_high"] {
+                if let Some(a) = out.get(key).and_then(Zval::array) {
+                    let values = a
+                        .values()
+                        .map(|v| v.double().filter(|v| !v.is_nan()))
+                        .collect::<Vec<_>>();
+                    out.insert(key, values)?;
+                }
+            }
+        }
+        Ok(out)
     } else {
         tidy_random(printer.as_ref(), confInt, level)
     }

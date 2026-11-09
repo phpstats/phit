@@ -39,7 +39,7 @@ Phit\fit_ols(
 ```php
 LinearFit A fit object, read like this array:
 array{
-  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -108,7 +108,7 @@ Phit\fit_iv(
 ```php
 IvFit A fit object, read like this array:
 array{
-  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -150,6 +150,148 @@ array{
 
 **See also** [Details](../models.qmd#instrumental-variable-models)
 
+### `fit_ridge()` {#fit_ridge}
+
+Fit Gaussian ridge regression with glmnet alpha=0 scaling.
+
+- Penalty factors normalize over predictor columns. The intercept is unpenalized and unbounded.
+- Named or wildcard bounds apply on the original coefficient scale. At-bound coefficients have null uncertainty.
+- Standard errors and intervals condition on lambda. Estimates are biased and intervals are not coverage-valid.
+- Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+
+```php
+Phit\fit_ridge(
+    string $formula,
+    array|object $data,
+    float $lambda,
+    array $penaltyFactor = [],
+    bool $standardize = true,
+    array $bounds = [],
+    string $missing = 'drop',
+    array|string|null $weights = NULL,
+): RidgeFit
+```
+
+| Parameter | Type | Default | Description |
+| --- | --- | --- | --- |
+| `$formula` | `string` | required | R formula, such as `'y ~ log(x) + f * z + offset(log(t))'` |
+| `$data` | `array\|object` | required | Named columns or factor descriptors; objects use `toModelData()`, else `toColumns()` |
+| `$lambda` | `float` | required | Nonnegative glmnet ridge lambda, or a decreasing sequence for CV; `null` uses the phit path |
+| `$penaltyFactor` | `array` | `[]` | Predictor name or * / ? pattern to a nonnegative penalty factor; zero is unpenalized |
+| `$standardize` | `bool` | `true` | Scale predictors by weighted centered SD; coefficients return on the original scale |
+| `$bounds` | `array` | `[]` | Predictor name or pattern to [lower\|`null`, upper\|`null`] in original units |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
+| `$weights` | `array\|string\|null` | `NULL` | Positive prior weights aligned with the original rows, or a column name |
+
+**Returns**
+
+```php
+RidgeFit A fit object, read like this array:
+array{
+  model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  coefficients: list<float>,
+  covariance: list<list<float|null>>,
+  std_errors: list<float|null>,
+  p_values: list<float|null>,
+  conf_int: list<array{float,float}|null>,
+  fitted: list<float>,
+  residuals: list<float>,
+  df_residual: float,
+  diagnostics: array{converged:bool,solver:string,warnings:list<string>,iterations?:int,evaluations?:int,gradient_max?:float,boundary?:bool,singular?:bool},
+  n_input: int,
+  n_observations: int,
+  n_dropped: int,
+  retained_rows: list<int>,
+  dropped_rows: list<int>,
+  formula: string,
+  response: string,
+  columns: list<string>,
+  terms: list<string>,
+  assign: list<int>,
+  intercept: bool,
+  named: array<string,float>,
+  predvars: array{levels:array<string,list<string>>,poly:array<string,array{alpha:list<float>,norm2:list<float>}>},
+  lambda: float,
+  lambda_effective: float,
+  response_scale: float,
+  penalty_factor: list<float>,
+  standardize: bool,
+  bounds: list<array{float|null,float|null}>,
+  at_bound: list<bool>,
+  df: float,
+  sigma: float,
+  rss: float,
+  r_squared: float,
+  lambda_lm_ridge: float|null,
+  t_statistics: list<float|null>,
+  iterations: int,
+}
+```
+
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
+
+**See also** [Details](../models.qmd#ridge-regression)
+
+### `cv_ridge()` {#cv_ridge}
+
+Choose a ridge penalty by weighted cross-validation.
+
+- Explicit fold IDs align with original input rows and take precedence over nfolds and seed.
+- Grouped fold MSE and its standard error match cv.glmnet. The selected fit uses lambda_min.
+- The default path has 100 decreasing log-spaced values; explicit sequences must be strictly decreasing.
+- Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+
+```php
+Phit\cv_ridge(
+    string $formula,
+    array|object $data,
+    ?array $lambda = NULL,
+    ?array $foldid = NULL,
+    int $nfolds = 10,
+    int $seed = 0,
+    array $penaltyFactor = [],
+    bool $standardize = true,
+    array $bounds = [],
+    string $missing = 'drop',
+    array|string|null $weights = NULL,
+): array
+```
+
+| Parameter | Type | Default | Description |
+| --- | --- | --- | --- |
+| `$formula` | `string` | required | R formula, such as `'y ~ log(x) + f * z + offset(log(t))'` |
+| `$data` | `array\|object` | required | Named columns or factor descriptors; objects use `toModelData()`, else `toColumns()` |
+| `$lambda` | `?array` | `NULL` | Nonnegative glmnet ridge lambda, or a decreasing sequence for CV; `null` uses the phit path |
+| `$foldid` | `?array` | `NULL` | Integer fold labels aligned with every original input row |
+| `$nfolds` | `int` | `10` | Number of balanced random folds when foldid is `null`, at least three |
+| `$seed` | `int` | `0` | Nonnegative permutation seed used only when foldid is `null` |
+| `$penaltyFactor` | `array` | `[]` | Predictor name or * / ? pattern to a nonnegative penalty factor; zero is unpenalized |
+| `$standardize` | `bool` | `true` | Scale predictors by weighted centered SD; coefficients return on the original scale |
+| `$bounds` | `array` | `[]` | Predictor name or pattern to [lower\|`null`, upper\|`null`] in original units |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
+| `$weights` | `array\|string\|null` | `NULL` | Positive prior weights aligned with the original rows, or a column name |
+
+**Returns**
+
+```php
+array{
+  lambda: list<float>,
+  cvm: list<float>,
+  cvsd: list<float>,
+  cvup: list<float>,
+  cvlo: list<float>,
+  lambda_min: float,
+  lambda_1se: float,
+  index_min: int,
+  index_1se: int,
+  fit: RidgeFit,
+}
+```
+
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
+
+**See also** [Details](../models.qmd#ridge-regression)
+
 ### `fit_generalized_linear()` {#fit_generalized_linear}
 
 Fits a generalized linear model from a formula, like R's `glm()`.
@@ -183,7 +325,7 @@ Phit\fit_generalized_linear(
 ```php
 GeneralizedLinearFit A fit object, read like this array:
 array{
-  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -369,7 +511,7 @@ Phit\fit_ols_matrix(
 ```php
 LinearFit A fit object, read like this array:
 array{
-  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -430,7 +572,7 @@ Phit\fit_logistic_matrix(
 ```php
 GeneralizedLinearFit A fit object, read like this array:
 array{
-  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -491,7 +633,7 @@ Phit\fit_probit_matrix(
 ```php
 GeneralizedLinearFit A fit object, read like this array:
 array{
-  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -552,7 +694,7 @@ Phit\fit_poisson_matrix(
 ```php
 GeneralizedLinearFit A fit object, read like this array:
 array{
-  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,

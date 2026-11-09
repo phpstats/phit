@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0
+
+- Add `fit_ridge()` and `RidgeFit` with glmnet alpha=0 scaling, zero penalty factors, standardization, original-scale bounds, and conditional uncertainty.
+- Add `cv_ridge()` with explicit or generated folds, weighted errors, lambda selection, and a refitted `RidgeFit`.
+- Validate twelve fits and six CV cases against glmnet, MASS, lmridge, and independent conditional covariance calculations. Include weighted day folds over hourly heating rows and ridge-only benchmarks.
+
 ## 0.7.0
 
 - Add `fit_iv()` and `IvFit` for weighted two-stage least squares, with structural-residual inference, first-stage strength diagnostics, Sanderson–Windmeijer F, Wu–Hausman, and Sargan tests.

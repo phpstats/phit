@@ -140,6 +140,10 @@ def build():
     benchmarks.append('site/benchmarks/iv-workload.json')
     files['verifications/iv.json'] = evidence.iv_verification()
     verifications.append('site/verifications/iv.json')
+    files['benchmarks/ridge-workload.json'] = json.loads((ROOT / 'bench/ridge-results.json').read_text())
+    benchmarks.append('site/benchmarks/ridge-workload.json')
+    files['verifications/ridge.json'] = evidence.ridge_verification()
+    verifications.append('site/verifications/ridge.json')
     files['site.json'] = manifest(benchmarks, verifications)
     return {path: json.dumps(content, indent=1, allow_nan=False) + '\n' for path, content in files.items()}
 

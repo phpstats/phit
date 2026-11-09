@@ -3,6 +3,476 @@
   "purpose": "Reference provenance index; test sources and fixtures are authoritative, not a new snapshot of estimates.",
   "fixtures": [
     {
+      "path": "tests/fixtures/ridge-r.json",
+      "sha256": "4c1dd360db296735226fcc7693fadd163522f8a50025188404c808f264647e42",
+      "generator": "tests/generate-ridge-fixtures.R",
+      "generator_sha256": "3a7b02c290575c2568fb065c40484e0d3906d0b467cd4a29ae61a81a7f967eda",
+      "software_recorded_in_fixture": {
+        "reference": {
+          "R": "R version 4.6.1 (2026-06-24)",
+          "glmnet": "5.1",
+          "MASS": "7.3.65",
+          "lmridge": "1.2.2"
+        },
+        "lmridge": {
+          "K": 0.1643088653016798,
+          "coefficients": [
+            7.9570405837502225,
+            0.9778070196924216,
+            -0.6501275129719916,
+            0.13151015950504436
+          ],
+          "covariance": [
+            [
+              0.004034829303843017,
+              -0.00020605934542705813,
+              2.0020354165025166e-05
+            ],
+            [
+              -0.00020605934542705813,
+              0.0074165706412098395,
+              -0.0018057086388357211
+            ],
+            [
+              2.0020354165025166e-05,
+              -0.0018057086388357211,
+              0.04518754210345016
+            ]
+          ],
+          "sigma2": 4.677835986213767,
+          "scales": [
+            29.264362633389585,
+            21.68647636292648,
+            8.779818119056364
+          ],
+          "rounded_public_coef": [
+            7.95704,
+            0.97781,
+            -0.65013,
+            0.13151
+          ]
+        }
+      },
+      "tolerance_policy": "1e-7 + 2e-6*abs(reference); explicit lambda; glmnet thresh=1e-18; independent n-df conditional covariance",
+      "model_specification": "Explicit saved matrices/vectors/options in fixture; generator records reference formula, family, seed and controls.",
+      "cases": [
+        {
+          "name": "standardized",
+          "inputs_sha256": "b0123edf5dfc342e06230a47b52b1c775422f556240b1a215c60900c104b257b",
+          "n": 96,
+          "p": 4,
+          "compared_quantities": [
+            "coefficients",
+            "fitted",
+            "residuals",
+            "columns",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "df",
+            "df_residual",
+            "r_squared",
+            "covariance",
+            "std_errors",
+            "conf_int",
+            "penalty_factor",
+            "at_bound",
+            "lambda_effective",
+            "response_scale",
+            "lambda_lm_ridge"
+          ]
+        },
+        {
+          "name": "raw",
+          "inputs_sha256": "0e9d7e0cbf25e8b8659a2dca1bba24f84957a86c38edb554fe20fe8bea831551",
+          "n": 96,
+          "p": 4,
+          "compared_quantities": [
+            "coefficients",
+            "fitted",
+            "residuals",
+            "columns",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "df",
+            "df_residual",
+            "r_squared",
+            "covariance",
+            "std_errors",
+            "conf_int",
+            "penalty_factor",
+            "at_bound",
+            "lambda_effective",
+            "response_scale",
+            "lambda_lm_ridge"
+          ]
+        },
+        {
+          "name": "weighted",
+          "inputs_sha256": "bcf19c8e649f0fa9cc3f89fa99955973739f468cf2f1218a0f9d55b98b064a3d",
+          "n": 96,
+          "p": 4,
+          "compared_quantities": [
+            "coefficients",
+            "fitted",
+            "residuals",
+            "columns",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "df",
+            "df_residual",
+            "r_squared",
+            "covariance",
+            "std_errors",
+            "conf_int",
+            "penalty_factor",
+            "at_bound",
+            "lambda_effective",
+            "response_scale",
+            "lambda_lm_ridge"
+          ]
+        },
+        {
+          "name": "no_intercept",
+          "inputs_sha256": "cdaa79c6df25e00c1f86ace9e3426fb0008612854101c4aefcfc74a7f0fedc94",
+          "n": 96,
+          "p": 3,
+          "compared_quantities": [
+            "coefficients",
+            "fitted",
+            "residuals",
+            "columns",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "df",
+            "df_residual",
+            "r_squared",
+            "covariance",
+            "std_errors",
+            "conf_int",
+            "penalty_factor",
+            "at_bound",
+            "lambda_effective",
+            "response_scale",
+            "lambda_lm_ridge"
+          ]
+        },
+        {
+          "name": "no_intercept_raw",
+          "inputs_sha256": "bf51ff000f04369f2cb507a9090f392b8ac909b0fd1816376d70d50c80f80f02",
+          "n": 96,
+          "p": 3,
+          "compared_quantities": [
+            "coefficients",
+            "fitted",
+            "residuals",
+            "columns",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "df",
+            "df_residual",
+            "r_squared",
+            "covariance",
+            "std_errors",
+            "conf_int",
+            "penalty_factor",
+            "at_bound",
+            "lambda_effective",
+            "response_scale",
+            "lambda_lm_ridge"
+          ]
+        },
+        {
+          "name": "unpenalized",
+          "inputs_sha256": "ae51ab2e7cf39cee03d7eb7a5703ca92c66cb44370e9fb401bedf297d8589b74",
+          "n": 96,
+          "p": 4,
+          "compared_quantities": [
+            "coefficients",
+            "fitted",
+            "residuals",
+            "columns",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "df",
+            "df_residual",
+            "r_squared",
+            "covariance",
+            "std_errors",
+            "conf_int",
+            "penalty_factor",
+            "at_bound",
+            "lambda_effective",
+            "response_scale",
+            "lambda_lm_ridge"
+          ]
+        },
+        {
+          "name": "bounded",
+          "inputs_sha256": "252377418371c50d501bd10e577147b7cfbecc0afcdd13a5e376b63b0de753d3",
+          "n": 96,
+          "p": 4,
+          "compared_quantities": [
+            "coefficients",
+            "fitted",
+            "residuals",
+            "columns",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "df",
+            "df_residual",
+            "r_squared",
+            "covariance",
+            "std_errors",
+            "conf_int",
+            "penalty_factor",
+            "at_bound",
+            "lambda_effective",
+            "response_scale",
+            "lambda_lm_ridge"
+          ]
+        },
+        {
+          "name": "bounded_zero_lambda",
+          "inputs_sha256": "154ec09754f9891b682ed6d2528d628908a976fb92bddbe431456e8df438c42a",
+          "n": 96,
+          "p": 4,
+          "compared_quantities": [
+            "coefficients",
+            "fitted",
+            "residuals",
+            "columns",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "df",
+            "df_residual",
+            "r_squared",
+            "covariance",
+            "std_errors",
+            "conf_int",
+            "penalty_factor",
+            "at_bound",
+            "lambda_effective",
+            "response_scale",
+            "lambda_lm_ridge"
+          ]
+        },
+        {
+          "name": "factors_interactions",
+          "inputs_sha256": "b7d74f7a59eae418f54085d4d74963a9eaea820586983abd95d8cccac923ac18",
+          "n": 96,
+          "p": 5,
+          "compared_quantities": [
+            "coefficients",
+            "fitted",
+            "residuals",
+            "columns",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "df",
+            "df_residual",
+            "r_squared",
+            "covariance",
+            "std_errors",
+            "conf_int",
+            "penalty_factor",
+            "at_bound",
+            "lambda_effective",
+            "response_scale",
+            "lambda_lm_ridge"
+          ]
+        },
+        {
+          "name": "weighted_bounded",
+          "inputs_sha256": "0ef684a01ab748d691439ad5f1f3cf579b41415db0ff01a5cdeb34ef0dc56def",
+          "n": 96,
+          "p": 4,
+          "compared_quantities": [
+            "coefficients",
+            "fitted",
+            "residuals",
+            "columns",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "df",
+            "df_residual",
+            "r_squared",
+            "covariance",
+            "std_errors",
+            "conf_int",
+            "penalty_factor",
+            "at_bound",
+            "lambda_effective",
+            "response_scale",
+            "lambda_lm_ridge"
+          ]
+        },
+        {
+          "name": "missing",
+          "inputs_sha256": "6253a5512c499fb5584a51b2d461161516a4cff048b7bc255d3b16f068eca2ec",
+          "n": 96,
+          "p": 4,
+          "compared_quantities": [
+            "coefficients",
+            "fitted",
+            "residuals",
+            "columns",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "df",
+            "df_residual",
+            "r_squared",
+            "covariance",
+            "std_errors",
+            "conf_int",
+            "penalty_factor",
+            "at_bound",
+            "lambda_effective",
+            "response_scale",
+            "lambda_lm_ridge"
+          ]
+        },
+        {
+          "name": "heating",
+          "inputs_sha256": "57d659e3672c642fedd9d90b1ea245c7391cc4312949f009b79f2605328893a4",
+          "n": 288,
+          "p": 33,
+          "compared_quantities": [
+            "coefficients",
+            "fitted",
+            "residuals",
+            "columns",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "df",
+            "df_residual",
+            "r_squared",
+            "covariance",
+            "std_errors",
+            "conf_int",
+            "penalty_factor",
+            "at_bound",
+            "lambda_effective",
+            "response_scale",
+            "lambda_lm_ridge"
+          ]
+        },
+        {
+          "name": "cv/small_folds_ungrouped",
+          "inputs_sha256": "a7ad68d0c476a12be719151a755b9a6df0c74f717a6004d8b892f0cda583c8c6",
+          "n": 8,
+          "p": 0,
+          "compared_quantities": [
+            "lambda",
+            "cvm",
+            "cvsd",
+            "cvup",
+            "cvlo",
+            "lambda_min",
+            "lambda_1se",
+            "index_min",
+            "index_1se"
+          ]
+        },
+        {
+          "name": "cv/unequal_folds_and_weights",
+          "inputs_sha256": "087ee4a0e8dd79bf098969c64a70884504b6d05d32e872adbe4e38759a932bc9",
+          "n": 96,
+          "p": 0,
+          "compared_quantities": [
+            "lambda",
+            "cvm",
+            "cvsd",
+            "cvup",
+            "cvlo",
+            "lambda_min",
+            "lambda_1se",
+            "index_min",
+            "index_1se"
+          ]
+        },
+        {
+          "name": "cv/bounded_weighted",
+          "inputs_sha256": "5490448e25944ce5bef6a5bd8f791d8a354453eb0f7ae14d31e7bccebf86c39b",
+          "n": 96,
+          "p": 0,
+          "compared_quantities": [
+            "lambda",
+            "cvm",
+            "cvsd",
+            "cvup",
+            "cvlo",
+            "lambda_min",
+            "lambda_1se",
+            "index_min",
+            "index_1se"
+          ]
+        },
+        {
+          "name": "cv/no_intercept",
+          "inputs_sha256": "c652e5c42b5fb74bc42284ee52d9b7ba61a29c04f49144fc2361ad1f7703c625",
+          "n": 96,
+          "p": 0,
+          "compared_quantities": [
+            "lambda",
+            "cvm",
+            "cvsd",
+            "cvup",
+            "cvlo",
+            "lambda_min",
+            "lambda_1se",
+            "index_min",
+            "index_1se"
+          ]
+        },
+        {
+          "name": "cv/missing_original_rows",
+          "inputs_sha256": "62f4b2f966ed12c905fe01d268a80d72657913a036f57a7b473b9e435fe6ed09",
+          "n": 96,
+          "p": 0,
+          "compared_quantities": [
+            "lambda",
+            "cvm",
+            "cvsd",
+            "cvup",
+            "cvlo",
+            "lambda_min",
+            "lambda_1se",
+            "index_min",
+            "index_1se"
+          ]
+        },
+        {
+          "name": "cv/day_folds_with_age_weights",
+          "inputs_sha256": "642dc15a7c9753c4e0c84d90d67dbf5a41d597fccd3683fbb09418ad377cbbfe",
+          "n": 288,
+          "p": 0,
+          "compared_quantities": [
+            "lambda",
+            "cvm",
+            "cvsd",
+            "cvup",
+            "cvlo",
+            "lambda_min",
+            "lambda_1se",
+            "index_min",
+            "index_1se"
+          ]
+        }
+      ]
+    },
+    {
       "path": "tests/fixtures/iv-r.json",
       "sha256": "18ed7b17e8f9496868ec51181dfab0d6d4a5ed7864d8c00bc21984afa9a9a0ee",
       "generator": "tests/generate-iv-fixtures.R",

@@ -29,7 +29,7 @@
  ],
  "verify": {
   "command": "php -r 'echo phpversion(\"phit\"), PHP_EOL;'",
-  "output": "0.7.0",
+  "output": "0.8.0",
   "note": "PHP-FPM reads its own php.ini, so enable the extension there and restart FPM."
  },
  "installation": "installation",
@@ -157,7 +157,8 @@
   "site/benchmarks/probit-workload.json",
   "site/benchmarks/mixed-logistic-workload.json",
   "site/benchmarks/distributions-workload.json",
-  "site/benchmarks/iv-workload.json"
+  "site/benchmarks/iv-workload.json",
+  "site/benchmarks/ridge-workload.json"
  ],
  "evidence_gaps": {
   "benchmarks": "No benchmark times formula parsing, predict(), descriptive statistics, kernel densities, or chunked CsvReader reading.",
@@ -174,7 +175,8 @@
   "site/verifications/r-compatibility.json",
   "site/verifications/distributions.json",
   "site/verifications/test-suites.json",
-  "site/verifications/iv.json"
+  "site/verifications/iv.json",
+  "site/verifications/ridge.json"
  ],
  "examples": [
   {

@@ -322,6 +322,7 @@ fn model_kind(function: &str) -> &'static str {
     match function {
         "Phit\\fit_ols" | "Phit\\fit_ols_matrix" => "linear",
         "Phit\\fit_iv" => "iv",
+        "Phit\\fit_ridge" => "ridge",
         "Phit\\fit_generalized_linear"
         | "Phit\\fit_logistic_matrix"
         | "Phit\\fit_probit_matrix"
@@ -350,6 +351,7 @@ fn finish_result(
         match function {
             "Phit\\fit_ols_matrix" | "Phit\\fit_ols" => "scaled_svd",
             "Phit\\fit_iv" => "scaled_qr_2sls",
+            "Phit\\fit_ridge" => "augmented_qr_bounded_coordinate_descent",
             "Phit\\fit_generalized_linear" => match output.get("link").and_then(|v| v.str()) {
                 Some("identity") => "scaled_svd",
                 Some("probit") => "fisher_scoring",
@@ -503,6 +505,7 @@ macro_rules! glm_output {
 
 mod fit;
 mod formula;
+mod ridge;
 
 #[php_function]
 #[php(
@@ -1150,7 +1153,7 @@ pub fn get_module(module: ModuleBuilder) -> ModuleBuilder {
         .function(wrap_function!(fit_mixed_gaussian_intercept_matrix))
         .function(wrap_function!(fit_mixed_gaussian_matrix))
         .function(wrap_function!(fit_mixed_logistic_matrix));
-    let module = fit::register(formula::register(module));
+    let module = ridge::register(fit::register(formula::register(module)));
     let module = distributions::register(module);
     let module = smoothing::register(descriptive::register(module));
     printer::register(csv::register(draws::register(optimize::register(module))))

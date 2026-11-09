@@ -9,12 +9,20 @@ function php_param_group(string $function): string
         str_starts_with($function, 'dist_') => 'dist',
         str_starts_with($function, 'stat_') => 'stat',
         str_starts_with($function, 'draws_') => 'draws',
-        str_starts_with($function, 'fit_'), $function === 'model_matrix', $function === 'predict' => 'model',
+        str_starts_with($function, 'fit_'), $function === 'model_matrix', $function === 'cv_ridge', $function === 'predict' => 'model',
         default => 'other',
     };
 }
 
 return [
+    'model:lambda' => 'Nonnegative glmnet ridge lambda, or a decreasing sequence for CV; null uses the phit path',
+    'model:penaltyFactor' => 'Predictor name or * / ? pattern to a nonnegative penalty factor; zero is unpenalized',
+    'model:standardize' => 'Scale predictors by weighted centered SD; coefficients return on the original scale',
+    'model:bounds' => 'Predictor name or pattern to [lower|null, upper|null] in original units',
+    'cv_ridge:foldid' => 'Integer fold labels aligned with every original input row',
+    'cv_ridge:nfolds' => 'Number of balanced random folds when foldid is null, at least three',
+    'cv_ridge:seed' => 'Nonnegative permutation seed used only when foldid is null',
+
     'fit_iv:vcov' => "Covariance specification; only 'iid' is currently supported",
     // Distributions.
     'dist:x' => 'Point at which to evaluate; ±INF allowed',

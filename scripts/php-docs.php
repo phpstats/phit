@@ -41,6 +41,20 @@ $operations = [
 $batch = '- Batch form: one call over a list, returning one value per element in input order, without the keys.';
 
 $descriptions = [
+    'fit_ridge' => [
+        'Fit Gaussian ridge regression with glmnet alpha=0 scaling.',
+        '- Penalty factors normalize over predictor columns. The intercept is unpenalized and unbounded.',
+        '- Named or wildcard bounds apply on the original coefficient scale. At-bound coefficients have null uncertainty.',
+        '- Standard errors and intervals condition on lambda. Estimates are biased and intervals are not coverage-valid.',
+        $missingFormula,
+    ],
+    'cv_ridge' => [
+        'Choose a ridge penalty by weighted cross-validation.',
+        '- Explicit fold IDs align with original input rows and take precedence over nfolds and seed.',
+        '- Grouped fold MSE and its standard error match cv.glmnet. The selected fit uses lambda_min.',
+        '- The default path has 100 decreasing log-spaced values; explicit sequences must be strictly decreasing.',
+        $missingFormula,
+    ],
     'fit_iv' => [
         'Fit an instrumental-variable model by two-stage least squares.',
         '- Formula: `y ~ exogenous | endogenous ~ excluded instruments`. Only top-level bars split the parts.',

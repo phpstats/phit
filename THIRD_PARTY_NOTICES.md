@@ -144,3 +144,10 @@ ivreg and fixest public documentation and fixture outputs specify inference
 conventions. The references and observed differences are in
 `specs/cleanroom/iv.md`. These are behavior references and introduce no bundled
 GPL code.
+
+## Ridge reference behavior
+
+Gaussian ridge and CV are independently implemented from published mathematics
+and public glmnet, MASS, and lmridge documentation and fixture outputs. No code
+from those GPL packages is included. References and observed scaling conventions
+are recorded in `specs/cleanroom/ridge.md`.

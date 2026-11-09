@@ -51,7 +51,7 @@ Phit\fit_mixed_gaussian(
 ```php
 MixedGaussianFit A fit object, read like this array:
 array{
-  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -135,7 +135,7 @@ Phit\fit_mixed_logistic(
 ```php
 MixedLogisticFit A fit object, read like this array:
 array{
-  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -241,7 +241,7 @@ Phit\fit_mixed_gaussian_matrix(
 ```php
 MixedGaussianFit A fit object, read like this array:
 array{
-  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -311,7 +311,7 @@ Phit\fit_mixed_gaussian_intercept_matrix(
 ```php
 MixedGaussianFit A fit object, read like this array:
 array{
-  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -392,7 +392,7 @@ Phit\fit_mixed_logistic_matrix(
 ```php
 MixedLogisticFit A fit object, read like this array:
 array{
-  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,

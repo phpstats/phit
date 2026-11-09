@@ -887,3 +887,23 @@ def iv_verification():
             'cases': rows, 'exclusions': [], 'known_differences': report['differences'],
             'reproduce': ['Rscript docs/verifications/iv.R', 'python3 docs/verifications/compare_iv.py'],
             'source': 'docs/verifications/iv-results.json', 'data': 'tests/fixtures/iv-r.json', 'group': 'Models'}
+
+def ridge_verification():
+    report = load('docs/verifications/ridge-results.json')
+    rows = []
+    for implementation, cases in report['cases'].items():
+        for case in cases:
+            comparison = compare(case['result'], report['references'][case['name']], 1e-7, 2e-6)
+            rows.append({'name': case['name'], 'quantity': 'Ridge estimates and CV error',
+                         'implementation': implementation, 'rule': 'model',
+                         'status': 'pass' if comparison['fails'] == 0 else 'fail',
+                         'n_compared': comparison['n'], 'max_abs_error': comparison['max_abs']})
+    return {'title': 'Gaussian ridge and cross-validation', 'label': 'Ridge', 'kind': 'reference',
+            'checked': 'Coefficients, local-face effective df, conditional covariance, fitted values, weighted CV MSE and SE, and lambda selection.',
+            'description': 'Public glmnet output and independently computed conditional uncertainty, checked in the extension and polyfill.',
+            'reference': 'glmnet, MASS, lmridge, and independent matrix calculations',
+            'versions': report['reference'], 'inputs': 'Twelve fits and six CV cases including weighted day folds over hourly heating rows.',
+            'comparison': [{'id': 'model', 'applies_to': 'Numerical results', 'kind': 'tolerance', 'atol': 1e-7, 'rtol': 2e-6}],
+            'cases': rows, 'exclusions': [], 'known_differences': report['differences'],
+            'reproduce': ['Rscript docs/verifications/ridge.R', 'python3 docs/verifications/compare_ridge.py'],
+            'source': 'docs/verifications/ridge-results.json', 'data': 'tests/fixtures/ridge-r.json', 'group': 'Models'}

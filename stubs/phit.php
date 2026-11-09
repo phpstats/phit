@@ -7,6 +7,39 @@
 namespace Phit;
 
 /**
+ * Choose a ridge penalty by weighted cross-validation.
+ * - Explicit fold IDs align with original input rows and take precedence over nfolds and seed.
+ * - Grouped fold MSE and its standard error match cv.glmnet. The selected fit uses lambda_min.
+ * - The default path has 100 decreasing log-spaced values; explicit sequences must be strictly decreasing.
+ * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+ * @param string $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'
+ * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
+ * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
+ * @param ?array $lambda Nonnegative glmnet ridge lambda, or a decreasing sequence for CV; null uses the phit path
+ * @param ?array $foldid Integer fold labels aligned with every original input row
+ * @param int $nfolds Number of balanced random folds when foldid is null, at least three
+ * @param int $seed Nonnegative permutation seed used only when foldid is null
+ * @param array $penaltyFactor Predictor name or * / ? pattern to a nonnegative penalty factor; zero is unpenalized
+ * @param bool $standardize Scale predictors by weighted centered SD; coefficients return on the original scale
+ * @param array $bounds Predictor name or pattern to [lower|null, upper|null] in original units
+ * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
+ * @return array{
+ *   lambda: list<float>,
+ *   cvm: list<float>,
+ *   cvsd: list<float>,
+ *   cvup: list<float>,
+ *   cvlo: list<float>,
+ *   lambda_min: float,
+ *   lambda_1se: float,
+ *   index_min: int,
+ *   index_1se: int,
+ *   fit: RidgeFit,
+ * }
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
+ */
+function cv_ridge(string $formula, mixed $data, ?array $lambda = NULL, ?array $foldid = NULL, int $nfolds = 10, int $seed = 0, array $penaltyFactor = [], bool $standardize = true, array $bounds = [], string $missing = 'drop', mixed $weights = NULL): array {}
+
+/**
  * Lower-tail probability P(X ≤ x) of the beta distribution with shapes `alpha` and `beta`.
  * @param float $x Point at which to evaluate; ±INF allowed
  * @param float $alpha First shape parameter, > 0
@@ -2152,7 +2185,7 @@ function draws_moments(array $draws, ?array $weights = NULL, string $normalizati
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @return GeneralizedLinearFit A fit object, read like this array:
  * array{
- *   model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+ *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2208,7 +2241,7 @@ function fit_generalized_linear(string $formula, mixed $data, string $family = '
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @return IvFit A fit object, read like this array:
  * array{
- *   model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+ *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2260,7 +2293,7 @@ function fit_iv(string $formula, mixed $data, string $missing = 'drop', mixed $w
  * @param ?array $offset Known part of the linear predictor, aligned with the rows; null is zero
  * @return GeneralizedLinearFit A fit object, read like this array:
  * array{
- *   model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+ *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2306,7 +2339,7 @@ function fit_logistic_matrix(array $x, array $y, string $missing = 'drop', ?arra
  * @param float $objectiveTolerance Nelder–Mead stopping tolerance: the standard deviation of the simplex objective values
  * @return MixedGaussianFit A fit object, read like this array:
  * array{
- *   model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+ *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2363,7 +2396,7 @@ function fit_mixed_gaussian(string $formula, mixed $data, bool $reml = true, str
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @return MixedGaussianFit A fit object, read like this array:
  * array{
- *   model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+ *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2421,7 +2454,7 @@ function fit_mixed_gaussian_intercept_matrix(array $x, array $y, array $groups, 
  * @param float $objectiveTolerance Nelder–Mead stopping tolerance: the standard deviation of the simplex objective values
  * @return MixedGaussianFit A fit object, read like this array:
  * array{
- *   model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+ *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2474,7 +2507,7 @@ function fit_mixed_gaussian_matrix(array $x, array $y, array $random, string $mi
  * @param float $tolerance BOBYQA final trust-region radius, in (0, 0.1]
  * @return MixedLogisticFit A fit object, read like this array:
  * array{
- *   model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+ *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2546,7 +2579,7 @@ function fit_mixed_logistic(string $formula, mixed $data, string $missing = 'dro
  * @param float $tolerance BOBYQA final trust-region radius, in (0, 0.1]
  * @return MixedLogisticFit A fit object, read like this array:
  * array{
- *   model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+ *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2605,7 +2638,7 @@ function fit_mixed_logistic_matrix(array $x, array $y, array $groups, string $mi
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @return LinearFit A fit object, read like this array:
  * array{
- *   model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+ *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2653,7 +2686,7 @@ function fit_ols(string $formula, mixed $data, string $missing = 'drop', mixed $
  * @param ?array $offset Known part of the linear predictor, aligned with the rows; null is zero
  * @return LinearFit A fit object, read like this array:
  * array{
- *   model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+ *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2692,7 +2725,7 @@ function fit_ols_matrix(array $x, array $y, string $missing = 'drop', ?array $we
  * @param ?array $offset Known part of the linear predictor, aligned with the rows; null is zero
  * @return GeneralizedLinearFit A fit object, read like this array:
  * array{
- *   model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+ *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2731,7 +2764,7 @@ function fit_poisson_matrix(array $x, array $y, string $missing = 'drop', ?array
  * @param ?array $offset Known part of the linear predictor, aligned with the rows; null is zero
  * @return GeneralizedLinearFit A fit object, read like this array:
  * array{
- *   model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+ *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
  *   coefficients: list<float>,
  *   covariance: list<list<float>>,
  *   std_errors: list<float>,
@@ -2757,6 +2790,64 @@ function fit_poisson_matrix(array $x, array $y, string $missing = 'drop', ?array
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error.
  */
 function fit_probit_matrix(array $x, array $y, string $missing = 'drop', ?array $weights = NULL, ?array $offset = NULL, bool $intercept = true): GeneralizedLinearFit {}
+
+/**
+ * Fit Gaussian ridge regression with glmnet alpha=0 scaling.
+ * - Penalty factors normalize over predictor columns. The intercept is unpenalized and unbounded.
+ * - Named or wildcard bounds apply on the original coefficient scale. At-bound coefficients have null uncertainty.
+ * - Standard errors and intervals condition on lambda. Estimates are biased and intervals are not coverage-valid.
+ * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+ * @param string $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'
+ * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
+ * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
+ * @param float $lambda Nonnegative glmnet ridge lambda, or a decreasing sequence for CV; null uses the phit path
+ * @param array $penaltyFactor Predictor name or * / ? pattern to a nonnegative penalty factor; zero is unpenalized
+ * @param bool $standardize Scale predictors by weighted centered SD; coefficients return on the original scale
+ * @param array $bounds Predictor name or pattern to [lower|null, upper|null] in original units
+ * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
+ * @return RidgeFit A fit object, read like this array:
+ * array{
+ *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+ *   coefficients: list<float>,
+ *   covariance: list<list<float|null>>,
+ *   std_errors: list<float|null>,
+ *   p_values: list<float|null>,
+ *   conf_int: list<array{float,float}|null>,
+ *   fitted: list<float>,
+ *   residuals: list<float>,
+ *   df_residual: float,
+ *   diagnostics: array{converged:bool,solver:string,warnings:list<string>,iterations?:int,evaluations?:int,gradient_max?:float,boundary?:bool,singular?:bool},
+ *   n_input: int,
+ *   n_observations: int,
+ *   n_dropped: int,
+ *   retained_rows: list<int>,
+ *   dropped_rows: list<int>,
+ *   formula: string,
+ *   response: string,
+ *   columns: list<string>,
+ *   terms: list<string>,
+ *   assign: list<int>,
+ *   intercept: bool,
+ *   named: array<string,float>,
+ *   predvars: array{levels:array<string,list<string>>,poly:array<string,array{alpha:list<float>,norm2:list<float>}>},
+ *   lambda: float,
+ *   lambda_effective: float,
+ *   response_scale: float,
+ *   penalty_factor: list<float>,
+ *   standardize: bool,
+ *   bounds: list<array{float|null,float|null}>,
+ *   at_bound: list<bool>,
+ *   df: float,
+ *   sigma: float,
+ *   rss: float,
+ *   r_squared: float,
+ *   lambda_lm_ridge: float|null,
+ *   t_statistics: list<float|null>,
+ *   iterations: int,
+ * }
+ * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
+ */
+function fit_ridge(string $formula, mixed $data, float $lambda, array $penaltyFactor = [], bool $standardize = true, array $bounds = [], string $missing = 'drop', mixed $weights = NULL): RidgeFit {}
 
 /**
  * Builds the numeric design of a formula over named columns, like R's `model.matrix()`.
@@ -3097,7 +3188,7 @@ function uniroot(callable $f, float $lower, float $upper, ?float $tol = NULL, in
 
 /**
  * A model fit: the result of every model function. echo prints its summary, and reading a key works as on the result
- * array. The implementing classes are LinearFit, IvFit, GeneralizedLinearFit, MixedGaussianFit, and MixedLogisticFit.
+ * array. The implementing classes are LinearFit, IvFit, RidgeFit, GeneralizedLinearFit, MixedGaussianFit, and MixedLogisticFit.
  */
 interface Fit extends \ArrayAccess, \Iterator, \Countable, \JsonSerializable, \Stringable
 {
@@ -3234,6 +3325,127 @@ final class LinearFit implements Fit
  * the fit is read-only, and toArray() returns the array.
  */
 final class IvFit implements Fit
+{
+  /**
+   * Not available: fits come from the model functions.
+   */
+  private function __construct() {}
+
+  /**
+   * The array, for var_dump() and print_r().
+   * @return array<string,mixed>
+   */
+  public function __debugInfo(): array {}
+
+  /**
+   * The fit printed in the layout of R's print(summary(fit)), as summary() returns it.
+   */
+  public function __toString(): string {}
+
+  /**
+   * The number of keys.
+   */
+  public function count(): int {}
+
+  /**
+   * The value at the iterator's position.
+   */
+  public function current(): mixed {}
+
+  /**
+   * The same JSON as the array.
+   * @return array<string,mixed>
+   */
+  public function jsonSerialize(): array {}
+
+  /**
+   * The key at the iterator's position.
+   */
+  public function key(): ?string {}
+
+  /**
+   * Moves the iterator to the next key.
+   */
+  public function next(): void {}
+
+  /**
+   * Whether the key is present and not null, as isset() on the array.
+   */
+  public function offsetExists(mixed $offset): bool {}
+
+  /**
+   * The key's value, as on the array; a missing key warns and gives null.
+   */
+  public function offsetGet(mixed $offset): mixed {}
+
+  /**
+   * Not available: fits are read-only.
+   * @throws \LogicException Always.
+   */
+  public function offsetSet(mixed $offset, mixed $value): void {}
+
+  /**
+   * Not available: fits are read-only.
+   * @throws \LogicException Always.
+   */
+  public function offsetUnset(mixed $offset): void {}
+
+  /**
+   * Predictions for new data, as predict() returns them for this fit.
+   * @param array<string,list<int|float|bool|string|null>>|object $newdata Named columns; the response may be absent
+   * @param string $type 'link' or 'response'
+   * @param bool $seFit Add standard errors
+   * @param string $interval 'none', 'confidence', or 'prediction'
+   * @param float $level Interval level
+   * @param bool $random Mixed fits: include the random effects of known groups
+   * @param bool $allowNewLevels Mixed fits: predict unseen groups at the population level
+   * @return array<string,mixed>
+   * @throws \Exception As predict().
+   */
+  public function predict(mixed $newdata, string $type = 'link', bool $seFit = false, string $interval = 'none', float $level = 0.95, bool $random = true, bool $allowNewLevels = false): array {}
+
+  /**
+   * Moves the iterator to the first key.
+   */
+  public function rewind(): void {}
+
+  /**
+   * The fit printed in the layout of R's print(summary(fit)).
+   */
+  public function summary(): string {}
+
+  /**
+   * The coefficient table as columns, as tidy() returns it.
+   * @param bool $confInt Add conf_low and conf_high columns
+   * @param float $level Confidence level of the intervals, in (0, 1)
+   * @param string $effects 'fixed' for the coefficient table, or 'ran_vals' for a mixed fit's random effects
+   * @throws \Exception Code 1001 for an invalid level or effects.
+   */
+  public function tidy(bool $confInt = false, float $level = 0.95, string $effects = 'fixed'): Table {}
+
+  /**
+   * The fit as the array the model function computed.
+   * @return array<string,mixed>
+   */
+  public function toArray(): array {}
+
+  /**
+   * A Jupyter display bundle: the printed fit as text/plain and the array as application/json.
+   * @return array{'text/plain': string, 'application/json': array<string,mixed>}
+   */
+  public function toMimeBundle(): array {}
+
+  /**
+   * Whether the iterator's position holds a key.
+   */
+  public function valid(): bool {}
+}
+
+/**
+ * The fit of a Gaussian ridge model (fit_ridge()). echo prints its summary; reading a key works as on the result array;
+ * the fit is read-only, and toArray() returns the array.
+ */
+final class RidgeFit implements Fit
 {
   /**
    * Not available: fits come from the model functions.

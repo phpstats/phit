@@ -518,6 +518,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#binomial-random-intercept-ml" id="toc-binomial-random-intercept-ml" class="nav-link" data-scroll-target="#binomial-random-intercept-ml">Binomial random-intercept ML</a></li>
   <li><a href="#implementation-notes" id="toc-implementation-notes" class="nav-link" data-scroll-target="#implementation-notes">Implementation notes</a></li>
   <li><a href="#iv-fit-contract" id="toc-iv-fit-contract" class="nav-link" data-scroll-target="#iv-fit-contract">IV fit contract</a></li>
+  <li><a href="#ridge-and-cross-validation" id="toc-ridge-and-cross-validation" class="nav-link" data-scroll-target="#ridge-and-cross-validation">Ridge and cross-validation</a></li>
   </ul>
 </nav>
     </div>
@@ -1364,6 +1365,11 @@ fitted[0] 1.3461538461538</code></pre>
 <h2 class="anchored" data-anchor-id="iv-fit-contract">IV fit contract</h2>
 <p><code>fit_iv(string $formula, mixed $data, string $missing = 'drop', mixed $weights = null, string|array $vcov = 'iid'): IvFit</code> uses a formula with a top-level IV bar. See <a href="./models.html#instrumental-variable-models">Instrumental-variable models</a>.</p>
 <p>It carries every linear-fit key plus <code>structural_formula</code>, <code>vcov</code>, <code>endogenous</code>, <code>instruments</code>, and <code>first_stage</code>. Each first stage has <code>f_statistic</code>, <code>df1</code>, <code>df2</code>, <code>p_value</code>, <code>partial_r_squared</code>, <code>shea_partial_r_squared</code>, <code>sw_f_statistic</code>, <code>sw_df1</code>, <code>sw_df2</code>, <code>sw_p_value</code>, and named <code>coefficients</code>. SW values may be null with an explicit diagnostic warning. The <code>diagnostics</code> array adds <code>wu_hausman</code> and <code>sargan</code>. <code>summary()</code>, <code>tidy()</code>, and <code>predict()</code> accept the fit or its array.</p>
+</section>
+<section id="ridge-and-cross-validation" class="level2">
+<h2 class="anchored" data-anchor-id="ridge-and-cross-validation">Ridge and cross-validation</h2>
+<p><code>fit_ridge(string $formula, mixed $data, float $lambda, array $penaltyFactor = [], bool $standardize = true, array $bounds = [], string $missing = 'drop', mixed $weights = null): RidgeFit</code> fits Gaussian ridge using explicit-lambda glmnet scaling. <code>penaltyFactor</code> and <code>bounds</code> map predictor names or glob patterns to factors and <code>[lower|null, upper|null]</code> pairs.</p>
+<p><code>cv_ridge(string $formula, mixed $data, ?array $lambda = null, ?array $foldid = null, int $nfolds = 10, int $seed = 0, array $penaltyFactor = [], bool $standardize = true, array $bounds = [], string $missing = 'drop', mixed $weights = null): array</code> returns the path, <code>cvm</code>, <code>cvsd</code>, <code>cvup</code>, <code>cvlo</code>, selected lambdas and zero-based indices, and <code>fit</code> at <code>lambda_min</code>. See <a href="./models.html#ridge-regression">ridge models</a> for scaling, conditional uncertainty, default paths, and weighted fold rules.</p>
 
 
 </section>

@@ -227,6 +227,7 @@ macro_rules! fit_class {
 
 fit_class!(LinearFit, "Phit\\LinearFit");
 fit_class!(IvFit, "Phit\\IvFit");
+fit_class!(RidgeFit, "Phit\\RidgeFit");
 fit_class!(GeneralizedLinearFit, "Phit\\GeneralizedLinearFit");
 fit_class!(MixedGaussianFit, "Phit\\MixedGaussianFit");
 fit_class!(MixedLogisticFit, "Phit\\MixedLogisticFit");
@@ -242,6 +243,7 @@ pub fn into_fit(data: ZBox<ZendHashTable>) -> PhpResult<Zval> {
         z.map_err(|_| PhpException::from_message("could not create the fit object".into()))
     };
     match kind.as_str() {
+        "ridge" => object(ZendClassObject::new(RidgeFit { data, position: 0 }).into_zval(false)),
         "iv" => object(ZendClassObject::new(IvFit { data, position: 0 }).into_zval(false)),
         "linear" => object(ZendClassObject::new(LinearFit { data, position: 0 }).into_zval(false)),
         "generalized_linear" => object(
@@ -273,6 +275,7 @@ pub fn fit_data(fit: &Zval) -> Option<&ZendHashTable> {
     held!(
         LinearFit,
         IvFit,
+        RidgeFit,
         GeneralizedLinearFit,
         MixedGaussianFit,
         MixedLogisticFit
@@ -382,6 +385,7 @@ pub fn register(module: ModuleBuilder) -> ModuleBuilder {
         .interface::<PhpInterfaceFit>()
         .class::<LinearFit>()
         .class::<IvFit>()
+        .class::<RidgeFit>()
         .class::<GeneralizedLinearFit>()
         .class::<MixedGaussianFit>()
         .class::<MixedLogisticFit>()

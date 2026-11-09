@@ -26,6 +26,8 @@ FAMILY_NAMES = {'normal': 'Normal', 't': "Student's t", 'chisquare': 'Chi-square
                 'nbinom_mu': 'Negative binomial (size, mu)'}
 # One line per function for the index; the reference entry gives the full docblock.
 PURPOSE = {
+    'fit_ridge': 'Fit Gaussian ridge with glmnet scaling and coefficient bounds.',
+    'cv_ridge': 'Choose ridge lambda with weighted cross-validation.',
     'fit_iv': 'Fit an instrumental-variable model by two-stage least squares.',
     'fit_ols': "Fit a linear model from a formula, like R's lm().",
     'fit_generalized_linear': "Fit a Gaussian, binomial, or Poisson GLM from a formula, like R's glm().",
@@ -74,7 +76,7 @@ PAGES = [
     ('models', 'Model functions',
      'Linear and generalized linear models from a formula or a numeric design. Result keys, inference, and algorithms '
      'are detailed in [Model contracts](../reference-models.qmd); formula syntax in [Model formulas](../formulas.qmd).',
-     [('Formula models', ['fit_ols', 'fit_iv', 'fit_generalized_linear', 'model_matrix', 'predict']),
+     [('Formula models', ['fit_ols', 'fit_iv', 'fit_ridge', 'cv_ridge', 'fit_generalized_linear', 'model_matrix', 'predict']),
       ('Matrix models', ['fit_ols_matrix', 'fit_logistic_matrix', 'fit_probit_matrix', 'fit_poisson_matrix']),
       ('Printing results', ['summary', 'tidy'])]),
     ('mixed-models', 'Mixed-model functions',
@@ -100,6 +102,8 @@ PAGES = [
                                                   'dist_categorical_rows_rng', 'permutation_rng'])]),
 ]
 GUIDES = {
+    'fit_ridge': ('../models.qmd#ridge-regression', None),
+    'cv_ridge': ('../models.qmd#ridge-regression', None),
     'fit_iv': ('../models.qmd#instrumental-variable-models', None),
     'fit_ols': ('../formulas.qmd#fit_ols-and-fit_generalized_linear', '../examples/linear-model.qmd'),
     'fit_generalized_linear': ('../formulas.qmd#fit_ols-and-fit_generalized_linear', '../examples/glm.qmd'),

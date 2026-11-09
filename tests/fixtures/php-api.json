@@ -1,4 +1,85 @@
 {
+    "Phit\\cv_ridge": {
+        "parameters": [
+            {
+                "name": "formula",
+                "type": "string",
+                "optional": false
+            },
+            {
+                "name": "data",
+                "type": "mixed",
+                "optional": false
+            },
+            {
+                "name": "lambda",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "foldid",
+                "type": "?array",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "nfolds",
+                "type": "int",
+                "optional": true,
+                "default": 10
+            },
+            {
+                "name": "seed",
+                "type": "int",
+                "optional": true,
+                "default": 0
+            },
+            {
+                "name": "penaltyFactor",
+                "type": "array",
+                "optional": true,
+                "default": []
+            },
+            {
+                "name": "standardize",
+                "type": "bool",
+                "optional": true,
+                "default": true
+            },
+            {
+                "name": "bounds",
+                "type": "array",
+                "optional": true,
+                "default": []
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "drop"
+            },
+            {
+                "name": "weights",
+                "type": "mixed",
+                "optional": true,
+                "default": null
+            }
+        ],
+        "return_type": "array",
+        "result_keys": [
+            "cvlo",
+            "cvm",
+            "cvsd",
+            "cvup",
+            "fit",
+            "index_1se",
+            "index_min",
+            "lambda",
+            "lambda_1se",
+            "lambda_min"
+        ]
+    },
     "Phit\\dist_beta_cdf": {
         "parameters": [
             {
@@ -4863,6 +4944,95 @@
             "z_statistics"
         ]
     },
+    "Phit\\fit_ridge": {
+        "parameters": [
+            {
+                "name": "formula",
+                "type": "string",
+                "optional": false
+            },
+            {
+                "name": "data",
+                "type": "mixed",
+                "optional": false
+            },
+            {
+                "name": "lambda",
+                "type": "float",
+                "optional": false
+            },
+            {
+                "name": "penaltyFactor",
+                "type": "array",
+                "optional": true,
+                "default": []
+            },
+            {
+                "name": "standardize",
+                "type": "bool",
+                "optional": true,
+                "default": true
+            },
+            {
+                "name": "bounds",
+                "type": "array",
+                "optional": true,
+                "default": []
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "drop"
+            },
+            {
+                "name": "weights",
+                "type": "mixed",
+                "optional": true,
+                "default": null
+            }
+        ],
+        "return_type": "mixed",
+        "result_keys": [
+            "assign",
+            "at_bound",
+            "bounds",
+            "coefficients",
+            "columns",
+            "conf_int",
+            "covariance",
+            "df",
+            "df_residual",
+            "diagnostics",
+            "dropped_rows",
+            "fitted",
+            "formula",
+            "intercept",
+            "iterations",
+            "lambda",
+            "lambda_effective",
+            "lambda_lm_ridge",
+            "model",
+            "n_dropped",
+            "n_input",
+            "n_observations",
+            "named",
+            "p_values",
+            "penalty_factor",
+            "predvars",
+            "r_squared",
+            "residuals",
+            "response",
+            "response_scale",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "standardize",
+            "std_errors",
+            "t_statistics",
+            "terms"
+        ]
+    },
     "Phit\\model_matrix": {
         "parameters": [
             {
@@ -5672,6 +5842,176 @@
         }
     },
     "Phit\\IvFit": {
+        "methods": {
+            "__construct": {
+                "parameters": [],
+                "return_type": ""
+            },
+            "__debugInfo": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "__toString": {
+                "parameters": [],
+                "return_type": "string"
+            },
+            "count": {
+                "parameters": [],
+                "return_type": "int"
+            },
+            "current": {
+                "parameters": [],
+                "return_type": "mixed"
+            },
+            "jsonSerialize": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "key": {
+                "parameters": [],
+                "return_type": "?string"
+            },
+            "next": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "offsetExists": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "bool"
+            },
+            "offsetGet": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "mixed"
+            },
+            "offsetSet": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    },
+                    {
+                        "name": "value",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "offsetUnset": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "predict": {
+                "parameters": [
+                    {
+                        "name": "newdata",
+                        "type": "mixed",
+                        "optional": false
+                    },
+                    {
+                        "name": "type",
+                        "type": "string",
+                        "optional": true,
+                        "default": "link"
+                    },
+                    {
+                        "name": "seFit",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    },
+                    {
+                        "name": "interval",
+                        "type": "string",
+                        "optional": true,
+                        "default": "none"
+                    },
+                    {
+                        "name": "level",
+                        "type": "float",
+                        "optional": true,
+                        "default": 0.95
+                    },
+                    {
+                        "name": "random",
+                        "type": "bool",
+                        "optional": true,
+                        "default": true
+                    },
+                    {
+                        "name": "allowNewLevels",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    }
+                ],
+                "return_type": "array"
+            },
+            "rewind": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "summary": {
+                "parameters": [],
+                "return_type": "string"
+            },
+            "tidy": {
+                "parameters": [
+                    {
+                        "name": "confInt",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    },
+                    {
+                        "name": "level",
+                        "type": "float",
+                        "optional": true,
+                        "default": 0.95
+                    },
+                    {
+                        "name": "effects",
+                        "type": "string",
+                        "optional": true,
+                        "default": "fixed"
+                    }
+                ],
+                "return_type": "mixed"
+            },
+            "toArray": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "toMimeBundle": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "valid": {
+                "parameters": [],
+                "return_type": "bool"
+            }
+        }
+    },
+    "Phit\\RidgeFit": {
         "methods": {
             "__construct": {
                 "parameters": [],

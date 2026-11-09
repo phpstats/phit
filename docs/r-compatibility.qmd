@@ -171,3 +171,15 @@ Sargan. The saved no-intercept case exposes a negative statistic from ivreg
 0.6-8's diagnostic output. phit's statistic is nonnegative and follows the
 specified n·R² definition. The one-endogenous, no-exogenous case also exercises
 a shape that ivreg 0.6-8 rejects internally; phit supports that design.
+
+
+## Ridge
+
+Explicit-lambda Gaussian fits and CV match public `glmnet(alpha=0)` output,
+including response scaling, zero penalty factors, bounds, and weighted folds.
+The default lambda path is phit policy. Conditional uncertainty uses n-df
+residual variance and is not coverage-valid; `lmridge`'s variance denominator
+differs, so conditional covariance per sigma squared is checked. References
+use glmnet threshold 1e-18, maxit 1,000,000, atol 1e-7 and rtol 2e-6. The saved
+[ridge record](verifications/ridge-results.json) includes inputs, reference
+versions, actual values, and maximum errors for both implementations.

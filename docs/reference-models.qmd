@@ -483,3 +483,20 @@ It carries every linear-fit key plus `structural_formula`, `vcov`, `endogenous`,
 `sw_df1`, `sw_df2`, `sw_p_value`, and named `coefficients`. SW values may be null
 with an explicit diagnostic warning. The `diagnostics` array adds `wu_hausman`
 and `sargan`. `summary()`, `tidy()`, and `predict()` accept the fit or its array.
+
+
+## Ridge and cross-validation
+
+`fit_ridge(string $formula, mixed $data, float $lambda, array $penaltyFactor = [],
+bool $standardize = true, array $bounds = [], string $missing = 'drop',
+mixed $weights = null): RidgeFit` fits Gaussian ridge using explicit-lambda
+glmnet scaling. `penaltyFactor` and `bounds` map predictor names or glob patterns
+to factors and `[lower|null, upper|null]` pairs.
+
+`cv_ridge(string $formula, mixed $data, ?array $lambda = null,
+?array $foldid = null, int $nfolds = 10, int $seed = 0,
+array $penaltyFactor = [], bool $standardize = true, array $bounds = [],
+string $missing = 'drop', mixed $weights = null): array` returns the path,
+`cvm`, `cvsd`, `cvup`, `cvlo`, selected lambdas and zero-based indices, and
+`fit` at `lambda_min`. See [ridge models](models.qmd#ridge-regression) for
+scaling, conditional uncertainty, default paths, and weighted fold rules.

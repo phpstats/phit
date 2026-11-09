@@ -516,6 +516,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#evidence-and-tolerance-policy" id="toc-evidence-and-tolerance-policy" class="nav-link" data-scroll-target="#evidence-and-tolerance-policy">Evidence and tolerances</a></li>
   <li><a href="#reproduce" id="toc-reproduce" class="nav-link" data-scroll-target="#reproduce">Reproduce</a></li>
   <li><a href="#two-stage-least-squares" id="toc-two-stage-least-squares" class="nav-link" data-scroll-target="#two-stage-least-squares">Two-stage least squares</a></li>
+  <li><a href="#ridge" id="toc-ridge" class="nav-link" data-scroll-target="#ridge">Ridge</a></li>
   </ul>
 </nav>
     </div>
@@ -822,6 +823,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The IV fixtures compare coefficients, structural-residual covariance, standard errors, t tests, confidence intervals, fitted values, residuals, R², and diagnostics with <code>ivreg</code> 0.6-8. A second comparison uses <code>fixest::feols</code> with iid covariance and an explicit n−k small-sample correction. The test suite includes weights, factors, interactions, missing values, weak instruments, no intercept, no exogenous columns, and a heating-shaped design.</p>
 <p>Sanderson–Windmeijer F is independently computed with base R QR regressions from the paper’s equations and finite-sample df (q−m+1, n−L). Tests require 1e-9 + 1e-7 times the absolute reference value. Both packages use the same saved inputs. The clean-room specification records references and conventions.</p>
 <p>For no-intercept models, phit uses the uncentered auxiliary-regression R² for Sargan. The saved no-intercept case exposes a negative statistic from ivreg 0.6-8’s diagnostic output. phit’s statistic is nonnegative and follows the specified n·R² definition. The one-endogenous, no-exogenous case also exercises a shape that ivreg 0.6-8 rejects internally; phit supports that design.</p>
+</section>
+<section id="ridge" class="level2">
+<h2 class="anchored" data-anchor-id="ridge">Ridge</h2>
+<p>Explicit-lambda Gaussian fits and CV match public <code>glmnet(alpha=0)</code> output, including response scaling, zero penalty factors, bounds, and weighted folds. The default lambda path is phit policy. Conditional uncertainty uses n-df residual variance and is not coverage-valid; <code>lmridge</code>’s variance denominator differs, so conditional covariance per sigma squared is checked. References use glmnet threshold 1e-18, maxit 1,000,000, atol 1e-7 and rtol 2e-6. The saved <a href="verifications/ridge-results.json">ridge record</a> includes inputs, reference versions, actual values, and maximum errors for both implementations.</p>
 
 
 </section>

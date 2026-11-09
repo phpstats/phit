@@ -209,12 +209,12 @@ fn weights_vector(weights: Option<&Zval>, data: &Data) -> PhpResult<Option<Vec<O
     Ok(Some(values))
 }
 
-struct Prepared {
-    design: ModelDesign,
-    weights: Vec<f64>,
+pub(crate) struct Prepared {
+    pub(crate) design: ModelDesign,
+    pub(crate) weights: Vec<f64>,
 }
 
-fn prepare(
+pub(crate) fn prepare(
     formula: &str,
     data: &Zval,
     missing: &str,
@@ -250,7 +250,7 @@ fn group_values(groups: &[GroupLabel]) -> PhpResult<ZBox<ZendHashTable>> {
     Ok(out)
 }
 
-fn rows(design: &ModelDesign) -> (Vec<i64>, Vec<i64>) {
+pub(crate) fn rows(design: &ModelDesign) -> (Vec<i64>, Vec<i64>) {
     (
         design.retained_rows.iter().map(|v| *v as i64).collect(),
         design.dropped_rows.iter().map(|v| *v as i64).collect(),
@@ -273,7 +273,7 @@ fn random_table(design: &ModelDesign) -> PhpResult<ZBox<ZendHashTable>> {
 }
 
 /// Shared naming keys added to every formula fit.
-fn add_names(output: &mut ZendHashTable, design: &ModelDesign) -> PhpResult<()> {
+pub(crate) fn add_names(output: &mut ZendHashTable, design: &ModelDesign) -> PhpResult<()> {
     output.insert("formula", design.formula.clone())?;
     output.insert("response", design.response_name.clone())?;
     output.insert("columns", design.columns.clone())?;
@@ -514,6 +514,13 @@ pub fn predict_from(
         .ok_or_else(|| malformed_fit("missing formula"))?
         .to_owned();
     let mixed = fit.get("random").is_some();
+    let ridge = fit.get("model").and_then(Zval::str) == Some("ridge");
+    if ridge && interval == "prediction" {
+        return Err(input_exception(
+            ErrorKind::Unsupported,
+            "ridge prediction intervals are unavailable",
+        ));
+    }
     let link = match fit.get("link").and_then(|v| v.str()) {
         Some(l @ ("identity" | "logit" | "probit" | "log")) => l.to_owned(),
         Some(_) => return Err(malformed_fit("unknown link")),
@@ -556,7 +563,25 @@ pub fn predict_from(
         .and_then(|v| v.array())
         .ok_or_else(|| malformed_fit("missing covariance"))?
         .values()
-        .map(|row| float_list(Some(row), "covariance"))
+        .map(|row| {
+            if ridge {
+                row.array()
+                    .ok_or_else(|| malformed_fit("invalid ridge covariance"))?
+                    .values()
+                    .map(|v| {
+                        if v.is_null() {
+                            Ok(0.)
+                        } else {
+                            v.double()
+                                .or_else(|| v.long().map(|l| l as f64))
+                                .ok_or_else(|| malformed_fit("invalid covariance value"))
+                        }
+                    })
+                    .collect()
+            } else {
+                float_list(Some(row), "covariance")
+            }
+        })
         .collect::<PhpResult<_>>()?;
     if coefficients.len() != columns.len()
         || covariance.len() != columns.len()
@@ -578,6 +603,14 @@ pub fn predict_from(
             columns.join(", ")
         )));
     }
+    let at_bound: Vec<bool> = if ridge {
+        fit.get("at_bound")
+            .and_then(Zval::array)
+            .map(|a| a.values().map(|v| v.bool().unwrap_or(false)).collect())
+            .unwrap_or_default()
+    } else {
+        vec![]
+    };
     let effects = if mixed && random {
         Some(fitted_effects(fit)?)
     } else {
@@ -612,7 +645,15 @@ pub fn predict_from(
         }
         eta[*row] = Some(value);
         if seFit || interval_kind.is_some() {
-            se[*row] = Some(quad_form(x, &covariance).max(0.0).sqrt());
+            se[*row] = if at_bound
+                .iter()
+                .zip(x)
+                .any(|(bound, value)| *bound && *value != 0.)
+            {
+                None
+            } else {
+                Some(quad_form(x, &covariance).max(0.0).sqrt())
+            };
         }
     }
     if !new_levels.is_empty() {
@@ -664,9 +705,11 @@ pub fn predict_from(
     if seFit {
         out.insert("se_fit", nullable(&se)?)?;
     }
-    let df = fit.get("df_residual").and_then(|v| v.long());
+    let df = fit
+        .get("df_residual")
+        .and_then(|v| v.double().or_else(|| v.long().map(|l| l as f64)));
     if is_lm && (seFit || interval_kind.is_some()) {
-        out.insert("df", df)?;
+        out.insert("df", fit.get("df_residual").map(Zval::shallow_clone))?;
     }
     if !mixed && (seFit || interval_kind.is_some()) {
         // R's residual.scale: sigma for Gaussian fits, 1 for binomial and Poisson.
@@ -682,7 +725,7 @@ pub fn predict_from(
             .get("sigma")
             .and_then(|v| v.double())
             .ok_or_else(|| malformed_fit("missing sigma"))?;
-        let critical = stats_core::distributions::StudentT::new(df as f64)
+        let critical = stats_core::distributions::StudentT::new(df)
             .map_err(stats_exception)?
             .quantile((1.0 + level) / 2.0);
         if prediction
@@ -745,7 +788,7 @@ fn reject_random(design: &ModelDesign, function: &str) -> PhpResult<()> {
     }
 }
 
-fn numeric_response(design: &ModelDesign, function: &str) -> PhpResult<Vec<f64>> {
+pub(crate) fn numeric_response(design: &ModelDesign, function: &str) -> PhpResult<Vec<f64>> {
     match &design.response {
         Some(Response::Numeric(v)) => Ok(v.clone()),
         None => Err(invalid(&format!("{function} needs a response: 'y ~ ...'"))),
