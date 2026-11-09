@@ -515,6 +515,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#not-supported" id="toc-not-supported" class="nav-link" data-scroll-target="#not-supported">Not supported</a></li>
   <li><a href="#evidence-and-tolerance-policy" id="toc-evidence-and-tolerance-policy" class="nav-link" data-scroll-target="#evidence-and-tolerance-policy">Evidence and tolerances</a></li>
   <li><a href="#reproduce" id="toc-reproduce" class="nav-link" data-scroll-target="#reproduce">Reproduce</a></li>
+  <li><a href="#two-stage-least-squares" id="toc-two-stage-least-squares" class="nav-link" data-scroll-target="#two-stage-least-squares">Two-stage least squares</a></li>
   </ul>
 </nav>
     </div>
@@ -815,6 +816,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> tests/generate-r-compatibility-fixtures.R</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> tests/generate-lmm-expanded-fixtures.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Use <code>.so</code> on Linux and the matching PHP and php-config, as described in <a href="./development.html">Development</a>. The Rust and PHP fixture tests do not need R. The live Python comparison needs the pinned notebook environment.</p>
+</section>
+<section id="two-stage-least-squares" class="level2">
+<h2 class="anchored" data-anchor-id="two-stage-least-squares">Two-stage least squares</h2>
+<p>The IV fixtures compare coefficients, structural-residual covariance, standard errors, t tests, confidence intervals, fitted values, residuals, R², and diagnostics with <code>ivreg</code> 0.6-8. A second comparison uses <code>fixest::feols</code> with iid covariance and an explicit n−k small-sample correction. The test suite includes weights, factors, interactions, missing values, weak instruments, no intercept, no exogenous columns, and a heating-shaped design.</p>
+<p>Sanderson–Windmeijer F is independently computed with base R QR regressions from the paper’s equations and finite-sample df (q−m+1, n−L). Tests require 1e-9 + 1e-7 times the absolute reference value. Both packages use the same saved inputs. The clean-room specification records references and conventions.</p>
+<p>For no-intercept models, phit uses the uncentered auxiliary-regression R² for Sargan. The saved no-intercept case exposes a negative statistic from ivreg 0.6-8’s diagnostic output. phit’s statistic is nonnegative and follows the specified n·R² definition. The one-endogenous, no-exogenous case also exercises a shape that ivreg 0.6-8 rejects internally; phit supports that design.</p>
 
 
 </section>

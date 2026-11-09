@@ -245,3 +245,50 @@ convergence rule.
 
 [Model formulas](formulas.qmd#differences-from-r) lists the remaining
 differences in formula handling.
+
+## Instrumental-variable models
+
+`fit_iv()` fits two-stage least squares when regressors are endogenous. Exogenous
+regressors instrument themselves. List the endogenous terms and excluded
+instruments after a top-level bar:
+
+```php
+$fit = Phit\fit_iv(
+    'temperature_change ~ outdoor + factor(hour) | hp_kwh + hp_kwh:outdoor ~ schedule + schedule:outdoor',
+    $data,
+    weights: 'age_weight',
+    vcov: 'iid',
+);
+echo $fit;
+$strength = $fit['first_stage']['hp_kwh']['sw_f_statistic'];
+$prediction = $fit->predict($newdata, seFit: true, interval: 'confidence');
+```
+
+The result is an immutable `Phit\IvFit` implementing `Phit\Fit`. It has the
+`LinearFit` fields and methods. Fitted values, residuals, sigma, and standard
+errors use the structural equation. Covariance is sigma² times the inverse
+cross-product of the projected structural design, with sigma² = structural
+weighted RSS / (n − k). R² can be negative. Prediction needs structural
+regressors and reuses the IV covariance. A prediction interval adds sigma².
+
+`first_stage` is keyed by endogenous design column and contains the excluded
+instrument F test, partial R², Shea partial R², Sanderson–Windmeijer F, their
+degrees of freedom and p-values, and named first-stage coefficients. With one
+endogenous column, SW F equals the ordinary first-stage F and Shea R² is null.
+With multiple endogenous columns, SW conditions on the other fitted endogenous
+columns and applies the variance correction in Sanderson and Windmeijer (2016).
+The `sw_f_statistic` key is always present. An unavailable conditional test has a
+null statistic and p-value, retains its df keys, and adds a message to
+`diagnostics.warnings`.
+
+`diagnostics.wu_hausman` contains the regression-based endogeneity F test.
+`diagnostics.sargan` contains n times the auxiliary residual regression R² and
+is null for exact identification. These diagnostics assume iid errors.
+Insufficient degrees of freedom or a singular augmented Wu–Hausman regression
+gives nullable test fields and a warning.
+
+Weights are positive prior weights, supplied as a column name or an array
+aligned with the original rows. All formula parts and weights share one
+missing-row mask. `missing: 'raise'` rejects missing values. Under-identification
+and rank deficiency raise 1004. Random effects and offsets raise 1007.
+Only `vcov: 'iid'` is available in this release.

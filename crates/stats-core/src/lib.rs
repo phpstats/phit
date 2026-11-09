@@ -38,3 +38,5 @@ pub use logistic_mixed::{
     LogisticMixedOptions, LogisticMixedResult, MAX_LOGISTIC_MIXED_TRIALS,
     fit_logistic_random_intercept,
 };
+
+pub mod iv;

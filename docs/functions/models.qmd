@@ -39,7 +39,7 @@ Phit\fit_ols(
 ```php
 LinearFit A fit object, read like this array:
 array{
-  model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -76,6 +76,80 @@ array{
 
 **See also** [Details](../formulas.qmd#fit_ols-and-fit_generalized_linear) · [Example](../examples/linear-model.qmd)
 
+### `fit_iv()` {#fit_iv}
+
+Fit an instrumental-variable model by two-stage least squares.
+
+- Formula: `y ~ exogenous | endogenous ~ excluded instruments`. Only top-level bars split the parts.
+- Standard errors use structural residuals. First stages include partial R², Shea partial R², and Sanderson–Windmeijer F, with Wu–Hausman and Sargan tests in diagnostics.
+- Only `vcov: 'iid'` is available. Under-identification and rank deficiency raise 1004. Random effects and offsets raise 1007.
+- Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
+
+```php
+Phit\fit_iv(
+    string $formula,
+    array|object $data,
+    string $missing = 'drop',
+    array|string|null $weights = NULL,
+    mixed $vcov = 'iid',
+): IvFit
+```
+
+| Parameter | Type | Default | Description |
+| --- | --- | --- | --- |
+| `$formula` | `string` | required | R formula, such as `'y ~ log(x) + f * z + offset(log(t))'` |
+| `$data` | `array\|object` | required | Named columns or factor descriptors; objects use `toModelData()`, else `toColumns()` |
+| `$missing` | `string` | `'drop'` | `'drop'` removes rows with `null` or `NAN` in any variable the model uses and warns once; `'raise'` rejects them |
+| `$weights` | `array\|string\|null` | `NULL` | Positive prior weights aligned with the original rows, or a column name |
+| `$vcov` | `mixed` | `'iid'` | Only `'iid'` is supported in this release |
+
+**Returns**
+
+```php
+IvFit A fit object, read like this array:
+array{
+  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  coefficients: list<float>,
+  covariance: list<list<float>>,
+  std_errors: list<float>,
+  p_values: list<float>,
+  conf_int: list<array{float,float}>,
+  fitted: list<float>,
+  residuals: list<float>,
+  log_likelihood: float,
+  df_residual: int,
+  diagnostics: array{converged:bool,solver:string,warnings:list<string>,iterations?:int,evaluations?:int,gradient_max?:float,boundary?:bool,singular?:bool},
+  n_input: int,
+  n_observations: int,
+  n_dropped: int,
+  retained_rows: list<int>,
+  dropped_rows: list<int>,
+  t_statistics: list<float>,
+  rss: float,
+  residual_variance: float,
+  sigma: float,
+  r_squared: float,
+  adj_r_squared: float,
+  formula: string,
+  response: string,
+  columns: list<string>,
+  terms: list<string>,
+  assign: list<int>,
+  intercept: bool,
+  named: array<string,float>,
+  predvars: array{levels:array<string,list<string>>,poly:array<string,array{alpha:list<float>,norm2:list<float>}>},
+  structural_formula: string,
+  vcov: string,
+  endogenous: list<string>,
+  instruments: list<string>,
+  first_stage: array<string,array{f_statistic:float,df1:int,df2:int,p_value:float,partial_r_squared:float,shea_partial_r_squared:float|null,sw_f_statistic:float|null,sw_df1:int,sw_df2:int,sw_p_value:float|null,coefficients:array<string,float>}>,
+}
+```
+
+**Errors** `Exception`: a code from 1001 to 1008 for an input or statistical error.
+
+**See also** [Details](../models.qmd#instrumental-variable-models)
+
 ### `fit_generalized_linear()` {#fit_generalized_linear}
 
 Fits a generalized linear model from a formula, like R's `glm()`.
@@ -109,7 +183,7 @@ Phit\fit_generalized_linear(
 ```php
 GeneralizedLinearFit A fit object, read like this array:
 array{
-  model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -295,7 +369,7 @@ Phit\fit_ols_matrix(
 ```php
 LinearFit A fit object, read like this array:
 array{
-  model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -356,7 +430,7 @@ Phit\fit_logistic_matrix(
 ```php
 GeneralizedLinearFit A fit object, read like this array:
 array{
-  model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -417,7 +491,7 @@ Phit\fit_probit_matrix(
 ```php
 GeneralizedLinearFit A fit object, read like this array:
 array{
-  model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,
@@ -478,7 +552,7 @@ Phit\fit_poisson_matrix(
 ```php
 GeneralizedLinearFit A fit object, read like this array:
 array{
-  model: 'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
+  model: 'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
   coefficients: list<float>,
   covariance: list<list<float>>,
   std_errors: list<float>,

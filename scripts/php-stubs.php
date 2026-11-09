@@ -3,7 +3,7 @@
 declare(strict_types=1);
 if (!extension_loaded('phit')) throw new RuntimeException('Load the phit extension before generating stubs');
 $functions = get_extension_funcs('phit'); sort($functions);
-$common = ['model'=>"'linear'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic'",'coefficients'=>'list<float>','covariance'=>'list<list<float>>','std_errors'=>'list<float>',
+$common = ['model'=>"'linear'|'iv'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic'",'coefficients'=>'list<float>','covariance'=>'list<list<float>>','std_errors'=>'list<float>',
  'p_values'=>'list<float>','conf_int'=>'list<array{float,float}>','fitted'=>'list<float>','residuals'=>'list<float>',
  'log_likelihood'=>'float','df_residual'=>'int','diagnostics'=>'array{converged:bool,solver:string,warnings:list<string>,iterations?:int,evaluations?:int,gradient_max?:float,boundary?:bool,singular?:bool}',
  'n_input'=>'int','n_observations'=>'int','n_dropped'=>'int','retained_rows'=>'list<int>','dropped_rows'=>'list<int>'];
@@ -19,7 +19,7 @@ $matrixPurpose=['Phit\fit_ols_matrix'=>'Least-squares fit of a numeric design, l
  'Phit\fit_mixed_gaussian_matrix'=>'Gaussian mixed model on a numeric design and explicit random terms, like lme4::lmer().',
  'Phit\fit_mixed_logistic_matrix'=>'Binomial logit model with one random intercept on a numeric design, like lme4::glmer(family = binomial).'];
 // The object each model function returns, by its kind of model.
-$fitClass=['Phit\fit_ols'=>'LinearFit','Phit\fit_ols_matrix'=>'LinearFit','Phit\fit_generalized_linear'=>'GeneralizedLinearFit',
+$fitClass=['Phit\fit_iv'=>'IvFit','Phit\fit_ols'=>'LinearFit','Phit\fit_ols_matrix'=>'LinearFit','Phit\fit_generalized_linear'=>'GeneralizedLinearFit',
  'Phit\fit_logistic_matrix'=>'GeneralizedLinearFit','Phit\fit_probit_matrix'=>'GeneralizedLinearFit','Phit\fit_poisson_matrix'=>'GeneralizedLinearFit',
  'Phit\fit_mixed_gaussian'=>'MixedGaussianFit','Phit\fit_mixed_gaussian_matrix'=>'MixedGaussianFit','Phit\fit_mixed_gaussian_intercept_matrix'=>'MixedGaussianFit',
  'Phit\fit_mixed_logistic'=>'MixedLogisticFit','Phit\fit_mixed_logistic_matrix'=>'MixedLogisticFit'];
@@ -85,6 +85,9 @@ $formulas=[
  'Phit\model_matrix'=>['summary'=>"R-compatible model.matrix() for a formula over named columns: treatment contrasts (first level is the reference),\n * contr.poly for ordered factors, R column names/term order, inline transforms, offset() and random-effect bars.\n * Unused factor levels are kept, as in model.matrix(); x includes the \"(Intercept)\" column when present.",
   'result'=>['y'=>'list<float>|list<array{float,float}>|null','response_levels?'=>'list<string>','x'=>'list<list<float>>','columns'=>'list<string>','intercept'=>'bool','terms'=>'list<string>','assign'=>'list<int>',
    'formula'=>'string','response'=>'string|null','offset'=>'list<float>|null','random'=>$randomShape,'n_input'=>'int','n_observations'=>'int','n_dropped'=>'int','retained_rows'=>'list<int>','dropped_rows'=>'list<int>']],
+ 'Phit\fit_iv'=>['summary'=>"Two-stage least squares: y ~ exogenous | endogenous ~ excluded instruments.\n * Structural-residual iid covariance, first-stage and Sanderson-Windmeijer F tests, Wu-Hausman, and Sargan.\n * Under-identification and rank deficiency raise 1004. Only iid covariance is supported.",
+  'result'=>$common+$olsKeys+$naming+['structural_formula'=>'string','vcov'=>'string','endogenous'=>'list<string>','instruments'=>'list<string>',
+    'first_stage'=>'array<string,array{f_statistic:float,df1:int,df2:int,p_value:float,partial_r_squared:float,shea_partial_r_squared:float|null,sw_f_statistic:float|null,sw_df1:int,sw_df2:int,sw_p_value:float|null,coefficients:array<string,float>}>']],
  'Phit\fit_ols'=>['summary'=>"Linear model from a formula, like R's lm(): builds the model matrix and fits by least squares, weighted least squares\n * when weights are given (as lm(weights = )), with offset() terms.\n * Factor levels unused after deletion are dropped, as lm() does. Rank deficiency raises 1004 instead of R's NA coefficients.",
   'result'=>$common+$olsKeys+$naming],
  'Phit\fit_generalized_linear'=>['summary'=>"Generalized linear model from a formula, like R's glm(): gaussian/identity (the OLS core), binomial/logit, binomial/probit\n * and poisson/log (the matrix GLM cores). Binomial responses: 0/1, logical, factor/string (first level = failure),\n * proportions with trial weights, or cbind(successes, failures). The empty link selects the canonical link.",
@@ -141,6 +144,7 @@ foreach ($functions as $name) {
   $text.=" * @param string \$formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'\n";
   $text.=" * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object \$data Named columns or factor descriptors; objects use toModelData(), else toColumns()\n";
   if($name==='Phit\fit_generalized_linear'||$alias==='Phit\fit_glmer')$text.=" * @param string \$family 'gaussian', 'binomial', or 'poisson'\n * @param string \$link '' (canonical), 'identity', 'logit', 'probit', or 'log'\n";
+  if($name==='Phit\fit_iv')$text.=" * @param string|array \$vcov Only 'iid' is supported in this release\n";
   if($name!=='Phit\model_matrix')$text.=" * @param array<int|float|null>|string|null \$weights Positive prior weights aligned with the original rows, or a column name\n";
   $text.=isset($fitClass[$name])?" * @return {$fitClass[$name]} A fit object, read like this array:\n * array{\n":" * @return array{\n";
   foreach($contract['result'] as $key=>$type)$text.=" *   $key: $type,\n";
@@ -243,14 +247,14 @@ $fitMethods=['__construct'=>"Not available: fits come from the model functions."
  'next'=>"Moves the iterator to the next key.",
  'rewind'=>"Moves the iterator to the first key.",
  'valid'=>"Whether the iterator's position holds a key."];
-foreach(['LinearFit'=>'a linear model (fit_ols(), fit_ols_matrix())','GeneralizedLinearFit'=>'a generalized linear model (fit_generalized_linear() and the logistic, probit, and Poisson matrix functions)',
+foreach(['IvFit'=>'an instrumental-variable model (fit_iv())','LinearFit'=>'a linear model (fit_ols(), fit_ols_matrix())','GeneralizedLinearFit'=>'a generalized linear model (fit_generalized_linear() and the logistic, probit, and Poisson matrix functions)',
  'MixedGaussianFit'=>'a Gaussian mixed model (fit_mixed_gaussian() and its matrix functions)','MixedLogisticFit'=>'a binomial logit mixed model (fit_mixed_logistic(), fit_mixed_logistic_matrix())'] as $c=>$what)
  $classes["Phit\\$c"]=['summary'=>"The fit of $what. echo prints its summary; reading a key works as on the result array;\n * the fit is read-only, and toArray() returns the array.",'methods'=>$fitMethods];
 $classes['Phit\Table']=['summary'=>"Named columns, as tidy() returns them. echo prints them in the layout of R's print.data.frame(); reading a\n * column works as on the array; the table is read-only, and toColumns() or toArray() returns the columns.",
  'methods'=>['__construct'=>"Not available: tables come from tidy().",'__toString'=>"The columns in the layout of R's print.data.frame().",
   'toArray'=>"The columns, name => list.\n   * @return array<string,list<string|float>>",'toColumns'=>"The columns, name => list, for phibble's DataFrame::fromColumns() and phit's data arguments.\n   * @return array<string,list<string|float>>",
   'count'=>"The number of rows.",'offsetGet'=>"The column's values; a missing column warns and gives null."]+$fitMethods];
-$text.="/**\n * A model fit: the result of every model function. echo prints its summary, and reading a key works as on the result\n * array. The four classes implementing it are LinearFit, GeneralizedLinearFit, MixedGaussianFit, and MixedLogisticFit.\n */\ninterface Fit extends \\ArrayAccess, \\Iterator, \\Countable, \\JsonSerializable, \\Stringable\n{\n";
+$text.="/**\n * A model fit: the result of every model function. echo prints its summary, and reading a key works as on the result\n * array. The implementing classes are LinearFit, IvFit, GeneralizedLinearFit, MixedGaussianFit, and MixedLogisticFit.\n */\ninterface Fit extends \\ArrayAccess, \\Iterator, \\Countable, \\JsonSerializable, \\Stringable\n{\n";
 foreach(['summary(): string','tidy(bool $confInt = false, float $level = 0.95, string $effects = \'fixed\'): Table','predict(mixed $newdata, string $type = \'link\', bool $seFit = false, string $interval = \'none\', float $level = 0.95, bool $random = true, bool $allowNewLevels = false): array','toArray(): array','toMimeBundle(): array'] as $m)
  $text.="  public function $m;\n";
 $text.="}\n\n";

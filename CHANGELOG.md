@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.0
+
+- Add `fit_iv()` and `IvFit` for weighted two-stage least squares, with structural-residual inference, first-stage strength diagnostics, Sanderson–Windmeijer F, Wu–Hausman, and Sargan tests.
+- Support structural prediction, standard errors, intervals, summaries, and tidy tables for IV fits.
+- Verify against ivreg, fixest, and independent paper-derived SW calculations.
+
 ## 0.6.2
 
 ### Fixed

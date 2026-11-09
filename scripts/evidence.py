@@ -866,3 +866,24 @@ def csv_benchmark():
                       'PHP=$(command -v php) python3 tests/benchmarks/run-csv.py --phibble /path/to/phibble'],
         'source': 'docs/benchmarks/csv-results.json', 'group': 'Input',
     }
+
+
+def iv_verification():
+    report = load('docs/verifications/iv-results.json')
+    rows = []
+    for implementation, cases in report['cases'].items():
+        for case in cases:
+            comparison = compare(case['result'], report['references'][case['name']], 1e-9, 1e-7)
+            rows.append({'name': case['name'], 'quantity': 'IV inference and diagnostics',
+                         'implementation': implementation, 'rule': 'model',
+                         'status': 'pass' if comparison['fails'] == 0 else 'fail',
+                         'n_compared': comparison['n'], 'max_abs_error': comparison['max_abs']})
+    return {'title': 'Two-stage least squares', 'label': 'IV', 'kind': 'reference',
+            'checked': 'Structural coefficients, covariance, inference, residuals, first-stage strength, SW F, Wu–Hausman, and Sargan.',
+            'description': 'Saved public R API outputs and independent paper-derived conditional F calculations, checked in the extension and polyfill.',
+            'reference': 'ivreg, fixest, and Sanderson–Windmeijer (2016)',
+            'versions': report['reference'], 'inputs': 'Twelve cases including a weighted heating-shaped design.',
+            'comparison': [{'id': 'model', 'applies_to': 'Numerical results', 'kind': 'tolerance', 'atol': 1e-9, 'rtol': 1e-7}],
+            'cases': rows, 'exclusions': [], 'known_differences': report['differences'],
+            'reproduce': ['Rscript docs/verifications/iv.R', 'python3 docs/verifications/compare_iv.py'],
+            'source': 'docs/verifications/iv-results.json', 'data': 'tests/fixtures/iv-r.json', 'group': 'Models'}

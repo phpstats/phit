@@ -133,3 +133,14 @@ output. They contain no third-party code.
   26.5.8; and the modified Lentz method of W. J. Lentz, *Applied Optics* 15
   (1976), and I. J. Thompson and A. R. Barnett, *Journal of Computational
   Physics* 64 (1986). Specification: `specs/cleanroom/special.md`.
+
+## Instrumental-variable behavior references
+
+The 2SLS implementation was written from published mathematics and public API
+output. No AER, ivreg, fixest, or OneSampleMR source was used or copied.
+Sanderson and Windmeijer (2016), Journal of Econometrics 190, 212–221
+(doi:10.1016/j.jeconom.2015.06.004), defines the conditional F correction.
+ivreg and fixest public documentation and fixture outputs specify inference
+conventions. The references and observed differences are in
+`specs/cleanroom/iv.md`. These are behavior references and introduce no bundled
+GPL code.

@@ -321,6 +321,7 @@ fn fixed_design(mut rows: Vec<Vec<f64>>, intercept: bool) -> Vec<Vec<f64>> {
 fn model_kind(function: &str) -> &'static str {
     match function {
         "Phit\\fit_ols" | "Phit\\fit_ols_matrix" => "linear",
+        "Phit\\fit_iv" => "iv",
         "Phit\\fit_generalized_linear"
         | "Phit\\fit_logistic_matrix"
         | "Phit\\fit_probit_matrix"
@@ -348,6 +349,7 @@ fn finish_result(
         "solver",
         match function {
             "Phit\\fit_ols_matrix" | "Phit\\fit_ols" => "scaled_svd",
+            "Phit\\fit_iv" => "scaled_qr_2sls",
             "Phit\\fit_generalized_linear" => match output.get("link").and_then(|v| v.str()) {
                 Some("identity") => "scaled_svd",
                 Some("probit") => "fisher_scoring",
@@ -373,7 +375,20 @@ fn finish_result(
             diagnostics.insert(key, value.shallow_clone())?;
         }
     }
-    let mut warnings = Vec::<String>::new();
+    for key in ["wu_hausman", "sargan"] {
+        if let Some(v) = output.get(key) {
+            diagnostics.insert(key, v.shallow_clone())?;
+        }
+    }
+    let mut warnings: Vec<String> = output
+        .get("iv_warnings")
+        .and_then(|v| v.array())
+        .map(|a| {
+            a.values()
+                .filter_map(|v| v.str().map(str::to_owned))
+                .collect()
+        })
+        .unwrap_or_default();
     if !dropped_rows.is_empty() {
         warnings.push(format!(
             "listwise deletion removed {} of {} original rows",
@@ -392,6 +407,9 @@ fn finish_result(
         warnings.push("Laplace integration is approximate; assess quadrature sensitivity for rare events or small groups".into());
     }
     diagnostics.insert("warnings", warnings)?;
+    for key in ["wu_hausman", "sargan", "iv_warnings"] {
+        output.remove(key);
+    }
     output.insert("diagnostics", diagnostics)?;
     output.insert("n_input", n)?;
     output.insert("n_observations", retained_rows.len())?;

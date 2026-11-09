@@ -519,6 +519,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#prediction-predict" id="toc-prediction-predict" class="nav-link" data-scroll-target="#prediction-predict">Prediction: predict</a></li>
   <li><a href="#differences-from-r" id="toc-differences-from-r" class="nav-link" data-scroll-target="#differences-from-r">Differences from R</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#instrumental-variable-formulas" id="toc-instrumental-variable-formulas" class="nav-link" data-scroll-target="#instrumental-variable-formulas">Instrumental-variable formulas</a></li>
   </ul>
 </nav>
     </div>
@@ -972,6 +973,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>The prediction data include values outside the fitted range, missing rows, an unseen group, and a factor whose level set differs from the fit. <code>tests/predict.php</code> also checks that predicting the training data reproduces the fitted values.</li>
 </ul>
 <p>All fixtures are indexed in the <a href="verifications/reference-manifest.json">reference manifest</a>.</p>
+</section>
+<section id="instrumental-variable-formulas" class="level2">
+<h2 class="anchored" data-anchor-id="instrumental-variable-formulas">Instrumental-variable formulas</h2>
+<p><code>fit_iv('y ~ x + factor(g) | e1 + e2 ~ z1 + z2 + z3', $data)</code> uses the first part for the response and exogenous regressors, then endogenous regressors and excluded instruments. The split occurs only at a top-level <code>|</code>. Quoted names and bars inside parentheses retain their meaning. Random-effect terms such as <code>(1 | g)</code> are rejected by <code>fit_iv</code> with 1007. OLS and mixed-model functions reject IV formulas.</p>
+<p>Existing factor coding, interactions, and transforms work in these parts. An endogenous interaction must be listed after the bar, for example <code>e1 + e1:x</code>. Use <code>y ~ 0 + x | e1 ~ z1 + z2</code> to remove the structural intercept. <code>y ~ 0 | e1 ~ z1 + z2</code> has no exogenous columns. Intercept flags in the excluded instrument part do not remove the required exogenous intercept. Expressions that remove a required exogenous column are rejected with 1001.</p>
+<p>All three designs are rebuilt after shared listwise deletion, including missing instrument values. <code>model_matrix()</code> keeps its existing API. The fit stores the original IV formula and a <code>structural_formula</code> for prediction; instrument columns are unnecessary in prediction data.</p>
 
 
 </section>

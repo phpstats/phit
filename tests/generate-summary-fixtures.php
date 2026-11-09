@@ -24,8 +24,12 @@ $data = [
 ];
 // R reads cbpp's period as a factor (lme4 ships it as one); the CSV quotes it, but read_csv infers numbers.
 $data['cbpp']['period'] = array_map('strval', $data['cbpp']['period']);
+$iv = json_decode(file_get_contents("$root/tests/fixtures/iv-r.json"), true, flags: JSON_THROW_ON_ERROR);
+$ivCase = array_values(array_filter($iv['cases'], fn ($c) => $c['name'] === 'one_over'))[0];
+$data['iv'] = $ivCase['data'];
 $cbpp = 'cbind(incidence, size - incidence) ~ period + (1 | herd)';
 $cases = [
+    ['iv_one_over', 'fit_iv', ['formula' => $ivCase['formula'], 'data' => 'iv']],
     ['ols_mtcars', 'fit_ols', ['formula' => 'mpg ~ wt + factor(cyl)', 'data' => 'mtcars']],
     ['gaussian_glm_mtcars', 'fit_generalized_linear', ['formula' => 'mpg ~ wt', 'data' => 'mtcars']],
     ['logistic_mroz', 'fit_generalized_linear',
@@ -84,7 +88,14 @@ $rName = [
 ];
 $r = json_decode(file_get_contents("$dir/summary-r.json"), true, flags: JSON_THROW_ON_ERROR);
 
+$r['rows']['iv_one_over'] = $ivCase['r_rows'];
 $out = ['R' => $r['R'], 'lme4' => $r['lme4'], 'data' => $data, 'cases' => []];
+if (in_array('--iv-only', $argv, true)) {
+    $out = json_decode(file_get_contents("$dir/summary.json"), true, flags: JSON_THROW_ON_ERROR);
+    $out['data']['iv'] = $data['iv'];
+    $out['cases'] = array_values(array_filter($out['cases'], fn ($c) => $c['name'] !== 'iv_one_over'));
+    $cases = array_values(array_filter($cases, fn ($c) => $c[0] === 'iv_one_over'));
+}
 foreach ($cases as [$name, $function, $args]) {
     $call = $args;
     if (isset($call['data'])) {

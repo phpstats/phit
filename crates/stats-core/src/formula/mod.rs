@@ -474,7 +474,7 @@ pub fn model_design(
     data: &Data,
     options: &DesignOptions,
 ) -> Result<ModelDesign, StatsError> {
-    design(formula, data, options, None)
+    design(formula, data, options, None, false)
 }
 
 /// The design for new data under a fitted model, as R's predict() builds it:
@@ -495,6 +495,7 @@ pub fn prediction_design(
             ..Default::default()
         },
         Some((predvars, random)),
+        false,
     )
 }
 
@@ -503,6 +504,7 @@ fn design(
     data: &Data,
     options: &DesignOptions,
     predict: Option<(&Predvars, bool)>,
+    allow_empty: bool,
 ) -> Result<ModelDesign, StatsError> {
     let frozen = predict.map(|(p, _)| p);
     let mut state = PolyState {
@@ -637,7 +639,7 @@ fn design(
         }
     }
     let block = build_block(&fixed, &coded, m)?;
-    if block.columns.is_empty() {
+    if block.columns.is_empty() && !allow_empty {
         return Err(error(
             "the formula has no predictor columns; keep the intercept or add a term",
         ));
@@ -932,3 +934,6 @@ mod tests {
         assert_eq!(d.random[1].groups[0], GroupLabel::Text("p:u".into()));
     }
 }
+
+mod iv;
+pub use iv::{IvDesign, iv_design, split_iv_formula};

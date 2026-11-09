@@ -41,6 +41,13 @@ $operations = [
 $batch = '- Batch form: one call over a list, returning one value per element in input order, without the keys.';
 
 $descriptions = [
+    'fit_iv' => [
+        'Fit an instrumental-variable model by two-stage least squares.',
+        '- Formula: `y ~ exogenous | endogenous ~ excluded instruments`. Only top-level bars split the parts.',
+        '- Standard errors use structural residuals. First stages include partial R², Shea partial R², and Sanderson–Windmeijer F, with Wu–Hausman and Sargan tests in diagnostics.',
+        "- Only `vcov: 'iid'` is available. Under-identification and rank deficiency raise 1004. Random effects and offsets raise 1007.",
+        $missingFormula,
+    ],
     'fit_ols' => [
         "Fits a linear model from a formula, like R's `lm()`.",
         '- Builds the model matrix from named columns and fits by least squares, or by weighted least squares when `weights` is given, as `lm(weights = )` does.',

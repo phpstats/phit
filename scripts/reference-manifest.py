@@ -3,7 +3,7 @@
 import hashlib,json,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-GENERATORS={'ols-r':'tests/generate-fixtures.R','logistic-r':'tests/generate-logistic-fixtures.R',
+GENERATORS={'iv-r':'tests/generate-iv-fixtures.R','ols-r':'tests/generate-fixtures.R','logistic-r':'tests/generate-logistic-fixtures.R',
  'probit-r':'tests/generate-probit-poisson-fixtures.R','poisson-r':'tests/generate-probit-poisson-fixtures.R',
  'r-compatibility':'tests/generate-r-compatibility-fixtures.R','lmm-r':'tests/generate-lmm-fixtures.R',
  'lmm-public-r':'tests/generate-lmm-public-fixtures.py','lmm-expanded-r':'tests/generate-lmm-expanded-fixtures.R',
@@ -19,7 +19,7 @@ GENERATORS={'ols-r':'tests/generate-fixtures.R','logistic-r':'tests/generate-log
  'predict-r':'tests/generate-predict-fixtures.R',
  'smoothing-r':'tests/generate-smoothing-fixtures.R',
  'optimize-r':'tests/generate-optimize-fixtures.R'}
-POLICY={'ols-r':'1e-9 + 1e-7*abs(reference); zero/perfect fit conventions tested separately',
+POLICY={'iv-r':'1e-9 + 1e-7*abs(reference); SW independently computed from the paper; no-intercept Sargan uses uncentered auxiliary R2','ols-r':'1e-9 + 1e-7*abs(reference); zero/perfect fit conventions tested separately',
  'logistic-r':'1e-9 + 1e-7*abs(reference)','probit-r':'1e-9 + 1e-7*abs(reference)','poisson-r':'1e-9 + 1e-7*abs(reference)',
  'r-compatibility':'1e-7 + 1e-6*abs(reference)',
  'lmm-r':'1e-7 + 1e-6*abs(reference)','lmm-public-r':'per-case/per-quantity policy stored in fixture',

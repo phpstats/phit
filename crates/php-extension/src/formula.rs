@@ -508,7 +508,8 @@ pub fn predict_from(
     allowNewLevels: bool,
 ) -> PhpResult<ZBox<ZendHashTable>> {
     let formula = fit
-        .get("formula")
+        .get("structural_formula")
+        .or_else(|| fit.get("formula"))
         .and_then(|v| v.str())
         .ok_or_else(|| malformed_fit("missing formula"))?
         .to_owned();
@@ -830,6 +831,131 @@ pub fn fit_ols(
     add_names(&mut output, &design)?;
     let (retained, dropped) = rows(&design);
     finish_result(output, design.n_input, retained, dropped, "Phit\\fit_ols")
+}
+
+fn iv_f_test(test: Option<&stats_core::iv::FTest>) -> PhpResult<ZBox<ZendHashTable>> {
+    let mut out = ZendHashTable::new();
+    out.insert("statistic", test.map(|t| t.statistic))?;
+    out.insert("df1", test.map(|t| t.df1 as i64))?;
+    out.insert("df2", test.map(|t| t.df2 as i64))?;
+    out.insert("p_value", test.map(|t| t.p_value))?;
+    Ok(out)
+}
+
+/// Covariance specification. Step 1 accepts only iid; arrays are reserved for robust options.
+pub enum VcovArg {
+    Iid,
+    Unsupported,
+}
+impl ext_php_rs::convert::FromZval<'_> for VcovArg {
+    const TYPE: ext_php_rs::flags::DataType = ext_php_rs::flags::DataType::Mixed;
+    fn from_zval(v: &Zval) -> Option<Self> {
+        if v.str() == Some("iid") {
+            Some(Self::Iid)
+        } else if v.str().is_some() || v.array().is_some() {
+            Some(Self::Unsupported)
+        } else {
+            None
+        }
+    }
+}
+impl ext_php_rs::convert::StubLiteral for VcovArg {
+    fn stub_literal(&self) -> String {
+        "'iid'".into()
+    }
+}
+
+/// Two-stage least squares with structural-residual inference.
+#[php_function]
+#[php(
+    name = "Phit\\fit_iv",
+    defaults(missing = "\"drop\"", vcov = VcovArg::Iid)
+)]
+pub fn fit_iv(
+    formula: &str,
+    data: &Zval,
+    missing: &str,
+    weights: Option<&Zval>,
+    vcov: VcovArg,
+) -> PhpResult<Zval> {
+    if !matches!(vcov, VcovArg::Iid) {
+        return Err(input_exception(
+            ErrorKind::Unsupported,
+            "fit_iv currently supports only vcov: 'iid'",
+        ));
+    }
+    let frame = model_data(data)?;
+    let options = DesignOptions {
+        drop_missing: missing_policy(missing)?,
+        drop_unused_levels: true,
+        extra: weights_vector(weights, &frame)?.into_iter().collect(),
+    };
+    let iv = stats_core::formula::iv_design(formula, &frame, &options).map_err(stats_exception)?;
+    let design = iv.structural;
+    let weights = if options.extra.is_empty() {
+        vec![1.; design.x.len()]
+    } else {
+        design.extra[0].clone()
+    };
+    let y = numeric_response(&design, "Phit\\fit_iv")?;
+    let result = stats_core::iv::fit_iv(
+        design.x.clone(),
+        y,
+        iv.z,
+        &iv.endogenous,
+        weights,
+        design.intercept,
+    )
+    .map_err(stats_exception)?;
+    let mut output = crate::ols_output(result.linear)?;
+    add_names(&mut output, &design)?;
+    output.insert("formula", formula)?;
+    output.insert("structural_formula", design.formula.clone())?;
+    output.insert("vcov", "iid")?;
+    output.insert(
+        "endogenous",
+        iv.endogenous
+            .iter()
+            .map(|j| design.columns[*j].clone())
+            .collect::<Vec<_>>(),
+    )?;
+    output.insert("instruments", iv.instruments)?;
+    let mut stages = ZendHashTable::new();
+    for (index, stage) in iv.endogenous.iter().zip(&result.first_stage) {
+        let mut out = ZendHashTable::new();
+        out.insert("f_statistic", stage.test.statistic)?;
+        out.insert("df1", stage.test.df1 as i64)?;
+        out.insert("df2", stage.test.df2 as i64)?;
+        out.insert("p_value", stage.test.p_value)?;
+        out.insert("partial_r_squared", stage.partial_r_squared)?;
+        out.insert("shea_partial_r_squared", stage.shea_partial_r_squared)?;
+        out.insert("sw_f_statistic", stage.sw.as_ref().map(|s| s.statistic))?;
+        out.insert("sw_df1", stage.sw_df1 as i64)?;
+        out.insert("sw_df2", stage.sw_df2 as i64)?;
+        out.insert("sw_p_value", stage.sw.as_ref().map(|s| s.p_value))?;
+        let mut coefficients = ZendHashTable::new();
+        for (name, beta) in iv.instrument_columns.iter().zip(&stage.coefficients) {
+            coefficients.insert(name.as_str(), *beta)?;
+        }
+        out.insert("coefficients", coefficients)?;
+        stages.insert(design.columns[*index].as_str(), out)?;
+    }
+    output.insert("first_stage", stages)?;
+    output.insert("wu_hausman", iv_f_test(result.wu_hausman.as_ref())?)?;
+    let sargan = result
+        .sargan
+        .map(|s| -> PhpResult<_> {
+            let mut out = ZendHashTable::new();
+            out.insert("statistic", s.statistic)?;
+            out.insert("df", s.df as i64)?;
+            out.insert("p_value", s.p_value)?;
+            Ok(out)
+        })
+        .transpose()?;
+    output.insert("sargan", sargan)?;
+    output.insert("iv_warnings", result.warnings)?;
+    let (retained, dropped) = rows(&design);
+    finish_result(output, design.n_input, retained, dropped, "Phit\\fit_iv")
 }
 
 fn binomial_response(design: &ModelDesign, weights: &mut [f64]) -> PhpResult<Vec<f64>> {
@@ -1191,6 +1317,7 @@ pub fn fit_mixed_logistic(
 pub fn register(module: ModuleBuilder) -> ModuleBuilder {
     module
         .function(wrap_function!(fit_ols))
+        .function(wrap_function!(fit_iv))
         .function(wrap_function!(model_matrix))
         .function(wrap_function!(fit_generalized_linear))
         .function(wrap_function!(fit_mixed_gaussian))

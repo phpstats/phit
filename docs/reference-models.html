@@ -517,6 +517,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#general-gaussian-mixed-model-call" id="toc-general-gaussian-mixed-model-call" class="nav-link" data-scroll-target="#general-gaussian-mixed-model-call">General Gaussian mixed-model call</a></li>
   <li><a href="#binomial-random-intercept-ml" id="toc-binomial-random-intercept-ml" class="nav-link" data-scroll-target="#binomial-random-intercept-ml">Binomial random-intercept ML</a></li>
   <li><a href="#implementation-notes" id="toc-implementation-notes" class="nav-link" data-scroll-target="#implementation-notes">Implementation notes</a></li>
+  <li><a href="#iv-fit-contract" id="toc-iv-fit-contract" class="nav-link" data-scroll-target="#iv-fit-contract">IV fit contract</a></li>
   </ul>
 </nav>
     </div>
@@ -1358,6 +1359,11 @@ fitted[0] 1.3461538461538</code></pre>
 </tbody>
 </table>
 <p>Inputs are <code>Vec&lt;Vec&lt;f64&gt;&gt;</code> and <code>Vec&lt;f64&gt;</code>, and every function returns <code>Result&lt;_, StatsError&gt;</code>. Rust group IDs are <code>usize</code> values, and the binding keeps the PHP labels.</p>
+</section>
+<section id="iv-fit-contract" class="level2">
+<h2 class="anchored" data-anchor-id="iv-fit-contract">IV fit contract</h2>
+<p><code>fit_iv(string $formula, mixed $data, string $missing = 'drop', mixed $weights = null, string|array $vcov = 'iid'): IvFit</code> uses a formula with a top-level IV bar. See <a href="./models.html#instrumental-variable-models">Instrumental-variable models</a>.</p>
+<p>It carries every linear-fit key plus <code>structural_formula</code>, <code>vcov</code>, <code>endogenous</code>, <code>instruments</code>, and <code>first_stage</code>. Each first stage has <code>f_statistic</code>, <code>df1</code>, <code>df2</code>, <code>p_value</code>, <code>partial_r_squared</code>, <code>shea_partial_r_squared</code>, <code>sw_f_statistic</code>, <code>sw_df1</code>, <code>sw_df2</code>, <code>sw_p_value</code>, and named <code>coefficients</code>. SW values may be null with an explicit diagnostic warning. The <code>diagnostics</code> array adds <code>wu_hausman</code> and <code>sargan</code>. <code>summary()</code>, <code>tidy()</code>, and <code>predict()</code> accept the fit or its array.</p>
 
 
 </section>

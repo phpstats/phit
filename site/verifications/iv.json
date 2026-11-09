@@ -1,0 +1,253 @@
+{
+ "title": "Two-stage least squares",
+ "label": "IV",
+ "kind": "reference",
+ "checked": "Structural coefficients, covariance, inference, residuals, first-stage strength, SW F, Wu\u2013Hausman, and Sargan.",
+ "description": "Saved public R API outputs and independent paper-derived conditional F calculations, checked in the extension and polyfill.",
+ "reference": "ivreg, fixest, and Sanderson\u2013Windmeijer (2016)",
+ "versions": {
+  "R": "R version 4.6.1 (2026-06-24)",
+  "ivreg": "0.6.8",
+  "fixest": "0.14.2",
+  "sw": "Sanderson & Windmeijer (2016), equations 14-15; finite-sample n-L divisor"
+ },
+ "inputs": "Twelve cases including a weighted heating-shaped design.",
+ "comparison": [
+  {
+   "id": "model",
+   "applies_to": "Numerical results",
+   "kind": "tolerance",
+   "atol": 1e-09,
+   "rtol": 1e-07
+  }
+ ],
+ "cases": [
+  {
+   "name": "no_exog",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 596,
+   "max_abs_error": 2.2737367544323206e-13
+  },
+  {
+   "name": "one_exact",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 588,
+   "max_abs_error": 1.0302869668521453e-13
+  },
+  {
+   "name": "one_over",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 592,
+   "max_abs_error": 1.7053025658242404e-13
+  },
+  {
+   "name": "two_over",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 624,
+   "max_abs_error": 6.821210263296962e-13
+  },
+  {
+   "name": "two_exact",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 617,
+   "max_abs_error": 6.821210263296962e-13
+  },
+  {
+   "name": "weighted",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 624,
+   "max_abs_error": 1.1368683772161603e-13
+  },
+  {
+   "name": "no_intercept",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 609,
+   "max_abs_error": 4.547473508864641e-13
+  },
+  {
+   "name": "factors",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 622,
+   "max_abs_error": 2.8421709430404007e-13
+  },
+  {
+   "name": "interactions",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 624,
+   "max_abs_error": 1.7053025658242404e-13
+  },
+  {
+   "name": "missing",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 610,
+   "max_abs_error": 1.1368683772161603e-13
+  },
+  {
+   "name": "weak_conditional",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 624,
+   "max_abs_error": 2.2737367544323206e-13
+  },
+  {
+   "name": "heating",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "native",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3628,
+   "max_abs_error": 7.194245199571014e-13
+  },
+  {
+   "name": "no_exog",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 596,
+   "max_abs_error": 4.263256414560601e-14
+  },
+  {
+   "name": "one_exact",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 588,
+   "max_abs_error": 1.1368683772161603e-13
+  },
+  {
+   "name": "one_over",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 592,
+   "max_abs_error": 4.547473508864641e-13
+  },
+  {
+   "name": "two_over",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 624,
+   "max_abs_error": 5.115907697472721e-13
+  },
+  {
+   "name": "two_exact",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 617,
+   "max_abs_error": 3.019806626980426e-14
+  },
+  {
+   "name": "weighted",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 624,
+   "max_abs_error": 1.4033219031261979e-13
+  },
+  {
+   "name": "no_intercept",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 609,
+   "max_abs_error": 4.547473508864641e-13
+  },
+  {
+   "name": "factors",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 622,
+   "max_abs_error": 2.8421709430404007e-13
+  },
+  {
+   "name": "interactions",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 624,
+   "max_abs_error": 2.2737367544323206e-13
+  },
+  {
+   "name": "missing",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 610,
+   "max_abs_error": 5.861977570020827e-14
+  },
+  {
+   "name": "weak_conditional",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 624,
+   "max_abs_error": 1.0800249583553523e-12
+  },
+  {
+   "name": "heating",
+   "quantity": "IV inference and diagnostics",
+   "implementation": "polyfill",
+   "rule": "model",
+   "status": "pass",
+   "n_compared": 3628,
+   "max_abs_error": 7.194245199571014e-13
+  }
+ ],
+ "exclusions": [],
+ "known_differences": [
+  "No-intercept Sargan uses the specified uncentered auxiliary regression R\u00b2; see specs/cleanroom/iv.md."
+ ],
+ "reproduce": [
+  "Rscript docs/verifications/iv.R",
+  "python3 docs/verifications/compare_iv.py"
+ ],
+ "source": "docs/verifications/iv-results.json",
+ "data": "tests/fixtures/iv-r.json",
+ "group": "Models"
+}

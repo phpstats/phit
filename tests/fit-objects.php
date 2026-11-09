@@ -24,7 +24,7 @@ function throws(callable $call, string $class, ?string $message = null): bool
 }
 
 $fixture = json_decode(file_get_contents(__DIR__.'/fixtures/summary/summary.json'), true, flags: JSON_THROW_ON_ERROR);
-$classes = ['linear' => 'Phit\LinearFit', 'generalized_linear' => 'Phit\GeneralizedLinearFit',
+$classes = ['iv' => 'Phit\IvFit', 'linear' => 'Phit\LinearFit', 'generalized_linear' => 'Phit\GeneralizedLinearFit',
     'mixed_gaussian' => 'Phit\MixedGaussianFit', 'mixed_logistic' => 'Phit\MixedLogisticFit'];
 $readOnly = 'A Phit fit is read-only; call toArray() for an array copy';
 

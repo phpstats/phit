@@ -4,6 +4,10 @@ These specifications describe routines that phit's core needs, written so that t
 source code. A provenance review found that the earlier versions of these routines followed R's GPL-licensed source.
 phit is MIT-licensed, so each routine is reimplemented from these documents alone.
 
+The rules below govern the listed routine replacements. New IV integration is
+specified in [iv.md](iv.md), which permits reading existing MIT phit interfaces
+and excludes reference-package source.
+
 ## Rules for the implementer
 
 - Work only from the documents in this directory, the data files in `data/`, the published works cited in each

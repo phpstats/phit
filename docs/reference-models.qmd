@@ -470,3 +470,16 @@ The Rust core functions take complete numeric inputs and have no PHP dependency.
 | `fit_mixed_logistic_matrix` | `fit_logistic_random_intercept(x, y, groups, options)` | `LogisticMixedResult` |
 
 Inputs are `Vec<Vec<f64>>` and `Vec<f64>`, and every function returns `Result<_, StatsError>`. Rust group IDs are `usize` values, and the binding keeps the PHP labels.
+
+## IV fit contract
+
+`fit_iv(string $formula, mixed $data, string $missing = 'drop', mixed $weights = null,
+string|array $vcov = 'iid'): IvFit` uses a formula with a top-level IV bar. See
+[Instrumental-variable models](models.qmd#instrumental-variable-models).
+
+It carries every linear-fit key plus `structural_formula`, `vcov`, `endogenous`,
+`instruments`, and `first_stage`. Each first stage has `f_statistic`, `df1`, `df2`,
+`p_value`, `partial_r_squared`, `shea_partial_r_squared`, `sw_f_statistic`,
+`sw_df1`, `sw_df2`, `sw_p_value`, and named `coefficients`. SW values may be null
+with an explicit diagnostic warning. The `diagnostics` array adds `wu_hausman`
+and `sargan`. `summary()`, `tidy()`, and `predict()` accept the fit or its array.

@@ -136,6 +136,10 @@ def build():
     verifications += [f'site/verifications/{slug}.json' for slug in
                       [*evidence.FIXED, 'lmm', 'lmm-public', 'logistic-mixed', 'r-compatibility', 'distributions',
                        'test-suites']]
+    files['benchmarks/iv-workload.json'] = json.loads((ROOT / 'bench/iv-results.json').read_text())
+    benchmarks.append('site/benchmarks/iv-workload.json')
+    files['verifications/iv.json'] = evidence.iv_verification()
+    verifications.append('site/verifications/iv.json')
     files['site.json'] = manifest(benchmarks, verifications)
     return {path: json.dumps(content, indent=1, allow_nan=False) + '\n' for path, content in files.items()}
 

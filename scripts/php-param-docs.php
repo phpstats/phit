@@ -15,6 +15,7 @@ function php_param_group(string $function): string
 }
 
 return [
+    'fit_iv:vcov' => "Covariance specification; only 'iid' is currently supported",
     // Distributions.
     'dist:x' => 'Point at which to evaluate; ±INF allowed',
     'dist:values' => 'Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch',

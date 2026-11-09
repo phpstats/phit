@@ -246,8 +246,9 @@ type Build = fn(&ZendHashTable) -> PhpResult<Box<dyn Printer>>;
 
 /// One printer per value of a fit's `model` key, which every model function sets. A new model kind adds one entry
 /// here and one `Printer` in stats_core::summary; `summary()` and `tidy()` both dispatch through this table.
-const PRINTERS: [(&str, Build); 4] = [
+const PRINTERS: [(&str, Build); 5] = [
     ("linear", linear),
+    ("iv", iv),
     ("generalized_linear", generalized_linear),
     ("mixed_gaussian", mixed_gaussian),
     ("mixed_logistic", mixed_logistic),
@@ -285,6 +286,105 @@ fn linear(fit: &ZendHashTable) -> PhpResult<Box<dyn Printer>> {
         adj_r_squared: required_float(fit, "adj_r_squared")?,
         f_df,
         coefficients,
+    }))
+}
+
+struct IvPrinter {
+    base: Box<dyn Printer>,
+    diagnostics: String,
+}
+impl Printer for IvPrinter {
+    fn heading(&self) -> String {
+        self.base.heading().replace(
+            "Linear model fit by least squares",
+            "Instrumental-variable model fit by two-stage least squares",
+        )
+    }
+    fn before_coefficients(&self) -> String {
+        self.base.before_coefficients()
+    }
+    fn coefficients_title(&self) -> &'static str {
+        self.base.coefficients_title()
+    }
+    fn coefficients(&self) -> &summary::Coefficients {
+        self.base.coefficients()
+    }
+    fn after_coefficients(&self) -> String {
+        let text = self.base.after_coefficients();
+        // OLS's R²-based overall F is not a valid IV Wald test.
+        let mut out = text
+            .lines()
+            .filter(|l| !l.starts_with("F-statistic:"))
+            .collect::<Vec<_>>()
+            .join("\n");
+        out.push('\n');
+        out.push_str(&self.diagnostics);
+        out
+    }
+    fn interval_df(&self) -> Option<f64> {
+        self.base.interval_df()
+    }
+}
+fn iv(fit: &ZendHashTable) -> PhpResult<Box<dyn Printer>> {
+    let mut diagnostics =
+        String::from("\nDiagnostic tests (iid covariance):\nTest  df1  df2  statistic  p-value\n");
+    let fmt = |v: Option<f64>| v.map_or("NA".into(), |v| summary::format_g(v, 4));
+    let mut row = |label: &str,
+                   df1: Option<f64>,
+                   df2: Option<f64>,
+                   statistic: Option<f64>,
+                   p: Option<f64>| {
+        diagnostics += &format!(
+            "{label}  {}  {}  {}  {}\n",
+            fmt(df1),
+            fmt(df2),
+            fmt(statistic),
+            fmt(p)
+        );
+    };
+    if let Some(stages) = fit.get("first_stage").and_then(Zval::array) {
+        for (name, value) in stages.iter() {
+            if let Some(stage) = value.array() {
+                row(
+                    &format!("Weak instruments ({name})"),
+                    float(stage, "df1"),
+                    float(stage, "df2"),
+                    float(stage, "f_statistic"),
+                    float(stage, "p_value"),
+                );
+                row(
+                    &format!("Sanderson-Windmeijer ({name})"),
+                    float(stage, "sw_df1"),
+                    float(stage, "sw_df2"),
+                    float(stage, "sw_f_statistic"),
+                    float(stage, "sw_p_value"),
+                );
+            }
+        }
+    }
+    if let Some(d) = fit.get("diagnostics").and_then(Zval::array) {
+        if let Some(t) = d.get("wu_hausman").and_then(Zval::array) {
+            row(
+                "Wu-Hausman",
+                float(t, "df1"),
+                float(t, "df2"),
+                float(t, "statistic"),
+                float(t, "p_value"),
+            );
+        }
+        if let Some(t) = d.get("sargan").and_then(Zval::array) {
+            row(
+                "Sargan",
+                float(t, "df"),
+                None,
+                float(t, "statistic"),
+                float(t, "p_value"),
+            );
+        }
+    }
+    Ok(Box::new(IvPrinter {
+        base: linear(fit)?,
+        diagnostics,
     }))
 }
 

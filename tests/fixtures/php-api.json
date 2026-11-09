@@ -3994,6 +3994,76 @@
             "z_statistics"
         ]
     },
+    "Phit\\fit_iv": {
+        "parameters": [
+            {
+                "name": "formula",
+                "type": "string",
+                "optional": false
+            },
+            {
+                "name": "data",
+                "type": "mixed",
+                "optional": false
+            },
+            {
+                "name": "missing",
+                "type": "string",
+                "optional": true,
+                "default": "drop"
+            },
+            {
+                "name": "weights",
+                "type": "mixed",
+                "optional": true,
+                "default": null
+            },
+            {
+                "name": "vcov",
+                "type": "mixed",
+                "optional": true,
+                "default": "iid"
+            }
+        ],
+        "return_type": "mixed",
+        "result_keys": [
+            "adj_r_squared",
+            "assign",
+            "coefficients",
+            "columns",
+            "conf_int",
+            "covariance",
+            "df_residual",
+            "diagnostics",
+            "dropped_rows",
+            "endogenous",
+            "first_stage",
+            "fitted",
+            "formula",
+            "instruments",
+            "intercept",
+            "log_likelihood",
+            "model",
+            "n_dropped",
+            "n_input",
+            "n_observations",
+            "named",
+            "p_values",
+            "predvars",
+            "r_squared",
+            "residual_variance",
+            "residuals",
+            "response",
+            "retained_rows",
+            "rss",
+            "sigma",
+            "std_errors",
+            "structural_formula",
+            "t_statistics",
+            "terms",
+            "vcov"
+        ]
+    },
     "Phit\\fit_logistic_matrix": {
         "parameters": [
             {
@@ -5432,6 +5502,176 @@
         ]
     },
     "Phit\\LinearFit": {
+        "methods": {
+            "__construct": {
+                "parameters": [],
+                "return_type": ""
+            },
+            "__debugInfo": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "__toString": {
+                "parameters": [],
+                "return_type": "string"
+            },
+            "count": {
+                "parameters": [],
+                "return_type": "int"
+            },
+            "current": {
+                "parameters": [],
+                "return_type": "mixed"
+            },
+            "jsonSerialize": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "key": {
+                "parameters": [],
+                "return_type": "?string"
+            },
+            "next": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "offsetExists": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "bool"
+            },
+            "offsetGet": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "mixed"
+            },
+            "offsetSet": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    },
+                    {
+                        "name": "value",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "offsetUnset": {
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "type": "mixed",
+                        "optional": false
+                    }
+                ],
+                "return_type": "void"
+            },
+            "predict": {
+                "parameters": [
+                    {
+                        "name": "newdata",
+                        "type": "mixed",
+                        "optional": false
+                    },
+                    {
+                        "name": "type",
+                        "type": "string",
+                        "optional": true,
+                        "default": "link"
+                    },
+                    {
+                        "name": "seFit",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    },
+                    {
+                        "name": "interval",
+                        "type": "string",
+                        "optional": true,
+                        "default": "none"
+                    },
+                    {
+                        "name": "level",
+                        "type": "float",
+                        "optional": true,
+                        "default": 0.95
+                    },
+                    {
+                        "name": "random",
+                        "type": "bool",
+                        "optional": true,
+                        "default": true
+                    },
+                    {
+                        "name": "allowNewLevels",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    }
+                ],
+                "return_type": "array"
+            },
+            "rewind": {
+                "parameters": [],
+                "return_type": "void"
+            },
+            "summary": {
+                "parameters": [],
+                "return_type": "string"
+            },
+            "tidy": {
+                "parameters": [
+                    {
+                        "name": "confInt",
+                        "type": "bool",
+                        "optional": true,
+                        "default": false
+                    },
+                    {
+                        "name": "level",
+                        "type": "float",
+                        "optional": true,
+                        "default": 0.95
+                    },
+                    {
+                        "name": "effects",
+                        "type": "string",
+                        "optional": true,
+                        "default": "fixed"
+                    }
+                ],
+                "return_type": "mixed"
+            },
+            "toArray": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "toMimeBundle": {
+                "parameters": [],
+                "return_type": "array"
+            },
+            "valid": {
+                "parameters": [],
+                "return_type": "bool"
+            }
+        }
+    },
+    "Phit\\IvFit": {
         "methods": {
             "__construct": {
                 "parameters": [],

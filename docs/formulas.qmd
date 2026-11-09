@@ -309,3 +309,24 @@ GLM standard errors use the covariance at the final coefficients. R's `predict.g
 - The prediction data include values outside the fitted range, missing rows, an unseen group, and a factor whose level set differs from the fit. `tests/predict.php` also checks that predicting the training data reproduces the fitted values.
 
 All fixtures are indexed in the [reference manifest](verifications/reference-manifest.json).
+
+## Instrumental-variable formulas
+
+`fit_iv('y ~ x + factor(g) | e1 + e2 ~ z1 + z2 + z3', $data)` uses the first
+part for the response and exogenous regressors, then endogenous regressors and
+excluded instruments. The split occurs only at a top-level `|`. Quoted names
+and bars inside parentheses retain their meaning. Random-effect terms such as
+`(1 | g)` are rejected by `fit_iv` with 1007. OLS and mixed-model functions
+reject IV formulas.
+
+Existing factor coding, interactions, and transforms work in these parts.
+An endogenous interaction must be listed after the bar, for example
+`e1 + e1:x`. Use `y ~ 0 + x | e1 ~ z1 + z2` to remove the structural intercept.
+`y ~ 0 | e1 ~ z1 + z2` has no exogenous columns. Intercept flags in the excluded
+instrument part do not remove the required exogenous intercept. Expressions
+that remove a required exogenous column are rejected with 1001.
+
+All three designs are rebuilt after shared listwise deletion, including missing
+instrument values. `model_matrix()` keeps its existing API. The fit stores the
+original IV formula and a `structural_formula` for prediction; instrument
+columns are unnecessary in prediction data.

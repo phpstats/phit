@@ -1,0 +1,235 @@
+{
+ "title": "Two-stage least squares workloads",
+ "label": "IV",
+ "measure": "Elapsed time",
+ "unit": "ms",
+ "statistic": "median",
+ "environment": {
+  "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "cpu": "Apple M5 Ultra",
+  "threads": "One thread; JIT and CLI OPcache disabled",
+  "repeats": 7,
+  "date": "2026-11-09",
+  "php": "8.4.26",
+  "reference": {
+   "R": "R version 4.6.1 (2026-06-24)",
+   "ivreg": "0.6.8",
+   "fixest": "0.14.2",
+   "sw": "Sanderson & Windmeijer (2016), equations 14-15; finite-sample n-L divisor"
+  }
+ },
+ "rows": [
+  {
+   "case": "one_over",
+   "implementation": "phit",
+   "value": 0.387166,
+   "reps": [
+    0.412917,
+    0.331208,
+    0.388375,
+    0.326125,
+    0.387166,
+    0.40475,
+    0.339166
+   ],
+   "n": 180,
+   "k": 3
+  },
+  {
+   "case": "one_over",
+   "implementation": "phit-polyfill",
+   "value": 8.974792,
+   "reps": [
+    8.18775,
+    9.103958,
+    8.870625,
+    8.287625,
+    8.974792,
+    9.578583,
+    9.068625
+   ],
+   "n": 180,
+   "k": 3
+  },
+  {
+   "case": "one_over",
+   "implementation": "R ivreg",
+   "value": 6.000000000000005,
+   "reps": [
+    6.000000000000005,
+    6.000000000000005,
+    5.999999999999978,
+    4.999999999999977,
+    6.000000000000005,
+    6.999999999999979,
+    5.999999999999978
+   ],
+   "n": 180,
+   "k": 3
+  },
+  {
+   "case": "two_over",
+   "implementation": "phit",
+   "value": 0.456125,
+   "reps": [
+    0.477417,
+    0.507166,
+    0.456125,
+    0.397667,
+    0.499958,
+    0.436458,
+    0.377708
+   ],
+   "n": 180,
+   "k": 4
+  },
+  {
+   "case": "two_over",
+   "implementation": "phit-polyfill",
+   "value": 11.606542,
+   "reps": [
+    11.657583,
+    12.488292,
+    12.299709,
+    11.606542,
+    11.502792,
+    10.790417,
+    11.320792
+   ],
+   "n": 180,
+   "k": 4
+  },
+  {
+   "case": "two_over",
+   "implementation": "R ivreg",
+   "value": 7.000000000000006,
+   "reps": [
+    8.000000000000007,
+    7.000000000000006,
+    6.000000000000005,
+    8.000000000000007,
+    8.000000000000007,
+    7.000000000000006,
+    6.999999999999979
+   ],
+   "n": 180,
+   "k": 4
+  },
+  {
+   "case": "heating",
+   "implementation": "phit",
+   "value": 5.496625,
+   "reps": [
+    4.736958,
+    5.542791,
+    6.179209,
+    4.298916,
+    5.441292,
+    5.498125,
+    5.496625
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating",
+   "implementation": "phit-polyfill",
+   "value": 1948.124334,
+   "reps": [
+    2010.544375,
+    1941.24975,
+    1946.993042,
+    1948.124334,
+    1958.923334,
+    1947.910083,
+    1950.5045
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating",
+   "implementation": "R ivreg",
+   "value": 17.99999999999999,
+   "reps": [
+    19.99999999999999,
+    19.000000000000018,
+    16.999999999999986,
+    17.000000000000014,
+    18.99999999999999,
+    17.99999999999999,
+    14.999999999999986
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating_2160",
+   "implementation": "phit",
+   "value": 13.917791,
+   "reps": [
+    15.740417,
+    13.917791,
+    14.555542,
+    15.598042,
+    12.877959,
+    13.681875,
+    11.93225
+   ],
+   "n": 2160,
+   "k": 34
+  },
+  {
+   "case": "heating_2160",
+   "implementation": "phit-polyfill",
+   "value": 3433.511167,
+   "reps": [
+    3561.383917,
+    3552.007625,
+    3480.926625,
+    3431.804375,
+    3433.511167,
+    3405.19075,
+    3395.527209
+   ],
+   "n": 2160,
+   "k": 34
+  },
+  {
+   "case": "heating_2160",
+   "implementation": "R ivreg",
+   "value": 30,
+   "reps": [
+    30,
+    31,
+    28.999999999999996,
+    28.999999999999996,
+    33,
+    28.999999999999996,
+    31
+   ],
+   "n": 2160,
+   "k": 34
+  }
+ ],
+ "check": {
+  "max_abs_coefficient_difference": 9.769962616701378e-15
+ },
+ "notes": [
+  "Fresh process per run; one excluded warm-up per implementation and workload; rotated execution order.",
+  "Data parsing and process/package startup excluded. Formula construction, estimation, covariance, and diagnostics included.",
+  "phit and polyfill include Shea and SW diagnostics. R ivreg includes its public summary diagnostics but has no SW or Shea output; it performs less work.",
+  "The 2160-row heating case repeats the 720-row saved input three times. No other benchmark workloads are run."
+ ],
+ "reproduce": [
+  "python3 bench/run-iv.py"
+ ],
+ "source": "bench/iv-results.json",
+ "code_sha256": {
+  "bench/iv.php": "598f7630f6f09cd0ee4fc4b54714c26ab19783633e26a71545b34bda52399031",
+  "bench/iv.R": "23f9400f9b90ee5b6b69d24055043300224b0dc7daaa3cac96da5833b3071d2e",
+  "bench/run-iv.py": "3c580aa964e2e8877073d360a4819414151f1789a117a89431eeda6b31aed361",
+  "crates/stats-core/src/iv.rs": "7c23dbb70502d605784818343e9f53b6262e75d04924913837863cc731ef5494",
+  "phit-polyfill/src/Iv.php": "938b891531ba712eff69dc48f2bb78b06c52729579dc203ed6180b8102c21af8"
+ }
+}

@@ -28,7 +28,7 @@ fn error(kind: ErrorKind, message: &str) -> StatsError {
 // Solve P(T > critical) = 0.025 directly. statrs' inverse-beta quantile loses
 // precision for large residual df, where its beta argument is very close to 1.
 // Bisection on the survival function avoids that inverse-beta stopping error.
-fn t_critical_95(distribution: &StudentsT) -> f64 {
+pub(crate) fn t_critical_95(distribution: &StudentsT) -> f64 {
     let mut lower = 0.0;
     let mut upper = 1.0;
     while distribution.sf(upper) > 0.025 {
