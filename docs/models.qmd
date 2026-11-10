@@ -1,5 +1,5 @@
 ---
-title: "Linear and generalized linear models"
+title: "Regression models"
 ---
 
 `fit_ols()` fits a linear model by least squares. `fit_generalized_linear()` fits a
@@ -366,7 +366,7 @@ Validation includes glmnet fits and weighted CV, MASS lambda conversion,
 lmridge conditional covariance, and a heating-shaped design with hourly factors,
 correlated nonnegative lags, day folds, and age-decaying weights. See the
 [ridge verification record](verifications/ridge-results.json) and
-[benchmark record](../bench/ridge-results.json).
+[benchmark record](https://phit.phpstats.org/benchmarks#ridge-workload).
 
 
 ## Robust covariance

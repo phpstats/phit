@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Linear and generalized linear models – phit</title>
+<title>Regression models – phit</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -122,7 +122,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./formulas.html">Guides</a></li><li class="breadcrumb-item"><a href="./models.html">Linear and generalized linear models</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./formulas.html">Guides</a></li><li class="breadcrumb-item"><a href="./models.html">Regression models</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -206,7 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./models.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Linear and generalized linear models</span></a>
+ <span class="menu-text">Regression models</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -522,9 +522,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./formulas.html">Guides</a></li><li class="breadcrumb-item"><a href="./models.html">Linear and generalized linear models</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./formulas.html">Guides</a></li><li class="breadcrumb-item"><a href="./models.html">Regression models</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Linear and generalized linear models</h1>
+<h1 class="title">Regression models</h1>
 </div>
 
 
@@ -849,7 +849,7 @@ AIC: 548.85</code></pre>
 <p>For unweighted, standardized, unbounded fits with an intercept and uniform penalties, <code>MASS::lm.ridge</code> uses <code>lambda_lm_ridge = n*lambda/response_scale</code>. The key is null for other configurations. <code>lmridge</code> uses a different residual variance denominator; verification compares its conditional covariance per sigma squared and checks phit’s stated variance calculation independently.</p>
 <p>For CV, <code>foldid</code> has one integer per <strong>input row</strong>, and follows joint missing-row deletion. It overrides <code>nfolds</code> and <code>seed</code>. Supply day labels for hourly data to keep each day in a fold. At least three nonempty folds are required. Each fold refit recomputes scaling. CV means weight fold MSE by held-out total weight; CV SE is the weighted fold-error variance divided by K-1, then square-rooted. As in glmnet, fewer than three observations per fold on average triggers individual-error aggregation with denominator n-1.</p>
 <p>Explicit lambda paths must be nonnegative and strictly decreasing. Indices are zero-based. <code>lambda_min</code> minimizes <code>cvm</code>; <code>lambda_1se</code> is the largest lambda within one <code>cvsd</code> of that minimum. The result also includes <code>cvup</code> and <code>cvlo</code>. With <code>lambda: null</code>, phit uses 100 log-spaced values from 100 times the full-data response scale to .01 times that scale. This is phit’s default policy; explicit paths match glmnet. Generated folds use a balanced seeded permutation.</p>
-<p>Validation includes glmnet fits and weighted CV, MASS lambda conversion, lmridge conditional covariance, and a heating-shaped design with hourly factors, correlated nonnegative lags, day folds, and age-decaying weights. See the <a href="verifications/ridge-results.json">ridge verification record</a> and <a href="../bench/ridge-results.json">benchmark record</a>.</p>
+<p>Validation includes glmnet fits and weighted CV, MASS lambda conversion, lmridge conditional covariance, and a heating-shaped design with hourly factors, correlated nonnegative lags, day folds, and age-decaying weights. See the <a href="verifications/ridge-results.json">ridge verification record</a> and <a href="https://phit.phpstats.org/benchmarks#ridge-workload">benchmark record</a>.</p>
 </section>
 <section id="robust-covariance" class="level2">
 <h2 class="anchored" data-anchor-id="robust-covariance">Robust covariance</h2>

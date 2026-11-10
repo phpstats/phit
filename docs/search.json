@@ -2620,133 +2620,133 @@
   {
     "objectID": "models.html",
     "href": "models.html",
-    "title": "Linear and generalized linear models",
+    "title": "Regression models",
     "section": "",
     "text": "fit_ols() fits a linear model by least squares. fit_generalized_linear() fits a generalized linear model by maximum likelihood. Both take an R formula and named columns, as described in Model formulas.",
     "crumbs": [
       "Guides",
-      "Linear and generalized linear models"
+      "Regression models"
     ]
   },
   {
     "objectID": "models.html#families-and-links",
     "href": "models.html#families-and-links",
-    "title": "Linear and generalized linear models",
+    "title": "Regression models",
     "section": "Families and links",
     "text": "Families and links\n\n\n\n\n\n\n\n\n\nFamily\nLinks\nResponse\nMatrix function\n\n\n\n\ngaussian\nidentity\nNumbers\nfit_ols_matrix\n\n\nbinomial\nlogit (default), probit\n0/1 numbers, booleans, a factor or strings (first level is failure), proportions with integer trial weights, or cbind(successes, failures)\nfit_logistic_matrix, fit_probit_matrix\n\n\npoisson\nlog\nNonnegative integer counts\nfit_poisson_matrix\n\n\n\nAn empty link selects the canonical link. Any other family or link throws an Exception with code 1007, such as family 'gamma' is not supported; use gaussian, binomial or poisson.",
     "crumbs": [
       "Guides",
-      "Linear and generalized linear models"
+      "Regression models"
     ]
   },
   {
     "objectID": "models.html#linear-models",
     "href": "models.html#linear-models",
-    "title": "Linear and generalized linear models",
+    "title": "Regression models",
     "section": "Linear models",
     "text": "Linear models\n\nfit_ols() assumes independent errors with constant variance.\nWith weights, it fits weighted least squares, as lm(weights = ) does: each squared residual is multiplied by its row’s weight.\nIntervals and tests use Student’s t with df_residual degrees of freedom.\nThe result adds t_statistics, rss, residual_variance, sigma, r_squared, and adj_r_squared to the shared keys.\nfit_generalized_linear(family: 'gaussian') returns the same fit plus deviance, null_deviance, and aic, as R’s glm() reports them.\n\nA first model shows a complete fit and its output.",
     "crumbs": [
       "Guides",
-      "Linear and generalized linear models"
+      "Regression models"
     ]
   },
   {
     "objectID": "models.html#logistic-and-probit-regression",
     "href": "models.html#logistic-and-probit-regression",
-    "title": "Linear and generalized linear models",
+    "title": "Regression models",
     "section": "Logistic and probit regression",
     "text": "Logistic and probit regression\nThe examples on this page use mroz, 753 married women in 1975 from the Panel Study of Income Dynamics, and insurance, car insurance claims for 64 groups of policyholders. They read the files by URL with phibble. In mroz, lfp is yes if the woman was in the labor force, k5 is her number of children under 6, age is in years, wc is yes if she attended college, and inc is the family’s income without her earnings, in $1,000.\nuse Phibble\\DataFrame;\n\nuse function Phit\\{fit_generalized_linear, predict};\n\n$mroz = DataFrame::fromCsv(\n    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/mroz.csv',\n);\n\n$logit = fit_generalized_linear(\n    'lfp ~ k5 + age + wc + inc',\n    $mroz,\n    family: 'binomial',\n);\necho $logit;\nGeneralized linear model fit by maximum likelihood\nFamily: binomial (logit)\nFormula: lfp ~ k5 + age + wc + inc\n\nCoefficients:\n            Estimate Std. Error z value Pr(&gt;|z|)\n(Intercept)  3.38634    0.52816   6.412 1.44e-10\nk5          -1.42976    0.19123  -7.477 7.62e-14\nage         -0.05672    0.01128  -5.030 4.90e-07\nwcyes        1.08181    0.19811   5.461 4.74e-08\ninc         -0.03141    0.00765  -4.105 4.04e-05\n\n(Dispersion parameter for binomial family taken to be 1)\n\n    Null deviance: 1029.75 on 752 degrees of freedom\nResidual deviance:  924.31 on 748 degrees of freedom\nAIC: 934.31\nlfp is a string column, so it is a factor whose first level, no, is failure. The coefficients are on the log-odds scale, and exp() of a coefficient is an odds ratio. link: 'probit' fits the same model on the probit scale. tidy() returns the coefficient table as columns:\n$probit = fit_generalized_linear(\n    'lfp ~ k5 + age + wc + inc',\n    $mroz,\n    family: 'binomial',\n    link: 'probit',\n);\necho $probit-&gt;tidy(), \"\\n\";\n         term    estimate   std_error statistic      p_value\n1 (Intercept)  2.04041083 0.313704033  6.504254 7.807968e-11\n2          k5 -0.86163605 0.111835767 -7.704477 1.313806e-14\n3         age -0.03407628 0.006760578 -5.040439 4.644661e-07\n4       wcyes  0.64902968 0.116968459  5.548758 2.877060e-08\n5         inc -0.01894043 0.004548823 -4.163809 3.129816e-05\nPredicted probabilities come from predict() with type: 'response'. seFit: true adds delta-method standard errors:\n$women = [\n    'k5' =&gt; [0, 1],\n    'age' =&gt; [35, 35],\n    'wc' =&gt; ['no', 'no'],\n    'inc' =&gt; [20, 20],\n];\n$p = predict($logit, $women, type: 'response', seFit: true);\necho DataFrame::fromColumns([\n    'k5' =&gt; $women['k5'],\n    'probability' =&gt; $p['fit'],\n    'se' =&gt; $p['se_fit'],\n]), \"\\n\";\n# A tibble: 2 × 3\n     k5 probability     se\n  &lt;int&gt;       &lt;dbl&gt;  &lt;dbl&gt;\n1     0       0.684 0.0317\n2     1       0.341 0.0377\n\nBinomial fits report z_statistics, with p-values and 95% intervals from the normal distribution (Wald inference).\nfitted holds probabilities, and residuals holds y - fitted.\nThe dispersion is fixed at one.\nUnder complete or quasi-complete separation, where a combination of predictors divides successes from failures, no finite maximum-likelihood estimate exists. The fit throws code 1006: complete or quasi-complete separation: no finite unpenalized logistic MLE.\nA fit near separation can converge with very large standard errors. Convergence does not show that the inference is reliable.",
     "crumbs": [
       "Guides",
-      "Linear and generalized linear models"
+      "Regression models"
     ]
   },
   {
     "objectID": "models.html#poisson-regression",
     "href": "models.html#poisson-regression",
-    "title": "Linear and generalized linear models",
+    "title": "Regression models",
     "section": "Poisson regression",
     "text": "Poisson regression\nCounts observed over different exposures take the log exposure as an offset. In insurance, Claims is the number of claims, Holders the number of policyholders, and District the district of residence, where 4 is the major cities.\n$insurance = DataFrame::fromCsv(\n    'https://raw.githubusercontent.com/phpstats/datasets/main/csv/insurance.csv',\n);\n\n$poisson = fit_generalized_linear(\n    'Claims ~ factor(District) + offset(log(Holders))',\n    $insurance,\n    family: 'poisson',\n);\necho $poisson;\nGeneralized linear model fit by maximum likelihood\nFamily: poisson (log)\nFormula: Claims ~ factor(District) + offset(log(Holders))\n\nCoefficients:\n                  Estimate Std. Error z value Pr(&gt;|z|)\n(Intercept)       -2.03284    0.02691 -75.544  &lt; 2e-16\nfactor(District)2  0.02237    0.04297   0.520 0.602729\nfactor(District)3  0.01325    0.05032   0.263 0.792316\nfactor(District)4  0.22184    0.06158   3.603 0.000315\n\n(Dispersion parameter for poisson family taken to be 1)\n\n    Null deviance: 236.26 on 63 degrees of freedom\nResidual deviance: 223.53 on 60 degrees of freedom\nAIC: 548.85\n\nWith the offset, the coefficients are log rate ratios per policyholder. exp() of the (Intercept) is the claim rate in the reference district, 1.\nPoisson fits have the same inference keys as binomial fits.\nThe model assumes the variance equals the mean. Overdispersion is not estimated or corrected. Here the residual deviance, 223.5 on 60 degrees of freedom, shows variation well beyond that assumption.",
     "crumbs": [
       "Guides",
-      "Linear and generalized linear models"
+      "Regression models"
     ]
   },
   {
     "objectID": "models.html#printing-a-fit",
     "href": "models.html#printing-a-fit",
-    "title": "Linear and generalized linear models",
+    "title": "Regression models",
     "section": "Printing a fit",
     "text": "Printing a fit\necho $fit prints any model fit in the layout of R’s print(summary(fit)), as the examples above show. summary($fit) returns the same text.\n\nThe coefficient table follows R’s printCoefmat(digits = 4), without significance stars.\nA linear model adds the residual standard error, R-squared, and the F statistic. A GLM adds the dispersion, the deviances, and AIC. A mixed model adds its fit criteria and random-effect variances, as lme4 prints them.\n\n$fit-&gt;tidy(), or tidy($fit), returns the coefficient table as a Phit\\Table, which prints in the layout of R’s print.data.frame() and reads by column. The columns are term, estimate, std_error, statistic, and p_value. confInt: true adds conf_low and conf_high at level (default 0.95):\n\nThe intervals are Wald intervals. They use t with df_residual degrees of freedom for fits that report t statistics, and the normal distribution otherwise.\nFor mixed fits, tidy() gives the fixed effects by default. effects: 'ran_vals' gives each group’s random effects with group, level, term, estimate, and std_error columns, as broom.mixed does.\n\necho $poisson-&gt;tidy(confInt: true, level: 0.9), \"\\n\";\n               term    estimate  std_error   statistic      p_value    conf_low\n1       (Intercept) -2.03284394 0.02690935 -75.5441569 0.0000000000 -2.07710588\n2 factor(District)2  0.02236521 0.04297031   0.5204805 0.6027287229 -0.04831466\n3 factor(District)3  0.01325031 0.05032327   0.2633038 0.7923163987 -0.06952410\n4 factor(District)4  0.22184337 0.06157595   3.6027600 0.0003148562  0.12055995\n    conf_high\n1 -1.98858200\n2  0.09304508\n3  0.09602472\n4  0.32312680",
     "crumbs": [
       "Guides",
-      "Linear and generalized linear models"
+      "Regression models"
     ]
   },
   {
     "objectID": "models.html#result-keys",
     "href": "models.html#result-keys",
-    "title": "Linear and generalized linear models",
+    "title": "Regression models",
     "section": "Result keys",
     "text": "Result keys\nfit_generalized_linear() with the binomial or Poisson family returns:\n\n\n\n\n\n\n\nKey\nContents\n\n\n\n\ncoefficients, std_errors, z_statistics, p_values, conf_int, covariance\nWald inference, in columns order\n\n\nfitted, residuals\nFitted means and response residuals, one per retained row\n\n\nlog_likelihood, deviance, null_deviance, aic\nLikelihood statistics as R’s glm() reports them\n\n\ndf_residual, iterations, converged\nResidual degrees of freedom and Newton iterations\n\n\nfamily, link\nThe family and link used\n\n\nformula, response, columns, terms, assign, intercept, named, predvars\nFormula and naming keys, shared by all formula fits\n\n\nn_input, n_observations, n_dropped, retained_rows, dropped_rows\nSample accounting\n\n\ndiagnostics\nconverged, solver, iterations and warnings\n\n\n\nEach family’s matrix function in Model contracts defines these quantities exactly, including the null-deviance baseline and the convergence rule.",
     "crumbs": [
       "Guides",
-      "Linear and generalized linear models"
+      "Regression models"
     ]
   },
   {
     "objectID": "models.html#weights-and-offsets",
     "href": "models.html#weights-and-offsets",
-    "title": "Linear and generalized linear models",
+    "title": "Regression models",
     "section": "Weights and offsets",
     "text": "Weights and offsets\n\nweights is an array aligned with the original rows, or the name of a numeric column.\nWeights must be positive. A missing weight drops its row.\nFor fit_ols() and the Poisson family they are precision (prior) weights. For the binomial family they are integer trial counts, with the response given as proportions.\nOffsets are written in the formula with offset(expr). Several offsets are added together.",
     "crumbs": [
       "Guides",
-      "Linear and generalized linear models"
+      "Regression models"
     ]
   },
   {
     "objectID": "models.html#differences-from-r",
     "href": "models.html#differences-from-r",
-    "title": "Linear and generalized linear models",
+    "title": "Regression models",
     "section": "Differences from R",
     "text": "Differences from R\n\nA rank-deficient design throws code 1004. R reports aliased coefficients as NA.\nZero weights are rejected. R gives such rows zero weight.\nBinomial and Poisson covariances are the inverse information at the final coefficients. R’s vcov() uses the IRLS weights of the iteration before the final one, so standard errors differ by about the size of R’s last step, up to about 1e-4 relative near separation. See GLM covariance.\nGaussian fit_generalized_linear() intervals use t, as fit_ols() does. R’s confint.default() uses z and confint() profiles the likelihood.\n\nModel formulas lists the remaining differences in formula handling.",
     "crumbs": [
       "Guides",
-      "Linear and generalized linear models"
+      "Regression models"
     ]
   },
   {
     "objectID": "models.html#instrumental-variable-models",
     "href": "models.html#instrumental-variable-models",
-    "title": "Linear and generalized linear models",
+    "title": "Regression models",
     "section": "Instrumental-variable models",
     "text": "Instrumental-variable models\nfit_iv() fits two-stage least squares when regressors are endogenous. Exogenous regressors instrument themselves. List the endogenous terms and excluded instruments after a top-level bar:\n$fit = Phit\\fit_iv(\n    'temperature_change ~ outdoor + factor(hour) | hp_kwh + hp_kwh:outdoor ~ schedule + schedule:outdoor',\n    $data,\n    weights: 'age_weight',\n    vcov: 'iid',\n);\necho $fit;\n$strength = $fit['first_stage']['hp_kwh']['sw_f_statistic'];\n$prediction = $fit-&gt;predict($newdata, seFit: true, interval: 'confidence');\nThe result is an immutable Phit\\IvFit implementing Phit\\Fit. It has the LinearFit fields and methods. Fitted values, residuals, sigma, and standard errors use the structural equation. Covariance is sigma² times the inverse cross-product of the projected structural design, with sigma² = structural weighted RSS / (n − k). R² can be negative. Prediction needs structural regressors and reuses the IV covariance. A prediction interval adds sigma².\nfirst_stage is keyed by endogenous design column and contains the excluded instrument F test, partial R², Shea partial R², Sanderson–Windmeijer F, their degrees of freedom and p-values, and named first-stage coefficients. With one endogenous column, SW F equals the ordinary first-stage F and Shea R² is null. With multiple endogenous columns, SW conditions on the other fitted endogenous columns and applies the variance correction in Sanderson and Windmeijer (2016). The sw_f_statistic key is always present. An unavailable conditional test has a null statistic and p-value, retains its df keys, and adds a message to diagnostics.warnings.\ndiagnostics.wu_hausman contains the regression-based endogeneity F test. diagnostics.sargan contains n times the auxiliary residual regression R² and is null for exact identification. These diagnostics assume iid errors. Insufficient degrees of freedom or a singular augmented Wu–Hausman regression gives nullable test fields and a warning.\nWeights are positive prior weights, supplied as a column name or an array aligned with the original rows. All formula parts and weights share one missing-row mask. missing: 'raise' rejects missing values. Under-identification and rank deficiency raise 1004. Random effects and offsets raise 1007. vcov also accepts HC0–HC3, clustered, and Newey–West covariance. See robust covariance for weighting, row handling, and inference conventions.",
     "crumbs": [
       "Guides",
-      "Linear and generalized linear models"
+      "Regression models"
     ]
   },
   {
     "objectID": "models.html#ridge-regression",
     "href": "models.html#ridge-regression",
-    "title": "Linear and generalized linear models",
+    "title": "Regression models",
     "section": "Ridge regression",
     "text": "Ridge regression\nfit_ridge() fits Gaussian ridge with glmnet’s alpha=0 scaling and optional original-scale coefficient bounds. cv_ridge() chooses lambda using weighted mean squared prediction error.\n$fit = Phit\\fit_ridge('y ~ outdoor + hp_kwh + floor_call_lag0 + floor_call_lag1 + factor(hour)', $data,\n    lambda: 0.1,\n    penaltyFactor: ['factor(hour)*' =&gt; 0],\n    bounds: ['floor_call_lag*' =&gt; [0, null]],\n    weights: 'age_weight');\n\n$cv = Phit\\cv_ridge('y ~ outdoor + hp_kwh + floor_call_lag0 + floor_call_lag1 + factor(hour)', $data,\n    lambda: [1.0, 0.3, 0.1, 0.03, 0.01],\n    foldid: $dayFolds,\n    penaltyFactor: ['factor(hour)*' =&gt; 0],\n    bounds: ['floor_call_lag*' =&gt; [0, null]],\n    weights: 'age_weight');\n$best = $cv['fit']; // RidgeFit at lambda_min, refitted on all retained rows\nA Phit\\RidgeFit implements Phit\\Fit, including summary(), tidy(), and predict(). It adds lambda, lambda_effective, response_scale, normalized penalty_factor, standardize, resolved bounds, at_bound, effective df, and lambda_lm_ridge. Column names and row bookkeeping follow fit_ols(). Patterns use * and ?; unmatched patterns raise 1001. Overlapping patterns apply in insertion order. The intercept is unpenalized and cannot be bounded.\nGaussian glmnet rescales the response internally. For an explicit lambda, the quadratic penalty in original response units is lambda/response_scale. The response scale is weighted SD with an intercept and weighted RMS without one. With standardize: true, predictors use weighted centered SD even without an intercept; only intercept fits center their predictors. The returned coefficients and bounds use original units. Weights are normalized to sum to n; penalty factors sum to the number of predictor columns, including zero factors.\ndf is the trace of the hat matrix on the free coefficient face. sigma is sqrt(rss/(n-df)). Standard errors, covariance, and confidence intervals are reported by default, conditional on lambda and the active bounds. Ridge estimates are biased; these intervals ignore shrinkage bias and lambda selection and are not coverage-valid. At-bound coefficients have null SEs, intervals, and covariance rows/columns. Free-coordinate uncertainty holds bound coordinates fixed. Prediction supports seFit and confidence intervals; uncertainty is null for a row using an at-bound coefficient. Prediction intervals raise 1007.\nFor unweighted, standardized, unbounded fits with an intercept and uniform penalties, MASS::lm.ridge uses lambda_lm_ridge = n*lambda/response_scale. The key is null for other configurations. lmridge uses a different residual variance denominator; verification compares its conditional covariance per sigma squared and checks phit’s stated variance calculation independently.\nFor CV, foldid has one integer per input row, and follows joint missing-row deletion. It overrides nfolds and seed. Supply day labels for hourly data to keep each day in a fold. At least three nonempty folds are required. Each fold refit recomputes scaling. CV means weight fold MSE by held-out total weight; CV SE is the weighted fold-error variance divided by K-1, then square-rooted. As in glmnet, fewer than three observations per fold on average triggers individual-error aggregation with denominator n-1.\nExplicit lambda paths must be nonnegative and strictly decreasing. Indices are zero-based. lambda_min minimizes cvm; lambda_1se is the largest lambda within one cvsd of that minimum. The result also includes cvup and cvlo. With lambda: null, phit uses 100 log-spaced values from 100 times the full-data response scale to .01 times that scale. This is phit’s default policy; explicit paths match glmnet. Generated folds use a balanced seeded permutation.\nValidation includes glmnet fits and weighted CV, MASS lambda conversion, lmridge conditional covariance, and a heating-shaped design with hourly factors, correlated nonnegative lags, day folds, and age-decaying weights. See the ridge verification record and benchmark record.",
     "crumbs": [
       "Guides",
-      "Linear and generalized linear models"
+      "Regression models"
     ]
   },
   {
     "objectID": "models.html#robust-covariance",
     "href": "models.html#robust-covariance",
-    "title": "Linear and generalized linear models",
+    "title": "Regression models",
     "section": "Robust covariance",
     "text": "Robust covariance\nfit_ols() and fit_iv() accept vcov:. The default is 'iid'.\n$fit = Phit\\fit_ols('y ~ x', $data, weights: 'w', vcov: 'HC3');\n$iv = Phit\\fit_iv('y ~ x | heating ~ schedule', $data,\n    weights: 'w', vcov: ['cluster' =&gt; 'day']);\n$serial = Phit\\fit_ols('y ~ x', $data,\n    vcov: ['newey_west' =&gt; 24, 'adjust' =&gt; true]);\nHC0 is the unadjusted sandwich estimator. HC1 multiplies covariance by n/(n-k). HC2 and HC3 adjust for leverage, using the weighted projected structural design for IV. Numerically unit leverage makes HC2/HC3 undefined and raises 1005.\nOne-way clustering accepts a column name or an array of scalar labels aligned with every original input row. Missing cluster labels join missing response, regressor, instrument, and weight values in row deletion; missing: 'raise' rejects them. The default cluster correction is HC1: G/(G-1) times (n-1)/(n-k). Set ['cluster' =&gt; 'day', 'type' =&gt; 'HC0'] for G/(G-1) alone. At least two retained clusters are required. Multiway clustering and clustered HC2/HC3 are unsupported.\nNewey–West uses Bartlett weights and an explicit integer lag from zero through n-1, without prewhitening. adjust defaults to false; true multiplies by n/(n-k). Rows must already be in time order. Retained row order is used, deleted rows close gaps, and dates are neither sorted nor interpreted. Lag zero equals HC0; adjusted lag zero equals HC1.\nThese options replace covariance, coefficient SEs, t statistics, p-values, and intervals. predict(seFit: true) and confidence intervals use the same covariance, and tidy(confInt: true) uses the same inference convention. Coefficient inference uses t with n-k degrees of freedom for HC/HAC and G-1 for clusters. The separate inference_df key exposes that choice; df_residual continues to describe the residual fit. vcov records the supplied specification, and vcov_label supplies a readable label.\nCoefficients, fitted values, residuals, sigma, RSS, and R² stay unchanged on the same sample. IV first-stage, Wu–Hausman, and Sargan diagnostics keep their iid definitions and are labeled accordingly. Robust summaries identify covariance and inference df and omit the classical R²-based overall F statistic. Prediction intervals retain the existing added residual sigma² convention; robust coefficient covariance does not estimate observation-specific heteroskedastic prediction variance. The option applies to formula OLS and IV; matrix OLS and Gaussian GLM interfaces retain their existing APIs.\nVerification matches public sandwich::vcovHC, vcovCL, and NeweyWest(prewhite = FALSE) output, including weighted IV and day clusters over hourly heating rows. See the saved covariance verification.",
     "crumbs": [
       "Guides",
-      "Linear and generalized linear models"
+      "Regression models"
     ]
   },
   {

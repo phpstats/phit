@@ -1,7 +1,7 @@
 # Plan: 2SLS, ridge, and robust covariance
 
 Status: steps 1 and 2 shipped in both packages as 0.7.0 and 0.8.0.
-Step 3 adds robust covariance in 0.9.0. Cluster coefficient inference uses G-1 df;
+Step 3 ships robust covariance in both packages as 0.9.0. Cluster coefficient inference uses G-1 df;
 residual df remains n-k. Under-identified IV models use 1004.
 Ridge includes conditional SEs by default; its default CV path is 100
 log-spaced values from 100*response_scale to .01*response_scale.
@@ -292,11 +292,9 @@ vcov: 'iid' | 'HC0' | 'HC1' | 'HC2' | 'HC3'
 - Bounds on `fit_ols()`. Use `fit_ridge(lambda: 0, bounds: …)` instead.
 - Robust covariance for GLMs and mixed models.
 
-## Open questions
+## Resolved decisions
 
-- The error code for an under-identified IV model: reuse 1004 or add one.
-- The t versus normal reference and the df for cluster inference.
-- Whether `RidgeFit` should carry standard errors at all, or expose them only through an explicit
-  `covariance: 'conditional'` option. The life app asked for SE and CI accessors on both, so the plan includes them
-  with caveats.
-- The name and behavior of the default lambda path in `cv_ridge()`.
+- Under-identified IV models reuse error code 1004.
+- Cluster coefficient inference uses t with G-1 df; residual df remains n-k.
+- Ridge includes conditional standard errors by default, with bias and coverage caveats and null uncertainty at bounds.
+- The default CV path has 100 log-spaced values from 100*response_scale to .01*response_scale. It is phit policy; explicit paths reproduce glmnet.

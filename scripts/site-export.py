@@ -65,7 +65,7 @@ def manifest(benchmarks, verifications):
                 {'title': 'Extension or polyfill', 'path': 'extension-or-polyfill.qmd'},
                 {'title': 'A first model', 'path': 'getting-started.qmd'},
                 {'title': 'Model formulas', 'path': 'formulas.qmd'},
-                {'title': 'Linear and generalized linear models', 'path': 'models.qmd'},
+                {'title': 'Regression models', 'path': 'models.qmd'},
                 {'title': 'Mixed models', 'path': 'mixed-models.qmd'},
                 {'title': 'Missing values and sample accounting', 'path': 'missing-data.qmd'},
                 {'title': 'Probability distributions', 'path': 'distributions.qmd'},
