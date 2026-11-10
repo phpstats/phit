@@ -577,6 +577,16 @@ F-statistic: 48.08 on 3 and 28 DF, p-value: 3.594e-11</code></pre>
 <td><a href="./models.html">Models</a></td>
 </tr>
 <tr class="even">
+<td>Instrumental variables</td>
+<td><code>fit_iv()</code>: weighted two-stage least squares, first-stage strength, Sanderson–Windmeijer F, Wu–Hausman, and Sargan diagnostics</td>
+<td><a href="./models.html#instrumental-variable-models">IV models</a></td>
+</tr>
+<tr class="odd">
+<td>Ridge regression</td>
+<td><code>fit_ridge()</code> and <code>cv_ridge()</code>: shrinkage, coefficient bounds, zero penalty factors, and weighted cross-validation</td>
+<td><a href="./models.html#ridge-regression">Ridge models</a></td>
+</tr>
+<tr class="even">
 <td>Mixed models</td>
 <td><code>fit_mixed_gaussian()</code> with random intercepts and slopes; <code>fit_mixed_logistic()</code> with one random intercept</td>
 <td><a href="./mixed-models.html">Mixed models</a></td>
@@ -613,12 +623,12 @@ F-statistic: 48.08 on 3 and 28 DF, p-value: 3.594e-11</code></pre>
 </tr>
 </tbody>
 </table>
-<p>Each model also has a matrix function, such as <code>fit_ols_matrix()</code>, for code that builds its own design. See <a href="./reference-models.html">Model contracts</a>.</p>
+<p>OLS, generalized linear, and mixed models also have matrix functions, such as <code>fit_ols_matrix()</code>, for code that builds its own design. See <a href="./reference-models.html">Model contracts</a>.</p>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
 <ul>
-<li>Coefficient names, treatment contrasts, term order, deviance, and AIC follow R’s <code>lm()</code> and <code>glm()</code>. Mixed models follow lme4.</li>
+<li>Coefficient names, treatment contrasts, term order, deviance, and AIC follow R’s <code>lm()</code> and <code>glm()</code>. Mixed models follow lme4. IV follows ivreg and fixest; ridge follows explicit-lambda glmnet scaling.</li>
 <li>Rows with missing values are dropped with a warning, and every result reports which rows it used.</li>
 <li>Errors are PHP exceptions with stable numeric codes.</li>
 <li>The <a href="https://phit.phpstats.org/verification">verification</a> pages compare each model with R, lme4, and statsmodels and record the tolerances.</li>

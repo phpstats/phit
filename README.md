@@ -75,6 +75,8 @@ extensions cannot be installed.
 | Area | Functions |
 | --- | --- |
 | Formula models | `fit_ols`, `fit_generalized_linear` (Gaussian, binomial logit and probit, and Poisson), `fit_mixed_gaussian`, `fit_mixed_logistic`, `model_matrix`, and `predict` |
+| Instrumental variables | `fit_iv`: weighted two-stage least squares with weak-instrument and endogeneity diagnostics |
+| Ridge regression | `fit_ridge` and `cv_ridge`: penalties, coefficient bounds, and weighted cross-validation |
 | Printing results | `summary` (R's `print(summary(fit))` layout) and `tidy` (broom-style coefficient and random-effect columns) |
 | Matrix models | `fit_ols_matrix`, `fit_logistic_matrix`, `fit_probit_matrix`, `fit_poisson_matrix`, `fit_mixed_gaussian_intercept_matrix`, `fit_mixed_gaussian_matrix`, and `fit_mixed_logistic_matrix` |
 | Distributions | `dist_*`: densities, CDFs, survival functions, quantiles, and seeded samples |

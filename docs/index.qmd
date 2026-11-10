@@ -44,6 +44,8 @@ F-statistic: 48.08 on 3 and 28 DF, p-value: 3.594e-11
 | Area | Functions | Guide |
 | --- | --- | --- |
 | Linear and generalized linear models | `fit_ols()`, `fit_generalized_linear()`: linear, logistic, probit, and Poisson regression with weights and offsets | [Models](models.qmd) |
+| Instrumental variables | `fit_iv()`: weighted two-stage least squares, first-stage strength, Sanderson–Windmeijer F, Wu–Hausman, and Sargan diagnostics | [IV models](models.qmd#instrumental-variable-models) |
+| Ridge regression | `fit_ridge()` and `cv_ridge()`: shrinkage, coefficient bounds, zero penalty factors, and weighted cross-validation | [Ridge models](models.qmd#ridge-regression) |
 | Mixed models | `fit_mixed_gaussian()` with random intercepts and slopes; `fit_mixed_logistic()` with one random intercept | [Mixed models](mixed-models.qmd) |
 | Prediction | `predict()` on new data, with confidence and prediction intervals | [Model formulas](formulas.qmd#prediction-predict) |
 | Distributions | Densities, CDFs, survival functions, and quantiles for 12 families (13 parameterizations) | [Probability distributions](distributions.qmd) |
@@ -52,11 +54,11 @@ F-statistic: 48.08 on 3 and 28 DF, p-value: 3.594e-11
 | Posterior draws | Weighted moments and transforms for MCMC output | [Posterior draws](draw-numerics.qmd) |
 | CSV input | A native reader, used by phibble | [Reading CSV files](io.qmd) |
 
-Each model also has a matrix function, such as `fit_ols_matrix()`, for code that builds its own design. See [Model contracts](reference-models.qmd).
+OLS, generalized linear, and mixed models also have matrix functions, such as `fit_ols_matrix()`, for code that builds its own design. See [Model contracts](reference-models.qmd).
 
 ## Results
 
-- Coefficient names, treatment contrasts, term order, deviance, and AIC follow R's `lm()` and `glm()`. Mixed models follow lme4.
+- Coefficient names, treatment contrasts, term order, deviance, and AIC follow R's `lm()` and `glm()`. Mixed models follow lme4. IV follows ivreg and fixest; ridge follows explicit-lambda glmnet scaling.
 - Rows with missing values are dropped with a warning, and every result reports which rows it used.
 - Errors are PHP exceptions with stable numeric codes.
 - The [verification](https://phit.phpstats.org/verification) pages compare each model with R, lme4, and statsmodels and record the tolerances.

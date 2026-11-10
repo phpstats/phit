@@ -1,5 +1,14 @@
 # Plan: 2SLS, ridge, and robust covariance
 
+Status: steps 1 and 2 shipped in both packages as 0.7.0 and 0.8.0.
+Step 3 (robust covariance) is next. Under-identified IV models use 1004.
+Ridge includes conditional SEs by default; its default CV path is 100
+log-spaced values from 100*response_scale to .01*response_scale.
+Gaussian glmnet uses lambda/response_scale in the original response units;
+see specs/cleanroom/ridge.md for the observed correction to the simplified
+objective below. The remaining inference decision concerns cluster df.
+
+
 phit gains three things, delivered in this order:
 
 1. `fit_iv()`: two-stage least squares with first-stage diagnostics.

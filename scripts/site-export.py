@@ -26,9 +26,9 @@ def manifest(benchmarks, verifications):
     return {
         'package': 'phit',
         'title': 'phit',
-        'tagline': 'Regression, mixed models, and probability distributions for PHP.',
+        'tagline': 'Regression, instrumental variables, ridge, mixed models, and probability distributions for PHP.',
         'summary': 'Fit statistical models, compute probability distributions, and summarize data in PHP. Model '
-                   'functions accept formulas or explicit designs and return fit objects that print like R\'s and read like arrays.',
+                   'functions include OLS, instrumental variables, ridge with weighted cross-validation, GLMs, and mixed models. Fits print like R\'s and read like arrays.',
         'install': ['pie install phpstats/phit'],
         'php': ['8.3', '8.4', '8.5'],
         'requires': ['PIE', 'unzip or the PHP zip extension', 'NTS (non-thread-safe) PHP'],
