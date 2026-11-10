@@ -1,0 +1,234 @@
+{
+ "title": "Robust covariance workloads",
+ "label": "Robust covariance",
+ "measure": "Elapsed time",
+ "unit": "ms",
+ "statistic": "median",
+ "environment": {
+  "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "cpu": "arm",
+  "threads": "One thread; JIT and CLI OPcache disabled",
+  "repeats": 7,
+  "date": "2026-11-09",
+  "php": "8.4.26",
+  "reference": {
+   "R": "R version 4.6.1 (2026-06-24)",
+   "sandwich": "3.1.3",
+   "ivreg": "0.6.8"
+  }
+ },
+ "code_sha256": {
+  "bench/vcov.php": "004eb202cd8a2fb10da71aae36e440d0dd15321c1263c8743e2238485f2cc86a",
+  "bench/vcov.R": "7f5b615878d6247ac4f43165f8d4e4f9f36ef9423e1544c5378ff46077b8933d",
+  "bench/run-vcov.py": "eec69841e4a5de21ad4268b939437561ae89c0809352e5f72455e7f8f8b2962e",
+  "crates/stats-core/src/vcov.rs": "44578e600767e159a599195dd6141b00aa3126599f5f84f8a6b436bdd983f814",
+  "phit-polyfill/src/Vcov.php": "02b7a9c5e560e66e2bbdf3ed1372d55b945a1113765f82d819e9f370c984b804"
+ },
+ "rows": [
+  {
+   "case": "heating_ols_1",
+   "implementation": "phit",
+   "value": 1.276125,
+   "reps": [
+    1.22575,
+    1.265667,
+    1.289709,
+    1.277,
+    1.278,
+    1.276125,
+    1.257375
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating_ols_1",
+   "implementation": "phit-polyfill",
+   "value": 89.443459,
+   "reps": [
+    91.746958,
+    88.9825,
+    89.443459,
+    89.285875,
+    91.785791,
+    89.456125,
+    88.977125
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating_ols_1",
+   "implementation": "R sandwich",
+   "value": 5.999999999999991,
+   "reps": [
+    6.999999999999992,
+    5.999999999999991,
+    5.999999999999991,
+    6.999999999999992,
+    5.999999999999991,
+    5.999999999999991,
+    5.999999999999991
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating_iv_1",
+   "implementation": "phit",
+   "value": 4.888125,
+   "reps": [
+    5.029458,
+    4.888125,
+    4.828917,
+    5.058375,
+    4.892958,
+    4.82425,
+    4.808667
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating_iv_1",
+   "implementation": "phit-polyfill",
+   "value": 3024.570791,
+   "reps": [
+    3016.645917,
+    3023.163625,
+    3082.960791,
+    3090.546958,
+    3014.025417,
+    3024.570791,
+    3036.398042
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating_iv_1",
+   "implementation": "R sandwich",
+   "value": 29.999999999999986,
+   "reps": [
+    29.999999999999986,
+    30.999999999999986,
+    30.999999999999986,
+    29.999999999999986,
+    29.999999999999986,
+    29.999999999999986,
+    34.99999999999999
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating_iv_2",
+   "implementation": "phit",
+   "value": 4.867375,
+   "reps": [
+    5.048292,
+    4.842916,
+    4.867375,
+    4.80975,
+    4.872833,
+    4.857959,
+    4.885375
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating_iv_2",
+   "implementation": "phit-polyfill",
+   "value": 3011.038834,
+   "reps": [
+    3046.224041,
+    2933.152333,
+    3011.038834,
+    3000.862459,
+    3013.521917,
+    3009.245208,
+    3035.664167
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating_iv_2",
+   "implementation": "R sandwich",
+   "value": 28.999999999999986,
+   "reps": [
+    28.999999999999986,
+    30.000000000000014,
+    29.00000000000001,
+    28.999999999999986,
+    28.999999999999986,
+    28.999999999999986,
+    28.00000000000001
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating_iv_4",
+   "implementation": "phit",
+   "value": 14.555084,
+   "reps": [
+    14.266459,
+    14.735792,
+    14.803833,
+    14.721708,
+    14.555084,
+    14.430834,
+    14.334458
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating_iv_4",
+   "implementation": "phit-polyfill",
+   "value": 3703.356,
+   "reps": [
+    3648.4445,
+    3703.356,
+    3961.64475,
+    3778.993208,
+    3695.993667,
+    3730.972958,
+    3681.890167
+   ],
+   "n": 720,
+   "k": 34
+  },
+  {
+   "case": "heating_iv_4",
+   "implementation": "R sandwich",
+   "value": 30.999999999999986,
+   "reps": [
+    30.000000000000014,
+    34,
+    34,
+    31.999999999999986,
+    30.999999999999986,
+    30.999999999999986,
+    30.999999999999986
+   ],
+   "n": 720,
+   "k": 34
+  }
+ ],
+ "check": {
+  "max_abs_estimate_or_covariance_difference": 7.993605777301127e-15
+ },
+ "notes": [
+  "Fresh process per run; one excluded warm-up per implementation and workload; rotated execution order.",
+  "Data parsing and process/package startup excluded. Formula construction, estimation, covariance, and diagnostics included.",
+  "IV phit and polyfill include Shea and SW diagnostics. R ivreg includes its public summary diagnostics but has no SW or Shea output; it performs less work.",
+  "Only robust covariance workloads are run: heating OLS HC3, IV HC3, IV day clusters, and IV Newey-West lag24 with adjustment."
+ ],
+ "reproduce": [
+  "python3 bench/run-vcov.py"
+ ],
+ "source": "bench/vcov-results.json"
+}

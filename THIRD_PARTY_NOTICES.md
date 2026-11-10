@@ -151,3 +151,10 @@ Gaussian ridge and CV are independently implemented from published mathematics
 and public glmnet, MASS, and lmridge documentation and fixture outputs. No code
 from those GPL packages is included. References and observed scaling conventions
 are recorded in `specs/cleanroom/ridge.md`.
+
+## Robust covariance references
+
+HC, clustered, and Newey–West covariance follow the published formulas of
+White, MacKinnon–White, Newey–West, and Zeileis, with public sandwich and ivreg
+output used for verification. No GPL source is included. See
+`specs/cleanroom/vcov.md` for references and conventions.

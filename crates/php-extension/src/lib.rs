@@ -506,6 +506,7 @@ macro_rules! glm_output {
 mod fit;
 mod formula;
 mod ridge;
+mod vcov;
 
 #[php_function]
 #[php(

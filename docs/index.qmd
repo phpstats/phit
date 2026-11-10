@@ -46,6 +46,7 @@ F-statistic: 48.08 on 3 and 28 DF, p-value: 3.594e-11
 | Linear and generalized linear models | `fit_ols()`, `fit_generalized_linear()`: linear, logistic, probit, and Poisson regression with weights and offsets | [Models](models.qmd) |
 | Instrumental variables | `fit_iv()`: weighted two-stage least squares, first-stage strength, Sanderson–Windmeijer F, Wu–Hausman, and Sargan diagnostics | [IV models](models.qmd#instrumental-variable-models) |
 | Ridge regression | `fit_ridge()` and `cv_ridge()`: shrinkage, coefficient bounds, zero penalty factors, and weighted cross-validation | [Ridge models](models.qmd#ridge-regression) |
+| Robust covariance | HC0–HC3, one-way clustering, and Newey–West for OLS and IV, including weights | [Covariance options](models.qmd#robust-covariance) |
 | Mixed models | `fit_mixed_gaussian()` with random intercepts and slopes; `fit_mixed_logistic()` with one random intercept | [Mixed models](mixed-models.qmd) |
 | Prediction | `predict()` on new data, with confidence and prediction intervals | [Model formulas](formulas.qmd#prediction-predict) |
 | Distributions | Densities, CDFs, survival functions, and quantiles for 12 families (13 parameterizations) | [Probability distributions](distributions.qmd) |

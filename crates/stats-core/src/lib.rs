@@ -42,3 +42,4 @@ pub use logistic_mixed::{
 pub mod iv;
 
 pub mod ridge;
+pub mod vcov;

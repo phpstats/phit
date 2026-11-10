@@ -90,11 +90,11 @@ $formulas=[
   'df'=>'float','df_residual'=>'float','sigma'=>'float','rss'=>'float','r_squared'=>'float','lambda_lm_ridge'=>'float|null','t_statistics'=>'list<float|null>','iterations'=>'int']],
  'Phit\cv_ridge'=>['summary'=>"Cross-validation for Gaussian ridge with grouped weighted MSE and glmnet-compatible fold weighting.",
   'result'=>['lambda'=>'list<float>','cvm'=>'list<float>','cvsd'=>'list<float>','cvup'=>'list<float>','cvlo'=>'list<float>','lambda_min'=>'float','lambda_1se'=>'float','index_min'=>'int','index_1se'=>'int','fit'=>'RidgeFit']],
- 'Phit\fit_iv'=>['summary'=>"Two-stage least squares: y ~ exogenous | endogenous ~ excluded instruments.\n * Structural-residual iid covariance, first-stage and Sanderson-Windmeijer F tests, Wu-Hausman, and Sargan.\n * Under-identification and rank deficiency raise 1004. Only iid covariance is supported.",
-  'result'=>$common+$olsKeys+$naming+['structural_formula'=>'string','vcov'=>'string','endogenous'=>'list<string>','instruments'=>'list<string>',
+ 'Phit\fit_iv'=>['summary'=>"Two-stage least squares: y ~ exogenous | endogenous ~ excluded instruments.\n * Structural-residual covariance, first-stage and Sanderson-Windmeijer F tests, Wu-Hausman, and Sargan.\n * Under-identification and rank deficiency raise 1004. HC0-HC3, cluster HC0/HC1, and Newey-West covariance are supported.",
+  'result'=>$common+$olsKeys+$naming+['structural_formula'=>'string','vcov'=>'string|array','inference_df'=>'int','vcov_label'=>'string','endogenous'=>'list<string>','instruments'=>'list<string>',
     'first_stage'=>'array<string,array{f_statistic:float,df1:int,df2:int,p_value:float,partial_r_squared:float,shea_partial_r_squared:float|null,sw_f_statistic:float|null,sw_df1:int,sw_df2:int,sw_p_value:float|null,coefficients:array<string,float>}>']],
  'Phit\fit_ols'=>['summary'=>"Linear model from a formula, like R's lm(): builds the model matrix and fits by least squares, weighted least squares\n * when weights are given (as lm(weights = )), with offset() terms.\n * Factor levels unused after deletion are dropped, as lm() does. Rank deficiency raises 1004 instead of R's NA coefficients.",
-  'result'=>$common+$olsKeys+$naming],
+  'result'=>$common+$olsKeys+$naming+['vcov'=>'string|array','inference_df'=>'int','vcov_label'=>'string']],
  'Phit\fit_generalized_linear'=>['summary'=>"Generalized linear model from a formula, like R's glm(): gaussian/identity (the OLS core), binomial/logit, binomial/probit\n * and poisson/log (the matrix GLM cores). Binomial responses: 0/1, logical, factor/string (first level = failure),\n * proportions with trial weights, or cbind(successes, failures). The empty link selects the canonical link.",
   'result'=>$common+$glm+['family'=>'string','link'=>'string']+$naming+['t_statistics?'=>'list<float>','rss?'=>'float','residual_variance?'=>'float','sigma?'=>'float','r_squared?'=>'float','adj_r_squared?'=>'float']],
  'Phit\fit_mixed_gaussian'=>['summary'=>"Gaussian mixed model from an lme4-style formula, like lme4::lmer(): fixed terms as in fit_ols and random bars\n * (x | g), (x || g), (1 | g1) + (1 | g2), (1 | g1:g2), (1 | g1/g2) mapped onto the fit_mixed_gaussian_matrix core. REML by default.\n * Groups and effects follow first appearance after deletion, not lme4's sorted levels; terms keep formula order.
@@ -149,7 +149,7 @@ foreach ($functions as $name) {
   $text.=" * @param string \$formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'\n";
   $text.=" * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object \$data Named columns or factor descriptors; objects use toModelData(), else toColumns()\n";
   if($name==='Phit\fit_generalized_linear'||$alias==='Phit\fit_glmer')$text.=" * @param string \$family 'gaussian', 'binomial', or 'poisson'\n * @param string \$link '' (canonical), 'identity', 'logit', 'probit', or 'log'\n";
-  if($name==='Phit\fit_iv')$text.=" * @param string|array \$vcov Only 'iid' is supported in this release\n";
+  if($name==='Phit\fit_iv')$text.=" * @param string|array \$vcov iid, HC0-HC3, one-way cluster HC0/HC1, or Newey-West\n";
   if($name!=='Phit\model_matrix')$text.=" * @param array<int|float|null>|string|null \$weights Positive prior weights aligned with the original rows, or a column name\n";
   $text.=isset($fitClass[$name])?" * @return {$fitClass[$name]} A fit object, read like this array:\n * array{\n":" * @return array{\n";
   foreach($contract['result'] as $key=>$type)$text.=" *   $key: $type,\n";

@@ -61,7 +61,7 @@ foreach ([['y ~ x | e1 + e2 ~ z1',1004],['y ~ x | e1 ~ z1 + I(z1)',1004],['y ~ x
     try { Phit\fit_iv($formula,$data); throw new RuntimeException('expected error '.$formula); }
     catch (Exception $e) { ivcheck($e->getCode()===$code,"$formula error {$e->getCode()} != $code"); }
 }
-try { Phit\fit_iv('y ~ x | e1 ~ z1',$data,vcov:'HC1'); throw new RuntimeException('vcov error'); } catch (Exception $e) { ivcheck($e->getCode()===1007,'vcov unsupported'); }
+try { Phit\fit_iv('y ~ x | e1 ~ z1',$data,vcov:'bad'); throw new RuntimeException('vcov error'); } catch (Exception $e) { ivcheck($e->getCode()===1001,'vcov invalid'); }
 try { Phit\fit_ols('y ~ x | e1 ~ z1',$data); throw new RuntimeException('OLS IV rejection'); } catch (Exception $e) { ivcheck($e->getCode()!==0,'OLS IV rejection'); }
 $base = Phit\fit_iv('y ~ x | e1 ~ z1 + z2', $data);
 ivcompare(Phit\fit_iv('y ~ x | e1 ~ 0 + z1 + z2', $data)['coefficients'], $base['coefficients'], 'excluded intercept flag preserves exogenous intercept');

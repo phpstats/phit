@@ -500,3 +500,14 @@ string $missing = 'drop', mixed $weights = null): array` returns the path,
 `cvm`, `cvsd`, `cvup`, `cvlo`, selected lambdas and zero-based indices, and
 `fit` at `lambda_min`. See [ridge models](models.qmd#ridge-regression) for
 scaling, conditional uncertainty, default paths, and weighted fold rules.
+
+
+## Covariance options for OLS and IV
+
+`fit_ols()` appends `vcov: 'iid'` after `weights`. Both `fit_ols()` and `fit_iv()`
+accept `'HC0'`–`'HC3'`, `['cluster' => columnOrLabels, 'type' => 'HC1']`, or
+`['newey_west' => lag, 'adjust' => false]`. Cluster type can be HC0 or HC1.
+Results add `vcov`, `vcov_label`, and integer `inference_df`; residual df is
+unchanged. Cluster coefficient inference uses G-1 df. See
+[robust covariance](models.qmd#robust-covariance) for row alignment, limits,
+weighting, and prediction conventions.

@@ -29,7 +29,7 @@
  ],
  "verify": {
   "command": "php -r 'echo phpversion(\"phit\"), PHP_EOL;'",
-  "output": "0.8.0",
+  "output": "0.9.0",
   "note": "PHP-FPM reads its own php.ini, so enable the extension there and restart FPM."
  },
  "installation": "installation",
@@ -158,10 +158,11 @@
   "site/benchmarks/mixed-logistic-workload.json",
   "site/benchmarks/distributions-workload.json",
   "site/benchmarks/iv-workload.json",
-  "site/benchmarks/ridge-workload.json"
+  "site/benchmarks/ridge-workload.json",
+  "site/benchmarks/vcov-workload.json"
  ],
  "evidence_gaps": {
-  "benchmarks": "No benchmark times formula parsing, predict(), descriptive statistics, kernel densities, or chunked CsvReader reading.",
+  "benchmarks": "No separately isolated benchmark times formula parsing, predict(), descriptive statistics, kernel densities, or chunked CsvReader reading. IV/ridge/robust workload timings include formula construction.",
   "verification": "The reference comparisons ran on macOS; Linux and PHP-FPM runs of them are not recorded, though the release workflow installs and checks every Linux binary."
  },
  "verifications": [
@@ -176,7 +177,8 @@
   "site/verifications/distributions.json",
   "site/verifications/test-suites.json",
   "site/verifications/iv.json",
-  "site/verifications/ridge.json"
+  "site/verifications/ridge.json",
+  "site/verifications/vcov.json"
  ],
  "examples": [
   {

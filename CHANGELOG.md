@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.0
+
+- Add HC0–HC3, one-way clustered HC0/HC1, and Newey–West covariance to formula `fit_ols()` and `fit_iv()`, including weights and original-row cluster labels.
+- Propagate covariance and inference df through coefficient inference, prediction, tidy tables, and summaries. Cluster inference uses G-1 df; IV diagnostics keep their iid definitions.
+- Validate 107 sandwich cases, including day clusters and Newey–West lags 6/24 over hourly heating rows, and save robust-covariance-only benchmarks.
+- Add IV and ridge to package landing pages and refresh website content.
+
 ## 0.8.0
 
 - Add `fit_ridge()` and `RidgeFit` with glmnet alpha=0 scaling, zero penalty factors, standardization, original-scale bounds, and conditional uncertainty.

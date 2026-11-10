@@ -907,3 +907,23 @@ def ridge_verification():
             'cases': rows, 'exclusions': [], 'known_differences': report['differences'],
             'reproduce': ['Rscript docs/verifications/ridge.R', 'python3 docs/verifications/compare_ridge.py'],
             'source': 'docs/verifications/ridge-results.json', 'data': 'tests/fixtures/ridge-r.json', 'group': 'Models'}
+
+def vcov_verification():
+    report = load('docs/verifications/vcov-results.json')
+    rows = []
+    for implementation, cases in report['cases'].items():
+        for case in cases:
+            comparison = compare(case['result'], report['references'][case['name']], 1e-9, 1e-7)
+            rows.append({'name': case['name'], 'quantity': 'OLS/IV covariance and inference',
+                         'implementation': implementation, 'rule': 'model',
+                         'status': 'pass' if comparison['fails'] == 0 else 'fail',
+                         'n_compared': comparison['n'], 'max_abs_error': comparison['max_abs']})
+    return {'title': 'Robust covariance', 'label': 'Robust covariance', 'kind': 'reference',
+            'checked': 'Covariance, SEs, coefficient inference, prediction uncertainty, and shared sample accounting.',
+            'description': 'Saved public sandwich output for weighted OLS/IV, checked in the extension and polyfill.',
+            'reference': 'sandwich on lm and ivreg',
+            'versions': report['reference'], 'inputs': '107 cases including weighted day clusters and Newey-West lags 6/24 on heating-shaped inputs.',
+            'comparison': [{'id': 'model', 'applies_to': 'Numerical results', 'kind': 'tolerance', 'atol': 1e-9, 'rtol': 1e-7}],
+            'cases': rows, 'exclusions': [], 'known_differences': report['differences'],
+            'reproduce': ['Rscript docs/verifications/vcov.R', 'python3 docs/verifications/compare_vcov.py'],
+            'source': 'docs/verifications/vcov-results.json', 'data': 'tests/fixtures/vcov-r.json', 'group': 'Models'}

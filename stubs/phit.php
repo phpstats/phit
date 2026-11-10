@@ -2232,11 +2232,11 @@ function fit_generalized_linear(string $formula, mixed $data, string $family = '
  * Fit an instrumental-variable model by two-stage least squares.
  * - Formula: `y ~ exogenous | endogenous ~ excluded instruments`. Only top-level bars split the parts.
  * - Standard errors use structural residuals. First stages include partial R², Shea partial R², and Sanderson–Windmeijer F, with Wu–Hausman and Sargan tests in diagnostics.
- * - Only `vcov: 'iid'` is available. Under-identification and rank deficiency raise 1004. Random effects and offsets raise 1007.
+ * - `vcov` accepts iid, HC0-HC3, one-way cluster HC0/HC1, or Newey-West. Cluster inference uses G-1 df. IV diagnostics retain iid definitions. Under-identification and rank deficiency raise 1004. Random effects and offsets raise 1007.
  * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
  * @param string $formula R formula, such as 'y ~ log(x) + f * z + offset(log(t))'
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
- * @param string|array $vcov Only 'iid' is supported in this release
+ * @param string|array $vcov iid, HC0-HC3, one-way cluster HC0/HC1, or Newey-West
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
  * @return IvFit A fit object, read like this array:
@@ -2272,7 +2272,9 @@ function fit_generalized_linear(string $formula, mixed $data, string $family = '
  *   named: array<string,float>,
  *   predvars: array{levels:array<string,list<string>>,poly:array<string,array{alpha:list<float>,norm2:list<float>}>},
  *   structural_formula: string,
- *   vcov: string,
+ *   vcov: string|array,
+ *   inference_df: int,
+ *   vcov_label: string,
  *   endogenous: list<string>,
  *   instruments: list<string>,
  *   first_stage: array<string,array{f_statistic:float,df1:int,df2:int,p_value:float,partial_r_squared:float,shea_partial_r_squared:float|null,sw_f_statistic:float|null,sw_df1:int,sw_df2:int,sw_p_value:float|null,coefficients:array<string,float>}>,
@@ -2629,6 +2631,7 @@ function fit_mixed_logistic_matrix(array $x, array $y, array $groups, string $mi
  * Fits a linear model from a formula, like R's `lm()`.
  * - Builds the model matrix from named columns and fits by least squares, or by weighted least squares when `weights` is given, as `lm(weights = )` does.
  * - `offset()` terms in the formula are added to the linear predictor.
+ * - `vcov` accepts iid, HC0-HC3, one-way clustered HC0/HC1, or Newey-West covariance. Cluster inference uses G-1 df.
  * - Factor levels left unused after missing rows are dropped are removed, as `lm()` does.
  * - A rank-deficient design throws instead of returning R's `NA` coefficients.
  * - Rows with `null` or `NAN` in a variable the formula uses are dropped with one warning; `missing: 'raise'` rejects them instead. `retained_rows` and `dropped_rows` give the original row positions.
@@ -2636,6 +2639,7 @@ function fit_mixed_logistic_matrix(array $x, array $y, array $groups, string $mi
  * @param array<string,list<int|float|bool|string|null>|array{levels:list<string>,codes:list<int|null>,ordered:bool}>|object $data Named columns or factor descriptors; objects use toModelData(), else toColumns()
  * @param array<int|float|null>|string|null $weights Positive prior weights aligned with the original rows, or a column name
  * @param string $missing 'drop' removes rows with null or NAN in any variable the model uses and warns once; 'raise' rejects them
+ * @param mixed $vcov iid, HC0-HC3, [cluster => column or labels, type => HC0/HC1], or [newey_west => lag, adjust => bool]
  * @return LinearFit A fit object, read like this array:
  * array{
  *   model: 'linear'|'iv'|'ridge'|'generalized_linear'|'mixed_gaussian'|'mixed_logistic',
@@ -2668,10 +2672,13 @@ function fit_mixed_logistic_matrix(array $x, array $y, array $groups, string $mi
  *   intercept: bool,
  *   named: array<string,float>,
  *   predvars: array{levels:array<string,list<string>>,poly:array<string,array{alpha:list<float>,norm2:list<float>}>},
+ *   vcov: string|array,
+ *   inference_df: int,
+ *   vcov_label: string,
  * }
  * @throws \Exception A code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.
  */
-function fit_ols(string $formula, mixed $data, string $missing = 'drop', mixed $weights = NULL): LinearFit {}
+function fit_ols(string $formula, mixed $data, string $missing = 'drop', mixed $weights = NULL, mixed $vcov = 'iid'): LinearFit {}
 
 /**
  * Fits a linear model by least squares on a numeric design, like R's `lm.fit()` with the full summary.

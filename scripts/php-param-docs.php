@@ -23,7 +23,8 @@ return [
     'cv_ridge:nfolds' => 'Number of balanced random folds when foldid is null, at least three',
     'cv_ridge:seed' => 'Nonnegative permutation seed used only when foldid is null',
 
-    'fit_iv:vcov' => "Covariance specification; only 'iid' is currently supported",
+    'fit_iv:vcov' => "iid, HC0-HC3, [cluster => column or labels, type => HC0/HC1], or [newey_west => lag, adjust => bool]",
+    'fit_ols:vcov' => "iid, HC0-HC3, [cluster => column or labels, type => HC0/HC1], or [newey_west => lag, adjust => bool]",
     // Distributions.
     'dist:x' => 'Point at which to evaluate; ±INF allowed',
     'dist:values' => 'Points at which to evaluate; ±INF allowed, and null or NAN rejects the batch',

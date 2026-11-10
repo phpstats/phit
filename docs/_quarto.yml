@@ -8,6 +8,7 @@ project:
     - figures/
     - verifications/reference-manifest.json
     - verifications/ridge-results.json
+    - verifications/vcov-results.json
     - benchmarks/draws-results.json
     - benchmarks/distributions-results.json
     - benchmarks/rng-results.json

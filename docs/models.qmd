@@ -291,7 +291,8 @@ Weights are positive prior weights, supplied as a column name or an array
 aligned with the original rows. All formula parts and weights share one
 missing-row mask. `missing: 'raise'` rejects missing values. Under-identification
 and rank deficiency raise 1004. Random effects and offsets raise 1007.
-Only `vcov: 'iid'` is available in this release.
+`vcov` also accepts HC0–HC3, clustered, and Newey–West covariance.
+See [robust covariance](#robust-covariance) for weighting, row handling, and inference conventions.
 
 
 ## Ridge regression
@@ -366,3 +367,56 @@ lmridge conditional covariance, and a heating-shaped design with hourly factors,
 correlated nonnegative lags, day folds, and age-decaying weights. See the
 [ridge verification record](verifications/ridge-results.json) and
 [benchmark record](../bench/ridge-results.json).
+
+
+## Robust covariance
+
+`fit_ols()` and `fit_iv()` accept `vcov:`. The default is `'iid'`.
+
+```php
+$fit = Phit\fit_ols('y ~ x', $data, weights: 'w', vcov: 'HC3');
+$iv = Phit\fit_iv('y ~ x | heating ~ schedule', $data,
+    weights: 'w', vcov: ['cluster' => 'day']);
+$serial = Phit\fit_ols('y ~ x', $data,
+    vcov: ['newey_west' => 24, 'adjust' => true]);
+```
+
+HC0 is the unadjusted sandwich estimator. HC1 multiplies covariance by
+n/(n-k). HC2 and HC3 adjust for leverage, using the weighted projected
+structural design for IV. Numerically unit leverage makes HC2/HC3 undefined
+and raises 1005.
+
+One-way clustering accepts a column name or an array of scalar labels aligned
+with **every original input row**. Missing cluster labels join missing response,
+regressor, instrument, and weight values in row deletion; `missing: 'raise'`
+rejects them. The default cluster correction is HC1: G/(G-1) times
+(n-1)/(n-k). Set `['cluster' => 'day', 'type' => 'HC0']` for G/(G-1) alone.
+At least two retained clusters are required. Multiway clustering and clustered
+HC2/HC3 are unsupported.
+
+Newey–West uses Bartlett weights and an explicit integer lag from zero through
+n-1, without prewhitening. `adjust` defaults to false; true multiplies by
+n/(n-k). Rows must already be in time order. Retained row order is used,
+deleted rows close gaps, and dates are neither sorted nor interpreted. Lag zero
+equals HC0; adjusted lag zero equals HC1.
+
+These options replace covariance, coefficient SEs, t statistics, p-values, and
+intervals. `predict(seFit: true)` and confidence intervals use the same
+covariance, and `tidy(confInt: true)` uses the same inference convention.
+Coefficient inference uses t with n-k degrees of freedom for HC/HAC and G-1 for
+clusters. The separate `inference_df` key exposes that choice; `df_residual`
+continues to describe the residual fit. `vcov` records the supplied specification,
+and `vcov_label` supplies a readable label.
+
+Coefficients, fitted values, residuals, sigma, RSS, and R² stay unchanged on the
+same sample. IV first-stage, Wu–Hausman, and Sargan diagnostics keep their iid
+definitions and are labeled accordingly. Robust summaries identify covariance
+and inference df and omit the classical R²-based overall F statistic. Prediction
+intervals retain the existing added residual sigma² convention; robust coefficient
+covariance does not estimate observation-specific heteroskedastic prediction
+variance. The option applies to formula OLS and IV; matrix OLS and Gaussian GLM
+interfaces retain their existing APIs.
+
+Verification matches public `sandwich::vcovHC`, `vcovCL`, and
+`NeweyWest(prewhite = FALSE)` output, including weighted IV and day clusters over
+hourly heating rows. See the [saved covariance verification](verifications/vcov-results.json).

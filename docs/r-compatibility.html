@@ -517,6 +517,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#reproduce" id="toc-reproduce" class="nav-link" data-scroll-target="#reproduce">Reproduce</a></li>
   <li><a href="#two-stage-least-squares" id="toc-two-stage-least-squares" class="nav-link" data-scroll-target="#two-stage-least-squares">Two-stage least squares</a></li>
   <li><a href="#ridge" id="toc-ridge" class="nav-link" data-scroll-target="#ridge">Ridge</a></li>
+  <li><a href="#robust-covariance" id="toc-robust-covariance" class="nav-link" data-scroll-target="#robust-covariance">Robust covariance</a></li>
   </ul>
 </nav>
     </div>
@@ -827,6 +828,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="ridge" class="level2">
 <h2 class="anchored" data-anchor-id="ridge">Ridge</h2>
 <p>Explicit-lambda Gaussian fits and CV match public <code>glmnet(alpha=0)</code> output, including response scaling, zero penalty factors, bounds, and weighted folds. The default lambda path is phit policy. Conditional uncertainty uses n-df residual variance and is not coverage-valid; <code>lmridge</code>’s variance denominator differs, so conditional covariance per sigma squared is checked. References use glmnet threshold 1e-18, maxit 1,000,000, atol 1e-7 and rtol 2e-6. The saved <a href="verifications/ridge-results.json">ridge record</a> includes inputs, reference versions, actual values, and maximum errors for both implementations.</p>
+</section>
+<section id="robust-covariance" class="level2">
+<h2 class="anchored" data-anchor-id="robust-covariance">Robust covariance</h2>
+<p>OLS and IV HC0–HC3, one-way cluster HC0/HC1, and Newey–West covariance match public sandwich APIs. Cluster verification explicitly requests type=HC1, because defaults can vary by model class. Cluster coefficient inference uses G-1 df, while HC/HAC uses n-k; reference p-values and intervals apply that choice explicitly. Newey–West requires an explicit lag and uses prewhite=FALSE. Missing rows close gaps in the retained observation order. IV diagnostics keep their iid definitions. See the <a href="verifications/vcov-results.json">saved record</a> and <a href="./models.html#robust-covariance">model guide</a>.</p>
 
 
 </section>

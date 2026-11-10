@@ -38,3 +38,6 @@ separation is the reason for this process.
 
 Gaussian ridge and CV follow [ridge.md](ridge.md), including conventions observed
 through public glmnet APIs. Existing MIT integration code may be read.
+
+OLS and IV sandwich covariance follows [vcov.md](vcov.md), from public papers,
+help, and observed API outputs. Existing MIT integration code may be read.

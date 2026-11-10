@@ -34,7 +34,7 @@ $formula = Phit\fit_ols('score ~ study_hours + prior_score', $schools);
 alias_check($formula->toArray() === Phit\fit_ols(data: $schools, formula: 'score ~ study_hours + prior_score')->toArray(), 'fit_ols named arguments');
 alias_check(Phit\fit_ols_matrix($x, $y)['coefficients'] === $formula['coefficients'], 'matrix and formula fits agree exactly');
 $parameters = array_map(fn ($p) => $p->getName(), (new ReflectionFunction('Phit\fit_ols'))->getParameters());
-alias_check($parameters === ['formula', 'data', 'missing', 'weights'], 'fit_ols parameters: ' . json_encode($parameters));
+alias_check($parameters === ['formula', 'data', 'missing', 'weights', 'vcov'], 'fit_ols parameters: ' . json_encode($parameters));
 foreach (['matrix' => fn () => Phit\fit_ols($x, $y), 'named x' => fn () => Phit\fit_ols(x: $x, y: $y)] as $label => $call) {
     $thrown = null;
     try {

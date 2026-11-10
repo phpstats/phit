@@ -5,6 +5,7 @@
 //! The R-compatible formula engine lives in stats_core::formula; this module only
 //! converts PHP values, calls the same estimation cores as the matrix functions
 //! and adds coefficient names to their unchanged result contracts.
+use crate::vcov::{Spec, VcovArg};
 use crate::{finish_result, input_exception, stats_exception};
 use ext_php_rs::{
     boxed::ZBox,
@@ -706,10 +707,16 @@ pub fn predict_from(
         out.insert("se_fit", nullable(&se)?)?;
     }
     let df = fit
-        .get("df_residual")
+        .get("inference_df")
+        .or_else(|| fit.get("df_residual"))
         .and_then(|v| v.double().or_else(|| v.long().map(|l| l as f64)));
     if is_lm && (seFit || interval_kind.is_some()) {
-        out.insert("df", fit.get("df_residual").map(Zval::shallow_clone))?;
+        out.insert(
+            "df",
+            fit.get("inference_df")
+                .or_else(|| fit.get("df_residual"))
+                .map(Zval::shallow_clone),
+        )?;
     }
     if !mixed && (seFit || interval_kind.is_some()) {
         // R's residual.scale: sigma for Gaussian fits, 1 for binomial and Poisson.
@@ -857,20 +864,40 @@ pub fn model_matrix(formula: &str, data: &Zval, missing: &str) -> PhpResult<ZBox
 
 /// Linear model from a formula: the OLS core plus coefficient names.
 #[php_function]
-#[php(name = "Phit\\fit_ols", defaults(missing = "\"drop\""))]
+#[php(name = "Phit\\fit_ols", defaults(missing = "\"drop\"", vcov = VcovArg::Iid))]
 pub fn fit_ols(
     formula: &str,
     data: &Zval,
     missing: &str,
     weights: Option<&Zval>,
+    vcov: VcovArg,
 ) -> PhpResult<Zval> {
-    let Prepared { design, weights } = prepare(formula, data, missing, weights, true)?;
+    let frame = model_data(data)?;
+    let spec = Spec::parse(&vcov, &frame)?;
+    let mut extra =
+        vec![weights_vector(weights, &frame)?.unwrap_or_else(|| vec![Some(1.); frame.rows()])];
+    if let Some(cluster) = &spec.cluster {
+        extra.push(cluster.clone());
+    }
+    let design = stats_core::formula::model_design(
+        formula,
+        &frame,
+        &DesignOptions {
+            drop_missing: missing_policy(missing)?,
+            drop_unused_levels: true,
+            extra,
+        },
+    )
+    .map_err(stats_exception)?;
+    let weights = design.extra[0].clone();
     reject_random(&design, "Phit\\fit_ols")?;
     let y = numeric_response(&design, "Phit\\fit_ols")?;
     let offset = design.offset.clone().unwrap_or_default();
-    let result = stats_core::fit_ols_with_data(design.x.clone(), y, weights, offset)
+    let mut result = stats_core::fit_ols_with_data(design.x.clone(), y, weights.clone(), offset)
         .map_err(stats_exception)?;
+    let df = spec.apply(&mut result, &design, None, &weights)?;
     let mut output = crate::ols_output(result)?;
+    spec.metadata(&mut output, &vcov, df)?;
     add_names(&mut output, &design)?;
     let (retained, dropped) = rows(&design);
     finish_result(output, design.n_input, retained, dropped, "Phit\\fit_ols")
@@ -883,29 +910,6 @@ fn iv_f_test(test: Option<&stats_core::iv::FTest>) -> PhpResult<ZBox<ZendHashTab
     out.insert("df2", test.map(|t| t.df2 as i64))?;
     out.insert("p_value", test.map(|t| t.p_value))?;
     Ok(out)
-}
-
-/// Covariance specification. Step 1 accepts only iid; arrays are reserved for robust options.
-pub enum VcovArg {
-    Iid,
-    Unsupported,
-}
-impl ext_php_rs::convert::FromZval<'_> for VcovArg {
-    const TYPE: ext_php_rs::flags::DataType = ext_php_rs::flags::DataType::Mixed;
-    fn from_zval(v: &Zval) -> Option<Self> {
-        if v.str() == Some("iid") {
-            Some(Self::Iid)
-        } else if v.str().is_some() || v.array().is_some() {
-            Some(Self::Unsupported)
-        } else {
-            None
-        }
-    }
-}
-impl ext_php_rs::convert::StubLiteral for VcovArg {
-    fn stub_literal(&self) -> String {
-        "'iid'".into()
-    }
 }
 
 /// Two-stage least squares with structural-residual inference.
@@ -921,17 +925,17 @@ pub fn fit_iv(
     weights: Option<&Zval>,
     vcov: VcovArg,
 ) -> PhpResult<Zval> {
-    if !matches!(vcov, VcovArg::Iid) {
-        return Err(input_exception(
-            ErrorKind::Unsupported,
-            "fit_iv currently supports only vcov: 'iid'",
-        ));
-    }
     let frame = model_data(data)?;
+    let spec = Spec::parse(&vcov, &frame)?;
+    let mut extra =
+        vec![weights_vector(weights, &frame)?.unwrap_or_else(|| vec![Some(1.); frame.rows()])];
+    if let Some(cluster) = &spec.cluster {
+        extra.push(cluster.clone());
+    }
     let options = DesignOptions {
         drop_missing: missing_policy(missing)?,
         drop_unused_levels: true,
-        extra: weights_vector(weights, &frame)?.into_iter().collect(),
+        extra,
     };
     let iv = stats_core::formula::iv_design(formula, &frame, &options).map_err(stats_exception)?;
     let design = iv.structural;
@@ -941,20 +945,21 @@ pub fn fit_iv(
         design.extra[0].clone()
     };
     let y = numeric_response(&design, "Phit\\fit_iv")?;
-    let result = stats_core::iv::fit_iv(
+    let mut result = stats_core::iv::fit_iv(
         design.x.clone(),
         y,
-        iv.z,
+        iv.z.clone(),
         &iv.endogenous,
-        weights,
+        weights.clone(),
         design.intercept,
     )
     .map_err(stats_exception)?;
+    let df = spec.apply(&mut result.linear, &design, Some(&iv.z), &weights)?;
     let mut output = crate::ols_output(result.linear)?;
+    spec.metadata(&mut output, &vcov, df)?;
     add_names(&mut output, &design)?;
     output.insert("formula", formula)?;
     output.insert("structural_formula", design.formula.clone())?;
-    output.insert("vcov", "iid")?;
     output.insert(
         "endogenous",
         iv.endogenous

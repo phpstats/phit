@@ -3,7 +3,7 @@
 import hashlib,json,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-GENERATORS={'ridge-r':'tests/generate-ridge-fixtures.R','iv-r':'tests/generate-iv-fixtures.R','ols-r':'tests/generate-fixtures.R','logistic-r':'tests/generate-logistic-fixtures.R',
+GENERATORS={'vcov-r':'tests/generate-vcov-fixtures.R','ridge-r':'tests/generate-ridge-fixtures.R','iv-r':'tests/generate-iv-fixtures.R','ols-r':'tests/generate-fixtures.R','logistic-r':'tests/generate-logistic-fixtures.R',
  'probit-r':'tests/generate-probit-poisson-fixtures.R','poisson-r':'tests/generate-probit-poisson-fixtures.R',
  'r-compatibility':'tests/generate-r-compatibility-fixtures.R','lmm-r':'tests/generate-lmm-fixtures.R',
  'lmm-public-r':'tests/generate-lmm-public-fixtures.py','lmm-expanded-r':'tests/generate-lmm-expanded-fixtures.R',
@@ -19,7 +19,7 @@ GENERATORS={'ridge-r':'tests/generate-ridge-fixtures.R','iv-r':'tests/generate-i
  'predict-r':'tests/generate-predict-fixtures.R',
  'smoothing-r':'tests/generate-smoothing-fixtures.R',
  'optimize-r':'tests/generate-optimize-fixtures.R'}
-POLICY={'ridge-r':'1e-7 + 2e-6*abs(reference); explicit lambda; glmnet thresh=1e-18; independent n-df conditional covariance','iv-r':'1e-9 + 1e-7*abs(reference); SW independently computed from the paper; no-intercept Sargan uses uncentered auxiliary R2','ols-r':'1e-9 + 1e-7*abs(reference); zero/perfect fit conventions tested separately',
+POLICY={'vcov-r':'1e-9 + 1e-7*abs(reference); public sandwich covariance; cluster inference uses G-1 df','ridge-r':'1e-7 + 2e-6*abs(reference); explicit lambda; glmnet thresh=1e-18; independent n-df conditional covariance','iv-r':'1e-9 + 1e-7*abs(reference); SW independently computed from the paper; no-intercept Sargan uses uncentered auxiliary R2','ols-r':'1e-9 + 1e-7*abs(reference); zero/perfect fit conventions tested separately',
  'logistic-r':'1e-9 + 1e-7*abs(reference)','probit-r':'1e-9 + 1e-7*abs(reference)','poisson-r':'1e-9 + 1e-7*abs(reference)',
  'r-compatibility':'1e-7 + 1e-6*abs(reference)',
  'lmm-r':'1e-7 + 1e-6*abs(reference)','lmm-public-r':'per-case/per-quantity policy stored in fixture',
@@ -74,6 +74,9 @@ for stem,generator in GENERATORS.items():
   elif stem=='smoothing-r':
    inputs={**c['inputs'],'section':c['section']};n=len(c['inputs']['x']);p=1
    quantities=list(expected) if isinstance(expected,dict) else [c['section']]
+  elif stem=='vcov-r':
+   inputs={k:c[k] for k in ['fun','formula','dataset','weights','vcov']};inputs['data']=data['datasets'][c['dataset']]
+   n=len(c['expected']['fitted']);p=len(c['expected']['coefficients']);quantities=list(expected)+['prediction']
   elif stem=='predict-r':
    inputs={k:c[k] for k in ['function','formula','args','options'] if k in c}
    inputs['data']=data['datasets'][c['dataset']];inputs['newdata']=data['newdata'][c['dataset']]

@@ -4121,6 +4121,7 @@
             "first_stage",
             "fitted",
             "formula",
+            "inference_df",
             "instruments",
             "intercept",
             "log_likelihood",
@@ -4142,7 +4143,8 @@
             "structural_formula",
             "t_statistics",
             "terms",
-            "vcov"
+            "vcov",
+            "vcov_label"
         ]
     },
     "Phit\\fit_logistic_matrix": {
@@ -4719,6 +4721,12 @@
                 "type": "mixed",
                 "optional": true,
                 "default": null
+            },
+            {
+                "name": "vcov",
+                "type": "mixed",
+                "optional": true,
+                "default": "iid"
             }
         ],
         "return_type": "mixed",
@@ -4734,6 +4742,7 @@
             "dropped_rows",
             "fitted",
             "formula",
+            "inference_df",
             "intercept",
             "log_likelihood",
             "model",
@@ -4752,7 +4761,9 @@
             "sigma",
             "std_errors",
             "t_statistics",
-            "terms"
+            "terms",
+            "vcov",
+            "vcov_label"
         ]
     },
     "Phit\\fit_ols_matrix": {

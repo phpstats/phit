@@ -261,7 +261,50 @@ fn printer(fit: &ZendHashTable) -> PhpResult<Box<dyn Printer>> {
         .iter()
         .find(|(k, _)| *k == kind)
         .ok_or_else(|| not_a_fit(&format!("unknown model '{kind}'")))?;
-    build(fit)
+    let base = build(fit)?;
+    if let Some(label) = text(fit, "vcov_label").filter(|s| s != "iid") {
+        Ok(Box::new(RobustPrinter {
+            base,
+            label,
+            df: long(fit, "inference_df").ok_or_else(|| not_a_fit("missing inference_df"))? as f64,
+        }))
+    } else {
+        Ok(base)
+    }
+}
+struct RobustPrinter {
+    base: Box<dyn Printer>,
+    label: String,
+    df: f64,
+}
+impl Printer for RobustPrinter {
+    fn heading(&self) -> String {
+        self.base.heading()
+    }
+    fn before_coefficients(&self) -> String {
+        format!(
+            "{}Covariance: {}\nInference: t with {} degrees of freedom\n",
+            self.base.before_coefficients(),
+            self.label,
+            self.df
+        )
+    }
+    fn coefficients(&self) -> &Coefficients {
+        self.base.coefficients()
+    }
+    fn after_coefficients(&self) -> String {
+        let text = self.base.after_coefficients();
+        let mut out = text
+            .lines()
+            .filter(|l| !l.starts_with("F-statistic:"))
+            .collect::<Vec<_>>()
+            .join("\n");
+        out.push('\n');
+        out
+    }
+    fn interval_df(&self) -> Option<f64> {
+        Some(self.df)
+    }
 }
 
 fn df_residual(fit: &ZendHashTable) -> PhpResult<i64> {

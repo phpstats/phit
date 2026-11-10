@@ -183,3 +183,15 @@ differs, so conditional covariance per sigma squared is checked. References
 use glmnet threshold 1e-18, maxit 1,000,000, atol 1e-7 and rtol 2e-6. The saved
 [ridge record](verifications/ridge-results.json) includes inputs, reference
 versions, actual values, and maximum errors for both implementations.
+
+
+## Robust covariance
+
+OLS and IV HC0–HC3, one-way cluster HC0/HC1, and Newey–West covariance match
+public sandwich APIs. Cluster verification explicitly requests type=HC1,
+because defaults can vary by model class. Cluster coefficient inference uses
+G-1 df, while HC/HAC uses n-k; reference p-values and intervals apply that
+choice explicitly. Newey–West requires an explicit lag and uses prewhite=FALSE.
+Missing rows close gaps in the retained observation order. IV diagnostics keep
+their iid definitions. See the [saved record](verifications/vcov-results.json)
+and [model guide](models.qmd#robust-covariance).

@@ -87,8 +87,8 @@ def manifest(benchmarks, verifications):
         },
         'benchmarks': benchmarks,
         'evidence_gaps': {
-            'benchmarks': 'No benchmark times formula parsing, predict(), descriptive statistics, kernel densities, '
-                          'or chunked CsvReader reading.',
+            'benchmarks': 'No separately isolated benchmark times formula parsing, predict(), descriptive statistics, kernel densities, '
+                          'or chunked CsvReader reading. IV/ridge/robust workload timings include formula construction.',
             'verification': 'The reference comparisons ran on macOS; Linux and PHP-FPM runs of them are not '
                             'recorded, though the release workflow installs and checks every Linux binary.',
         },
@@ -144,6 +144,10 @@ def build():
     benchmarks.append('site/benchmarks/ridge-workload.json')
     files['verifications/ridge.json'] = evidence.ridge_verification()
     verifications.append('site/verifications/ridge.json')
+    files['benchmarks/vcov-workload.json'] = json.loads((ROOT / 'bench/vcov-results.json').read_text())
+    benchmarks.append('site/benchmarks/vcov-workload.json')
+    files['verifications/vcov.json'] = evidence.vcov_verification()
+    verifications.append('site/verifications/vcov.json')
     files['site.json'] = manifest(benchmarks, verifications)
     return {path: json.dumps(content, indent=1, allow_nan=False) + '\n' for path, content in files.items()}
 

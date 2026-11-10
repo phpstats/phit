@@ -567,6 +567,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>Builds the model matrix from named columns and fits by least squares, or by weighted least squares when <code>weights</code> is given, as <code>lm(weights = )</code> does.</li>
 <li><code>offset()</code> terms in the formula are added to the linear predictor.</li>
+<li><code>vcov</code> accepts iid, HC0-HC3, one-way clustered HC0/HC1, or Newey-West covariance. Cluster inference uses G-1 df.</li>
 <li>Factor levels left unused after missing rows are dropped are removed, as <code>lm()</code> does.</li>
 <li>A rank-deficient design throws instead of returning R’s <code>NA</code> coefficients.</li>
 <li>Rows with <code>null</code> or <code>NAN</code> in a variable the formula uses are dropped with one warning; <code>missing: 'raise'</code> rejects them instead. <code>retained_rows</code> and <code>dropped_rows</code> give the original row positions.</li>
@@ -576,7 +577,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">object</span> <span class="va">$data</span><span class="ot">,</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">string</span> <span class="va">$missing</span> <span class="op">=</span> <span class="st">'drop'</span><span class="ot">,</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">array</span><span class="op">|</span><span class="dt">string</span><span class="op">|</span><span class="kw">null</span> <span class="va">$weights</span> <span class="op">=</span> <span class="kw">NULL</span><span class="ot">,</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> LinearFit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">mixed</span> <span class="va">$vcov</span> <span class="op">=</span> <span class="st">'iid'</span><span class="ot">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)<span class="ot">:</span> LinearFit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -617,6 +619,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>NULL</code></td>
 <td>Positive prior weights aligned with the original rows, or a column name</td>
 </tr>
+<tr class="odd">
+<td><code>$vcov</code></td>
+<td><code>mixed</code></td>
+<td><code>'iid'</code></td>
+<td>iid, HC0-HC3, [cluster =&gt; column or labels, type =&gt; HC0/HC1], or [newey_west =&gt; lag, adjust =&gt; bool]</td>
+</tr>
 </tbody>
 </table>
 <p><strong>Returns</strong></p>
@@ -652,7 +660,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  intercept<span class="ot">:</span> <span class="dt">bool</span><span class="ot">,</span></span>
 <span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  named<span class="ot">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  predvars<span class="ot">:</span> <span class="dt">array</span>{levels<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;&gt;</span><span class="ot">,</span>poly<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">array</span>{alpha<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span>norm2<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span>}<span class="op">&gt;</span>}<span class="ot">,</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  vcov<span class="ot">:</span> <span class="dt">string</span><span class="op">|</span><span class="dt">array</span><span class="ot">,</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  inference_df<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  vcov_label<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1008 for an input or statistical error; 1007 for an unsupported function, family, or random term.</p>
 <p><strong>See also</strong> <a href="../formulas.html#fit_ols-and-fit_generalized_linear">Details</a> · <a href="../examples/linear-model.html">Example</a></p>
 </section>
@@ -662,7 +673,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>Formula: <code>y ~ exogenous | endogenous ~ excluded instruments</code>. Only top-level bars split the parts.</li>
 <li>Standard errors use structural residuals. First stages include partial R², Shea partial R², and Sanderson–Windmeijer F, with Wu–Hausman and Sargan tests in diagnostics.</li>
-<li>Only <code>vcov: 'iid'</code> is available. Under-identification and rank deficiency raise 1004. Random effects and offsets raise 1007.</li>
+<li><code>vcov</code> accepts iid, HC0-HC3, one-way cluster HC0/HC1, or Newey-West. Cluster inference uses G-1 df. IV diagnostics retain iid definitions. Under-identification and rank deficiency raise 1004. Random effects and offsets raise 1007.</li>
 <li>Rows with <code>null</code> or <code>NAN</code> in a variable the formula uses are dropped with one warning; <code>missing: 'raise'</code> rejects them instead. <code>retained_rows</code> and <code>dropped_rows</code> give the original row positions.</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode php code-with-copy"><code class="sourceCode php"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Phit\fit_iv(</span>
@@ -716,7 +727,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>$vcov</code></td>
 <td><code>mixed</code></td>
 <td><code>'iid'</code></td>
-<td>Only <code>'iid'</code> is supported in this release</td>
+<td>iid, HC0-HC3, one-way cluster HC0/HC1, or Newey-West</td>
 </tr>
 </tbody>
 </table>
@@ -754,11 +765,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  named<span class="ot">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span></span>
 <span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  predvars<span class="ot">:</span> <span class="dt">array</span>{levels<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;&gt;</span><span class="ot">,</span>poly<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">array</span>{alpha<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span><span class="ot">,</span>norm2<span class="ot">:</span><span class="kw">list</span><span class="op">&lt;</span><span class="dt">float</span><span class="op">&gt;</span>}<span class="op">&gt;</span>}<span class="ot">,</span></span>
 <span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  structural_formula<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  vcov<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  endogenous<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  instruments<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  first_stage<span class="ot">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">array</span>{f_statistic<span class="ot">:</span><span class="dt">float</span><span class="ot">,</span>df1<span class="ot">:</span><span class="dt">int</span><span class="ot">,</span>df2<span class="ot">:</span><span class="dt">int</span><span class="ot">,</span>p_value<span class="ot">:</span><span class="dt">float</span><span class="ot">,</span>partial_r_squared<span class="ot">:</span><span class="dt">float</span><span class="ot">,</span>shea_partial_r_squared<span class="ot">:</span><span class="dt">float</span><span class="op">|</span><span class="kw">null</span><span class="ot">,</span>sw_f_statistic<span class="ot">:</span><span class="dt">float</span><span class="op">|</span><span class="kw">null</span><span class="ot">,</span>sw_df1<span class="ot">:</span><span class="dt">int</span><span class="ot">,</span>sw_df2<span class="ot">:</span><span class="dt">int</span><span class="ot">,</span>sw_p_value<span class="ot">:</span><span class="dt">float</span><span class="op">|</span><span class="kw">null</span><span class="ot">,</span>coefficients<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">float</span><span class="op">&gt;</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  vcov<span class="ot">:</span> <span class="dt">string</span><span class="op">|</span><span class="dt">array</span><span class="ot">,</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  inference_df<span class="ot">:</span> <span class="dt">int</span><span class="ot">,</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  vcov_label<span class="ot">:</span> <span class="dt">string</span><span class="ot">,</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  endogenous<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  instruments<span class="ot">:</span> <span class="kw">list</span><span class="op">&lt;</span><span class="dt">string</span><span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>  first_stage<span class="ot">:</span> <span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">array</span>{f_statistic<span class="ot">:</span><span class="dt">float</span><span class="ot">,</span>df1<span class="ot">:</span><span class="dt">int</span><span class="ot">,</span>df2<span class="ot">:</span><span class="dt">int</span><span class="ot">,</span>p_value<span class="ot">:</span><span class="dt">float</span><span class="ot">,</span>partial_r_squared<span class="ot">:</span><span class="dt">float</span><span class="ot">,</span>shea_partial_r_squared<span class="ot">:</span><span class="dt">float</span><span class="op">|</span><span class="kw">null</span><span class="ot">,</span>sw_f_statistic<span class="ot">:</span><span class="dt">float</span><span class="op">|</span><span class="kw">null</span><span class="ot">,</span>sw_df1<span class="ot">:</span><span class="dt">int</span><span class="ot">,</span>sw_df2<span class="ot">:</span><span class="dt">int</span><span class="ot">,</span>sw_p_value<span class="ot">:</span><span class="dt">float</span><span class="op">|</span><span class="kw">null</span><span class="ot">,</span>coefficients<span class="ot">:</span><span class="dt">array</span><span class="op">&lt;</span><span class="dt">string</span><span class="ot">,</span><span class="dt">float</span><span class="op">&gt;</span>}<span class="op">&gt;</span><span class="ot">,</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><strong>Errors</strong> <code>Exception</code>: a code from 1001 to 1008 for an input or statistical error.</p>
 <p><strong>See also</strong> <a href="../models.html#instrumental-variable-models">Details</a></p>
 </section>
